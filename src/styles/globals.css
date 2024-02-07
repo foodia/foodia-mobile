@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "~leaflet/dist/leaflet.css";
+
+::-webkit-scrollbar {
+	width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #d8d8d8;
+	border-radius: 40px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: transparent;
+}
+
+.mobile-w {
+	width: 375px;
+
+}
+
+.mobile-h {
+	height: 100%;
+}
+
+
+/* ------------------------------------ Start Fotbar ------------------------------------ */
+.kotak {
+	/* bg-warna */
+	background-color: #FAFAFA;
+	height: 100px;
+	border-radius: 10px;
+	width: 375px;
+	border-radius: 12px;
+	position: absolute;
+	margin-bottom: 100px;
+}
+
+.lingkar {
+	border-radius: 500px;
+	background-color: #c4c4c4;
+	width: 82.89854431152344px;
+	height: 88px;
+	position: absolute;
+	left: 153px;
+	top: -44px;
+}
+
+.icon_nav {
+	color: #BDC2C6;
+	width: 24px;
+	height: 24px;
+	position: absolute;
+}
+
+/* menu ke 1 */
+.menu1 {
+	left: 37px;
+	top: 28px;
+}
+
+/* meneu ke 2 */
+.menu2 {
+	color: #BDC2C6;
+	left: 105px;
+	top: 28px;
+}
+
+/* menu ke 3 */
+.menu3 {
+	color: #BDC2C6;
+	left: 261px;
+	top: 28px;
+}
+
+/* menu ke 4 */
+.menu4 {
+	color: #bdc2c6;
+	left: 329px;
+	top: 28px;
+}
+
+/* menu tengah */
+.lingkaran {
+	background-image: linear-gradient(0deg, #3fb648 0%, #64a66a 100%);
+	width: 64px;
+	height: 64px;
+	position: absolute;
+	border-radius: 100px;
+	left: 162px;
+	top: -32px;
+}
+
+.iconQr {
+	background-color: rgba(255, 255, 255, 1);
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	left: 12px;
+	top: 12px;
+	border-radius: 100px;
+}
+
+/* ------------------------------------ End Fotbar ------------------------------------ */
+
+.ketProduk {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 6;
+	/* Show only 3 lines */
+	-webkit-box-orient: vertical;
+}
+
+/* ----------------------------------------------------- Nominal */
+.custom-radio {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	border-radius: 0;
+	outline: none;
+}
+
+.custom-input {
+	border-radius: 0;
+	outline: none;
+	/* Tambahkan gaya lain sesuai kebutuhan Anda */
+}
+
+.custom-radio:checked {
+	border: 2px solid #3490dc;
+}
+
+.custom-radio-checked {
+	background-color: #3490dc;
+}
+
+/* ----------------------------------------------------------- */
+.your-custom-container-class {
+	/* width: 375px; */
+
+	/* CSS untuk kontainer SweetAlert */
+}
+
+.your-custom-popup-class {
+	width: 372px;
+	position: absolute;
+	bottom: 10px;
+	margin: auto;
+}
+
+.your-custom-title-class {
+	/* CSS untuk judul SweetAlert */
+}
+
+.your-custom-content-class {
+	/* CSS untuk konten SweetAlert */
+}
+
+.your-custom-confirm-button-class {
+	/* CSS untuk tombol konfirmasi SweetAlert */
+}
+
+.your-custom-cancel-button-class {
+	/* CSS untuk tombol pembatalan SweetAlert */
+}
