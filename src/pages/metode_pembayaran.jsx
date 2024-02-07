@@ -77,18 +77,19 @@ const MetodePembayaran = () => {
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}donation/payment`, data);
             console.log('data respone', response.data.body.actions.desktop_web_checkout_url);
             const responeUrl = response.data.body.actions.desktop_web_checkout_url;
+            router.push(`${responeUrl}`);
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Campaign Created!',
-                text: 'Campaign Berhasil dibuat Mohon Tunggu approval dari admin',
-                showConfirmButton: false,
-                timer: 2000,
-            });
+            // Swal.fire({
+            //     icon: 'success',
+            //     title: 'Campaign Created!',
+            //     text: 'Campaign Berhasil dibuat Mohon Tunggu approval dari admin',
+            //     showConfirmButton: false,
+            //     timer: 2000,
+            // });
 
-            setTimeout(() => {
-                router.push(`${responeUrl}`);
-            }, 2000);
+            // setTimeout(() => {
+            //     router.push(`${responeUrl}`);
+            // }, 2000);
 
         } catch {
 
