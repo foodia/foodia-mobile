@@ -1,12 +1,16 @@
 import styles from "@/styles/Campaign.module.css"
-import { IconClock, IconCalendarEvent, IconCreditCard, IconClipboardCheck, IconSoup, IconArrowNarrowRight, IconBellRingingFilled, IconCaretDown, IconCaretUp } from '@tabler/icons-react';
+import { IconClock, IconCalendarEvent, IconCreditCard, IconClipboardCheck, IconSoup, IconArrowNarrowRight, IconBellRingingFilled, IconCaretDown, IconCaretUp, IconMapPin } from '@tabler/icons-react';
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from 'react';
+import Swal from "sweetalert2";
+import { useAppState } from "./UserContext";
 const DetailCamp = ({ data }) => {
     const router = useRouter();
     const idCamp = router.query.id;
     const [showFullText, setShowFullText] = useState(false);
+    const { state, setDonation } = useAppState();
+    const [nominalDonasi, setNominalDonasi] = useState(0);
     const toggleReadMore = () => {
         setShowFullText((prevShowFullText) => !prevShowFullText);
     };
@@ -38,6 +42,89 @@ const DetailCamp = ({ data }) => {
         return <p>Loading...</p>;
     };
 
+    const showSweetAlert = async () => {
+        const { value } = await Swal.fire({
+            title: 'Pilih Nominal Donasi',
+            html: `
+            <div class="flex flex-col space-y-2">
+                <label>
+                    <input  type="radio" name="donation" id="donation" class="hidden peer" value="50000"  />
+                    <div class="peer-checked:bg-primary bg-green-200 py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
+                </label>
+                <label>
+                    <input  type="radio" name="donation" id="donation" class="hidden peer" value="100000"  />
+                    <div class="peer-checked:bg-primary bg-green-200 py-2 px-4 rounded-lg font-semibold">Rp. 100.000</div>
+                </label>
+                <label>
+                    <input  type="radio" name="donation" id="donation" class="hidden peer" value="250000"  />
+                    <div class="peer-checked:bg-primary bg-green-200 py-2 px-4 rounded-lg font-semibold">Rp. 250.000</div>
+                </label>
+                <label>
+                    <input  type="radio" name="donation" id="donation" class="hidden peer" value="500000"  />
+                    <div class="peer-checked:bg-primary bg-green-200 py-2 px-4 rounded-lg font-semibold">Rp. 500.000</div>
+                </label>
+                    
+                
+                <div class="bg-gray-200 p-2 rounded-lg">
+              <label class=" items-center text-base ">
+              Nominal Donasi Lainnya
+              </label>
+                <input type="number" name="nominal" class="items-center mt-2 bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 0 dark:placeholder-gray-400  "> 
+                
+              </div>
+            </div>`,
+            focusConfirm: false,
+            showCancelButton: true,
+            cancelButtonText: 'Batal',
+            confirmButtonText: 'Pilih',
+            preConfirm: () => {
+                const radioValue = document.querySelector('input[name="donation"]:checked');
+                if (!radioValue) {
+                    const nominalValue = document.querySelector('input[name="nominal"]');
+                    if (nominalValue && nominalValue.value) {
+                        // return nominalValue.value;
+                        handleSubmit(nominalValue.value);
+                    } else {
+                        return 'input nominal value';
+                    }
+                } else {
+                    // return radioValue.value;
+                    handleSubmit(radioValue.value);
+                }
+            },
+            customClass: {
+                container: 'your-custom-container-class',
+                popup: 'your-custom-popup-class',
+                title: 'your-custom-title-class',
+                content: 'your-custom-content-class',
+                confirmButton: 'your-custom-confirm-button-class',
+                cancelButton: 'your-custom-cancel-button-class',
+            },
+        });
+
+        // if (value) {
+        //     setNominalDonasi(parseInt(value));
+        // }
+    };
+
+    const handleSubmit = (value) => {
+        setNominalDonasi(parseInt(value));
+        const data = {
+            'amount': parseInt(value),
+            'payment_channel': '',
+            'success_url': `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
+            'detail': {
+                'campaign_id': idCamp,
+                'description': 'Donation',
+                'donation_type': 'agnostic',
+            }
+        }
+        setDonation(data);
+        router.push('/metode_pembayaran');
+    };
+
+    console.log('data', data);
+
     const remainingDays = calculateRemainingTime(data.event_date);
     return (
         <>
@@ -50,8 +137,10 @@ const DetailCamp = ({ data }) => {
                     <div className="flex">
                         <h1 className="font-bold">{data.event_name}</h1>
                     </div>
-                    <div className="flex">
+                    <div className="flex items-center justify-between mb-2">
                         <p className="text-sm font-normal">{data.address}</p>
+                        <Link href={`/lokasi_camp/${idCamp}`} className="text-sm font-normal text-red-500"><IconMapPin /></Link>
+
                     </div>
                     <div className="flex flex-wrap items-center justify-between ">
                         <h4 className="font-semibold text-base"> {formatUang(data.donation_target)}</h4>
@@ -63,9 +152,9 @@ const DetailCamp = ({ data }) => {
 
                     </div>
 
-                    <Link href={`/lokasi_camp/${idCamp}`} className="w-full h-14 mt-4 text-white rounded-lg inline-flex items-center justify-center px-2.5 py-2.5 bg-primary">
+                    <button onClick={showSweetAlert} className="w-full h-14 mt-4 text-white rounded-lg inline-flex items-center justify-center px-2.5 py-2.5 bg-primary">
                         Donasi
-                    </Link>
+                    </button>
 
 
 

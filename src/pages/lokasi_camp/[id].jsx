@@ -7,6 +7,7 @@ import { IconCaretDown, IconCaretUp, IconMessage } from '@tabler/icons-react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { useAppState } from '@/components/page/UserContext';
+import Link from 'next/link';
 // import 'sweetalert2/dist/sweetalert2.min.css';
 
 const DynamicMarkerMap = dynamic(() => import('@/components/page/MarkerMap'), { ssr: false });
@@ -138,7 +139,7 @@ const LokasiCamp = () => {
 
 
     return (
-        <div className="container mx-auto mt-24 bg-white h-full text-primary">
+        <div className="container mx-auto mt-24 bg-white h-full text-primary h-screen">
             <div className="flex justify-center">
                 <h1 className='text-3xl font-bold'>Nama Camp </h1>
             </div>
@@ -156,7 +157,7 @@ const LokasiCamp = () => {
                             </div>
                         </div>
 
-                        <div className="items-center justify-center mt-2 w-full ">
+                        {/* <div className="items-center justify-center mt-2 w-full ">
                             <div className="p-6 rounded-lg bg-green-500 w-80 h-full">
                                 <div className="flex items-center justify-center">
                                     <div className="bg-gray-300 w-12 h-12 rounded-full mr-3">
@@ -186,9 +187,9 @@ const LokasiCamp = () => {
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="flex items-center justify-center mt-2 w-full ">
-                            <button onClick={showSweetAlert} className='bg-primary hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full' >Donasi</button>
+                            <Link href={`https://www.google.com/maps/search/?api=1&query=${campaignData?.latitude},${campaignData?.longitude}`} className='bg-primary hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full text-center' >Lokasi Camp</Link>
 
                         </div>
                     </div >

@@ -20,7 +20,7 @@ const MetodePembayaran = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (!state.donation.amount || !state.donation.detail.campaign_id) {
+                if (!state.donation.amount) {
                     console.log('No data');
 
                     // Use SweetAlert to show a warning
