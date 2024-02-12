@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import DetailCamp from '@/components/page/DetailPage';
+import Header from '@/components/Header';
 
 const Campaign = () => {
     const router = useRouter();
@@ -30,6 +31,7 @@ const Campaign = () => {
 
     return (
         <main className="my-0 mx-auto min-h-full mobile-w">
+            <Header title="Informasi" />
             <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
                 {campaignData && <DetailCamp data={campaignData} />}
             </div>

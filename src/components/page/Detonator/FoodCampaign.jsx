@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import axios from 'axios';
 import { Link } from "tabler-icons-react";
 import CardRepordFood from "@/components/CardRepordFood";
+import Header from "@/components/Header";
 const FoodCampaign = () => {
     const router = useRouter();
     const { id } = router.query;
@@ -63,6 +64,7 @@ const FoodCampaign = () => {
     return (
         <>
             <div className="container mx-auto mt-24 bg-white h-screen">
+                <Header title="Food Campain" />
 
                 <div className="mx-auto text-center p-2 text-primary">
                     <h1 className="font-bold">Report Order Food</h1>

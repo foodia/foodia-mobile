@@ -102,7 +102,7 @@ const LoginPage = () => {
 
 
     return (
-        <div className=" mx-auto mt-24 bg-white  text-primary h-screen">
+        <div className=" bg-white  text-primary h-screen mt-12">
             <div className="flex justify-center ">
                 <h1 className='text-4xl  font-bold'>FOODIA</h1>
             </div>

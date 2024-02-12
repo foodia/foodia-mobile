@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { IconSearch, IconChevronCompactLeft } from '@tabler/icons-react';
+import { IconSearch, IconChevronCompactLeft, IconArrowLeft } from '@tabler/icons-react';
 import Link from "next/link";
 import { useRouter } from 'next/router';
 
-const Header = (props) => {
+const Header = ({ title = '' }) => {
   const router = useRouter();
 
   // Handle the back button click
@@ -25,26 +25,23 @@ const Header = (props) => {
 
   return (
 
-    <nav className={
-      test
-        ? "  bg-green-600 fixed w-full z-20 top-0 left-0 border-b border-gray-200  border-gray-600"
-        : " bg-transparent fixed w-full z-20 top-0 left-0 "
-    }>
-      <div className={
-        test
-          ? "mobile-w flex flex-wrap items-center justify-between mx-auto py-4 rounded-lg "
-          : "mobile-w flex flex-wrap items-center justify-between mx-auto py-4 bg-white rounded-lg "
-      }>
+    <nav className="bg-transparent fixed w-full z-20 top-0 left-0">
+
+      <div className='mobile-w flex flex-wrap items-center justify-between mx-auto py-2 bg-white rounded-lg'>
 
 
-        <div className="flex relative">
-          <button className="p-4 text-sm rounded-full  bg-gray-200 text-gray-600 " onClick={handleBackButtonClick}><IconChevronCompactLeft /></button>
-        </div>
 
-        {router.asPath === "/login/detonator" || router.asPath === "/login/merchant" ? null : (
-          <div className="flex relative mr-2" style={{ width: '75%' }}>
+        {title ?
+          <div className="flex">
+            <div className="flex relative">
+              <button className="p-4 text-sm rounded-full   text-gray-600 " onClick={handleBackButtonClick}><IconArrowLeft /></button>
+            </div>
+            <p className="p-4 text-lg font-semibold">{title}</p>
+          </div>
+          :
+          <div className="flex relative w-full mx-2">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg className="w-4 text-gray-500 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <svg className="w-4 text-emerald-500 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
               </svg>
             </div>
@@ -55,8 +52,11 @@ const Header = (props) => {
               placeholder="Search..."
               required
             />
-          </div>
-        )}
+          </div>}
+
+        {/* {router.asPath === "/login/detonator" || router.asPath === "/login/merchant" ? null : (
+          
+        )} */}
 
 
 
