@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import AddFood from './AddFoodCamp';
 import { StepOne, StepThree, StepTwo, Stepfour } from '../FormCampaing/StepMerchant';
+import Header from '../Header';
 // import StepThree from '../FormCampaing/CreateCamp';
 
 
@@ -63,19 +64,26 @@ const FormMenu = () => {
     };
 
     return (
-        <div className="container mx-auto mt-24 bg-white h-full text-primary">
-            <div className="flex justify-center">
-                <h1 className='text-3xl font-bold'>FOODIA </h1>
+
+        <main className="my-0 mx-auto min-h-full mobile-w">
+            <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
+                <Header backto="/home" title='Registrasi Merchant' />
+
+                <div className="flex justify-center">
+                    <h1 className='text-3xl font-bold'>FOODIA </h1>
+                </div>
+                <div className="flex justify-center">
+                    <h1 className='text-xl font-bold'>{setTitle}</h1>
+                </div>
+                <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
+                <div className="grid justify-items-center w-full h-">
+                    {/* Pass the updateLocalStorage function to each step component */}
+                    {React.cloneElement(stepComponent, { updateLocalStorage })}
+                </div>
+
             </div>
-            <div className="flex justify-center">
-                <h1 className='text-xl font-bold'>{setTitle}</h1>
-            </div>
-            <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
-            <div className="grid justify-items-center w-full h-">
-                {/* Pass the updateLocalStorage function to each step component */}
-                {React.cloneElement(stepComponent, { updateLocalStorage })}
-            </div>
-        </div>
+
+        </main>
     );
 }
 

@@ -137,6 +137,8 @@ const HomePage = () => {
                                     address={campData.address}
                                     date={campData.event_date}
                                     status={campData.status}
+                                    donation_target={campData.donation_target}
+                                    donation_collected={campData.donation_collected}
                                 />);
                         })}
                     </div>

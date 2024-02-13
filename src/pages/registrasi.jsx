@@ -1,4 +1,5 @@
 // registrasi.js
+import Header from "@/components/Header";
 import InputForm from "@/components/Imput";
 import { useAppState } from "@/components/page/UserContext";
 import axios from "axios";
@@ -150,57 +151,60 @@ const Registrasi = () => {
     };
 
     return (
-        <div className="container mx-auto mt-24 bg-white h-screen text-primary">
-            <div className="grid justify-items-center w-full">
-                <h1>Campaign: 1</h1>
-                <form className='p-2 mt-10 w-full' onSubmit={handleSubmit}>
-                    {/* ... (your existing code) */}
-                    <div className="mb-2">
-                        <label htmlFor='fullname' className="text-sm font-medium text-gray-900">Full Name</label>
-                        <InputForm
-                            cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                            label="fullname" type="text" name="fullname" value={fullname} onChange={handlefullnameChange} placeholder="Full Name"
-                        />
-                    </div>
-                    <div className="mb-2">
-                        <label htmlFor='Phone' className="text-sm font-medium text-gray-900">Phone Number</label>
-                        <InputForm
-                            cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                            label="Phone" type="text" name="Phone" value={phone} onChange={handlePhoneChange} placeholder="Phone Number"
-                        />
-                    </div>
-                    <div className="mb-2">
-                        <label htmlFor='Email' className="text-sm font-medium text-gray-900">Email Address</label>
-                        <InputForm
-                            cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                            label="Email" type="text" name="Email" value={email} onChange={handleEmailChange} placeholder="Email Address"
-                        />
-                    </div>
-                    <div className="mb-2">
-                        <label htmlFor='Password' className="text-sm font-medium text-gray-900">Password</label>
-                        <InputForm
-                            cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                            label="Password" type="password" name="Password" value={password} onChange={handlePasswordChange} placeholder="Password"
-                        />
-                    </div>
-                    <div className="mb-2">
-                        <label htmlFor='ConfirmPassword' className="text-sm font-medium text-gray-900">Confirm Password</label>
-                        <InputForm
-                            cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                            label="ConfirmPassword" type="password" name="ConfirmPassword" value={confirmPassword} onChange={handleConfirmPasswordChange} placeholder="Confirm Password"
-                        />
-                    </div>
+        <main className="my-0 mx-auto min-h-full mobile-w">
+            <Header title="registrasi" />
+            <div className=" mx-auto mt-20 min-h-screen bg-white h-screen text-primary">
+                <div className="grid justify-items-center w-full">
+                    <h1 className="font-bold text-5xl py-12 ">FOODIA</h1>
+                    <form className='p-2 w-full' onSubmit={handleSubmit}>
+                        {/* ... (your existing code) */}
+                        <div className="mb-2">
+                            <label htmlFor='fullname' className="text-sm font-medium text-gray-900">Full Name</label>
+                            <InputForm
+                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+                                label="fullname" type="text" name="fullname" value={fullname} onChange={handlefullnameChange} placeholder="Full Name"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label htmlFor='Phone' className="text-sm font-medium text-gray-900">Phone Number</label>
+                            <InputForm
+                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+                                label="Phone" type="text" name="Phone" value={phone} onChange={handlePhoneChange} placeholder="Phone Number"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label htmlFor='Email' className="text-sm font-medium text-gray-900">Email Address</label>
+                            <InputForm
+                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+                                label="Email" type="text" name="Email" value={email} onChange={handleEmailChange} placeholder="Email Address"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label htmlFor='Password' className="text-sm font-medium text-gray-900">Password</label>
+                            <InputForm
+                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+                                label="Password" type="password" name="Password" value={password} onChange={handlePasswordChange} placeholder="Password"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            <label htmlFor='ConfirmPassword' className="text-sm font-medium text-gray-900">Confirm Password</label>
+                            <InputForm
+                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+                                label="ConfirmPassword" type="password" name="ConfirmPassword" value={confirmPassword} onChange={handleConfirmPasswordChange} placeholder="Confirm Password"
+                            />
+                        </div>
 
-                    <div className="grid gap-4 content-center">
-                        <button
-                            type="submit"
-                            className='text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center'>
-                            Submit
-                        </button>
-                    </div>
-                </form>
+                        <div className="grid gap-4 content-center">
+                            <button
+                                type="submit"
+                                className='text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center'>
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        </main>
     );
 };
 

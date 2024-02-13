@@ -3,13 +3,18 @@ import { IconSearch, IconChevronCompactLeft, IconArrowLeft } from '@tabler/icons
 import Link from "next/link";
 import { useRouter } from 'next/router';
 
-const Header = ({ title = '' }) => {
+const Header = ({ title = '', backto = '' }) => {
   const router = useRouter();
 
   // Handle the back button click
   const handleBackButtonClick = () => {
     // Navigate back to the previous page
-    router.back();
+    if (backto) {
+      router.push(backto);
+    } else {
+
+      router.back();
+    }
   };
 
   const [test, setTest] = useState("");
@@ -34,9 +39,9 @@ const Header = ({ title = '' }) => {
         {title ?
           <div className="flex">
             <div className="flex relative">
-              <button className="p-4 text-sm rounded-full   text-gray-600 " onClick={handleBackButtonClick}><IconArrowLeft /></button>
+              <button className="px-5 py-4 text-sm rounded-full   text-gray-600 " onClick={handleBackButtonClick}><IconArrowLeft /></button>
             </div>
-            <p className="p-4 text-lg font-semibold">{title}</p>
+            <p className="py-4 text-lg font-semibold">{title}</p>
           </div>
           :
           <div className="flex relative w-full mx-2">

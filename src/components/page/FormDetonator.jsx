@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { StepOne, StepTwo, StepThree } from '@/components/FormCampaing/StepDetonator';
+import Header from '../Header';
 
 const FormDetonator = () => {
     const router = useRouter();
@@ -43,12 +44,17 @@ const FormDetonator = () => {
     // console.log('Combined Data:', registrasiDetonator);
 
     return (
-        <div className="container mx-auto mt-24 bg-white h-screen text-primary">
-            {/* ... (your existing code) */}
-            <div className="grid justify-items-center w-full">
-                {stepComponent}
+
+        <main className="my-0 mx-auto min-h-full mobile-w">
+            <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
+                <Header backto="/home" title='Registrasi Detonator' />
+                <div className="grid justify-items-center w-full mt-24">
+                    {stepComponent}
+                </div>
+
             </div>
-        </div>
+
+        </main>
     );
 };
 

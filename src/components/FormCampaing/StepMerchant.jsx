@@ -281,6 +281,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
             DetaiAlamat,
 
         }));
+        console.log('data regis', registrasiMerchant);
 
         try {
             // Ensure the token is valid
@@ -288,6 +289,16 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
             if (!token) {
                 router.push('/login');
                 return;
+            }
+            if (!registrasiMerchant.latitude) {
+                return (Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please select a location',
+                    showConfirmButton: false,
+                    timer: 2000,
+                }));
+
             }
 
             const formData = new FormData();
@@ -325,9 +336,6 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
             }, 2000);
 
 
-            // Handle the response accordingly, e.g., redirect to the next step
-            // router.push('/registrasi/detonator?step=3');
-
         } catch (error) {
             if (error.response && error.response.status === 500) {
                 // Handle 500 Internal Server Error
@@ -354,8 +362,8 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
                 // Handle error appropriately, e.g., show a user-friendly message
             }
         }
-        console.log('data regis', registrasiMerchant);
-        // router.push('/registrasi/merchant?step=3');
+
+        router.push('/registrasi/merchant?step=3');
     };
 
     return (

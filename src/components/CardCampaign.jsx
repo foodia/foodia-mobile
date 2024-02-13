@@ -3,7 +3,7 @@ import { IconClock } from "@tabler/icons-react";
 import Link from "next/link";
 
 const CardCampaign = (props) => {
-    const { idKey, to, img, title, description, date, status, address } = props;
+    const { idKey, to, img, title, description, date, status, address, donation_target, donation_collected = 0 } = props;
     const calculateRemainingTime = (eventDate) => {
         const currentDate = new Date();
         const eventDateObject = new Date(eventDate);
@@ -16,6 +16,16 @@ const CardCampaign = (props) => {
     };
     const remainingDays = calculateRemainingTime(date);
     // console.log('remainingDays', remainingDays);
+
+    const formatUang = (nominal) => {
+        const formatter = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+        });
+
+        return formatter.format(nominal);
+    };
 
     return (
         <div className="flex justify-center mt-2.5 w-full mb-2 px-6" key={idKey}>
@@ -48,7 +58,7 @@ const CardCampaign = (props) => {
 
                 <div className="flex justify-between px-1.5 ">
 
-                    <p className="font-sans text-xs">Terkumpul:<span className="font-sans text-xs text-blue-500 ml-2">Rp 0.00</span></p>
+                    <p className="font-sans text-xs">Target:<span className="font-sans text-xs text-blue-500 ml-2">{formatUang(donation_target)}</span></p>
                     <div className="flex items-center text-blue-500 font-sans text-xs">
                         <IconClock size={11} />
                         <p className="font-sans ml-1">{remainingDays} Hari</p>
@@ -56,7 +66,7 @@ const CardCampaign = (props) => {
                 </div>
                 <div className="flex justify-between px-1.5 ">
 
-                    <p className="font-sans text-xs">Terkumpul:<span className="font-sans text-xs text-blue-500 ml-2">Rp 0.00</span></p>
+                    <p className="font-sans text-xs">Terkumpul:<span className="font-sans text-xs text-blue-500 ml-2">{formatUang(donation_collected)}</span></p>
 
                 </div>
                 <div className="flex justify-between px-1.5 items-center">

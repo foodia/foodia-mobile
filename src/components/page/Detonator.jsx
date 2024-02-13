@@ -45,7 +45,17 @@ const Detonator = () => {
                 });
                 const cekData = response.data.body;
                 if (cekData.detonator.detonator_id == 0) {
-                    console.log('/register/detonator');
+                    // console.log('/register/detonator');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Akun Belum Terdaftar sebagai Detonator',
+                        text: ` Mohon untuk registrasi sebagai Detonator.`,
+                        showConfirmButton: false,
+                        timer: 2000,
+                    });
+                    setTimeout(() => {
+                        router.push('/registrasi/detonator?step=1');
+                    }, 2000);
                 } else {
                     if (cekData.detonator.status == 'waiting') {
                         sessionStorage.setItem('id', cekData.detonator.detonator_id);

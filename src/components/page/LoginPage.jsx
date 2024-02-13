@@ -102,12 +102,12 @@ const LoginPage = () => {
 
 
     return (
-        <div className=" bg-white  text-primary h-screen mt-12">
+        <div className=" container mx-auto mt-24 bg-white h-screen">
             <div className="flex justify-center ">
-                <h1 className='text-4xl  font-bold'>FOODIA</h1>
+                <h1 className='text-4xl text-primary font-bold'>FOODIA</h1>
             </div>
             <div className="flex justify-center ">
-                <h1 className='text-xl font-bold'>Silahkan Login</h1>
+                <h1 className='text-xl text-primary font-bold'>Silahkan Login</h1>
             </div>
 
             <form className='p-2 mt-20' >
@@ -138,12 +138,12 @@ const LoginPage = () => {
             </div>
 
             <div className="flex items-center mb-4 px-6">
-                <button className="bg-blue-500 text-white px-4 py-2 rounded-full mr-2 w-40 h-16 flex flex-col items-center justify-center">
-                    <IconBrandGoogle />
+                <button className="bg-gray-100 shadow-md text-white px-4 py-2 rounded-full mr-2 w-40 h-16 flex flex-col items-center justify-center">
+                    <img src='icon/google.png' className=' w-6 ' />
                 </button>
 
-                <button className="bg-indigo-600 text-white px-4 py-2 rounded-full w-40 h-16 flex flex-col items-center justify-center">
-                    <IconBrandFacebook />
+                <button className="bg-gray-100 shadow-md text-white px-4 py-2 rounded-full w-40 h-16 flex flex-col items-center justify-center">
+                    <img src='icon/facebook.png' className=' w-6 ' />
                 </button>
             </div>
             <p className="text-gray-600 text-center text-xs font-medium">Don’t have an account? <Link href="/registrasi" className="font-medium text-xs text-blue-500">Register</Link></p>
