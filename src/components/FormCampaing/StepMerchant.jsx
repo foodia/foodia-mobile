@@ -290,7 +290,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
                 router.push('/login');
                 return;
             }
-            if (!registrasiMerchant.latitude) {
+            if (!coordinates.lng) {
                 return (Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -306,13 +306,13 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
             formData.append('ktp_number', registrasiMerchant.ktp_number);
             formData.append('self_photo', registrasiMerchant.self_photo);
             formData.append('ktp_photo', registrasiMerchant.ktp_photo);
-            formData.append('province', registrasiMerchant.province);
-            formData.append('city', registrasiMerchant.city);
-            formData.append('sub_district', registrasiMerchant.sub_district);
-            formData.append('postal_code', registrasiMerchant.postal_code);
-            formData.append('address', registrasiMerchant.address);
-            formData.append('latitude', registrasiMerchant.latitude);
-            formData.append('longitude', registrasiMerchant.longitude);
+            formData.append('province', province);
+            formData.append('city', city);
+            formData.append('sub_district', sub_district);
+            formData.append('postal_code', postal_code);
+            formData.append('address', address);
+            formData.append('latitude', coordinates.lat);
+            formData.append('longitude', coordinates.lng);
             formData.append('no_link_aja', registrasiMerchant.no_link_aja);
 
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/registration`, formData, {
