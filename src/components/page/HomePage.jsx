@@ -50,7 +50,7 @@ const HomePage = () => {
 
     return (
         <>
-            <div className="container mx-auto mt-24 bg-white h-screen">
+            <div className="container mx-auto mt-4 bg-white h-screen">
                 <div className="flex items-center justify-center px-6 my-2">
                     <div className={`bg-green-50 rounded-lg ${styles.listMenu}`}>
                         <div className="flex justify-between p-2.5">

@@ -116,7 +116,7 @@ const DetailCamp = ({ data }) => {
             'detail': {
                 'campaign_id': idCamp,
                 'description': 'Donation',
-                'donation_type': 'agnostic',
+                'donation_type': 'campaign',
             }
         }
         setDonation(data);

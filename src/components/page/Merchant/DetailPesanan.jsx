@@ -101,7 +101,7 @@ const DetailPesanan = () => {
                 const response = await axios.put(
                     `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
                     {
-                        order_status: 'canceled', // Add the data object here
+                        order_status: 'tolak',
                     },
                     {
                         headers: {

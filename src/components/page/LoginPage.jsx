@@ -100,6 +100,12 @@ const LoginPage = () => {
         }
     };
 
+    useEffect(() => {
+        if (loading) {
+            Swal.showLoading()
+        }
+    }, [loading]);
+
 
     return (
         <div className=" container mx-auto mt-24 bg-white h-screen">
@@ -131,13 +137,13 @@ const LoginPage = () => {
                 </div> */}
             </form>
             {loading && <div>Loading...</div>}
-            <div className="flex items-center mb-4 px-6">
+            {/* <div className="flex items-center mb-4 px-6">
                 <div className="border-t border-gray-500 flex-grow"></div>
                 <div className="mx-4 text-gray-500">OR</div>
                 <div className="border-t border-gray-500 flex-grow"></div>
-            </div>
+            </div> */}
 
-            <div className="flex items-center mb-4 px-6">
+            {/* <div className="flex items-center mb-4 px-6">
                 <button className="bg-gray-100 shadow-md text-white px-4 py-2 rounded-full mr-2 w-40 h-16 flex flex-col items-center justify-center">
                     <img src='icon/google.png' className=' w-6 ' />
                 </button>
@@ -145,7 +151,7 @@ const LoginPage = () => {
                 <button className="bg-gray-100 shadow-md text-white px-4 py-2 rounded-full w-40 h-16 flex flex-col items-center justify-center">
                     <img src='icon/facebook.png' className=' w-6 ' />
                 </button>
-            </div>
+            </div> */}
             <p className="text-gray-600 text-center text-xs font-medium">Don’t have an account? <Link href="/registrasi" className="font-medium text-xs text-blue-500">Register</Link></p>
 
 
