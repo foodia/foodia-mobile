@@ -100,14 +100,14 @@ const PesananMerchan = () => {
         <>
 
             <div className="container mx-auto mt-24 bg-white h-screen">
-                <div className="place-content-center">
+                <div className="flex items-center justify-center px-6 my-2">
                     <div className={`bg-green-50 rounded-lg ${styles.listMenu}`}>
-                        <div className="flex flex-nowrap p-4">
-                            <Link href="/merchant" className="grid justify-items-center mr-2">
+                        <div className="flex flex-nowrap p-2.5">
+                            <Link href="/merchant" className="grid justify-items-center w-24">
                                 <div className={`${styles.iconMenu}`}><IconCirclePlus /></div>
                                 <p className="text-base font-normal text-gray-500 dark:text-gray-400">List Menu</p>
                             </Link>
-                            <Link href="/merchant/pesanan" className="grid justify-items-center ">
+                            <Link href="/merchant/pesanan" className="grid justify-items-center w-24 ">
                                 <div className={`${styles.iconMenu}`}><Image src={'/icon/pesanan.png'} alt="Girl in a jacket" width={30} height={30} /></div>
                                 <p className="text-base font-normal text-gray-500 dark:text-gray-400">Pesanan</p>
                             </Link>
@@ -182,7 +182,7 @@ const PesananMerchan = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className={`${styles.card}`}>
+                    <div className={`${styles.card} `} >
                         {filteredData.map((data) => (
                             <CardPesanan
                                 key={data.id}
@@ -199,6 +199,7 @@ const PesananMerchan = () => {
 
                             />
                         ))}
+
                     </div>
                 )}
 

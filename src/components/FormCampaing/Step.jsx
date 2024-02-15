@@ -221,7 +221,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
                         >
                             <option >---Pilih Type Event---</option>
                             <option value="one_time">One Time</option>
-                            <option value="reguler">Reguler</option>
+                            <option value="regular">Regular</option>
                         </select>
                     </label>
                 </div>
@@ -675,6 +675,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
 
     const handleLink = () => {
         router.push('/creatcampaign?step=5');
+        console.log('data card', cart);
     };
 
     // localStorage.removeItem('formData');
@@ -737,12 +738,12 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
                                             <div className="flex justify-between w-full">
                                                 <div className="flex">
 
-                                                    <img className="w-10 h-10 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600" src={item.imageUrl} alt="" />
+                                                    <img className="w-10 h-10 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600" src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0 ? item.images[0].image_url : ''}`} alt="" />
 
 
                                                     <div className="text-left place-items-start">
-                                                        <div className="mb-1 text-primary">{item.name}</div>
-                                                        <div className="mb-1 font-sans text-xs">{item.id} 1RB terjual | Disukai:20|Max qty:{item.capacity}</div>
+                                                        <div className="mb-1 text-primary">{item.name} {item.imageUrl} p</div>
+                                                        <div className="mb-1 font-sans text-xs">{item.id} terjual | Disukai:20|Max qty:{item.capacity}</div>
                                                         <div className="mb-1 font-sans text-xs">{item.description}</div>
                                                         <p className="text-gray-600 mt-2">{`Harga: Rp${(item.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p>
                                                         {/* <p className="text-gray-600 mt-2">{`Total: Rp${(item.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}

@@ -1,19 +1,14 @@
 import styles from "@/styles/Home.module.css";
-import { IconCircleCheck, IconClockFilled, IconPlaystationX, } from "@tabler/icons-react";
+import { IconCircleCheck, IconClockFilled, IconHourglassEmpty, IconPackageExport, IconPlaystationX, } from "@tabler/icons-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
-
-// key = { item.id }
-// data = { item }
-// to = {`food/${item.id}`}
-// img = "/img/card/rectangle_70.png"
-// title = { item.merchant_product.name }
-// price = { item.merchant_product.price }
-// name = "Warung Makan Amar"
-// qty = { item.qty }
 
 const CardRepordFood = (props) => {
-    const { to, img, title, date, approval_status = '', price, qty = 0, nameMerchant = '', order_status = '' } = props;
+    const { to = '#', img, title, date, approval_status = '', price, qty = 0, nameMerchant = '', order_status = '' } = props;
+    const role = sessionStorage.getItem('role');
+    const router = useRouter();
 
     const totalPrice = qty * price;
     const formatPrice = (price) => {
@@ -27,52 +22,67 @@ const CardRepordFood = (props) => {
     };
     const getorder_status = () => {
         switch (order_status) {
-            case 'incoming':
-                return <IconClockFilled size={22} />;
-            case 'approved':
-                return <IconCircleCheck size={22} />;
+            case 'review':
+                return <IconHourglassEmpty size={22} />;
+            case 'diproses':
+                return <IconPackageExport size={22} />;
             case 'rejected':
                 return <IconPlaystationX size={22} />;
             default:
                 return null;
         }
     };
+    const handleButoon = () => {
+        if (role === 'detonator') {
+            router.push(`${to}`);
+        } else {
+            return
+        }
+    }
 
     return (
-        <div className="flex justify-center mt-1 w-full mb-2">
+        <div className="flex justify-center mt-2 w-full mb-2">
 
-            <Link href={to} className={`bg-white hover:bg-gray-100 text-black rounded-lg inline-flex items-center ${styles.item_card}`}>
+            <div onClick={handleButoon} className={`bg-white hover:bg-gray-100 text-black rounded-lg inline-flex items-center shadow-lg w-80 p-1`}>
                 <div className="flex justify-between w-80">
                     <div className="flex p-1">
                         <img
                             src={img}
-                            className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
+                            className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 w-14 h-14 object-cover rounded-full`}
                             alt=""
                         />
-                        <div className={`text-left ml-1 ${styles.text_card}`}>
+                        <div className={`text-left ml-1 ml-2`}>
                             <div className="flex justify-between">
-                                <p className="mb-1 text-primary font-sans font-semibold text-base truncate">{title}</p>
-                                <div className={`flex justify-center items-center rounded-full  ${order_status === 'incoming' ? 'bg-blue-600' : order_status === 'approved' ? 'bg-green-500' : order_status === 'rejected' ? 'bg-red-500' : ''}`}>
+                                <p className=" text-primary font-sans font-bold text-xs truncate">{title}</p>
+                                {/* <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'bg-blue-600' : order_status === 'approved' ? 'bg-green-500' : order_status === 'rejected' ? 'bg-red-500' : ''}`}>
                                     <p className="text-white">{getorder_status()}</p>
-                                    <p className="text-white">{`${order_status === 'incoming' ? '' : order_status === 'approved' ? 'bg-green-500' : order_status === 'rejected' ? 'bg-red-500' : ''}`}</p>
-                                </div>
+                                    <p className="text-white">{`${order_status === 'review' ? '' : order_status === 'approved' ? 'bg-green-500' : order_status === 'rejected' ? 'bg-red-500' : ''}`}</p>
+                                </div> */}
                             </div>
-                            <p className="mb-1 text-black font-sans font-semibold text-sm truncate">{nameMerchant}</p>
+                            <p className="mb-1 text-black font-sans font-bold text-xs truncate">{nameMerchant}</p>
                             <div className="flex">
-                                <p className="font-sans text-xs text-gray-500 mr-2">{`qty :${qty}`}</p>
+                                <p className="font-sans text-xs  mr-2">{`jumlah :${qty}`}</p>
                                 <div
-                                    className={`font-sans text-xs text-white rounded-lg w-14 flex justify-center items-center ${approval_status == 'waiting' ? 'bg-blue-600' : approval_status == 'approved' ? 'bg-green-500' : approval_status == 'Rejected' ? 'bg-red-500' : ''
+                                    className={`font-sans text-xs  rounded-lg w-14 flex justify-center items-center ${approval_status === 'waiting' ? 'bg-blue-600' : approval_status == 'approved' ? 'bg-green-500' : approval_status == 'Rejected' ? 'bg-red-500' : ''
                                         }`}
                                 >
-                                    <p className="">{approval_status}</p>
+                                    <p className="text-black">{approval_status}</p>
                                 </div>
                             </div>
                             {/* <p className="mb-1 text-black font-sans font-semibold text-sm truncate">{formatPrice(totalPrice)}</p> */}
                         </div>
                     </div>
-                    <div className="grid place-items-center"></div>
+                    <div className="grid place-items-center mr-2">
+                        <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'text-blue-600' : order_status === 'diproses' ? 'text-green-500' : order_status === 'rejected' ? 'bg-red-500' : ''}`}>
+                            <p className="mr-1">{getorder_status()}</p>
+                            <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'diproses' ? 'Makanan Di Proses' : order_status === 'rejected' ? 'bg-red-500' : ''}`}</p>
+                            {/* <p className="w-16">tes deskripsi ini panjang</p> */}
+                        </div>
+
+
+                    </div>
                 </div>
-            </Link>
+            </div>
 
         </div>
     );

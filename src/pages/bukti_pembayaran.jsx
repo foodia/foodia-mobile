@@ -3,10 +3,10 @@ import { useAppState } from "@/components/page/UserContext";
 import styles from "@/styles/Home.module.css"
 import { IconBuildingStore, IconCheck } from "@tabler/icons-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { Link } from "tabler-icons-react";
 
 
 const BuktiPembayaran = () => {
@@ -20,7 +20,7 @@ const BuktiPembayaran = () => {
         <main className="">
             <div className="container my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
                 <div className="container mx-auto mt-24  h-screen p-4">
-                    <div className="p-4  w-full    bg-white shadow-[rgba(0,0,15,0.5)_0px_0px_10px_2px] rounded-lg">
+                    <div className="p-4  w-full mb-4   bg-white shadow-[rgba(0,0,15,0.5)_0px_0px_10px_2px] rounded-lg">
                         <div className="flex justify-center items-center mb-4">
                             <div className=" h-16 w-16 rounded-full bg-primary grid justify-items-center items-center text-white">
                                 <IconCheck size={30} />
@@ -66,6 +66,12 @@ const BuktiPembayaran = () => {
                         </div>
 
                     </div>
+
+                    <Link href="/home" className="flex justify-center items-center mb-2 bg-primary p-4 rounded-lg hover:shadow-[rgba(0,0,15,0.5)_0px_0px_10px_2px]">
+                        <p className="font-bold">Selesai</p>
+                    </Link>
+
+
 
 
 

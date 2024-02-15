@@ -104,35 +104,22 @@ const Detonator = () => {
     }, [router]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const id = sessionStorage.getItem('id');
-                const token = sessionStorage.getItem('token');
-
-                if (!id || !token) {
-                    throw new Error('Missing required session data');
-                }
-
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&page=${page}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
-
-                setDataApi(response.data.body);
-                setFilteredData(response.data.body);
+        const token = sessionStorage.getItem('token');
+        const id = sessionStorage.getItem('id');
+        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&page=${page}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+            .then((res) => {
+                setDataApi(res.data.body);
+                setFilteredData(res.data.body);
                 setLoading(false);
-
-                if (response.data.body.length === 0) {
-                    setHasMore(false);
-                }
-            } catch (error) {
-                handleRequestError(error);
-            }
-        };
-
-        fetchData();
-    }, [dataApi]);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, []);
 
     const handleFilterChange = async (status = 'NewCamp') => {
         setSelectedStatus(status);

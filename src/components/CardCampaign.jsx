@@ -26,6 +26,7 @@ const CardCampaign = (props) => {
 
         return formatter.format(nominal);
     };
+    const percentageCollected = (donation_collected / donation_target) * 100;
 
     return (
         <div className="flex justify-center mt-2.5 w-full mb-2 px-6" key={idKey}>
@@ -58,7 +59,7 @@ const CardCampaign = (props) => {
 
                 <div className="flex justify-between px-1.5 ">
 
-                    <p className="font-sans text-xs">Target:<span className="font-sans text-xs text-blue-500 ml-2">{formatUang(donation_target)}</span></p>
+                    <p className="font-sans text-xs">Target:<span className="font-sans text-xs text-blue-500 ml-2">{formatUang(donation_target ? donation_target : 0)}</span></p>
                     <div className="flex items-center text-blue-500 font-sans text-xs">
                         <IconClock size={11} />
                         <p className="font-sans ml-1">{remainingDays} Hari</p>
@@ -66,14 +67,14 @@ const CardCampaign = (props) => {
                 </div>
                 <div className="flex justify-between px-1.5 ">
 
-                    <p className="font-sans text-xs">Terkumpul:<span className="font-sans text-xs text-blue-500 ml-2">{formatUang(donation_collected)}</span></p>
+                    <p className="font-sans text-xs">Terkumpul:<span className="font-sans text-xs text-blue-500 ml-2">{formatUang(donation_collected ? donation_collected : 0)}</span></p>
 
                 </div>
                 <div className="flex justify-between px-1.5 items-center">
                     <div className="w-full rounded-full h-2.5 bg-gray-400">
-                        <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: '45%' }}></div>
+                        <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${percentageCollected}%` }}></div>
                     </div>
-                    <p className="font-sans ml-1 text-xs">20%</p>
+                    <p className="font-sans ml-1 text-xs">{percentageCollected.toFixed()}%</p>
                 </div>
 
             </Link>

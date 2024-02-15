@@ -7,6 +7,7 @@ import { IconCaretDown } from "@tabler/icons-react";
 import { IconCaretUp } from "@tabler/icons-react";
 import Swal from "sweetalert2";
 import { useAppState } from "../UserContext";
+import Header from "@/components/Header";
 
 
 const DetailPesanan = () => {
@@ -192,8 +193,8 @@ const DetailPesanan = () => {
 
     return (
         <>
-
-            <div className="container mx-auto mt-24 bg-white h-full">
+            <Header title="Detail Pesanan" />
+            <div className="container mx-auto mt-20 bg-white h-full">
                 <div className="place-content-center p-2">
 
                     <div className="bg-gray-200 p-2 rounded-md h-20">
@@ -201,7 +202,15 @@ const DetailPesanan = () => {
 
                         <div className="flex justify-between ">
                             <div className="flex grid-cols-2 gap-2 content-center ">
-                                <div className="rounded-md bg-purple-50 h-14 w-14"><img src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataApi?.merchant_product.images[0].image_url}`} alt="" className="object-cover" /> </div>
+                                <div className="rounded-md bg-purple-50 h-14 w-14">
+                                    {dataApi?.merchant_product?.images?.length > 0 && (
+                                        <img
+                                            src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataApi.merchant_product.images[0].image_url}`}
+                                            alt="Product Image"
+                                            className="object-cover h-full w-full rounded-md"
+                                        />
+                                    )}
+                                </div>
                                 <p className="mt-4">{`${dataApi?.order_status === 'review' ? 'Menunggu konfirmasi' : dataApi?.order_status === 'diproses' ? 'Pesanan Sedang Diproses' : dataApi?.order_status === 'tolak' ? 'Pesana Ditolak' : ''}`} </p>
                             </div>
                             {/* <p className="text-right text-sm">{dataApi?.campaign.event_name}</p> */}

@@ -163,7 +163,7 @@ function StepOne({ Menu, setMenu }) {
 
     return (
         <>
-            <ol className="flex justify-center mb-4 sm:mb-5 w-full p-2">
+            {/* <ol className="flex justify-center mb-4 sm:mb-5 w-full p-2">
                 <RoutStep
                     liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block  after:border-b after:border-4 after:border-primary`}
                     divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-primary`}
@@ -182,7 +182,7 @@ function StepOne({ Menu, setMenu }) {
                     iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
                     iconName={"Password"}
                 />
-            </ol>
+            </ol> */}
             <h1>Campain: 1</h1>
             <form className='p-2 mt-10 w-full' onSubmit={handleSubmit}>
                 <div className="mb-2">

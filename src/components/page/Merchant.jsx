@@ -153,14 +153,15 @@ const Merchant = () => {
     return (
         <>
             <div className="container mx-auto mt-24 bg-white h-screen">
-                <div className="place-content-center">
+
+                <div className="flex items-center justify-center px-6 my-2">
                     <div className={`bg-green-50 rounded-lg ${styles.listMenu}`}>
-                        <div className="flex flex-nowrap p-4">
-                            <Link href="/merchant" className="grid justify-items-center mr-2">
+                        <div className="flex flex-nowrap p-2.5">
+                            <Link href="/merchant" className="grid justify-items-center w-24">
                                 <div className={`${styles.iconMenu}`}><IconCirclePlus /></div>
                                 <p className="text-base font-normal text-gray-500 dark:text-gray-400">List Menu</p>
                             </Link>
-                            <Link href="/merchant/pesanan" className="grid justify-items-center ">
+                            <Link href="/merchant/pesanan" className="grid justify-items-center w-24 ">
                                 <div className={`${styles.iconMenu}`}><Image src={'/icon/pesanan.png'} alt="Girl in a jacket" width={30} height={30} /></div>
                                 <p className="text-base font-normal text-gray-500 dark:text-gray-400">Pesanan</p>
                             </Link>
@@ -202,21 +203,21 @@ const Merchant = () => {
                 <div className="grid flex justify-end py-2 px-2">
                     <Link href="/createmenu?step=1" className="bg-primary text-white rounded-lg w-28 flex h-10 items-center "><IconCirclePlus />Add Menu</Link>
                 </div>
-                <div className="place-content-center">
+                <div className="place-content-center px-6 my-2 mt-4">
                     <div className="flex my-2 p-2">
                         <div
                             className={`mr-2 grid justify-items-center ${selectedStatus === 'approved' ? 'text-blue-500 ' : ''}`}
                             onClick={() => handleFilterChange('approved')}
                         >
                             <span>Menu Approved</span>
-                            <div className={`w-24 h-0.5 ${selectedStatus === 'approved' ? 'bg-blue-500 ' : 'bg-black'}`}></div>
+                            <div className={`w-32 h-0.5 ${selectedStatus === 'approved' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>
                         </div>
                         <div
                             className={`mr-2 grid justify-items-center ${selectedStatus === 'listMenu' ? 'text-blue-500' : ''}`}
                             onClick={() => handleFilterChange('listMenu')}
                         >
                             <span>List Menu</span>
-                            <div className={`w-24 h-0.5 ${selectedStatus === 'listMenu' ? 'bg-blue-500 ' : 'bg-black'}`}></div>
+                            <div className={`w-32 h-0.5 ${selectedStatus === 'listMenu' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>
                         </div>
 
                     </div>
