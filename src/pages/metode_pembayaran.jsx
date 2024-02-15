@@ -1,3 +1,4 @@
+import Header from "@/components/Header";
 import SlideCard from "@/components/SlideCard";
 import { useAppState } from "@/components/page/UserContext";
 import styles from "@/styles/Home.module.css"
@@ -112,6 +113,7 @@ const MetodePembayaran = () => {
 
         <main className="">
             <div className="container my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
+                <Header title="Metode pembayaran" />
                 <div className="container mx-auto mt-24  h-screen">
                     <div className="px-4">
                         <label for="default-radio-1" className="my-2 flex items-center justify-between border-gray-500 bottom-1 border rounded-lg h-14 px-4">

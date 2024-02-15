@@ -267,7 +267,7 @@ const DetailCamp = ({ data }) => {
                                     </div>
                                     <div className="text-left place-items-start">
                                         <div className="text-primary text-sm font-bold"> {item.transaction.sender_name}</div>
-                                        <div className=" font-sans text-xs text-gray-500">Berdonasi Sebesar: <span className="font-bold">{formatToRupiah(item.amount)}</span></div>
+                                        <div className="font-sans text-xs text-gray-500">Berdonasi Sebesar: <span className="font-bold">{formatToRupiah(item.amount)}</span></div>
                                         <div className="mt-1 font-sans text-xs text-gray-500"> {calculateTimeAgo(item.created_at)}</div>
                                     </div>
                                 </div>
