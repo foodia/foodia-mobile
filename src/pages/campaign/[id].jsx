@@ -29,6 +29,7 @@ const Campaign = () => {
         }
     }, [id]);
 
+
     return (
         <main className="my-0 mx-auto min-h-full mobile-w">
             <Header title="Informasi" />

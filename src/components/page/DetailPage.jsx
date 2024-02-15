@@ -2,7 +2,7 @@ import styles from "@/styles/Campaign.module.css"
 import { IconClock, IconCalendarEvent, IconCreditCard, IconClipboardCheck, IconSoup, IconArrowNarrowRight, IconBellRingingFilled, IconCaretDown, IconCaretUp, IconMapPin } from '@tabler/icons-react';
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Swal from "sweetalert2";
 import { useAppState } from "./UserContext";
 const DetailCamp = ({ data }) => {
@@ -123,7 +123,44 @@ const DetailCamp = ({ data }) => {
         router.push('/metode_pembayaran');
     };
 
-    console.log('data', data);
+    useEffect(() => {
+        console.log('data', data);
+        console.log('donatur data', data?.campaign_donation);
+    }, [data]);
+
+    const cart = data?.campaign_donation || [];
+    const [showAll, setShowAll] = useState(false);
+
+    // Mengurutkan item dalam keranjang belanja
+    const sortedCart = [...cart].sort();
+
+    const calculateTimeAgo = (createdAt) => {
+        const now = new Date();
+        const createdAtDate = new Date(createdAt);
+        const difference = now - createdAtDate;
+
+        const seconds = Math.floor(difference / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        if (days > 0) {
+            return `${days} hari yang lalu`;
+        } else if (hours > 0) {
+            return `${hours} jam yang lalu`;
+        } else if (minutes > 0) {
+            return `${minutes} menit yang lalu`;
+        } else {
+            return `${seconds} detik yang lalu`;
+        }
+    };
+
+    const formatToRupiah = (amount) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR'
+        }).format(amount);
+    };
 
     const remainingDays = calculateRemainingTime(data.event_date);
     return (
@@ -207,7 +244,60 @@ const DetailCamp = ({ data }) => {
                     </div>
                 </div>
 
-                {/* <CardCampaign /> */}
+                <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
+                <div className="w-full rounded-lg items-center px-4 py-2.5 mt-4">
+                    <div className="flex ">
+                        <p className="text-base font-bold text-black">Donasi Terkumpul</p>
+                        <div className="bg-green-300 px-1 rounded-lg ml-2 flex items-center">
+                            <p className="text-xs font-bold text-primary">
+                                {cart.length}
+                            </p>
+                        </div>
+                    </div>
+                    {/* Looping untuk menampilkan item yang dimuat dalam keranjang belanja */}
+                    {(showAll ? cart : sortedCart.slice(0, 4)).map((item, index) => (
+
+
+                        <div key={index} className="w-full h-16 bg-white text-black rounded-lg inline-flex items-center m-2 shadow-md ">
+                            <div className="flex justify-between w-full hover:bg-gray-100 p-2 rounded-lg">
+                                <div className="flex">
+                                    {/* <IconSoup className=" w-7 h-7" /> */}
+                                    <div className="w-12 h-12 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
+                                        <img src="/icon/user.png" alt="" className="w-8 h-8" />
+                                    </div>
+                                    <div className="text-left place-items-start">
+                                        <div className="text-primary text-sm font-bold"> {item.transaction.sender_name}</div>
+                                        <div className=" font-sans text-xs text-gray-500">Berdonasi Sebesar: <span className="font-bold">{formatToRupiah(item.amount)}</span></div>
+                                        <div className="mt-1 font-sans text-xs text-gray-500"> {calculateTimeAgo(item.created_at)}</div>
+                                    </div>
+                                </div>
+                                {/* <div className="grid place-items-center">
+                                        <IconArrowNarrowRight className=" grid grid-cols-3 gap-4 place-items-end text-gray-500" />
+                                    </div> */}
+                            </div>
+                        </div>
+
+
+                    ))}
+                    <div className="block mt-1 p-2 ">
+
+                        <div className="bg-white hover:bg-gray-100 w-full grid place-content-center rounded-sm text-primary text-xs mt-2  p-2 rounded-md">
+                            {/* Tampilkan tombol "Show All" jika belum menampilkan semua item */}
+                            {!showAll && (
+                                <button onClick={() => setShowAll(true)}><IconCaretDown size={20} /></button>
+                            )}
+                            {/* Tampilkan tombol "Sort" jika sudah menampilkan semua item */}
+                            {showAll && (
+                                <button onClick={() => setShowAll(false)}><IconCaretUp size={20} /></button>
+                            )}
+                        </div>
+                    </div>
+                    {/* <div className="bg-white hover:bg-gray-100 w-full grid place-content-center rounded-sm text-primary text-xs mt-2">
+                        <button className="flex" onClick={toggleReadMore}>
+                            Selengkapnya {showFullText ? <IconCaretUp size={20} /> : <IconCaretDown size={20} />}
+                        </button>
+                    </div> */}
+                </div>
 
             </div>
 

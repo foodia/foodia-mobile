@@ -101,7 +101,7 @@ const Detonator = () => {
         };
 
         authenticateUser();
-    }, [router]);
+    }, []);
 
     useEffect(() => {
         const token = sessionStorage.getItem('token');
@@ -258,6 +258,8 @@ const Detonator = () => {
                                     date={dataFilter.event_date}
                                     status={dataFilter.status}
                                     address={dataFilter.address}
+                                    donation_target={dataFilter.donation_target}
+                                    donation_collected={dataFilter.donation_collected}
                                 />
                             );
                         })}
