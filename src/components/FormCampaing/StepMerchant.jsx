@@ -212,6 +212,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
     const [postal_code, setPostalCode] = useState(registrasiMerchant?.postalCode ?? '');
     const [coordinates, setCoordinates] = useState(registrasiMerchant?.coordinates ?? '');
     const [DetaiAlamat, setDetaiAlamat] = useState(registrasiMerchant?.DetaiAlamat ?? '');
+    const [loading, setLoading] = useState(false);
 
     // const [Jalan, setJalan] = useState(registrasiMerchant?.Jalan ?? '');// menggunakan respon address
 
@@ -268,6 +269,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
             window.alert('All fields are required');
             return;
         }
+        setLoading(true);
 
         setRegistrasiMerchant((prevData) => ({
             ...prevData,
@@ -333,6 +335,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
             });
             setTimeout(() => {
                 router.push('/home');
+                setLoading(false);
             }, 2000);
 
 
@@ -503,8 +506,9 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 
                 <div className="grid gap-4 content-center">
                     <button
+                        disabled={loading ? true : false}
                         type="submit"
-                        className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                        className={`text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center ${loading ? 'disabled:opacity-50 disabled:pointer-events-none' : ''}`}
                     >
                         Submit
                     </button>
