@@ -119,11 +119,11 @@ const LoginPage = () => {
             <form className='p-2 mt-20' >
                 <div className="px-4">
                     <label htmlFor="email" className="block  text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-                    <input onChange={(e) => setEmail(e.target.value)} type="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4 " placeholder="email" required />
+                    <input onChange={(e) => setEmail(e.target.value)} type="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4 " placeholder="Masukkan kata Email" required />
                 </div>
                 <div className="px-4">
                     <label htmlFor="password" className="block  text-sm font-medium text-gray-900 dark:text-white">Your password</label>
-                    <input onChange={(e) => setPassword(e.target.value)} type="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4 " required />
+                    <input onChange={(e) => setPassword(e.target.value)} type="password" id="password" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4 " placeholder="Masukkan kata sandi" required />
                 </div>
                 <div className="flex items-start mb-4">
 
