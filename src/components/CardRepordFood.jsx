@@ -63,7 +63,7 @@ const CardRepordFood = (props) => {
                             <div className="flex">
                                 <p className="font-sans text-xs  mr-2">{`jumlah :${qty}`}</p>
                                 <div
-                                    className={`font-sans text-xs  rounded-lg w-14 flex justify-center items-center ${approval_status === 'waiting' ? 'bg-blue-600' : approval_status == 'approved' ? 'bg-green-500' : approval_status == 'Rejected' ? 'bg-red-500' : ''
+                                    className={`font-sans text-xs  rounded-lg w-16 flex justify-center items-center px-2 ${approval_status === 'waiting' ? 'bg-blue-600' : approval_status == 'approved' ? 'bg-green-500' : approval_status == 'Rejected' ? 'bg-red-500' : ''
                                         }`}
                                 >
                                     <p className="text-black">{approval_status}</p>

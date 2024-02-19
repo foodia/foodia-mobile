@@ -1,5 +1,5 @@
 import styles from "@/styles/Home.module.css";
-import { IconCircleCheck, IconClockFilled, IconPlaystationX, } from "@tabler/icons-react";
+import { IconCircleCheck, IconClockFilled, IconEdit, IconPaint, IconPlaystationX, IconTrash, } from "@tabler/icons-react";
 import Link from "next/link";
 
 
@@ -29,11 +29,14 @@ const CardFood = (props) => {
     const getStatusIcon = () => {
         switch (status) {
             case 'waiting':
-                return <IconClockFilled size={22} />;
+                // return <IconClockFilled size={22} />;
+                return 'Reviewed';
             case 'approved':
-                return <IconCircleCheck size={22} />;
+                // return <IconCircleCheck size={22} />;
+                return 'Approved';
             case 'rejected':
-                return <IconPlaystationX size={22} />;
+                // return <IconPlaystationX size={22} />;
+                return 'Rejected';
             default:
                 return null;
         }
@@ -42,7 +45,7 @@ const CardFood = (props) => {
     return (
         <div className="flex justify-center mt-1 w-full mb-2">
 
-            <Link href={to} className={`bg-white hover:bg-gray-100 text-black rounded-lg inline-flex items-center ${styles.item_card}`}>
+            <Link href={to} className={`bg-white hover:bg-gray-100 text-black rounded-lg items-center border shadow-lg w-80 p-1`}>
                 <div className="flex justify-between w-80">
                     <div className="flex p-1">
                         <img
@@ -50,23 +53,30 @@ const CardFood = (props) => {
                             className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
                             alt=""
                         />
-                        <div className={`text-left ml-1 ${styles.text_card}`}>
+                        <div className={`text-left ml-1 w-56`}>
                             <div className="flex justify-between">
                                 <p className="mb-1 text-black font-sans font-semibold text-sm truncate">{title}</p>
-                                <div className={`flex justify-center items-center rounded-full ${status === 'waiting' ? 'bg-blue-600' : status === 'approved' ? 'bg-green-500' : status === 'rejected' ? 'bg-red-500' : ''}`}>
-                                    <p className="text-white">{getStatusIcon()}</p>
+                                <div className={`flex justify-center items-center rounded-full  ${status === 'waiting' ? 'bg-blue-600' : status === 'approved' ? 'bg-green-500' : status === 'rejected' ? 'bg-red-500' : ''}`}>
+                                    <p className="text-white  text-xs px-2">{getStatusIcon()}</p>
                                 </div>
                             </div>
-                            <div className="flex">
-                                <p className="font-sans text-xs text-gray-500 mr-2">{date}</p>
-                                <div
-                                    className={`font-sans text-xs text-white rounded-lg w-14 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'approved' ? 'bg-green-500' : status == 'Rejected' ? 'bg-red-500' : ''
+                            <div className="flex inline-block mt-1 ">
+                                <p className="font-sans text-xs text-gray-500 mr-2 line-clamp-2 ">{description}</p>
+                                {/* <div
+                                    className={`font-sans text-xs text-white rounded-lg w-14 h-10 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'approved' ? 'bg-green-500' : status == 'Rejected' ? 'bg-red-500' : ''
                                         }`}
                                 >
                                     <p className="">{status}</p>
+                                </div> */}
+                            </div>
+                            <div className="flex justify-between mt-1 w-full mb-2">
+
+                                <p className="mb-1 text-black font-sans font-semibold text-sm truncate">{formatPrice(price)}</p>
+                                <div className="flex">
+                                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold p-1 m-1 rounded"><IconEdit /></button>
+                                    <button className="bg-red-500 hover:bg-red-700 text-white font-bold p-1 m-1 rounded"><IconTrash /></button>
                                 </div>
                             </div>
-                            <p className="mb-1 text-black font-sans font-semibold text-sm truncate">{formatPrice(price)}</p>
                         </div>
                     </div>
                     <div className="grid place-items-center"></div>

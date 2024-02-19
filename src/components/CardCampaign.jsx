@@ -12,6 +12,7 @@ const CardCampaign = (props) => {
         // Calculate remaining time in days
         const remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
+
         return remainingDays;
     };
     const remainingDays = calculateRemainingTime(date);
@@ -27,6 +28,13 @@ const CardCampaign = (props) => {
         return formatter.format(nominal);
     };
     const percentageCollected = (donation_collected / donation_target) * 100;
+    const totalCollected = (percentageCollected) => {
+        if (percentageCollected > 100) {
+            return 100
+        } else {
+            return percentageCollected
+        }
+    };
 
     return (
         <div className="flex justify-center mt-2.5 w-full mb-2 px-6" key={idKey}>
@@ -72,9 +80,9 @@ const CardCampaign = (props) => {
                 </div>
                 <div className="flex justify-between px-1.5 items-center">
                     <div className="w-full rounded-full h-2.5 bg-gray-400">
-                        <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: `${percentageCollected}%` }}></div>
+                        <div className="bg-blue-500 h-2.5 rounded-full w-max-" style={{ width: `${totalCollected(percentageCollected)}%`, maxWidth: '100%' }}></div>
                     </div>
-                    <p className="font-sans ml-1 text-xs">{percentageCollected.toFixed()}%</p>
+                    <p className="font-sans ml-1 text-xs">{totalCollected(percentageCollected).toFixed()}%</p>
                 </div>
 
             </Link>
