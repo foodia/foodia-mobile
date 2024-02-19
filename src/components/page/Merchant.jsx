@@ -200,8 +200,8 @@ const Merchant = () => {
                         status="Approved"
                     />
                 </div> */}
-                <div className="grid flex justify-end py-2 px-2">
-                    <Link href="/createmenu?step=1" className="bg-primary text-white rounded-lg w-28 flex h-10 items-center "><IconCirclePlus />Add Menu</Link>
+                <div className="grid flex justify-end py-2 px-5">
+                    <Link href="/createmenu?step=1" className="bg-primary text-white rounded-lg w-28 flex h-10 items-center p-1"><IconCirclePlus />Add Menu</Link>
                 </div>
                 <div className="place-content-center px-6 my-2 mt-4">
                     <div className="flex my-2 p-2">

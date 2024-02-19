@@ -32,6 +32,7 @@ const HomePage = () => {
 
                 const approvedCampaigns = response.data.body.filter(campaign => campaign.status === 'approved');
                 console.log('page home data', approvedCampaigns);
+                setSelectedStatus('OPEN');
                 setDataApi(approvedCampaigns);
                 setDataCamp(approvedCampaigns);
                 setLoading(false);
@@ -46,6 +47,45 @@ const HomePage = () => {
 
         fetchData();
     }, []);
+    const handleFilterChange = (status) => {
+        let filtered = [];
+
+        setLoading(true);
+        if (status === 'OPEN') {
+            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}`)
+                .then((response) => {
+                    setDataApi(response.data.body);
+                    setDataCamp(response.data.body);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                })
+        } else if (status === 'INPROGRESS') {
+            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}`)
+                .then((response) => {
+                    setDataApi(response.data.body);
+                    setDataCamp(response.data.body);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                })
+        } else if (status === 'FINISHED') {
+            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}`)
+                .then((response) => {
+                    setDataApi(response.data.body);
+                    setDataCamp(response.data.body);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                })
+        }
+
+        setSelectedStatus(status);
+        // setFilteredData(filtered);
+    };
 
 
     return (
@@ -106,7 +146,29 @@ const HomePage = () => {
                 </div>
                 <div className="place-content-center px-6 my-2 mt-4 ">
                     <div className={`flex my-2 ${styles.slide_card}`}>
-                        <div className="mr-2 grid justify-items-center"><span className="text-blue-500">Yuk Berdonasi</span>
+                        <div
+                            className={`mr-2 grid justify-items-center ${selectedStatus === 'OPEN' ? 'text-blue-500 ' : ''}`}
+                            onClick={() => handleFilterChange('OPEN')}
+                        >
+                            <span>Yuk Berdonasi</span>
+                            <div className={`w-32 h-0.5 ${selectedStatus === 'OPEN' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>
+                        </div>
+                        <div
+                            className={`mr-2 grid justify-items-center ${selectedStatus === 'INPROGRESS ' ? 'text-blue-500' : ''}`}
+                            onClick={() => handleFilterChange('INPROGRESS')}
+                        >
+                            <span>Campaign Berjalan</span>
+                            <div className={`w-32 h-0.5 ${selectedStatus === 'INPROGRESS' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>
+                        </div>
+                        <div
+                            className={`mr-2 grid justify-items-center ${selectedStatus === 'FINISHED' ? 'text-blue-500' : ''}`}
+                            onClick={() => handleFilterChange('FINISHED')}
+                        >
+                            <span>Campaign Selesai</span>
+                            <div className={`w-32 h-0.5 ${selectedStatus === 'FINISHED' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>
+                        </div>
+
+                        {/* <div className="mr-2 grid justify-items-center"><span className="text-blue-500">Yuk Berdonasi</span>
                             <div className="bg-blue-500 w-32 h-0.5 mt-2"></div>
                         </div>
                         <div className="mr-2 grid justify-items-center"><span className="e25_212">Campaign Berjalan </span>
@@ -114,7 +176,7 @@ const HomePage = () => {
                         </div>
                         <div className="mr-2 grid justify-items-center"><span className="e25_212">Campaign Selesai </span>
                             <div className="bg-black w-32 h-0.5 mt-2"></div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
