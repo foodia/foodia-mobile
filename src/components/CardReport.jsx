@@ -21,14 +21,19 @@ const CardReport = ({ data }) => {
                         alt=""
                     />
                 </div>
-                <div className="">
-                    <h5 className="mb-2 text-sm font-bold tracking-tight text-gray-900">{`Paket ${data.title} Sudah sampai`}</h5>
+                <div className="w-full">
+                    <div className="flex justify-between">
+                        <h5 className="mb-2 text-sm font-bold tracking-tight text-gray-900">{` ${data.title}`}</h5>
+                        <div className="h-4 p-2 bg-primary text-white rounded items-center flex justify-center">
+                            <p className="text-xs">Completed</p>
+                        </div>
+                    </div>
                     <p className="text-xs text-gray-900">{data.created_at}</p>
 
 
 
                     <p className={`font-normal text-gray-700 text-xs  ${showFullText ? '' : styles.report_truncate}`}>
-                        {data.description} Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+                        {data.description}
                     </p>
                     <div className="bg-white hover:bg-gray-100 w-full grid place-content-center rounded-sm text-primary text-xs mt-2">
                         <button className="flex" onClick={toggleReadMore}>

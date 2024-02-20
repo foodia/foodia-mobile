@@ -214,7 +214,7 @@ const DetailPesanan = () => {
                                 <p className="mt-4">{`${dataApi?.order_status === 'review' ? 'Menunggu konfirmasi' : dataApi?.order_status === 'diproses' ? 'Pesanan Sedang Diproses' : dataApi?.order_status === 'tolak' ? 'Pesana Ditolak' : ''}`} </p>
                             </div>
                             {/* <p className="text-right text-sm">{dataApi?.campaign.event_name}</p> */}
-                            <div className={`mt-4 rounded-md h-6 ${dataApi?.order_status === 'review' ? 'text-white bg-blue-500' : dataApi?.order_status === 'diproses' ? 'text-black bg-yellow-500' : dataApi?.order_status === 'tolak' ? 'text-black bg-red-500' : ''}`}>
+                            <div className={`mt-4 rounded-md h-6 px-2 ${dataApi?.order_status === 'review' ? 'text-white bg-blue-500' : dataApi?.order_status === 'diproses' ? 'text-black bg-yellow-500' : dataApi?.order_status === 'tolak' ? 'text-black bg-red-500' : ''}`}>
                                 <p className="">{getStatusIcon()}</p>
                             </div>
                         </div>

@@ -156,7 +156,7 @@ const Merchant = () => {
 
                 <div className="flex items-center justify-center px-6 my-2">
                     <div className={`bg-green-50 rounded-lg ${styles.listMenu}`}>
-                        <div className="flex flex-nowrap p-2.5">
+                        <div className="flex justify-between p-2.5">
                             <Link href="/merchant" className="grid justify-items-center w-24">
                                 <div className={`${styles.iconMenu}`}><IconCirclePlus /></div>
                                 <p className="text-base font-normal text-gray-500 dark:text-gray-400">List Menu</p>
@@ -164,6 +164,10 @@ const Merchant = () => {
                             <Link href="/merchant/pesanan" className="grid justify-items-center w-24 ">
                                 <div className={`${styles.iconMenu}`}><Image src={'/icon/pesanan.png'} alt="Girl in a jacket" width={30} height={30} /></div>
                                 <p className="text-base font-normal text-gray-500 dark:text-gray-400">Pesanan</p>
+                            </Link>
+                            <Link href="/merchant/saldo" className="grid justify-items-center w-24 ">
+                                <div className={`${styles.iconMenu}`}><Image src={'/icon/saldo.png'} alt="Girl in a jacket" width={30} height={30} /></div>
+                                <p className="text-base font-normal text-gray-500 dark:text-gray-400">Saldo</p>
                             </Link>
                         </div>
                     </div >

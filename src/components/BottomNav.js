@@ -118,7 +118,7 @@ const BottomNav = () => {
         ) : (
           <Link href="/login" className="menu4 icon_nav hover:text-primary"><IconLogin /></Link>
         )}
-        <div className="lingkaran" onClick={showSweetAlert}>
+        <div className="lingkaran cursor-pointer" onClick={showSweetAlert}>
           <div className="iconQr flex items-stretch p-1"><IconQrcode width={32} height={32} /></div>
         </div>
       </div>

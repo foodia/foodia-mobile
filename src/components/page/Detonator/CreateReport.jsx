@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import Swal from "sweetalert2";
+import Header from "@/components/Header";
 
 const CreateReport = (CreateReport) => {
     // const { stepForm } = props;
@@ -138,7 +139,8 @@ const CreateReport = (CreateReport) => {
 
     return (
         <>
-            <div className="container mx-auto mt-24 bg-white h-screen">
+            <Header title="Buat laporan" />
+            <div className="container mx-auto mt-20 bg-white h-screen">
                 <div className="mx-auto text-center p-2 text-primary">
                     <h1 className="font-bold">Report Campaigner</h1>
                     <h1>TEBAR 1000 PAKET NASI JUM'AT BERKAH</h1>

@@ -160,7 +160,7 @@ const ReportCamp = () => {
         }
 
 
-        console.log('jum', dataApi.length, 'true', dataApi.filter((data) => data.is_rating === true).length);
+        console.log('jum', dataApi.length, 'true', dataApi.filter((data) => data.is_rating === true).length, `jumlah order`, jumlahOrder, 'button', buttonStatus);
         console.log('data', dataApi);
     }, [dataApi]);
     const handleRequestError = (error) => {
