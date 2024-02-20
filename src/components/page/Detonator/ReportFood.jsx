@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axios from 'axios';
+import Header from "@/components/Header";
 
 const ReportFood = (ReportFood) => {
     const router = useRouter();
@@ -90,8 +91,8 @@ const ReportFood = (ReportFood) => {
                     console.error('Error creating campaign:', error);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Gagal Membuat Campaign',
-                        text: 'Gagal Membuat Campaign Mohon Coba Lagi',
+                        title: 'Gagal Membuat Report',
+                        text: 'Gagal Membuat Report Mohon Coba Lagi',
                         showConfirmButton: false,
                         timer: 2000,
                     });
@@ -127,10 +128,11 @@ const ReportFood = (ReportFood) => {
     }
     return (
         <>
-            <div className="container mx-auto mt-24 bg-white h-screen">
+            <Header title="Reting Food" />
+            <div className="container mx-auto mt-20 bg-white h-screen">
                 <div className="mx-auto text-center p-2 text-primary">
                     <h1 className="font-bold">Rating Camp</h1>
-                    <h1>TEBAR 1000 PAKET NASI JUM'AT BERKAH</h1>
+                    {/* <h1>TEBAR 1000 PAKET NASI JUM'AT BERKAH</h1> */}
                 </div>
                 <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
                 <form className='p-2 mt-5 w-full' onSubmit={handleSubmit}>

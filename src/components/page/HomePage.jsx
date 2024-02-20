@@ -23,7 +23,7 @@ const HomePage = () => {
         const fetchData = async () => {
             try {
 
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?status=approved`, {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=OPEN`, {
                     headers: {
                         'Authorization': `Bearer`,
                     },
@@ -147,21 +147,21 @@ const HomePage = () => {
                 <div className="place-content-center px-6 my-2 mt-4 ">
                     <div className={`flex my-2 ${styles.slide_card}`}>
                         <div
-                            className={`mr-2 grid justify-items-center ${selectedStatus === 'OPEN' ? 'text-blue-500 ' : ''}`}
+                            className={`cursor-pointer mr-2 grid justify-items-center ${selectedStatus === 'OPEN' ? 'text-blue-500 ' : ''}`}
                             onClick={() => handleFilterChange('OPEN')}
                         >
                             <span>Yuk Berdonasi</span>
                             <div className={`w-32 h-0.5 ${selectedStatus === 'OPEN' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>
                         </div>
                         <div
-                            className={`mr-2 grid justify-items-center ${selectedStatus === 'INPROGRESS ' ? 'text-blue-500' : ''}`}
+                            className={`cursor-pointer mr-2 grid justify-items-center ${selectedStatus === 'INPROGRESS ' ? 'text-blue-500' : ''}`}
                             onClick={() => handleFilterChange('INPROGRESS')}
                         >
                             <span>Campaign Berjalan</span>
                             <div className={`w-32 h-0.5 ${selectedStatus === 'INPROGRESS' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>
                         </div>
                         <div
-                            className={`mr-2 grid justify-items-center ${selectedStatus === 'FINISHED' ? 'text-blue-500' : ''}`}
+                            className={`cursor-pointer mr-2 grid justify-items-center ${selectedStatus === 'FINISHED' ? 'text-blue-500' : ''}`}
                             onClick={() => handleFilterChange('FINISHED')}
                         >
                             <span>Campaign Selesai</span>

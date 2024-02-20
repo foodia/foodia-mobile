@@ -5,6 +5,7 @@ import InputForm from "../Imput";
 import { useAppState } from "./UserContext";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Header from "../Header";
 
 const FormReportMerchan = () => {
     const router = useRouter();
@@ -149,7 +150,8 @@ const FormReportMerchan = () => {
 
     return (
         <>
-            <div className="container mx-auto mt-24 bg-white h-screen text-primary">
+            <Header title="Bukti Pengiriman" />
+            <div className="container mx-auto mt-20 bg-white h-screen text-primary">
                 {/* ... (your existing code) */}
                 <div className="grid justify-items-center w-full">
 
