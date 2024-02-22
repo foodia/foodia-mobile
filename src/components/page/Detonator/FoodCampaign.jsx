@@ -94,6 +94,8 @@ const FoodCampaign = () => {
                             qty={item.qty}
                             approval_status={item.approval_status}
                             order_status={item.order_status}
+                            is_report={item.is_report}
+                            is_rating={item.is_rating}
                         />
                     ))}
                 </div >
