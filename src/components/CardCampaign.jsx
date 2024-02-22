@@ -12,6 +12,7 @@ const CardCampaign = (props) => {
         // Calculate remaining time in days
         const remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
+        console.log(remainingDays);
 
         return remainingDays;
     };
