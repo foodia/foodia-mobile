@@ -4,7 +4,7 @@ import foodia from "../../public/img/foodia-hero.png";
 const Hero = () => {
   return (
     <Image
-      className="max-h-[500px] w-full rounded-lg"
+      className="max-h-[500px] w-full"
       src={foodia}
       width={480}
       height={600}

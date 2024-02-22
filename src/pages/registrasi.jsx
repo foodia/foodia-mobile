@@ -2,210 +2,266 @@
 import Header from "@/components/Header";
 import InputForm from "@/components/Imput";
 import { useAppState } from "@/components/page/UserContext";
+import {
+  IconDeviceMobile,
+  IconEye,
+  IconEyeClosed,
+  IconLock,
+  IconMail,
+  IconPhone,
+  IconUser,
+} from "@tabler/icons-react";
 import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
 const Registrasi = () => {
-    const router = useRouter();
-    const { state, setRegistrasi } = useAppState();
+  const router = useRouter();
+  const { state, setRegistrasi } = useAppState();
 
-    // Set initial state values or use the values from global state if available
-    const [fullname, setfullname] = useState(() => state.registrasi?.fullname || '');
-    const [phone, setPhone] = useState(() => state.registrasi?.phone || '');
-    const [email, setEmail] = useState(() => state.registrasi?.email || '');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+  // Set initial state values or use the values from global state if available
+  const [fullname, setfullname] = useState(
+    () => state.registrasi?.fullname || ""
+  );
+  const [phone, setPhone] = useState(() => state.registrasi?.phone || "");
+  const [email, setEmail] = useState(() => state.registrasi?.email || "");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(true);
 
-    const handlefullnameChange = (event) => {
-        setfullname(event.target.value);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handlefullnameChange = (event) => {
+    setfullname(event.target.value);
+  };
+
+  const handlePhoneChange = (event) => {
+    setPhone(event.target.value);
+  };
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Validation checks
+    if (!fullname || !phone || !email || !password || !confirmPassword) {
+      window.alert("All fields are required");
+      return;
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      window.alert("Invalid email format");
+      return;
+    }
+
+    if (!/^\d+$/.test(phone)) {
+      window.alert("Phone number must contain only digits");
+      return;
+    }
+
+    if (password.length < 8) {
+      window.alert("Password must be at least 8 characters");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      window.alert("Passwords do not match");
+      return;
+    }
+
+    // Create an object with the form data
+    const formData = {
+      fullname,
+      phone,
+      email,
+      password,
     };
-
-    const handlePhoneChange = (event) => {
-        setPhone(event.target.value);
-    };
-
-    const handleEmailChange = (event) => {
-        setEmail(event.target.value);
-    };
-
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value);
-    };
-
-    const handleConfirmPasswordChange = (event) => {
-        setConfirmPassword(event.target.value);
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        // Validation checks
-        if (!fullname || !phone || !email || !password || !confirmPassword) {
-            window.alert('All fields are required');
-            return;
+    try {
+      // Assuming the API response includes data about the user or a token.
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/register`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
+      );
 
-        if (!/^\S+@\S+\.\S+$/.test(email)) {
-            window.alert('Invalid email format');
-            return;
-        }
+      // Assuming the response includes a user object or token.
+      const userData = response.data.body;
 
-        if (!/^\d+$/.test(phone)) {
-            window.alert('Phone number must contain only digits');
-            return;
-        }
+      // Save user data to global state
+      console.log(userData);
+      console.log("status", userData.is_active);
+      if (userData.is_active) {
+        // router.push('/login');
+        console.log("login success");
+        setRegistrasi(userData);
+        sessionStorage.setItem("fullname", userData.fullname);
+        sessionStorage.setItem("phone", userData.phone);
+        sessionStorage.setItem("email", userData.email);
+        sessionStorage.setItem("role", userData.role);
+        sessionStorage.setItem("token", userData.token);
+        Swal.fire({
+          icon: "success",
+          title: "Akun telah terdaftar",
+          text: "silahkan login",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setRegistrasi(userData);
+        router.push("/home");
+      } else {
+        Swal.fire({
+          icon: "warning",
+          title: "Akun telah dibuat",
+          text: "silahkan aktivasi akun anda terlebih dahulu",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setRegistrasi(userData);
+        router.push("/otp");
+      }
+      // Redirect to OTP page
+    } catch (error) {
+      // console.error('Registration failed:', error.response);
+      const ResError = error;
+      console.log("ResError", ResError);
 
-        if (password.length < 8) {
-            window.alert('Password must be at least 8 characters');
-            return;
-        }
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Membuat Akun",
+        text: ResError,
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      setRegistrasi(formData);
+    }
 
-        if (password !== confirmPassword) {
-            window.alert('Passwords do not match');
-            return;
-        }
+    // Save the form data to the registrasi state
 
-        // Create an object with the form data
-        const formData = {
-            fullname,
-            phone,
-            email,
-            password,
-        };
-        try {
-            // Assuming the API response includes data about the user or a token.
-            const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/register`,
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+    // Clear form fields after submission
+    // setfullname('');
+    // setPhone('');
+    // setEmail('');
+    // setPassword('');
+    // setConfirmPassword('');
+  };
 
-            // Assuming the response includes a user object or token.
-            const userData = response.data.body;
-
-            // Save user data to global state
-            console.log(userData);
-            console.log('status', userData.is_active);
-            if (userData.is_active) {
-                // router.push('/login');
-                console.log('login success');
-                setRegistrasi(userData);
-                sessionStorage.setItem('fullname', userData.fullname);
-                sessionStorage.setItem('phone', userData.phone);
-                sessionStorage.setItem('email', userData.email);
-                sessionStorage.setItem('role', userData.role);
-                sessionStorage.setItem('token', userData.token);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Akun telah terdaftar',
-                    text: 'silahkan login',
-                    showConfirmButton: false,
-                    timer: 2000,
-                });
-                setRegistrasi(userData);
-                router.push('/home');
-
-            } else {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Akun telah dibuat',
-                    text: 'silahkan aktivasi akun anda terlebih dahulu',
-                    showConfirmButton: false,
-                    timer: 2000,
-                });
-                setRegistrasi(userData);
-                router.push('/otp');
-            }
-            // Redirect to OTP page
-        } catch (error) {
-            // console.error('Registration failed:', error.response);
-            const ResError = error;
-            console.log('ResError', ResError);
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal Membuat Akun',
-                text: ResError,
-                showConfirmButton: false,
-                timer: 2000,
-            });
-            setRegistrasi(formData);
-        }
-
-        // Save the form data to the registrasi state
-
-        // Clear form fields after submission
-        // setfullname('');
-        // setPhone('');
-        // setEmail('');
-        // setPassword('');
-        // setConfirmPassword('');
-
-
-    };
-
-    return (
-        <main className="my-0 mx-auto min-h-full mobile-w">
-            <Header title="registrasi" />
-            <div className=" mx-auto mt-20 min-h-screen bg-white h-screen text-primary">
-                <div className="grid justify-items-center w-full">
-                    <h1 className="font-bold text-5xl py-12 ">FOODIA</h1>
-                    <form className='p-2 w-full' onSubmit={handleSubmit}>
-                        {/* ... (your existing code) */}
-                        <div className="mb-2">
-                            <label htmlFor='fullname' className="text-sm font-medium text-gray-900">Full Name</label>
-                            <InputForm
-                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                                label="fullname" type="text" name="fullname" value={fullname} onChange={handlefullnameChange} placeholder="Full Name"
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label htmlFor='Phone' className="text-sm font-medium text-gray-900">Phone Number</label>
-                            <InputForm
-                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                                label="Phone" type="text" name="Phone" value={phone} onChange={handlePhoneChange} placeholder="Phone Number"
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label htmlFor='Email' className="text-sm font-medium text-gray-900">Email Address</label>
-                            <InputForm
-                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                                label="Email" type="text" name="Email" value={email} onChange={handleEmailChange} placeholder="Email Address"
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label htmlFor='Password' className="text-sm font-medium text-gray-900">Password</label>
-                            <InputForm
-                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                                label="Password" type="password" name="Password" value={password} onChange={handlePasswordChange} placeholder="Password"
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label htmlFor='ConfirmPassword' className="text-sm font-medium text-gray-900">Confirm Password</label>
-                            <InputForm
-                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                                label="ConfirmPassword" type="password" name="ConfirmPassword" value={confirmPassword} onChange={handleConfirmPasswordChange} placeholder="Confirm Password"
-                            />
-                        </div>
-
-                        <div className="grid gap-4 content-center">
-                            <button
-                                type="submit"
-                                className='text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center'>
-                                Submit
-                            </button>
-                        </div>
-                    </form>
-                </div>
+  return (
+    <main className="my-0 mx-auto min-h-full mobile-w">
+      <div className="mx-auto bg-white h-screen text-primary">
+        <Header />
+        <div className="flex justify-center py-20">
+          <h1 className="text-4xl text-primary font-bold">FOODIA</h1>
+        </div>
+        <div className="flex flex-col items-center w-full">
+          <div
+            className="p-2 w-full flex flex-col gap-3"
+            // onSubmit={handleSubmit}
+          >
+            {/* ... (your existing code) */}
+            <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+              <IconUser />
+              <input
+                value={fullname}
+                onChange={handlefullnameChange}
+                type="text"
+                id="fullname"
+                className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                placeholder="Nama Lengkap"
+                required
+              />
             </div>
-        </main>
-    );
+            <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+              <IconDeviceMobile />
+              <input
+                value={phone}
+                onChange={handlePhoneChange}
+                type="text"
+                id="phone"
+                className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                placeholder="Nomor Hp"
+                required
+              />
+            </div>
+            <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+              <IconMail />
+              <input
+                value={email}
+                onChange={handleEmailChange}
+                type="text"
+                id="email"
+                className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                placeholder="Email"
+                required
+              />
+            </div>
+            <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+              <IconLock />
+              <input
+                value={password}
+                onChange={handlePasswordChange}
+                type={showPassword ? "password" : "text"}
+                id="password"
+                className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                placeholder="Password"
+                required
+              />
+              <button onClick={handleClickShowPassword}>
+                {showPassword ? <IconEye /> : <IconEyeClosed />}
+              </button>
+            </div>
+            <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+              <IconLock />
+              <input
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+                type={showPassword ? "password" : "text"}
+                id="password"
+                className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                placeholder="Confirm Password"
+                required
+              />
+              <button onClick={handleClickShowPassword}>
+                {showPassword ? <IconEye /> : <IconEyeClosed />}
+              </button>
+            </div>
+
+            <div className="grid gap-4 content-center">
+              <button
+                onClick={handleSubmit}
+                type="submit"
+                className="text-white text-center font-bold rounded-xl bg-primary py-3"
+              >
+                Daftar
+              </button>
+            </div>
+          </div>
+          <p className="text-gray-600 text-xs font-medium absolute bottom-0 flex mb-5 px-28 gap-1">
+            Sudah Memiliki Akun?{" "}
+            <Link href="/login" className="text-xs font-bold text-blue-800">
+              Masuk
+            </Link>
+          </p>
+        </div>
+      </div>
+    </main>
+  );
 };
 
 export default Registrasi;
