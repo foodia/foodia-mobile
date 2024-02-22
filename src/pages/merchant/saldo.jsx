@@ -5,6 +5,7 @@ import Link from "next/link";
 import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import Swal from "sweetalert2";
 
 const saldo = (saldo) => {
     const router = useRouter();
@@ -83,6 +84,19 @@ const saldo = (saldo) => {
 
         setSelectedStatus(status);
     };
+
+    const handleRequestError = () => {
+        Swal.fire({
+            title: 'Informasi Penarikan Saldo',
+            text: 'Penarikan Saldo akan dikirimkan ke nomor LinkAja anda. Pastikan nomor tujuan sudah sesuai',
+            confirmButtonText: 'Mengerti',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Arahkan ke /pembayaran saat pengguna menekan tombol "Mengerti"
+                router.push('/merchant/penarikan');
+            }
+        })
+    }
     const formatDate = (inputDate) => {
         const date = new Date(inputDate);
         const day = date.getDate().toString().padStart(2, '0');
@@ -105,7 +119,7 @@ const saldo = (saldo) => {
                         </div>
 
                         <div className="mx-4 mt-2">
-                            <button className="bg-primary text-white p-2 w-full rounded-lg">Tarik Saldo</button>
+                            <button onClick={handleRequestError} className="bg-primary text-white p-2 w-full rounded-lg">Tarik Saldo</button>
                         </div>
 
                         <div className="flex justify-center w-full">

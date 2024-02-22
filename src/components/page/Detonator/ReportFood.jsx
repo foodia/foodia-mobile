@@ -57,7 +57,7 @@ const ReportFood = (ReportFood) => {
                 const eventData = {
                     relation_id: parseInt(id_detonator),
                     order_id: parseInt(id),
-                    relation_type: "detonator",
+                    relation_type: "merchant",
                     star,
                     note: description,
                     photo: Image,

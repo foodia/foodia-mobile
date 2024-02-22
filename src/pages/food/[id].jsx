@@ -54,7 +54,7 @@ const FoodCampaign = () => {
         setDataApi([]);
     };
     const jumlahPesananDiproses = foodOrder.reduce((total, item) => {
-        if (item.order_status === 'diproses') {
+        if (item.order_status === 'selesai') {
             total = total + 1;
         }
         return total;
@@ -102,6 +102,7 @@ const FoodCampaign = () => {
                                     qty={item.qty}
                                     approval_status={item.approval_status}
                                     order_status={item.order_status}
+                                    is_report={item.is_report}
                                 />
                             ))}
                         </div >
