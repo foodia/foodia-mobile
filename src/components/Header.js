@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
-import { IconSearch, IconChevronCompactLeft, IconArrowLeft } from '@tabler/icons-react';
+import {
+  IconSearch,
+  IconChevronCompactLeft,
+  IconArrowLeft,
+} from "@tabler/icons-react";
 import Link from "next/link";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
-const Header = ({ title = '', backto = '' }) => {
+const Header = ({ title = "", backto = "" }) => {
   const router = useRouter();
 
   // Handle the back button click
@@ -12,7 +16,6 @@ const Header = ({ title = '', backto = '' }) => {
     if (backto) {
       router.push(backto);
     } else {
-
       router.back();
     }
   };
@@ -27,27 +30,38 @@ const Header = ({ title = '', backto = '' }) => {
     window.addEventListener("scroll", checkScroll);
   }, [test]);
 
-
   return (
-
     <nav className="bg-transparent fixed w-full z-20 top-0 left-0">
-
-      <div className='mobile-w flex flex-wrap items-center justify-between mx-auto py-2 bg-white rounded-lg'>
-
-
-
-        {title ?
-          <div className="flex">
-            <div className="flex relative">
-              <button className="px-5 py-4 text-sm rounded-full   text-gray-600 " onClick={handleBackButtonClick}><IconArrowLeft /></button>
-            </div>
-            <p className="py-4 text-lg font-semibold">{title}</p>
+      <div className="mobile-w flex flex-wrap items-center justify-between mx-auto py-2 bg-white rounded-lg">
+        {/* {title ? ( */}
+        <div className="flex">
+          <div className="flex relative">
+            <button
+              className="px-5 py-4 text-sm rounded-full   text-gray-600 "
+              onClick={handleBackButtonClick}
+            >
+              <IconArrowLeft />
+            </button>
           </div>
-          :
+          <p className="py-4 text-lg font-semibold">{title}</p>
+        </div>
+        {/* ) : (
           <div className="flex relative w-full mx-2">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <svg className="w-4 text-emerald-500 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+              <svg
+                className="w-4 text-emerald-500 text-gray-400"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
               </svg>
             </div>
             <input
@@ -57,17 +71,14 @@ const Header = ({ title = '', backto = '' }) => {
               placeholder="Search..."
               required
             />
-          </div>}
+          </div>
+        )} */}
 
         {/* {router.asPath === "/login/detonator" || router.asPath === "/login/merchant" ? null : (
           
         )} */}
-
-
-
-      </div >
-    </nav >
-
+      </div>
+    </nav>
   );
 };
 
