@@ -199,7 +199,7 @@ const LoginPage = () => {
                     <img src='icon/facebook.png' className=' w-6 ' />
                 </button>
             </div> */}
-      <p className="text-gray-600 text-xs font-medium absolute bottom-0 flex mb-5 px-28 gap-1">
+      <p className="text-gray-600 text-xs font-medium absolute bottom-0 flex mb-5 px-20 ml-8 md:ml-0 md:px-28 gap-1">
         Tidak Memiliki Akun?{" "}
         <Link href="/registrasi" className="text-xs font-bold text-blue-800">
           Daftar
