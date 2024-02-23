@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 
 const CardRepordFood = (props) => {
-    const { to = '#', img, title, date, approval_status = '', price, qty = 0, nameMerchant = '', order_status = '' } = props;
+    const { to = '#', img, title, date, approval_status = '', price, qty = 0, nameMerchant = '', order_status = '', is_rating, is_report } = props;
     const role = sessionStorage.getItem('role');
     const router = useRouter();
 
@@ -36,14 +36,19 @@ const CardRepordFood = (props) => {
     };
     const handleButoon = () => {
         if (order_status === 'selesai') {
-            if (role === 'detonator') {
-                router.push(`${to}`);
-            } else {
+            if (is_rating) {
                 return
+            } else {
+                if (role === 'detonator') {
+                    router.push(`${to}`);
+                } else {
+                    return
+                }
             }
         } else {
             return
         }
+
         // if (role === 'detonator') {
         //     router.push(`${to}`);
         // } else {
