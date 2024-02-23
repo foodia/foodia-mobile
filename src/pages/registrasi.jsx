@@ -30,8 +30,11 @@ const Registrasi = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(true);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
 
   const handlefullnameChange = (event) => {
     setfullname(event.target.value);
@@ -165,7 +168,7 @@ const Registrasi = () => {
   return (
     <main className="my-0 mx-auto min-h-full mobile-w">
       <div className="mx-auto bg-white h-screen text-primary">
-        <Header />
+        {/* <Header /> */}
         <div className="flex justify-center py-20">
           <h1 className="text-4xl text-primary font-bold">FOODIA</h1>
         </div>
@@ -211,7 +214,7 @@ const Registrasi = () => {
                 required
               />
             </div>
-            <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+            <div className="flex flex-row items-center p-4 pr-3 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
               <IconLock />
               <input
                 value={password}
@@ -226,19 +229,19 @@ const Registrasi = () => {
                 {showPassword ? <IconEye /> : <IconEyeClosed />}
               </button>
             </div>
-            <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+            <div className="flex flex-row items-center p-4 pr-3 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
               <IconLock />
               <input
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
-                type={showPassword ? "password" : "text"}
+                type={showConfirmPassword ? "password" : "text"}
                 id="password"
                 className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="Confirm Password"
                 required
               />
-              <button onClick={handleClickShowPassword}>
-                {showPassword ? <IconEye /> : <IconEyeClosed />}
+              <button onClick={handleClickShowConfirmPassword}>
+                {showConfirmPassword ? <IconEye /> : <IconEyeClosed />}
               </button>
             </div>
 

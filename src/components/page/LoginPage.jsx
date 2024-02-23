@@ -118,7 +118,7 @@ const LoginPage = () => {
 
   return (
     <div className="container mx-auto mt-24 bg-white">
-      <Header />
+      <Header backto="/" />
       <div className="flex justify-center ">
         <h1 className="text-4xl text-primary font-bold">FOODIA</h1>
       </div>

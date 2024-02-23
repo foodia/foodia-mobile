@@ -2,13 +2,14 @@ import { Inter } from "next/font/google";
 import BottomNav from "@/components/BottomNav";
 import Hero from "@/components/Hero";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const Home = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   //   const redirectTimer = setTimeout(() => {
@@ -38,12 +39,14 @@ const Home = () => {
         <div className="flex flex-col mt-16 px-5 gap-2">
           <Link
             href="/login"
+            onClick={() => setLoading(true)}
             className="text-white text-center rounded-xl bg-primary py-2"
           >
             Masuk
           </Link>
           <Link
             href="/registrasi"
+            onClick={() => setLoading(true)}
             className="text-primary text-center rounded-xl border border-primary py-2"
           >
             Daftar
