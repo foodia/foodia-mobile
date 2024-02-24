@@ -1,18 +1,31 @@
-import { IconSmartHome, IconSearch, IconBell, IconUser, IconQrcode, IconLogin } from '@tabler/icons-react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import Swal from 'sweetalert2';
-import { useAppState } from './page/UserContext';
+import {
+  IconSmartHome,
+  IconSearch,
+  IconBell,
+  IconUser,
+  IconQrcode,
+  IconLogin,
+  IconReceipt,
+  IconMail,
+} from "@tabler/icons-react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import { useAppState } from "./page/UserContext";
+import Image from "next/image";
+import bottomNav from "../../public/img/icon/BottomNavField.png";
+import { usePathname } from "next/navigation";
 
 const BottomNav = () => {
   const router = useRouter();
-  const [token, setToken] = useState('');
+  const pathname = usePathname();
+  const [token, setToken] = useState("");
   const { state, setDonation } = useAppState();
   const [nominalDonasi, setNominalDonasi] = useState(0);
 
   useEffect(() => {
-    const storedToken = sessionStorage.getItem('token');
+    const storedToken = sessionStorage.getItem("token");
     // Fetch the token from sessionStorage when the component mounts
     if (storedToken) {
       setToken(storedToken);
@@ -28,7 +41,7 @@ const BottomNav = () => {
 
   const showSweetAlert = async () => {
     const { value } = await Swal.fire({
-      title: 'Pilih Nominal Donasi',
+      title: "Pilih Nominal Donasi",
       html: `
         <div class="flex flex-col space-y-2">
             <label>
@@ -59,17 +72,19 @@ const BottomNav = () => {
         </div>`,
       focusConfirm: false,
       showCancelButton: true,
-      cancelButtonText: 'Batal',
-      confirmButtonText: 'Pilih',
+      cancelButtonText: "Batal",
+      confirmButtonText: "Pilih",
       preConfirm: () => {
-        const radioValue = document.querySelector('input[name="donation"]:checked');
+        const radioValue = document.querySelector(
+          'input[name="donation"]:checked'
+        );
         if (!radioValue) {
           const nominalValue = document.querySelector('input[name="nominal"]');
           if (nominalValue && nominalValue.value) {
             // return nominalValue.value;
             handleSubmit(nominalValue.value);
           } else {
-            return 'input nominal value';
+            return "input nominal value";
           }
         } else {
           // return radioValue.value;
@@ -77,12 +92,12 @@ const BottomNav = () => {
         }
       },
       customClass: {
-        container: 'your-custom-container-class',
-        popup: 'your-custom-popup-class',
-        title: 'your-custom-title-class',
-        content: 'your-custom-content-class',
-        confirmButton: 'your-custom-confirm-button-class',
-        cancelButton: 'your-custom-cancel-button-class',
+        container: "your-custom-container-class",
+        popup: "your-custom-popup-class",
+        title: "your-custom-title-class",
+        content: "your-custom-content-class",
+        confirmButton: "your-custom-confirm-button-class",
+        cancelButton: "your-custom-cancel-button-class",
       },
     });
 
@@ -94,35 +109,67 @@ const BottomNav = () => {
   const handleSubmit = (value) => {
     setNominalDonasi(parseInt(value));
     const data = {
-      'amount': parseInt(value),
-      'payment_channel': '',
-      'success_url': `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
-      'detail': {
-        'campaign_id': '',
-        'description': 'Donation',
-        'donation_type': 'agnostic',
-      }
-    }
+      amount: parseInt(value),
+      payment_channel: "",
+      success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
+      detail: {
+        campaign_id: "",
+        description: "Donation",
+        donation_type: "agnostic",
+      },
+    };
     setDonation(data);
-    router.push('/metode_pembayaran');
+    router.push("/metode_pembayaran");
   };
 
   return (
-    <div className="mobile-w fixed flex justify-center h-20 bottom-0 my-0 mx-auto w-full max-w-screen-sm ">
-      <div className="kotak shadow-inner">
-        <Link href="/home" className="menu1 icon_nav hover:text-primary"><IconSmartHome /></Link>
-        <div className="menu3 icon_nav hover:text-primary"><IconBell /></div>
-        <div className="menu2 icon_nav hover:text-primary"><IconSearch /></div>
-        {token ? (
-          <Link href="/profile" className="menu4 icon_nav hover:text-primary"><IconUser /></Link>
-        ) : (
-          <Link href="/login" className="menu4 icon_nav hover:text-primary"><IconLogin /></Link>
-        )}
-        <div className="lingkaran cursor-pointer" onClick={showSweetAlert}>
-          <div className="iconQr flex items-stretch p-1"><IconQrcode width={32} height={32} /></div>
+    <div className="mobile-w bg-transparent fixed flex justify-center h-24 bottom-0 w-full max-w-screen-sm">
+      <Image src={bottomNav} className="bg-transparent" layout="fill"></Image>
+      {/* <div className="kotak bg-white"> */}
+      <div
+        className={`menu1 icon_nav hover:text-primary 
+        ${pathname === "/home" && "text-primary"}
+        `}
+      >
+        <Link className="items-center flex flex-col gap-1" href="/home">
+          <IconSmartHome />
+          <p className="text-xs">Home</p>
+        </Link>
+      </div>
+      <div className="menu2 icon_nav hover:text-primary">
+        <Link className="items-center flex flex-col gap-1" href="/home">
+          <IconReceipt />
+          <p className="text-xs">Receipt</p>
+        </Link>
+      </div>
+      <div className="menu3 icon_nav hover:text-primary">
+        <Link className="items-center flex flex-col gap-1" href="/home">
+          <IconMail />
+          <p className="text-xs">Inbox</p>
+        </Link>
+      </div>
+      {token ? (
+        <div className="menu4 icon_nav hover:text-primary">
+          <Link className="items-center flex flex-col gap-1" href="/profile">
+            <IconUser />
+            <p className="text-xs">Profile</p>
+          </Link>
+        </div>
+      ) : (
+        <div className="menu4 icon_nav hover:text-primary">
+          <Link className="items-center flex flex-col gap-1" href="/login">
+            <IconLogin />
+            <p className="text-xs">Login</p>
+          </Link>
+        </div>
+      )}
+      <div className="lingkaran cursor-pointer" onClick={showSweetAlert}>
+        <div className="iconQr flex items-stretch p-1">
+          <IconQrcode width={32} height={32} color="white" />
         </div>
       </div>
     </div>
+    // </div>
   );
 };
 

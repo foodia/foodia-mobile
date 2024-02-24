@@ -52,9 +52,12 @@ const Home = () => {
             Daftar
           </Link>
         </div>
-        <div className="absolute bottom-0 px-24 flex gap-1">
-          <label className="font-light">Buka aplikasi tanpa</label>
-          <Link className="text-blue-950 font-bold pb-8" href="/home">
+        <div className="absolute bottom-0 px-28 flex gap-1">
+          <label className="font-light text-sm">Buka aplikasi tanpa</label>
+          <Link
+            className="text-blue-950 font-bold pb-8 hover:underline text-sm"
+            href="/home"
+          >
             Masuk
           </Link>
         </div>

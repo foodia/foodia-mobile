@@ -37,13 +37,13 @@ const Header = ({ title = "", backto = "" }) => {
         <div className="flex">
           <div className="flex relative">
             <button
-              className="px-5 py-4 text-sm rounded-full   text-gray-600 "
+              className="px-5 py-1 text-sm rounded-full text-gray-600 "
               onClick={handleBackButtonClick}
             >
               <IconArrowLeft />
             </button>
           </div>
-          <p className="py-4 text-lg font-semibold">{title}</p>
+          <p className="text-lg font-semibold">{title}</p>
         </div>
         {/* ) : (
           <div className="flex relative w-full mx-2">

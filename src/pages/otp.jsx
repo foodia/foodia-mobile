@@ -3,6 +3,7 @@
 import Header from "@/components/Header";
 import SweetAlert from "@/components/SweetAlert";
 import { useAppState } from "@/components/page/UserContext";
+import { IconChecklist } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -67,16 +68,32 @@ const OTP = () => {
       );
       console.log("API Response:", response.data);
       const imageUrl = "/img/illustration/checklist.png";
-      SweetAlert({
-        title: "",
-        text: "Akun Berhasil Di Buat",
-        imageUrl,
-        imageWidth: 200,
-        imageHeight: 200,
-        imageAlt: "Custom image",
-        width: 350,
+      Swal.fire({
+        position: "bottom",
+        customClass: {
+          popup: "custom-swal",
+          icon: "custom-icon-swal",
+          title: "custom-title-swal",
+          confirmButton: "custom-confirm-button-swal", // Custom class for styling
+        },
+        icon: "success",
+        title: `<p class="w-auto pl-1 font-bold text-md">Akun Berhasil Di Buat</p><p class="text-sm w-auto pl-1 font-light">Terima kasih telah mendaftar untuk menjadi penolong sesama</p>`,
+        html: `
+                <div class="absolute px-28 ml-4 top-0 mt-4">
+                  <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                </div>
+                `,
+        width: "375px",
+        showConfirmButton: true,
+        confirmButtonText: "Masuk",
+        confirmButtonColor: "#3FB648",
+        // timer: 2000,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/login");
+        }
       });
-      router.push("/home");
+      // router.push("/home");
     } catch (error) {
       console.error("Error handling submit:", error);
       Swal.fire({
@@ -134,20 +151,20 @@ const OTP = () => {
             </button>
           </div>
 
-          <div className=" grid place-items-center mt-40">
+          <div className="grid place-items-center mt-40">
             {/* Hidden submit button */}
-            <button
+            {/* <button
               type="submit"
               id="submit-button"
               style={{ display: "none" }}
-            ></button>
+            ></button> */}
 
             {/* Visible button that triggers the auto-submit */}
             <button
               onClick={handleSubmit}
-              className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+              className="text-white w-full bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl px-5 py-3 text-center "
             >
-              Submit
+              Kirim
             </button>
           </div>
         </form>

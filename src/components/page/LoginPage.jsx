@@ -168,7 +168,7 @@ const LoginPage = () => {
           <Link
             href=""
             htmlFor="remember"
-            className="text-xs font-bold text-blue-800"
+            className="text-xs font-bold text-blue-800 hover:underline"
           >
             Forgot password?
           </Link>
@@ -201,7 +201,10 @@ const LoginPage = () => {
             </div> */}
       <p className="text-gray-600 text-xs font-medium absolute bottom-0 flex mb-5 px-20 ml-8 md:ml-0 md:px-28 gap-1">
         Tidak Memiliki Akun?{" "}
-        <Link href="/registrasi" className="text-xs font-bold text-blue-800">
+        <Link
+          href="/registrasi"
+          className="text-xs font-bold text-blue-800 hover:underline"
+        >
           Daftar
         </Link>
       </p>
