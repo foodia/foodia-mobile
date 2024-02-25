@@ -38,9 +38,9 @@ const CardCampaign = (props) => {
     };
 
     return (
-        <div className="flex justify-center mt-2.5 w-full mb-2 px-6" key={idKey}>
+        <div className="flex justify-center mt-3 w-full mb-2 px-6" key={idKey}>
 
-            <Link href={to} className={`bg-white hover:bg-gray-100 text-black rounded-lg shadow-lg w-full p-1`}>
+            <Link href={to} className={`bg-gray-100 hover:bg-white text-black rounded-lg drop-shadow-lg w-full p-1`}>
                 <div className="flex px-1.5 pt-1.5">
 
                     <img

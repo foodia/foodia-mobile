@@ -28,6 +28,7 @@ const BottomNav = () => {
 
   const showSweetAlert = async () => {
     const { value } = await Swal.fire({
+      position: 'bottom',
       title: 'Pilih Nominal Donasi',
       html: `
         <div class="flex flex-col space-y-2">
@@ -57,6 +58,7 @@ const BottomNav = () => {
             
           </div>
         </div>`,
+      width: "375px",
       focusConfirm: false,
       showCancelButton: true,
       cancelButtonText: 'Batal',
@@ -76,14 +78,14 @@ const BottomNav = () => {
           handleSubmit(radioValue.value);
         }
       },
-      customClass: {
-        container: 'your-custom-container-class',
-        popup: 'your-custom-popup-class',
-        title: 'your-custom-title-class',
-        content: 'your-custom-content-class',
-        confirmButton: 'your-custom-confirm-button-class',
-        cancelButton: 'your-custom-cancel-button-class',
-      },
+      // customClass: {
+      //   container: 'your-custom-container-class',
+      //   popup: 'your-custom-popup-class',
+      //   title: 'your-custom-title-class',
+      //   content: 'your-custom-content-class',
+      //   confirmButton: 'your-custom-confirm-button-class',
+      //   cancelButton: 'your-custom-cancel-button-class',
+      // },
     });
 
     // if (value) {

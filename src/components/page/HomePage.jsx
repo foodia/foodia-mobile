@@ -92,7 +92,7 @@ const HomePage = () => {
         <>
             <div className="container mx-auto mt-4 bg-white h-screen">
                 <div className="flex items-center justify-center px-6 my-2">
-                    <div className={`bg-green-50 rounded-lg ${styles.listMenu}`}>
+                    <div className={`bg-gray-100 rounded-lg ${styles.listMenu}`}>
                         <div className="flex justify-between p-2.5">
                             <Link href={"/detonator"} className="grid justify-items-center w-24">
                                 <div className={`${styles.iconMenu}`}><Image src={'/icon/campaint.png'} alt="Girl in a jacket" width={30} height={30} /></div>
@@ -151,32 +151,25 @@ const HomePage = () => {
                             onClick={() => handleFilterChange('OPEN')}
                         >
                             <span>Yuk Berdonasi</span>
-                            <div className={`w-32 h-0.5 ${selectedStatus === 'OPEN' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>
+                            {selectedStatus === 'OPEN' && <div className={`w-32 h-0.5 ${selectedStatus === 'OPEN' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>}
+                            {/* <div className={`w-32 h-0.5 ${selectedStatus === 'OPEN' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div> */}
                         </div>
                         <div
                             className={`cursor-pointer mr-2 grid justify-items-center ${selectedStatus === 'INPROGRESS ' ? 'text-blue-500' : ''}`}
                             onClick={() => handleFilterChange('INPROGRESS')}
                         >
                             <span>Campaign Berjalan</span>
-                            <div className={`w-32 h-0.5 ${selectedStatus === 'INPROGRESS' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>
+                            {selectedStatus === 'INPROGRESS' && <div className={`w-32 h-0.5 ${selectedStatus === 'INPROGRESS' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>}
+                            {/* <div className={`w-32 h-0.5 ${selectedStatus === 'INPROGRESS' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div> */}
                         </div>
                         <div
                             className={`cursor-pointer mr-2 grid justify-items-center ${selectedStatus === 'FINISHED' ? 'text-blue-500' : ''}`}
                             onClick={() => handleFilterChange('FINISHED')}
                         >
                             <span>Campaign Selesai</span>
-                            <div className={`w-32 h-0.5 ${selectedStatus === 'FINISHED' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>
+                            {selectedStatus === 'FINISHED' && <div className={`w-32 h-0.5 ${selectedStatus === 'FINISHED' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div>}
+                            {/* <div className={`w-32 h-0.5 ${selectedStatus === 'FINISHED' ? 'bg-blue-500 bg-blue-500 w-32 ' : 'bg-black'}`}></div> */}
                         </div>
-
-                        {/* <div className="mr-2 grid justify-items-center"><span className="text-blue-500">Yuk Berdonasi</span>
-                            <div className="bg-blue-500 w-32 h-0.5 mt-2"></div>
-                        </div>
-                        <div className="mr-2 grid justify-items-center"><span className="e25_212">Campaign Berjalan </span>
-                            <div className="bg-black w-32 h-0.5 mt-2"></div>
-                        </div>
-                        <div className="mr-2 grid justify-items-center"><span className="e25_212">Campaign Selesai </span>
-                            <div className="bg-black w-32 h-0.5 mt-2"></div>
-                        </div> */}
                     </div>
                 </div>
 
@@ -189,7 +182,7 @@ const HomePage = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className={`my-2 ${styles.card}`}>
+                    <div className={`my-3.5 ${styles.card}`}>
                         {DataCamp.map((campData) => {
                             // console.log(`Key: ${dataFilter.id}`);
                             return (
