@@ -9,8 +9,9 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .custom-swal {
-  height: 400px;
+  height: 500px;
   padding: 0;
+  margin-right: 5px;
   margin-bottom: 0;
   border-top-left-radius: 60px;
   border-top-right-radius: 60px;
@@ -31,6 +32,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 .custom-confirm-button-swal {
   width: 300px;
+  margin-bottom: 25px;
 }
 
 .swal2-container {
@@ -100,21 +102,18 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* meneu ke 2 */
 .menu2 {
-  color: #bdc2c6;
   left: 105px;
   top: 28px;
 }
 
 /* menu ke 3 */
 .menu3 {
-  color: #bdc2c6;
   left: 250px;
   top: 28px;
 }
 
 /* menu ke 4 */
 .menu4 {
-  color: #bdc2c6;
   left: 320px;
   top: 28px;
 }

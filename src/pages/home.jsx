@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function PageHome() {
   return (
     <>
-      <div className="container mx-auto min-h-screen max-w-480 bg-white flex flex-col">
+      <div className="container mx-auto h-screen max-w-480 bg-white flex flex-col">
         {/* <Hero /> */}
         <HomePage />
         {/* <HomePage /> */}

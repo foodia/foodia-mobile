@@ -162,7 +162,7 @@ const OTP = () => {
             {/* Visible button that triggers the auto-submit */}
             <button
               onClick={handleSubmit}
-              className="text-white w-full bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl px-5 py-3 text-center "
+              className="text-white w-full bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl py-3 text-center "
             >
               Kirim
             </button>

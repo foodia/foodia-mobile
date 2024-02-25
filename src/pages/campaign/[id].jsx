@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import DetailCamp from "@/components/page/DetailPage";
 import Header from "@/components/Header";
+import BottomNav from "@/components/BottomNav";
 
 const Campaign = () => {
   const router = useRouter();
@@ -36,6 +37,7 @@ const Campaign = () => {
     <div className="h-full max-w-480 bg-white flex flex-col">
       <Header title="Informasi" />
       {campaignData && <DetailCamp data={campaignData} />}
+      {/* <BottomNav /> */}
     </div>
   );
 };

@@ -199,15 +199,15 @@ const LoginPage = () => {
                     <img src='icon/facebook.png' className=' w-6 ' />
                 </button>
             </div> */}
-      <p className="text-gray-600 text-xs font-medium absolute bottom-0 flex mb-5 px-20 ml-8 md:ml-0 md:px-28 gap-1">
-        Tidak Memiliki Akun?{" "}
+      <div className="mobile-w flex gap-1 justify-center pt-32">
+        <label className="font-light text-sm">Tidak memiliki akun?</label>
         <Link
+          className="text-blue-950 font-bold hover:underline text-sm"
           href="/registrasi"
-          className="text-xs font-bold text-blue-800 hover:underline"
         >
           Daftar
         </Link>
-      </p>
+      </div>
     </div>
   );
 };

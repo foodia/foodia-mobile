@@ -2,15 +2,7 @@ import Image from "next/image";
 import foodia from "../../public/img/foodia-hero.png";
 
 const Hero = () => {
-  return (
-    <Image
-      className="max-h-[500px] w-full"
-      src={foodia}
-      width={480}
-      height={600}
-      alt="Girl in a jacket"
-    />
-  );
+  return <Image src={foodia} className="mobile-w" alt="Girl in a jacket" />;
 };
 
 export default Hero;

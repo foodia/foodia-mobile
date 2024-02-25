@@ -21,8 +21,8 @@ const Home = () => {
   // }, [router]);
 
   return (
-    <main className="my-0 mx-auto min-h-full mobile-w ">
-      <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
+    <main className="my-0 mx-auto min-h-full mobile-w">
+      <div className="my-0 mx-auto min-h-screen mobile-w overflow-x-hidden bg-white flex flex-col">
         <Hero />
         <div className="top-0 absolute px-32 pt-28 text-white font-bold text-4xl">
           FOODIA
@@ -52,10 +52,10 @@ const Home = () => {
             Daftar
           </Link>
         </div>
-        <div className="absolute bottom-0 px-28 flex gap-1">
+        <div className="mobile-w flex gap-1 justify-center pt-10">
           <label className="font-light text-sm">Buka aplikasi tanpa</label>
           <Link
-            className="text-blue-950 font-bold pb-8 hover:underline text-sm"
+            className="text-blue-950 font-bold hover:underline text-sm"
             href="/home"
           >
             Masuk
