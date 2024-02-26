@@ -9,7 +9,7 @@ import 'react-clock/dist/Clock.css';
 
 
 import dynamic from 'next/dynamic';
-import { IconCamera, IconCirclePlus, IconGardenCart, IconPhotoScan, IconTrash } from '@tabler/icons-react';
+import { IconCamera, IconCirclePlus, IconGardenCart, IconPhotoScan, IconPlus, IconTrash } from '@tabler/icons-react';
 import CardFood from '../CardFood';
 import Link from 'next/link';
 import axios from 'axios';
@@ -17,6 +17,7 @@ import AddFoodCamp from './AddFoodCamp';
 import Swal from 'sweetalert2';
 import CardListMerchan from '../page/Detonator/CardListMerchan';
 import TimePicker from 'react-time-picker';
+import { IconMinus } from '@tabler/icons-react';
 const DynamicMap = dynamic(() => import('../page/GeoMap'), { ssr: false });
 
 function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
@@ -123,18 +124,20 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     };
 
     const handleImageCampChange = (event) => {
-        // const file = event.target.files[0];
-        setUploadedFile(event.target.files[0]);
+        const file = event.target.files[0];
 
-        // console.log(file)
-
-        // if (file) {
-        //     const reader = new FileReader();
-        //     reader.onloadend = () => {
-        //         setImageCamp(reader.result);
-        //     };
-        //     reader.readAsDataURL(file);
-        // }
+        if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ukuran gambar melebihi 2MB!',
+                });
+                event.target.value = '';
+            } else {
+                setUploadedFile(file);
+            }
+        }
     };
 
     const handleSubmit = (e) => {
@@ -174,7 +177,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     return (
         <>
 
-            <ol className="flex justify-center mb-4 sm:mb-5 w-full p-2">
+            <ol className="flex justify-center mb-2 w-full p-2">
                 <RoutStep
                     liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block  after:border-b after:border-4 after:border-primary`}
                     divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-primary`}
@@ -194,7 +197,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
                     iconName={"CalendarEvent"}
                 />
             </ol>
-            <form className="p-2 mt-10 w-full" onSubmit={handleSubmit}>
+            <form className="p-2 mt-2 w-full" onSubmit={handleSubmit}>
                 <div className="mb-2 px-4 px-4">
                     <label htmlFor="eventName" className="text-sm font-medium text-gray-900">
                         Event Name
@@ -301,10 +304,10 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
                     </div>
                 </div>
 
-                <div className="grid gap-4 content-center px-4">
+                <div className="grid gap-4 content-center px-4 mb-2">
                     <button
                         type="submit"
-                        className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                        className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
                     >
                         Submit
                     </button>
@@ -483,10 +486,10 @@ function StepTwo({ updateLocalStorage }) {
                 </div>
 
 
-                <div className="grid gap-4 content-center px-4">
+                <div className="grid gap-4 content-center px-4 mb-2">
                     <button
                         type="submit"
-                        className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                        className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
                     >
                         Submit
                     </button>
@@ -732,7 +735,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
                             Object.keys(groupedCart).map((IdMerchan, storeIndex) => (
 
                                 <div key={storeIndex} className="mb-4 p-2">
-                                    <h2 className="text-xl font-semibold my-2">ID :{IdMerchan}</h2>
+                                    {/* <h2 className="text-xl font-semibold my-2">ID :{IdMerchan}</h2> */}
                                     {groupedCart[IdMerchan].map((item, itemIndex) => (
                                         <div key={itemIndex} className="w-full bg-white text-black rounded-lg inline-flex items-center px-4 py-2.5 mb-2 w-full border border-red-1">
                                             <div className="flex justify-between w-full">
@@ -745,27 +748,27 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
                                                         <div className="mb-1 text-primary">{item.name} {item.imageUrl} p</div>
                                                         <div className="mb-1 font-sans text-xs">{item.id} terjual | Disukai:20|Max qty:{item.capacity}</div>
                                                         <div className="mb-1 font-sans text-xs">{item.description}</div>
-                                                        <p className="text-gray-600 mt-2">{`Harga: Rp${(item.price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p>
+                                                        <p className="text-gray-600 mt-2">{`Harga: Rp${(item.price * item.quantity).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p>
                                                         {/* <p className="text-gray-600 mt-2">{`Total: Rp${(item.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
                                                         {/* <p className="text-gray-700">{`Total: $${item.total.toFixed(2)}`}</p> */}
                                                     </div>
 
                                                 </div>
 
-                                                <div className="grid place-items-center">
+                                                <div className="grid place-items-center ml-2">
                                                     <div className="flex items-center mt-2">
                                                         <button
-                                                            className="bg-blue-500 text-white px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                                            className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
                                                             onClick={() => handleDecrease(IdMerchan, item.id)}
                                                         >
-                                                            -
+                                                            <IconMinus size={15} />
                                                         </button>
-                                                        <span className="px-4">{item.quantity}</span>
+                                                        <span className="px-4 border border-2 rounded-lg border-blue-600">{item.quantity}</span>
                                                         <button
-                                                            className="bg-blue-500 text-white px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                                            className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
                                                             onClick={() => handleIncrease(IdMerchan, item.id)}
                                                         >
-                                                            +
+                                                            <IconPlus size={15} />
                                                         </button>
                                                     </div>
 
@@ -860,6 +863,13 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
 
     };
 
+    const formatToRupiah = (amount) => {
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR",
+        }).format(amount);
+    };
+
     // Calculate total price and total quantity
     const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(2);
     const jumlahMakanan = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -871,7 +881,7 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
                     <div className="flex justify-between w-full">
                         <div className="flex">
                             <div className="text-left place-items-start">
-                                <div className="mb-1 text-primary">Total Harga: {totalHarga}</div>
+                                <div className="mb-1 text-primary">Total Harga: {formatToRupiah(totalHarga)}</div>
                                 <div className="-mt-1 font-sans text-xs text-gray-500">Jumlah Makanan: {jumlahMakanan}</div>
                             </div>
                         </div>

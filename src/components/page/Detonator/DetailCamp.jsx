@@ -1,8 +1,10 @@
 import styles from "@/styles/Campaign.module.css"
+import { IconChevronDown, IconChevronUp, IconClockFilled } from "@tabler/icons-react";
 import { IconClock, IconCalendarEvent, IconCreditCard, IconClipboardCheck, IconSoup, IconArrowNarrowRight, IconBellRingingFilled, IconCaretDown, IconCaretUp } from '@tabler/icons-react';
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 const DetailCamp = ({ data }) => {
     const [showFullText, setShowFullText] = useState(false);
     const router = useRouter();
@@ -20,6 +22,38 @@ const DetailCamp = ({ data }) => {
         });
 
         return formatter.format(nominal);
+    };
+
+    useEffect(() => {
+        console.log("data", data);
+        console.log("donatur data", data?.campaign_donation);
+    }, [data]);
+
+    const cart = data?.campaign_donation || [];
+    const [showAll, setShowAll] = useState(false);
+
+    // Mengurutkan item dalam keranjang belanja
+    const sortedCart = [...cart].reverse();
+
+    const calculateTimeAgo = (createdAt) => {
+        const now = new Date();
+        const createdAtDate = new Date(createdAt);
+        const difference = now - createdAtDate;
+
+        const seconds = Math.floor(difference / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        if (days > 0) {
+            return ` ${days} hari lalu`;
+        } else if (hours > 0) {
+            return ` ${hours} jam lalu`;
+        } else if (minutes > 0) {
+            return ` ${minutes} menit lalu`;
+        } else {
+            return ` ${seconds} detik lalu`;
+        }
     };
 
     const calculateRemainingTime = (eventDate) => {
@@ -91,16 +125,56 @@ const DetailCamp = ({ data }) => {
                 <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
 
                 <div className="items-center justify-center mt-1 w-full">
-                    <Link href={`/detonator/food/${idCamp}`} className="w-full h-16 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center px-2.5 py-2.5">
+                    <Link
+                        href={`/detonator/food/${idCamp}`}
+                        className="w-full h-16 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center px-2.5 py-2.5 "
+                    >
                         <div className="flex justify-between w-full">
                             <div className="flex">
                                 {/* <IconSoup className=" w-7 h-7" /> */}
                                 <div className="w-12 h-12 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
-                                    <img src="/img/icon/icon_food_order.png" alt="" className="w-8 h-8" />
+                                    <Image
+                                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.detonator.self_photo}`}
+                                        alt="NotFound"
+                                        width={100}
+                                        height={100}
+                                    />
                                 </div>
                                 <div className="text-left place-items-start">
-                                    <div className="mb-1 text-primary">Food Campaigner</div>
-                                    <div className="-mt-1 font-sans text-xs text-gray-500">{data.orders ? data.orders.length : 0} merchants </div>
+                                    <div className="mb-1 text-primary">
+                                        {data.detonator?.oauth?.fullname}
+                                    </div>
+                                    <div className="-mt-1 font-sans text-xs text-gray-500">
+                                        Verified Campaigner{" "}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid place-items-center">
+                                <IconArrowNarrowRight className=" grid grid-cols-3 gap-4 place-items-end text-gray-500" />
+                            </div>
+                        </div>
+                    </Link>
+                    <hr className="w-80 h-0.5 mx-auto mt-2 mb-2 bg-gray-100 border-0 rounded" />
+                    {/* Merchants */}
+                    <Link
+                        href={`/detonator/food/${idCamp}`}
+                        className="w-full h-16 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center px-2.5 py-2.5 "
+                    >
+                        <div className="flex justify-between w-full">
+                            <div className="flex">
+                                {/* <IconSoup className=" w-7 h-7" /> */}
+                                <div className="w-12 h-12 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
+                                    <img
+                                        src="/img/icon/icon_food_order.png"
+                                        alt=""
+                                        className="w-8 h-8"
+                                    />
+                                </div>
+                                <div className="text-left place-items-start">
+                                    <div className="mb-1 text-primary">Merchant</div>
+                                    <div className="-mt-1 font-sans text-xs text-gray-500">
+                                        {data.orders ? data.orders.length : 0} Verified Merchants{" "}
+                                    </div>
                                 </div>
                             </div>
                             <div className="grid place-items-center">
@@ -109,12 +183,23 @@ const DetailCamp = ({ data }) => {
                         </div>
                     </Link>
                     <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
-                    <Link href={`/detonator/report/${idCamp}`} className="w-full h-16 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center px-2.5 py-2.5 mt-2">
+                    <Link
+                        href={`/report/${idCamp}`}
+                        className="w-full h-16 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center px-2.5 py-2.5 mt-2"
+                    >
                         <div className="flex justify-between w-full">
                             <div className="flex">
                                 <div className="text-left place-items-start">
-                                    <div className="mb-1 text-primary flex">Kabar Terbaru <IconBellRingingFilled size={10} className="text-blue-600" /></div>
-                                    <div className="-mt-1 font-sans text-xs text-gray-500">Terahir Update 18 Oktober 2023</div>
+                                    <div className="mb-1 text-primary flex">
+                                        Kabar Terbaru{" "}
+                                        <IconBellRingingFilled
+                                            size={10}
+                                            className="text-blue-600"
+                                        />
+                                    </div>
+                                    <div className="-mt-1 font-sans text-xs text-gray-500">
+                                        Terahir Update 18 Oktober 2023
+                                    </div>
                                 </div>
                             </div>
                             <div className="grid place-items-center">
@@ -127,16 +212,100 @@ const DetailCamp = ({ data }) => {
 
 
                 <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
-                <div className="block mt-1 p-6 bg-white rounded-lg shadow bg-blue-100">
-                    <h5 className="mb-2 text-sm font-bold tracking-tight text-gray-900">Tentang Program</h5>
-                    <p className={`font-normal text-gray-700 text-xs  ${showFullText ? '' : styles.truncate}`}>
+                <div className="block mt-1 p-2 bg-white">
+                    <h5 className="mb-2 text-md tracking-tight text-primary">
+                        Tentang Program
+                    </h5>
+                    <p
+                        className={`font-normal text-gray-700 text-xs  ${showFullText ? "" : styles.truncate
+                            }`}
+                    >
                         {data.description}
                     </p>
-                    <div className="bg-white hover:bg-gray-100 w-full grid place-content-center rounded-sm text-primary text-xs mt-2">
+                    <hr className="w-full h-0.5 mx-auto mt-2 bg-gray-100 border-0 rounded" />
+                    <div className="bg-white grid place-content-center rounded-sm text-primary text-xs mt-2">
+                        {showFullText ? (
+                            <button className="flex" onClick={toggleReadMore}>
+                                Lebih Sedikit <IconChevronUp size={20} />
+                            </button>
+                        ) : (
+                            <button className="flex" onClick={toggleReadMore}>
+                                Selengkapnya <IconChevronDown size={20} />
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
+                <div className="w-full rounded-lg items-center px-2 py-2.5 mt-4">
+                    <div className="flex mb-4">
+                        <p className="text-base font-bold text-black">Donasi</p>
+                        <div className="bg-green-300 px-1 rounded-lg ml-2 flex items-center">
+                            <p className="text-xs font-bold text-primary">{cart.length}</p>
+                        </div>
+                    </div>
+                    {/* Looping untuk menampilkan item yang dimuat dalam keranjang belanja */}
+                    {(showAll ? sortedCart : sortedCart.slice(0, 4)).map(
+                        (item, index) => (
+                            <div
+                                key={index}
+                                className="w-full h-16 text-black flex flex-col mb-1 items-center"
+                            >
+                                <div className="flex justify-between w-full rounded-lg">
+                                    <div className="flex">
+                                        {/* <IconSoup className=" w-7 h-7" /> */}
+                                        <div className="w-12 h-12 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
+                                            <img src="/icon/user.png" alt="" className="w-6 h-6" />
+                                        </div>
+                                        <div className="text-left place-items-start">
+                                            <div className="text-primary text-sm font-bold">
+                                                {" "}
+                                                {item.transaction.sender_name}
+                                            </div>
+                                            <div className="font-sans text-xs text-gray-500">
+                                                Berdonasi Sebesar{" "}
+                                                <span className="font-bold">
+                                                    {formatUang(item.amount)}
+                                                </span>
+                                            </div>
+                                            <div className="flex mt-1 font-sans text-xs items-center gap-1 text-gray-500">
+                                                <IconClockFilled size={12} className="mt-0.5" />
+                                                {calculateTimeAgo(item.created_at)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* <div className="grid place-items-center">
+                                        <IconArrowNarrowRight className=" grid grid-cols-3 gap-4 place-items-end text-gray-500" />
+                                    </div> */}
+                                </div>
+                            </div>
+                        )
+                    )}
+                    <hr className="w-full h-0.5 mx-auto mt-2 bg-gray-100 border-0 rounded" />
+                    <div className="block mt-1 p-2 ">
+                        <div className="bg-white grid place-content-center rounded-sm text-primary text-xs mt-2">
+                            {!showAll ? (
+                                <button
+                                    className="flex focus:outline-none"
+                                    onClick={() => setShowAll(true)}
+                                >
+                                    Selengkapnya <IconChevronDown size={20} />
+                                </button>
+                            ) : (
+                                <button
+                                    className="flex focus:outline-none"
+                                    onClick={() => setShowAll(false)}
+                                >
+                                    Lebih Sedikit <IconChevronUp size={20} />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    {/* <div className="bg-white hover:bg-gray-100 w-full grid place-content-center rounded-sm text-primary text-xs mt-2">
                         <button className="flex" onClick={toggleReadMore}>
                             Selengkapnya {showFullText ? <IconCaretUp size={20} /> : <IconCaretDown size={20} />}
                         </button>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* <CardCampaign /> */}
