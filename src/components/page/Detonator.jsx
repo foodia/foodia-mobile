@@ -7,6 +7,7 @@ import SlideCard from "../SlideCard";
 import styles from "@/styles/Home.module.css";
 import CardCampaign from "../CardCampaign";
 import Swal from "sweetalert2";
+import Image from "next/image";
 
 const Detonator = () => {
     const router = useRouter();
@@ -119,27 +120,56 @@ const Detonator = () => {
             .catch((error) => {
                 console.log(error);
             });
-    }, []);
+    }, [dataApi]);
 
-    const handleFilterChange = async (status = 'NewCamp') => {
-        setSelectedStatus(status);
-        try {
-            const token = sessionStorage.getItem('token');
+    const handleFilterChange = (status) => {
+        let filtered = [];
+        const id = sessionStorage.getItem('id');
 
-            if (status === 'NewCamp') {
-                setFilteredData(dataApi);
-            } else if (status === 'History') {
-                const resHistory = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}history`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
+        setLoading(true);
+        if (status === "OPEN") {
+            axios
+                .get(
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`
+                )
+                .then((response) => {
+                    setDataApi(response.data.body);
+                    setFilteredData(response.data.body);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
                 });
-
-                setFilteredData(resHistory.data.body);
-            }
-        } catch (error) {
-            handleRequestError(error);
+        } else if (status === "INPROGRESS") {
+            axios
+                .get(
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`
+                )
+                .then((response) => {
+                    setDataApi(response.data.body);
+                    setFilteredData(response.data.body);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                });
+        } else if (status === "FINISHED") {
+            axios
+                .get(
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`
+                )
+                .then((response) => {
+                    setDataApi(response.data.body);
+                    setFilteredData(response.data.body);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                });
         }
+
+        setSelectedStatus(status);
+        // setFilteredData(filtered);
     };
 
     const handleRequestError = (error) => {
@@ -161,23 +191,35 @@ const Detonator = () => {
     return (
         <>
 
-            <div className="container mx-auto mt-24 bg-white h-screen">
+            <div className="bg-white h-screen mt-16">
 
 
                 <div className="flex items-center justify-center px-6 my-2">
-                    <div className={`bg-green-50 rounded-lg ${styles.listMenu}`}>
-                        <div className="flex justify-between p-2.5">
-
-                            <Link href={"/creatcampaign?step=1"} className="grid justify-items-center w-24">
-                                <div className={`${styles.iconMenu}`}><IconCirclePlus /></div>
-                                <p className="text-base text-sm text-gray-500 dark:text-gray-400">Campaign</p>
+                    <div className="bg-gray-100 rounded-xl py-2 w-full">
+                        <div className="flex justify-between gap-5 px-1 py-3">
+                            <Link
+                                href={"/creatcampaign?step=1"}
+                                className="grid gap-2 justify-items-center w-24"
+                            >
+                                <div className={`${styles.iconMenu}`}>
+                                    <Image
+                                        src={"/icon/creat_camp.png"}
+                                        alt="creat_camp"
+                                        width={30}
+                                        height={30}
+                                    />
+                                </div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    Campaign
+                                </p>
                             </Link>
 
                         </div>
                     </div>
                 </div>
 
-                <div className={`px-6 flex my-2  ${styles.slide_card}`}>
+
+                {/* <div className={`px-6 flex my-2  ${styles.slide_card}`}>
                     <SlideCard to={"/campaign/1"}
                         img="/img/card/rectangle_70.png"
                         title="Makanan Untuk Semua"
@@ -207,11 +249,44 @@ const Detonator = () => {
                         date="30/10/2022"
                         status="Approved"
                     />
+                </div> */}
+
+                <div className="flex flex-row px-6 py-4 justify-between items-end">
+                    <div
+                        className={`cursor-pointer px-0 pb-3 w-36 ${selectedStatus === "OPEN"
+                            ? "text-primary text-center w-36 border pb-3 border-t-0 border-x-0 border-b-primary"
+                            : "cursor-pointer text-center text-gray-500"
+                            }`}
+                        onClick={() => handleFilterChange("OPEN")}
+                    >
+                        <span>Campaign Baru</span>
+
+                    </div>
+                    <div
+                        className={`cursor-pointer text-center${selectedStatus === "INPROGRESS"
+                            ? " text-primary text-center w-36 border border-t-0 border-x-0 border-b-primary"
+                            : "cursor-pointer text-center text-gray-500"
+                            }`}
+                        onClick={() => handleFilterChange("INPROGRESS")}
+                    >
+                        <span>Campaign Berjalan</span>
+
+                    </div>
+                    <div
+                        className={`cursor-pointer text-center ${selectedStatus === "FINISHED"
+                            ? "text-primary text-center w-36 border border-t-0 border-x-0 border-b-primary"
+                            : "cursor-pointer text-center text-gray-500"
+                            }`}
+                        onClick={() => handleFilterChange("FINISHED")}
+                    >
+                        <span>Campaign Selesai</span>
+
+                    </div>
+
+
                 </div>
 
-
-
-                <div className="place-content-center px-6">
+                {/* <div className="place-content-center px-6">
                     <div className="flex my-5">
 
                         <div
@@ -230,11 +305,7 @@ const Detonator = () => {
                         </div>
 
                     </div>
-                </div>
-
-
-
-
+                </div> */}
 
                 {loading ? (
                     <div className={`${styles.card}`}>
