@@ -255,12 +255,17 @@ const Registrasi = () => {
               </button>
             </div>
           </div>
-          <p className="text-gray-600 text-xs font-medium absolute bottom-0 flex mb-5 px-28 gap-1">
-            Sudah Memiliki Akun?{" "}
-            <Link href="/login" className="text-xs font-bold text-blue-800">
+          <div className="mobile-w flex gap-1 justify-center pt-14">
+            <label className="font-light text-sm text-black">
+              Sudah memiliki akun?
+            </label>
+            <Link
+              className="text-blue-950 font-bold hover:underline text-sm"
+              href="/login"
+            >
               Masuk
             </Link>
-          </p>
+          </div>
         </div>
       </div>
     </main>

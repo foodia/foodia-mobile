@@ -2,10 +2,18 @@
 
 import Swal from "sweetalert2";
 
-const SweetAlert = ({ title, text, imageUrl = "/img/illustration/checklist.png", imageWidth, imageHeight, imageAlt, width, onClose }) => {
-    Swal.fire({
-
-        html: `
+const SweetAlert = ({
+  title,
+  text,
+  imageUrl = "/img/illustration/checklist.png",
+  imageWidth,
+  imageHeight,
+  imageAlt,
+  width,
+  onClose,
+}) => {
+  Swal.fire({
+    html: `
             <div class="grid justify-items-center">
                 <h3 class="text-xl font-semibold text-primary text-center">
                     ${title}
@@ -19,14 +27,12 @@ const SweetAlert = ({ title, text, imageUrl = "/img/illustration/checklist.png",
                 </p>
             </div>
             `,
-        width,
-        showConfirmButton: false,
-        timer: 2000,
+    width,
+    showConfirmButton: false,
+    timer: 2000,
+  });
 
-
-    });
-
-    return null; // Komponen ini tidak mengembalikan apa-apa ke tampilan
+  return null; // Komponen ini tidak mengembalikan apa-apa ke tampilan
 };
 
 export default SweetAlert;
