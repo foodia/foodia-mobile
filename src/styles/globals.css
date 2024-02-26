@@ -8,6 +8,42 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
 }
 
+.custom-swal {
+  height: 500px;
+  padding: 0;
+  margin-right: 5px;
+  margin-bottom: 0;
+  border-top-left-radius: 60px;
+  border-top-right-radius: 60px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.custom-icon-swal {
+  margin-bottom: 0;
+  margin-top: 60px;
+}
+.custom-title-swal {
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  /* margin-left: 10px; */
+  margin-top: 140px;
+  /* width: 190px; */
+}
+.custom-confirm-button-swal {
+  width: 300px;
+  margin-bottom: 25px;
+}
+
+.swal2-container {
+  padding: 0;
+}
+
+.swal2-confirm {
+  border-color: #3fb648;
+  border-radius: 15px !important; /* Adjust border radius as needed */
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -32,7 +68,8 @@ input[type="number"]::-webkit-outer-spin-button {
 /* ------------------------------------ Start Fotbar ------------------------------------ */
 .kotak {
   /* bg-warna */
-  background-color: #fafafa;
+  background-color: white;
+  box-shadow: 0px 0px 20px 0px rgba(0, 38, 96, 0.08);
   height: 100px;
   border-radius: 10px;
   width: 375px;
@@ -52,7 +89,6 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .icon_nav {
-  color: #bdc2c6;
   width: 24px;
   height: 24px;
   position: absolute;
@@ -66,22 +102,19 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* meneu ke 2 */
 .menu2 {
-  color: #bdc2c6;
   left: 105px;
   top: 28px;
 }
 
 /* menu ke 3 */
 .menu3 {
-  color: #bdc2c6;
-  left: 261px;
+  left: 250px;
   top: 28px;
 }
 
 /* menu ke 4 */
 .menu4 {
-  color: #bdc2c6;
-  left: 329px;
+  left: 320px;
   top: 28px;
 }
 
@@ -92,12 +125,12 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 64px;
   position: absolute;
   border-radius: 100px;
-  left: 162px;
-  top: -32px;
+  left: 156px;
+  top: -22px;
 }
 
 .iconQr {
-  background-color: rgba(255, 255, 255, 1);
+  background-color: transparent;
   width: 40px;
   height: 40px;
   position: absolute;
