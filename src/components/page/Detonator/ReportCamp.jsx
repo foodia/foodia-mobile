@@ -104,7 +104,7 @@ const ReportCamp = () => {
           // }
         );
 
-        console.log("data Report", response.data.body);
+        console.log("data Report food", response.data.body);
         setDataReport(response.data.body);
         setLoading(false);
       } catch (error) {
@@ -196,7 +196,7 @@ const ReportCamp = () => {
         {dataReport.map((item) => (
           <CardReport key={item.id} data={item} />
         ))}
-        <h1 className="m-2 mt-4 font-medium text-sm">{`Detonator Report (0/1)`}</h1>
+        <h1 className="m-2 mt-4 font-medium text-sm">{`Detonator Report (${ReportDetonator.length})`}</h1>
         {ReportDetonator.map((item) => (
           <CardReport key={item.id} data={item} />
         ))}
