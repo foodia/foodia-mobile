@@ -269,7 +269,7 @@ const DetailCamp = ({ data }) => {
 
                 <div className="items-center justify-center mt-1 w-full">
                     {/* Detonator */}
-                    <Link
+                    <div
                         href={`/food/${idCamp}`}
                         className="w-full h-16 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center px-2.5 py-2.5 "
                     >
@@ -293,11 +293,11 @@ const DetailCamp = ({ data }) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="grid place-items-center">
+                            {/* <div className="grid place-items-center">
                                 <IconArrowNarrowRight className=" grid grid-cols-3 gap-4 place-items-end text-gray-500" />
-                            </div>
+                            </div> */}
                         </div>
-                    </Link>
+                    </div>
                     <hr className="w-80 h-0.5 mx-auto mt-2 mb-2 bg-gray-100 border-0 rounded" />
                     {/* Merchants */}
                     <Link
