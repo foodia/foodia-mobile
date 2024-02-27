@@ -79,48 +79,48 @@ const DetailCamp = ({ data }) => {
                 <div class="flex flex-col space-y-2 pt-5">
                 <label>
                 <input type="radio" name="donation" id="donation_50000" class="hidden peer" value="50000"  ${
-                  50000 > data.donation_target - data.donation_collected
+                  50000 + data.donation_collected > data.donation_target
                     ? "disabled"
                     : ""
                 }/>
                 <div class=" ${
-                  50000 > data.donation_target - data.donation_collected
+                  data.donation_collected + 50000 > data.donation_target
                     ? "cursor-not-allowed bg-gray-300"
                     : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
                 }   py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
             </label>
             <label>
                 <input  type="radio" name="donation" id="donation_100000" class="hidden peer" value="100000"  ${
-                  100000 > data.donation_target - data.donation_collected
+                  100000 + data.donation_collected > data.donation_target
                     ? "disabled"
                     : ""
                 }/>
                 <div class=" ${
-                  100000 > data.donation_target - data.donation_collected
+                  data.donation_collected + 100000 > data.donation_target
                     ? "cursor-not-allowed bg-gray-300"
                     : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
                 }   py-2 px-4 rounded-lg font-semibold">Rp 100.000</div>
             </label>
             <label>
                 <input  type="radio" name="donation" id="donation_250000" class="hidden peer" value="250000"  ${
-                  250000 > data.donation_target - data.donation_collected
+                  250000 + data.donation_collected > data.donation_target
                     ? "disabled"
                     : ""
                 }/>
                 <div class=" ${
-                  250000 > data.donation_target - data.donation_collected
+                  data.donation_collected + 250000 > data.donation_target
                     ? "cursor-not-allowed bg-gray-300"
                     : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
                 }   py-2 px-4 rounded-lg font-semibold">Rp 250.000</div>
             </label>
             <label>
                 <input  type="radio" name="donation" id="donation_500000" class="hidden peer" value="500000"  ${
-                  500000 > data.donation_target - data.donation_collected
+                  500000 + data.donation_collected > data.donation_target
                     ? "disabled"
                     : ""
                 }/>
                 <div class=" ${
-                  500000 > data.donation_target - data.donation_collected
+                  data.donation_collected + 500000 > data.donation_target
                     ? "cursor-not-allowed bg-gray-300"
                     : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
                 }   py-2 px-4 rounded-lg font-semibold">Rp 500.000</div>
@@ -177,11 +177,13 @@ const DetailCamp = ({ data }) => {
 
   const handleSubmit = (value) => {
     setNominalDonasi(parseInt(value));
-    if (value > data.donation_target - data.donation_collected) {
+    const totalDonasi = parseInt(data.donation_collected);
+    const DonasiNominal = parseInt(value);
+    if (data.donation_target < totalDonasi + DonasiNominal) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Donasi melebihi batas target",
+        text: `Donasi melebihi batas target`,
       });
     } else {
       const data = {
