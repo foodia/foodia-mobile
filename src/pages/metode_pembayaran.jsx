@@ -73,9 +73,17 @@ const MetodePembayaran = () => {
     setDonation(data);
 
     try {
+      const token = sessionStorage.getItem('token');
+      const headers = {};
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}donation/payment`,
-        data
+        data,
+        { headers }
       );
       console.log(
         "data respone",
@@ -95,7 +103,7 @@ const MetodePembayaran = () => {
       // setTimeout(() => {
       //     router.push(`${responeUrl}`);
       // }, 2000);
-    } catch {}
+    } catch { }
     // router.push('/bukti_pembayaran');
   };
 
