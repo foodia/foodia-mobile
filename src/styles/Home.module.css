@@ -38,6 +38,7 @@
   /* background-color: #6cb28e; */
   overflow: auto;
   max-height: 60%;
+  padding-bottom: 70px;
 }
 .card::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
