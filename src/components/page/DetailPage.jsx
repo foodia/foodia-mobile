@@ -134,9 +134,9 @@ const DetailCamp = ({ data }) => {
                         <label class="w-5">Rp </label>
                         <input type="number" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
                       </div>
-                      <p class="text-xs mt-2 text-gray-500">Maksimum donasi ${formatUang(
+                      <p class="text-xs text-gray-500">Maksimum donasi ${
                         data.donation_target - data.donation_collected
-                      )}</p>
+                      }</p>
                     </div>
                 </div>
               </div>
@@ -308,7 +308,7 @@ const DetailCamp = ({ data }) => {
         <div className="items-center justify-center mt-1 w-full">
           {/* Detonator */}
           <Link
-            href={`/campaign/${idCamp}`}
+            href={`/food/${idCamp}`}
             className="w-full h-16 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center px-2.5 py-2.5 "
           >
             <div className="flex justify-between w-full">
