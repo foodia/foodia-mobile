@@ -1,13 +1,7 @@
 import FormMerchant from "@/components/page/FormMerchant";
 
-
-
 const Merchant = () => {
-
-
-    return (
-        <FormMerchant />
-    );
-}
+  return <FormMerchant />;
+};
 
 export default Merchant;

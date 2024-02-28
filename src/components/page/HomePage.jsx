@@ -132,10 +132,7 @@ const HomePage = () => {
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">UMKM</p>
               </Link>
-              <Link
-                href={"/merchant"}
-                className="grid gap-2 justify-items-center w-24"
-              >
+              <Link href={""} className="grid gap-2 justify-items-center w-24">
                 <div className={`${styles.iconMenu}`}>
                   <Image
                     src={"/img/icon/icon_camp_terdekat.png"}
