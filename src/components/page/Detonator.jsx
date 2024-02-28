@@ -127,7 +127,7 @@ const Detonator = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, [selectedStatus]);
+  }, [selectedStatus, loading]);
 
   const handleFilterChange = (status) => {
     let filtered = [];

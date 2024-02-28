@@ -121,6 +121,17 @@ const profile = (profile) => {
               {role === "detonator" && <ProfileDetonator />}
 
               {role === "merchant" && <ProfileMerchant />} */}
+              {role === 'user' && (
+                <ProfileUser />
+              )}
+
+              {role === 'detonator' && (
+                <ProfileDetonator />
+              )}
+
+              {role === 'merchant' && (
+                <ProfileMerchant id={dataUser?.id} />
+              )}
             </div>
             <button
               onClick={btnLogout}
