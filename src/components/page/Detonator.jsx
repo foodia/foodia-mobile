@@ -26,18 +26,31 @@ const Detonator = () => {
       // const status = sessionStorage.getItem('status');
       // const id = sessionStorage.getItem('id');
       console.log("token", token);
-
       if (!token) {
         Swal.fire({
           icon: "error",
           title: "Akses Dibatasi",
           text: ` Mohon untuk login kembali menggunakan akun Detonator.`,
-          showConfirmButton: false,
-          timer: 2000,
+          showConfirmButton: true,
+          confirmButtonText: "Login",
+          confirmButtonColor: "green",
+          showCancelButton: true,
+          cancelButtonText: "Tutup",
+          cancelButtonColor: "red",
+          // timer: 2000,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // console.log("clicked");
+            setLoading(true);
+            router.push("/login");
+          } else if (result.isDismissed) {
+            // console.log("denied");
+            router.push("/home");
+          }
         });
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
+        // setTimeout(() => {
+        //   router.push("/home");
+        // }, 2000);
       } else {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
@@ -53,13 +66,26 @@ const Detonator = () => {
           Swal.fire({
             icon: "warning",
             title: "Akun Belum Terdaftar sebagai Detonator",
-            text: ` Mohon untuk registrasi sebagai Detonator.`,
-            showConfirmButton: false,
-            timer: 2000,
+            text: `Mohon untuk registrasi sebagai Detonator.`,
+            showConfirmButton: true,
+            confirmButtonColor: "green",
+            confirmButtonText: "Registrasi",
+            showCancelButton: true,
+            cancelButtonColor: "red",
+            cancelButtonText: "Tutup",
+            // timer: 2000,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // console.log("clicked");
+              router.push("/registrasi/detonator?step=1");
+            } else if (result.isDismissed) {
+              // console.log("denied");
+              router.push("/home");
+            }
           });
-          setTimeout(() => {
-            router.push("/registrasi/detonator?step=1");
-          }, 2000);
+          // setTimeout(() => {
+          //   router.push("/registrasi/detonator?step=1");
+          // }, 2000);
         } else {
           if (cekData.detonator.status == "waiting") {
             sessionStorage.setItem("id", cekData.detonator.detonator_id);
@@ -255,28 +281,31 @@ const Detonator = () => {
 
         <div className="flex flex-row px-6 py-4 justify-between items-end">
           <div
-            className={`cursor-pointer text-center ${selectedStatus === "OPEN"
-              ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-              : "text-gray-500"
-              }`}
+            className={`cursor-pointer text-center ${
+              selectedStatus === "OPEN"
+                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("OPEN")}
           >
             <span>Campaign Baru</span>
           </div>
           <div
-            className={`cursor-pointer text-center ${selectedStatus === "INPROGRESS"
-              ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-              : "text-gray-500"
-              }`}
+            className={`cursor-pointer text-center ${
+              selectedStatus === "INPROGRESS"
+                ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("INPROGRESS")}
           >
             <span>Campaign Berjalan</span>
           </div>
           <div
-            className={`cursor-pointer text-center ${selectedStatus === "FINISHED"
-              ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-              : "text-gray-500"
-              }`}
+            className={`cursor-pointer text-center ${
+              selectedStatus === "FINISHED"
+                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
             <span>Campaign Selesai</span>

@@ -33,12 +33,22 @@ const Merchant = () => {
           icon: "error",
           title: "Akses Dibatasi",
           text: ` Mohon untuk login kembali menggunakan akun Merchant.`,
-          showConfirmButton: false,
-          timer: 2000,
+          showConfirmButton: true,
+          confirmButtonText: "Login",
+          confirmButtonColor: "green",
+          showCancelButton: true,
+          cancelButtonText: "Tutup",
+          cancelButtonColor: "red",
+          // timer: 2000,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // console.log("clicked");
+            router.push("/login");
+          } else if (result.isDismissed) {
+            // console.log("denied");
+            router.push("/home");
+          }
         });
-        setTimeout(() => {
-          router.push("/home");
-        }, 2000);
       } else {
         const response = await axios.get(
           `https://api.foodia-dev.nuncorp.id/api/v1/auth/check-register-status`,
@@ -50,7 +60,26 @@ const Merchant = () => {
         );
         const cekData = response.data.body;
         if (cekData.merchant.merchant_id == 0) {
-          router.push("/registrasi/merchant?step=1");
+          Swal.fire({
+            icon: "warning",
+            title: "Akun Belum Terdaftar sebagai Merchant",
+            text: "Mohon untuk registrasi sebagai Merchant",
+            showConfirmButton: true,
+            confirmButtonColor: "green",
+            confirmButtonText: "Registrasi",
+            showCancelButton: true,
+            cancelButtonColor: "red",
+            cancelButtonText: "Tutup",
+            // timer: 2000,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // console.log("clicked");
+              router.push("/registrasi/merchant?step=1");
+            } else if (result.isDismissed) {
+              // console.log("denied");
+              router.push("/home");
+            }
+          });
         } else {
           if (cekData.merchant.status == "waiting") {
             sessionStorage.setItem("id", cekData.merchant.merchant_id);
@@ -82,7 +111,7 @@ const Merchant = () => {
               timer: 2000,
             });
             setTimeout(() => {
-              router.push("/home");
+              router.push("/registrasi/merchant?step=1");
             }, 2000);
           } else {
             sessionStorage.setItem("id", cekData.merchant.merchant_id);

@@ -78,44 +78,52 @@ const DetailCamp = ({ data }) => {
                 <p class="text-md font-bold">Pilih Nominal Donasi</p>
                 <div class="flex flex-col space-y-2 pt-5">
                 <label>
-                <input type="radio" name="donation" id="donation_50000" class="hidden peer" value="50000"  ${50000 + data.donation_collected > data.donation_target
-          ? "disabled"
-          : ""
-        }/>
-                <div class=" ${data.donation_collected + 50000 > data.donation_target
-          ? "cursor-not-allowed bg-gray-300"
-          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-        }   py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
+                <input type="radio" name="donation" id="donation_50000" class="hidden peer" value="50000"  ${
+                  50000 + data.donation_collected > data.donation_target
+                    ? "disabled"
+                    : ""
+                }/>
+                <div class=" ${
+                  data.donation_collected + 50000 > data.donation_target
+                    ? "cursor-not-allowed bg-gray-300"
+                    : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+                }   py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
             </label>
             <label>
-                <input  type="radio" name="donation" id="donation_100000" class="hidden peer" value="100000"  ${100000 + data.donation_collected > data.donation_target
-          ? "disabled"
-          : ""
-        }/>
-                <div class=" ${data.donation_collected + 100000 > data.donation_target
-          ? "cursor-not-allowed bg-gray-300"
-          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-        }   py-2 px-4 rounded-lg font-semibold">Rp 100.000</div>
+                <input  type="radio" name="donation" id="donation_100000" class="hidden peer" value="100000"  ${
+                  100000 + data.donation_collected > data.donation_target
+                    ? "disabled"
+                    : ""
+                }/>
+                <div class=" ${
+                  data.donation_collected + 100000 > data.donation_target
+                    ? "cursor-not-allowed bg-gray-300"
+                    : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+                }   py-2 px-4 rounded-lg font-semibold">Rp 100.000</div>
             </label>
             <label>
-                <input  type="radio" name="donation" id="donation_250000" class="hidden peer" value="250000"  ${250000 + data.donation_collected > data.donation_target
-          ? "disabled"
-          : ""
-        }/>
-                <div class=" ${data.donation_collected + 250000 > data.donation_target
-          ? "cursor-not-allowed bg-gray-300"
-          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-        }   py-2 px-4 rounded-lg font-semibold">Rp 250.000</div>
+                <input  type="radio" name="donation" id="donation_250000" class="hidden peer" value="250000"  ${
+                  250000 + data.donation_collected > data.donation_target
+                    ? "disabled"
+                    : ""
+                }/>
+                <div class=" ${
+                  data.donation_collected + 250000 > data.donation_target
+                    ? "cursor-not-allowed bg-gray-300"
+                    : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+                }   py-2 px-4 rounded-lg font-semibold">Rp 250.000</div>
             </label>
             <label>
-                <input  type="radio" name="donation" id="donation_500000" class="hidden peer" value="500000"  ${500000 + data.donation_collected > data.donation_target
-          ? "disabled"
-          : ""
-        }/>
-                <div class=" ${data.donation_collected + 500000 > data.donation_target
-          ? "cursor-not-allowed bg-gray-300"
-          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-        }   py-2 px-4 rounded-lg font-semibold">Rp 500.000</div>
+                <input  type="radio" name="donation" id="donation_500000" class="hidden peer" value="500000"  ${
+                  500000 + data.donation_collected > data.donation_target
+                    ? "disabled"
+                    : ""
+                }/>
+                <div class=" ${
+                  data.donation_collected + 500000 > data.donation_target
+                    ? "cursor-not-allowed bg-gray-300"
+                    : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+                }   py-2 px-4 rounded-lg font-semibold">Rp 500.000</div>
             </label>
             
                     <div class="bg-gray-100 p-3 rounded-lg">
@@ -126,8 +134,9 @@ const DetailCamp = ({ data }) => {
                         <label class="w-5">Rp </label>
                         <input type="number" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
                       </div>
-                      <p class="text-xs text-gray-500">Maksimum donasi ${data.donation_target - data.donation_collected
-        }</p>
+                      <p class="text-xs text-gray-500">Maksimum donasi ${
+                        data.donation_target - data.donation_collected
+                      }</p>
                     </div>
                 </div>
               </div>
@@ -280,8 +289,8 @@ const DetailCamp = ({ data }) => {
                     data.donation_collected > data.donation_target
                       ? data.donation_target
                       : data.donation_collected
-                        ? data.donation_collected
-                        : 0
+                      ? data.donation_collected
+                      : 0
                   )}
                 </span>
               </p>
@@ -387,8 +396,9 @@ const DetailCamp = ({ data }) => {
             Tentang Program
           </h5>
           <p
-            className={`font-normal text-gray-700 text-xs  ${showFullText ? "" : styles.truncate
-              }`}
+            className={`font-normal text-gray-700 text-xs  ${
+              showFullText ? "" : styles.truncate
+            }`}
           >
             {data.description}
           </p>
