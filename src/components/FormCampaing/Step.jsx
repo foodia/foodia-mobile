@@ -930,11 +930,10 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
         <div className="items-center justify-center mt-5 w-full">
           <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
             <div
-              className={`flex ${
-                Object.keys(groupedCart).length > 0
+              className={`flex ${Object.keys(groupedCart).length > 0
                   ? "justify-between"
                   : "justify-center"
-              } w-full`}
+                } w-full`}
             >
               <div className="flex">
                 {Object.keys(groupedCart).length > 0 ? (
@@ -979,75 +978,74 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
           {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
           {Object.keys(groupedCart).length > 0
             ? Object.keys(groupedCart).map((IdMerchan, storeIndex) => (
-                <div key={storeIndex} className="mb-4 p-2">
-                  {/* <h2 className="text-xl font-semibold my-2">ID :{IdMerchan}</h2> */}
-                  {groupedCart[IdMerchan].map((item, itemIndex) => (
-                    <div
-                      key={itemIndex}
-                      className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
-                    >
-                      <div className="flex justify-between h-30 w-full">
-                        <img
-                          className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
-                          src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${
-                            item.images.length > 0
-                              ? item.images[0].image_url
-                              : ""
+              <div key={storeIndex} className="mb-4 p-2">
+                {/* <h2 className="text-xl font-semibold my-2">ID :{IdMerchan}</h2> */}
+                {groupedCart[IdMerchan].map((item, itemIndex) => (
+                  <div
+                    key={itemIndex}
+                    className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
+                  >
+                    <div className="flex justify-between h-30 w-full">
+                      <img
+                        className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
+                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0
+                            ? item.images[0].image_url
+                            : ""
                           }`}
-                          alt=""
-                        />
-                        <div className="flex flex-col justify-between">
-                          <div className="text-left place-items-start">
-                            <div className="text-primary font-bold">
-                              {item.name} {item.imageUrl}
-                            </div>
-                            <div className="mb-1 font-sans text-[11px]">
-                              {item.id} terjual | Disukai oleh: 20 | Max Kuota:{" "}
-                              {item.capacity}
-                            </div>
-                            <div className="mb-1 font-sans text-[11px]">
-                              {item.description}
-                            </div>
-                            {/* <p className="text-gray-600 mt-2">{`Total: Rp${(item.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
-                            {/* <p className="text-gray-700">{`Total: $${item.total.toFixed(2)}`}</p> */}
+                        alt=""
+                      />
+                      <div className="flex flex-col justify-between">
+                        <div className="text-left place-items-start">
+                          <div className="text-primary font-bold">
+                            {item.name} {item.imageUrl}
                           </div>
-                          <div className="mt-2 flex flex-row gap-4">
-                            <p className="font-bold text-primary">{`Rp ${(
-                              item.price * item.quantity
-                            ).toLocaleString(undefined, {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })}`}</p>
-                            <div className="grid place-items-center">
-                              <div className="flex items-center">
-                                <button
-                                  className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                  onClick={() =>
-                                    handleDecrease(IdMerchan, item.id)
-                                  }
-                                >
-                                  <IconMinus size={15} />
-                                </button>
-                                <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
-                                  {item.quantity}
-                                </span>
-                                <button
-                                  className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                  onClick={() =>
-                                    handleIncrease(IdMerchan, item.id)
-                                  }
-                                >
-                                  <IconPlus size={15} />
-                                </button>
-                              </div>
+                          <div className="mb-1 font-sans text-[11px]">
+                            {item.id} terjual | Disukai oleh: 20 | Max Kuota:{" "}
+                            {item.capacity}
+                          </div>
+                          <div className="mb-1 font-sans text-[11px]">
+                            {item.description}
+                          </div>
+                          {/* <p className="text-gray-600 mt-2">{`Total: Rp${(item.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
+                          {/* <p className="text-gray-700">{`Total: $${item.total.toFixed(2)}`}</p> */}
+                        </div>
+                        <div className="mt-2 flex flex-row gap-4">
+                          <p className="font-bold text-primary">{`Rp ${(
+                            item.price * item.quantity
+                          ).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}`}</p>
+                          <div className="grid place-items-center">
+                            <div className="flex items-center">
+                              <button
+                                className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                onClick={() =>
+                                  handleDecrease(IdMerchan, item.id)
+                                }
+                              >
+                                <IconMinus size={15} />
+                              </button>
+                              <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
+                                {item.quantity}
+                              </span>
+                              <button
+                                className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                onClick={() =>
+                                  handleIncrease(IdMerchan, item.id)
+                                }
+                              >
+                                <IconPlus size={15} />
+                              </button>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              ))
+                  </div>
+                ))}
+              </div>
+            ))
             : ""}
         </div>
         {/* </div> */}
@@ -1123,10 +1121,10 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
       const updatedCart = cart.map((item, index) =>
         index === existingItemIndex
           ? {
-              ...item,
-              quantity: item.quantity + food.quantity,
-              total: (item.quantity + food.quantity) * item.price,
-            }
+            ...item,
+            quantity: item.quantity + food.quantity,
+            total: (item.quantity + food.quantity) * item.price,
+          }
           : item
       );
       setCart(updatedCart);
@@ -1244,7 +1242,10 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         );
 
         const approvedMerchants = response.data.body.filter(
-          (merchant) => merchant.status === "approved"
+          (merchant) => {
+            // Filter merchant yang memiliki status approved dan memiliki setidaknya satu produk yang disetujui
+            return merchant.status === "approved" && merchant.products.some(product => product.status === "approved");
+          }
         );
         console.log("page creat camp data", approvedMerchants);
         setDataApi(approvedMerchants);

@@ -14,7 +14,7 @@ const Detonator = () => {
   const [loading, setLoading] = useState(true);
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("OPEN");
+  const [selectedStatus, setSelectedStatus] = useState("DRAFT");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
@@ -161,7 +161,7 @@ const Detonator = () => {
 
     setLoading(true);
     setSelectedStatus(status);
-    if (status === "OPEN") {
+    if (status === "DRAFT") {
       axios
         .get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`
@@ -281,31 +281,28 @@ const Detonator = () => {
 
         <div className="flex flex-row px-6 py-4 justify-between items-end">
           <div
-            className={`cursor-pointer text-center ${
-              selectedStatus === "OPEN"
-                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "text-gray-500"
-            }`}
-            onClick={() => handleFilterChange("OPEN")}
+            className={`cursor-pointer text-center ${selectedStatus === "DRAFT"
+              ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
+              : "text-gray-500"
+              }`}
+            onClick={() => handleFilterChange("DRAFT")}
           >
             <span>Campaign Baru</span>
           </div>
           <div
-            className={`cursor-pointer text-center ${
-              selectedStatus === "INPROGRESS"
-                ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "text-gray-500"
-            }`}
-            onClick={() => handleFilterChange("INPROGRESS")}
+            className={`cursor-pointer text-center ${selectedStatus === "OPEN"
+              ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
+              : "text-gray-500"
+              }`}
+            onClick={() => handleFilterChange("OPEN")}
           >
             <span>Campaign Berjalan</span>
           </div>
           <div
-            className={`cursor-pointer text-center ${
-              selectedStatus === "FINISHED"
-                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "text-gray-500"
-            }`}
+            className={`cursor-pointer text-center ${selectedStatus === "FINISHED"
+              ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
             <span>Campaign Selesai</span>
