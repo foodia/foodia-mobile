@@ -6,6 +6,8 @@ import { useAppState } from "./UserContext";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Header from "../Header";
+import CardPesanan from "../CardPesanan";
+import moment from "moment";
 
 const FormReportMerchan = () => {
     const router = useRouter();
@@ -150,61 +152,85 @@ const FormReportMerchan = () => {
 
     return (
         <>
-            <Header title="Bukti Pengiriman" />
-            <div className="container mx-auto mt-20 bg-white h-screen text-primary">
-                {/* ... (your existing code) */}
-                <div className="grid justify-items-center w-full">
+            <div className="container mx-auto pt-14 bg-white h-screen">
+                <Header title="Form Bukti Pengiriman" />
+                <div className="place-content-center">
+                    <div className="grid justify-items-center w-full">
+                        <CardPesanan
+                            key={state.reportMechant?.id}
+                            to={``}
+                            idOrder={state.reportMechant?.id}
+                            img={
+                                state.reportMechant.merchant_product?.images.length > 0
+                                    ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${state.reportMechant?.merchant_product.images[0].image_url}`
+                                    : "/img/default-image.png"
+                            }
+                            title={state.reportMechant.campaign?.event_name}
+                            productName={state.reportMechant.merchant_product?.name}
+                            date={moment(state.reportMechant.campaign?.created_at).format(
+                                "DD MMM YYYY hh:mm"
+                            )}
+                            qty={state.reportMechant?.qty}
+                            price={state.reportMechant.merchant_product?.price}
+                            status={state.reportMechant?.order_status}
+                            setLoading={true}
+                        />
 
-                    <form className='p-2 mt-6 w-full' onSubmit={handleStepTwoSubmit}>
-                        <div className="mb-2">
-                            <label htmlFor="image_url" className="text-sm font-medium text-gray-900">Foto Selfi</label>
-                            <div className="flex items-center justify-center w-full">
-                                <label
-                                    htmlFor="image_url"
-                                    className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100"
-                                >
-                                    {image_url ? (
-                                        <img
-                                            src={URL.createObjectURL(image_url)}
-                                            alt="Foto Selfi"
-                                            className="w-full h-full rounded-lg object-cover"
-                                        />
-                                    ) : (
-                                        <div className="flex flex-col items-center justify-center pt-5 bg-gray-50 rounded-lg w-28">
-                                            <IconUser className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-400" />
-                                            <div className="flex flex-col items-center justify-center bg-primary rounded-lg w-20">
-                                                <IconCamera className="w-8 h-8 text-gray-500 dark:text-gray-400" />
+                        <form className='px-6 mt-2 w-full' onSubmit={handleStepTwoSubmit}>
+                            <div className="mb-2">
+                                {/* <label htmlFor="image_url" className="text-sm font-medium text-gray-900">Foto Selfi</label> */}
+                                <div className="flex items-center justify-center w-full">
+                                    <label
+                                        htmlFor="image_url"
+                                        className="flex items-center p-4 w-full h-36 border-2 border-gray-500 border-dashed rounded-lg cursor-pointer bg-gray-200  hover:bg-gray-100"
+                                    >
+                                        {image_url ? (
+                                            <img
+                                                src={URL.createObjectURL(image_url)}
+                                                alt="Foto Selfi"
+                                                className="w-full h-full rounded-lg object-cover"
+                                            />
+                                        ) : (
+                                            <div className="flex ">
+                                                <div className="flex items-center justify-center bg-primary rounded-lg w-14 h-14">
+                                                    <IconCamera className="w-8 h-8 text-white" />
+                                                </div>
+                                                <div className="my-auto ml-2">
+                                                    <p className="text-sm font-bold text-black">Foto Makan</p>
+                                                    <p className="text-xs font-semibold text-gray-500">Ambil foto makanan</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
-                                    <input
-                                        id="image_url"
-                                        type="file"
-                                        className="hidden"
-                                        onChange={handleimage_urlChange}
-                                    />
-                                </label>
+
+                                        )}
+                                        <input
+                                            id="image_url"
+                                            type="file"
+                                            className="hidden"
+                                            onChange={handleimage_urlChange}
+                                        />
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div className="mb-2">
-                            <label htmlFor='description' className="text-sm font-medium text-gray-900">Merchant Name</label>
-                            <InputForm
-                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                                label="description" type="text" name="description" value={description} onChange={handledescriptionChange} placeholder="Merchant Name"
-                            />
-                        </div>
+                            <div className="my-2">
+                                {/* <label htmlFor='description' className="text-sm font-medium text-gray-900">Merchant Name</label> */}
+                                <InputForm
+                                    cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+                                    label="description" type="text" name="description" value={description} onChange={handledescriptionChange} placeholder="Komentar"
+                                />
+                            </div>
 
 
 
-                        <div className="grid gap-4 content-center">
-                            <button
-                                type="submit"
-                                className='text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center'
-                            >
-                                Submit
-                            </button>
-                        </div>
-                    </form>
+                            <div className="grid gap-4 content-center">
+                                <button
+                                    type="submit"
+                                    className='text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center'
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </>

@@ -1,9 +1,15 @@
 import styles from "@/styles/Home.module.css";
+import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const CardListMerchan = ({ data }) => {
   const router = useRouter();
+  const [showFullText, setShowFullText] = useState(false);
+  const toggleReadMore = () => {
+    setShowFullText((prevShowFullText) => !prevShowFullText);
+  };
 
   const handleLink = (IdMerchan) => {
     // console.log('IdMerchan', IdMerchan);
@@ -31,8 +37,33 @@ const CardListMerchan = ({ data }) => {
               <p className="mb-1 text-black font-sans font-semibold text-sm truncate">
                 {data.oauth.fullname}
               </p>
-              <div className="flex">
-                <p className="font-sans text-xs text-gray-500 mr-2">{`${data.address}, ${data.city}, ${data.province}`}</p>
+              <div className="flex ">
+                {/* <p className="font-sans text-xs text-gray-500 mr-2">{`${data.address}, ${data.city}, ${data.province}`}</p> */}
+                <p
+                  className={`font-sans text-xs text-gray-500 mr-2   ${showFullText ? "" : styles.cutTextCard
+                    }`}
+                >
+                  {`${data.address}, ${data.city}, ${data.province}`}
+                </p>
+              </div>
+              <div className="">
+                {showFullText ? (
+                  <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg" onClick={(e) => {
+                    e.stopPropagation();
+                    toggleReadMore();
+                  }}>
+                    <p>Lebih Sedikit</p>
+                    <IconChevronUp size={20} />
+                  </button>
+                ) : (
+                  <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg" onClick={(e) => {
+                    e.stopPropagation();
+                    toggleReadMore();
+                  }}>
+                    <p>Selengkapnya</p>
+                    <IconChevronDown size={20} />
+                  </button>
+                )}
               </div>
               <p className="font-sans text-xs text-gray-500 mr-2 mt-2">{`Jumlah Menu :${data.products.length}`}</p>
               <div class="flex items-center">
