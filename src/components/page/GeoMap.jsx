@@ -122,7 +122,7 @@ const GeoMap = ({ sendDataToPage, tracking }) => {
                 scrollWheelZoom={false}
             >
                 <TileLayer
-                    attribution='Click the map to get the location'
+                    attribution='Klik peta untuk mendapatkan lokasi Anda '
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <LocationMarker sendDataToPage={sendDataToPage} tracking={tracking} />

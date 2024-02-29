@@ -437,7 +437,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     </>
   );
 }
-function StepTwo({ updateLocalStorage }) {
+function StepTwo({ updateLocalStorage, uploadedFile }) {
   const router = useRouter();
 
   const [locationInfo, setLocationInfo] = useState(null);
@@ -452,6 +452,7 @@ function StepTwo({ updateLocalStorage }) {
   const [coordinates, setCoordinates] = useState("");
 
   const [tracking, setTracking] = useState(true);
+
 
   const handleDataFromMap = (receivedLocationInfo) => {
     setLocationInfo(receivedLocationInfo);
@@ -560,14 +561,14 @@ function StepTwo({ updateLocalStorage }) {
         <div className="flex justify-center border-gray-300 rounded-lg mb-2">
           <DynamicMap sendDataToPage={handleDataFromMap} tracking={tracking} />
         </div>
-        <div className="grid gap-4 content-center px-4 mb-2">
+        {/* <div className="grid gap-4 content-center px-4 mb-2">
           <button
             type="submit"
             className="text-primary hover:text-white border-2 items-center flex justify-center gap-2 border-primary hover:bg-primary focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-lg text-md w-full sm:w-auto py-2.5 text-center"
           >
             <IconCurrentLocation color="red" /> Gunakan Lokasi Saat Ini
           </button>
-        </div>
+        </div> */}
         <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconMap />
           <input
@@ -1221,6 +1222,7 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         setLocation(parsedFormData.location || "");
       }
     }
+
   }, []);
 
   useEffect(() => {
@@ -1240,12 +1242,15 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         );
 
         const approvedMerchants = response.data.body.filter(
-          (merchant) => merchant.status === "approved"
+          (merchant) => {
+            return merchant.status === "approved" && merchant.products.some(product => product.status === "approved");
+          }
         );
         console.log("page creat camp data", approvedMerchants);
         setDataApi(approvedMerchants);
         setFilteredData(approvedMerchants);
         // setLoading(false);
+        // console.log('list merchant', approvedMerchants);
       } catch (error) {
         console.log("error =", error);
       }

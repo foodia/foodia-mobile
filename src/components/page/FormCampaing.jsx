@@ -11,6 +11,7 @@ import {
   Stepfive,
 } from "../FormCampaing/Step";
 import AddFood from "./AddFoodCamp";
+import Swal from "sweetalert2";
 // import StepThree from '../FormCampaing/CreateCamp';
 
 const FormCampaing = () => {
@@ -47,6 +48,22 @@ const FormCampaing = () => {
   }, []);
 
   useEffect(() => {
+    if (!uploadedFile) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops!",
+        text: "Please upload an image first!",
+        showConfirmButton: false,
+        timer: 2500,
+      });
+
+      setTimeout(() => {
+        router.push("/creatcampaign?step=1");
+      }, 2500);
+    }
+  }, [uploadedFile]);
+
+  useEffect(() => {
     // Membaca nilai dari localStorage setelah rendering pada sisi klien
     const cartData = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(cartData);
@@ -67,8 +84,9 @@ const FormCampaing = () => {
     );
     setTitle = "Tanggal Pelaksanaan";
   } else if (step === "2") {
-    stepComponent = <StepTwo />;
+    stepComponent = <StepTwo uploadedFile={uploadedFile} />;
     setTitle = "Lokasi Pelaksanaan";
+
   } else if (step === "3") {
     stepComponent = (
       <StepThree
