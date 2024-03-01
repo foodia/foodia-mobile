@@ -11,8 +11,25 @@ const CardReport = ({ data }) => {
     const toggleReadMore = () => {
         setShowFullText((prevShowFullText) => !prevShowFullText);
     };
+    const hendleButton = () => {
+        const role = sessionStorage.getItem('role');
+        // console.log('data res', data);
+        if (data.order == null) {
+            return
+        } else {
+            if (data.order.is_rating) {
+                return
+            } else {
+                if (role === 'detonator') {
+                    router.push(`/detonator/reportfood/${data.order.id}`)
+                } else {
+                    return
+                }
+            }
+        }
+    }
     return (
-        <div className="block m-2  bg-white rounded-lg hover:shadow-md border bg-blue-100">
+        <div onClick={hendleButton} className="block m-2  bg-white rounded-lg hover:shadow-md border bg-blue-100">
             <div className="flex p-2 ">
                 <div className="w-1/3 mr-4">
                     <img
@@ -24,9 +41,12 @@ const CardReport = ({ data }) => {
                 <div className="w-full">
                     <div className="flex justify-between">
                         <h5 className="mb-1 text-sm font-bold tracking-tight text-gray-900">{` ${data.order ? data.order.merchant_product.name : data.title}`}</h5>
-                        <div className="h-4 p-2 bg-primary text-white rounded items-center flex justify-center">
-                            <p className="text-xs">Completed</p>
-                        </div>
+
+                        {data.order && data.order.is_rating ? (
+                            <div className="h-4 p-2 bg-primary text-white rounded items-center flex justify-center">
+                                <p className="text-xs">Completed</p>
+                            </div>
+                        ) : null}
                     </div>
                     <p className="mb-1 text-sm font-bold tracking-tight text-gray-900">{data.order ? data.order.merchant.merchant_name : ''}  </p>
                     <p className="text-xs text-gray-900">{new Date(data.created_at).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).replace(',', '')}</p>

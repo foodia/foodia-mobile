@@ -242,7 +242,7 @@ const ReportCamp = () => {
                     className="bg-gray-300 text-gray-500 w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
                     disabled
                   >
-                    Buat Laporan
+                    Export Report
                   </button>
                 )}
               </div>
