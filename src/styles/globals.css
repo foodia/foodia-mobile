@@ -225,3 +225,22 @@ input[type="number"]::-webkit-outer-spin-button {
 .animate-zoom {
   animation: zoom-in-out 2s ease infinite;
 }
+
+.with-image {
+  padding-left: 30px;
+  /* Mengatur ruang untuk gambar di sebelah kiri */
+  background-repeat: no-repeat;
+  background-position: left center;
+  /* Menempatkan gambar di sebelah kiri */
+  background-size: 20px;
+  /* Ukuran gambar */
+}
+
+/* Menambahkan gambar untuk setiap opsi */
+option[value="bca"].with-image {
+  background-image: url('/bank/bca.png');
+}
+
+option[value="mandiri"].with-image {
+  background-image: url('/bank/mandiri.png');
+}
