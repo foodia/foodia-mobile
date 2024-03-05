@@ -73,9 +73,17 @@ const MetodePembayaran = () => {
     setDonation(data);
 
     try {
+      const token = sessionStorage.getItem('token');
+      const headers = {};
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}donation/payment`,
-        data
+        data,
+        { headers }
       );
       console.log(
         "data respone",
@@ -95,7 +103,7 @@ const MetodePembayaran = () => {
       // setTimeout(() => {
       //     router.push(`${responeUrl}`);
       // }, 2000);
-    } catch {}
+    } catch { }
     // router.push('/bukti_pembayaran');
   };
 
@@ -114,7 +122,7 @@ const MetodePembayaran = () => {
       <div className="container my-0 mx-auto max-w-480 overflow-x-hidden bg-white flex flex-col">
         <Header title="Konfirmasi Donasi" />
         <div className="container mx-auto pt-14  h-screen">
-          <div className="px-4">
+          {/* <div className="px-4">
             <label className="text-xs font-medium">
               Pilih Metode Pembayaran
             </label>
@@ -144,16 +152,8 @@ const MetodePembayaran = () => {
                 className="w-4 h-4 border-primary focus:outline-none dark:focus:outline-none dark:bg-gray-700 dark:border-gray-600 rounded-full"
               />
             </label>
-            {/* <label for="default-radio-2" className="my-2 flex items-center justify-between border-gray-500 bottom-1 border rounded-lg h-14 px-4">
-                    <div className="flex items-center">
-                        <img src="icon/payment/gopay.png" alt="" className="w-10 h-10 rounded-lg" />
-                        <p className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                            Gopay
-                        </p>
-                    </div>
-                    <input id="default-radio-2" type="radio" value="Gopay" name="default-radio" onChange={handleRadioChange} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                </label> */}
-          </div>
+            
+          </div> */}
           <div className="p-4 mobile-w h-56 mx-auto w-full max-w-screen-sm bg-white rounded-lg">
             <h1 className="text-xs font-medium">Rincian Donasi</h1>
             <div className="shadow-[rgba(0,0,13,0.5)_0px_0px_3px_0px] mt-3 p-3 rounded-lg">

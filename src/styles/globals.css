@@ -18,10 +18,12 @@ input[type="number"]::-webkit-outer-spin-button {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }
+
 .custom-icon-swal {
   margin-bottom: 0;
   margin-top: 60px;
 }
+
 .custom-title-swal {
   width: 100%;
   text-align: center;
@@ -30,6 +32,7 @@ input[type="number"]::-webkit-outer-spin-button {
   margin-top: 140px;
   /* width: 190px; */
 }
+
 .custom-confirm-button-swal {
   width: 300px;
   margin-bottom: 25px;
@@ -41,7 +44,8 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .swal2-confirm {
   border-color: #3fb648;
-  border-radius: 15px !important; /* Adjust border radius as needed */
+  border-radius: 15px !important;
+  /* Adjust border radius as needed */
 }
 
 ::-webkit-scrollbar {
@@ -201,4 +205,42 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .your-custom-cancel-button-class {
   /* CSS untuk tombol pembatalan SweetAlert */
+}
+
+/* ----------------------------------------------------- animation */
+@keyframes zoom-in-out {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-zoom {
+  animation: zoom-in-out 2s ease infinite;
+}
+
+.with-image {
+  padding-left: 30px;
+  /* Mengatur ruang untuk gambar di sebelah kiri */
+  background-repeat: no-repeat;
+  background-position: left center;
+  /* Menempatkan gambar di sebelah kiri */
+  background-size: 20px;
+  /* Ukuran gambar */
+}
+
+/* Menambahkan gambar untuk setiap opsi */
+option[value="bca"].with-image {
+  background-image: url('/bank/bca.png');
+}
+
+option[value="mandiri"].with-image {
+  background-image: url('/bank/mandiri.png');
 }

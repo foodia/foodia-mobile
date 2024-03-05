@@ -41,7 +41,7 @@ const AddFoodCamp = ({ id, name, price, images, description, capacity, addToCart
                     <img className="w-10 h-10 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600" src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${firstImageUrl}`} alt="" />
 
                     <div className="text-left place-items-start">
-                        <div className="mb-1">{name}</div>
+                        <div className="mb-1 capitalize">{name}</div>
                         <div className="font-sans text-xs text-gray-500">{description}</div>
                         <div className="flex">
                             <p className="font-sans text-xs text-gray-500 mr-2">{`Capacity: ${capacity}`}</p>

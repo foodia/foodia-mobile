@@ -70,7 +70,7 @@ const CardRepordFood = (props) => {
                         />
                         <div className={`text-left ml-1 ml-2`}>
                             <div className="flex justify-between">
-                                <p className=" text-primary font-sans font-bold text-xs truncate">{title}</p>
+                                <p className=" text-primary font-sans font-bold text-xs truncate capitalize">{title}</p>
                                 {/* <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'bg-blue-600' : order_status === 'approved' ? 'bg-green-500' : order_status === 'rejected' ? 'bg-red-500' : ''}`}>
                                     <p className="text-white">{getorder_status()}</p>
                                     <p className="text-white">{`${order_status === 'review' ? '' : order_status === 'approved' ? 'bg-green-500' : order_status === 'rejected' ? 'bg-red-500' : ''}`}</p>

@@ -128,78 +128,80 @@ const ReportFood = (ReportFood) => {
     }
     return (
         <>
-            <Header title="Reting Food" />
-            <div className="container mx-auto mt-20 bg-white h-screen">
-                <div className="mx-auto text-center p-2 text-primary">
-                    <h1 className="font-bold">Rating Camp</h1>
-                    {/* <h1>TEBAR 1000 PAKET NASI JUM'AT BERKAH</h1> */}
-                </div>
-                <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
-                <form className='p-2 mt-5 w-full' onSubmit={handleSubmit}>
-
-                    <div className="mb-2">
-                        <label htmlFor='description' className="text-sm font-medium text-gray-900">Description </label>
-                        <InputForm
-                            cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                            label="description" type="text" name="description" value={description} onChange={handledescriptionChange} placeholder="Description"
-                        />
+            <div className="container mx-auto pt-14 bg-white h-screen">
+                <Header title="Form Bukti Pengiriman" />
+                <div className="place-content-center">
+                    <div className="mx-auto text-center p-2 text-primary">
+                        <h1 className="font-bold">Rating Camp</h1>
+                        {/* <h1>TEBAR 1000 PAKET NASI JUM'AT BERKAH</h1> */}
                     </div>
-                    <div className="mb-2">
-                        <label htmlFor="imgReport" className="text-sm font-medium text-gray-900"></label>
-                        <div className="flex items-center justify-center w-full">
-                            <label
-                                htmlFor="imgReport"
-                                className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100"
-                            >
-                                {imgReport ? (
-                                    <img
-                                        src={URL.createObjectURL(imgReport)}
-                                        alt="Foto Selfi"
-                                        className="w-full h-full rounded-lg object-cover"
-                                    />
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center pt-5 bg-gray-50 rounded-lg w-28">
-                                        <IconPhotoScan className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-400" />
-                                        <div className="flex flex-col items-center justify-center bg-primary rounded-lg w-20">
-                                            <IconCamera className="w-8 h-8 text-gray-500 dark:text-gray-400" />
-                                        </div>
-                                    </div>
-                                )}
-                                <input
-                                    id="imgReport"
-                                    type="file"
-                                    className="hidden"
-                                    onChange={handleImgReportChange}
-                                />
-                            </label>
+                    <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
+                    <form className='p-2 mt-5 w-full' onSubmit={handleSubmit}>
+
+                        <div className="mb-2">
+                            <label htmlFor='description' className="text-sm font-medium text-gray-900">Description </label>
+                            <InputForm
+                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+                                label="description" type="text" name="description" value={description} onChange={handledescriptionChange} placeholder="Description"
+                            />
                         </div>
-                    </div>
-                    <div className="mb-2 flex justify-center">
-                        {/* Field input Rating star 1 to 5 */}
-                        {[1, 2, 3, 4, 5].map((index) => (
-                            <svg
-                                key={index}
-                                className={`w-4 h-4 ms-1 cursor-pointer ${index <= star ? 'text-yellow-300' : 'text-gray-500'}`}
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 22 20"
-                                onClick={() => handleStarChange(index)}
-                            >
-                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                            </svg>
-                        ))}
-                    </div>
-                    <div className="grid gap-4 content-center">
-                        <button
-                            type="submit"
-                            className='text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center'>
-                            Submit
-                        </button>
-                    </div>
-                </form>
+                        <div className="mb-2">
+                            <label htmlFor="imgReport" className="text-sm font-medium text-gray-900"></label>
+                            <div className="flex items-center justify-center w-full">
+                                <label
+                                    htmlFor="imgReport"
+                                    className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100"
+                                >
+                                    {imgReport ? (
+                                        <img
+                                            src={URL.createObjectURL(imgReport)}
+                                            alt="Foto Selfi"
+                                            className="w-full h-full rounded-lg object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center pt-5 bg-gray-50 rounded-lg w-28">
+                                            <IconPhotoScan className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-400" />
+                                            <div className="flex flex-col items-center justify-center bg-primary rounded-lg w-20">
+                                                <IconCamera className="w-8 h-8 text-gray-500 dark:text-gray-400" />
+                                            </div>
+                                        </div>
+                                    )}
+                                    <input
+                                        id="imgReport"
+                                        type="file"
+                                        className="hidden"
+                                        onChange={handleImgReportChange}
+                                    />
+                                </label>
+                            </div>
+                        </div>
+                        <div className="mb-2 flex justify-center">
+                            {/* Field input Rating star 1 to 5 */}
+                            {[1, 2, 3, 4, 5].map((index) => (
+                                <svg
+                                    key={index}
+                                    className={`w-4 h-4 ms-1 cursor-pointer ${index <= star ? 'text-yellow-300' : 'text-gray-500'}`}
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 22 20"
+                                    onClick={() => handleStarChange(index)}
+                                >
+                                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+                                </svg>
+                            ))}
+                        </div>
+                        <div className="grid gap-4 content-center">
+                            <button
+                                type="submit"
+                                className='text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center'>
+                                Submit
+                            </button>
+                        </div>
+                    </form>
 
-            </div >
+                </div >
+            </div>
         </>
     );
 }

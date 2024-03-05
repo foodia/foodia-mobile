@@ -14,6 +14,18 @@ const CreateReport = (CreateReport) => {
     const [title, seTitle] = useState(newReport?.title ?? '');
     const [description, setDescription] = useState(newReport?.description ?? '');
     const [imgReport, setImgReport] = useState(newReport?.imgReport ?? null);
+    const [dataCamp, setDataCamp] = useState();
+
+    useEffect(() => {
+        const resspones = axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${campaign_id}`);
+        resspones.then((response) => {
+            setDataCamp(response.data.body);
+            console.log('respones', response.data.body);
+        })
+            .catch((error) => {
+                console.error(error);
+            })
+    }, [campaign_id])
 
     const handletitleChange = (event) => {
         seTitle(event.target.value);
@@ -139,68 +151,78 @@ const CreateReport = (CreateReport) => {
 
     return (
         <>
-            <Header title="Buat laporan" />
-            <div className="container mx-auto mt-20 bg-white h-screen">
-                <div className="mx-auto text-center p-2 text-primary">
-                    <h1 className="font-bold">Report Campaigner</h1>
-                    <h1>TEBAR 1000 PAKET NASI JUM'AT BERKAH</h1>
-                </div>
-                <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
-                <form className='p-2 mt-5 w-full' onSubmit={handleSubmit}>
-                    <div className="mb-2">
-                        <label htmlFor='title' className="text-sm font-medium text-gray-900">Report</label>
-                        <InputForm
-                            cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                            label="title" type="text" name="title" value={title} onChange={handletitleChange} placeholder="Report"
-                        />
+            <div className="container mx-auto pt-14 bg-white h-screen">
+                <Header />
+                <div className="place-content-center">
+                    <div className="mx-auto text-center p-2 text-primary">
+                        <h1 className="font-bold text-lg">Form Penyelesaian Detonator</h1>
+                        <h1>{dataCamp?.event_name}</h1>
                     </div>
-                    <div className="mb-2">
-                        <label htmlFor='description' className="text-sm font-medium text-gray-900">Description </label>
-                        <InputForm
-                            cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
-                            label="description" type="text" name="description" value={description} onChange={handledescriptionChange} placeholder="Description"
-                        />
-                    </div>
-                    <div className="mb-2">
-                        <label htmlFor="imgReport" className="text-sm font-medium text-gray-900"></label>
-                        <div className="flex items-center justify-center w-full">
-                            <label
-                                htmlFor="imgReport"
-                                className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100"
-                            >
-                                {imgReport ? (
-                                    <img
-                                        src={URL.createObjectURL(imgReport)}
-                                        alt="Foto Selfi"
-                                        className="w-full h-full rounded-lg object-cover"
-                                    />
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center pt-5 bg-gray-50 rounded-lg w-28">
-                                        <IconPhotoScan className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-400" />
-                                        <div className="flex flex-col items-center justify-center bg-primary rounded-lg w-20">
-                                            <IconCamera className="w-8 h-8 text-gray-500 dark:text-gray-400" />
-                                        </div>
-                                    </div>
-                                )}
-                                <input
-                                    id="imgReport"
-                                    type="file"
-                                    className="hidden"
-                                    onChange={handleImgReportChange}
-                                />
-                            </label>
-                        </div>
-                    </div>
-                    <div className="grid gap-4 content-center">
-                        <button
-                            type="submit"
-                            className='text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center'>
-                            Submit
-                        </button>
-                    </div>
-                </form>
+                    <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
+                    <form className='p-2 mt-5 w-full' onSubmit={handleSubmit}>
 
-            </div >
+                        <div className="mb-2">
+                            <label htmlFor="imgReport" className="text-sm font-medium text-gray-900"></label>
+                            <div className="flex items-center justify-center w-full">
+                                <label
+                                    htmlFor="imgReport"
+                                    className="flex items-center p-4 w-full h-36 border-2 border-gray-500 border-dashed rounded-lg cursor-pointer bg-gray-200  hover:bg-gray-100"
+                                >
+                                    {imgReport ? (
+                                        <img
+                                            src={URL.createObjectURL(imgReport)}
+                                            alt="Foto Selfi"
+                                            className="w-full h-full rounded-lg object-cover"
+                                        />
+                                    ) : (
+                                        <div className="flex ">
+                                            <div className="flex items-center justify-center bg-primary rounded-lg w-14 h-14">
+                                                <IconCamera className="w-8 h-8 text-white" />
+                                            </div>
+                                            <div className="my-auto ml-2">
+                                                <p className="text-sm font-bold text-black">Foto Acara</p>
+                                                <p className="text-xs font-semibold text-gray-500">Ambil foto acara</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <input
+                                        id="imgReport"
+                                        type="file"
+                                        className="hidden"
+                                        onChange={handleImgReportChange}
+                                    />
+                                </label>
+                            </div>
+                        </div>
+                        <div className="mb-2">
+                            {/* <label htmlFor='title' className="text-sm font-medium text-gray-900">Report</label> */}
+                            <InputForm
+                                cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5`}
+                                label="title" type="text" name="title" value={title} onChange={handletitleChange} placeholder="Judul"
+                            />
+                        </div>
+                        <div className="mb-2">
+                            {/* <label htmlFor='description' className="text-sm font-medium text-gray-900">Description </label> */}
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={description}
+                                onChange={handledescriptionChange}
+                                placeholder="Description"
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 h-24"
+                            />
+                        </div>
+                        <div className="grid gap-4 content-center">
+                            <button
+                                type="submit"
+                                className='text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center'>
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+
+                </div >
+            </div>
         </>
     )
 }

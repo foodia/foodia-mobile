@@ -38,9 +38,12 @@
   /* background-color: #6cb28e; */
   overflow: auto;
   max-height: 60%;
+  padding-bottom: 70px;
 }
+
 .card::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+  display: none;
+  /* Safari and Chrome */
 }
 
 /* @media (max-width: 767px) {
@@ -67,7 +70,7 @@
 .item_card {
   box-shadow: 0px 3px 3px #00000040;
   width: 344px;
-  height: 120px;
+  /* height: 120px; */
 }
 
 .img_card {
@@ -76,9 +79,9 @@
   max-width: 75px;
 }
 
+/* tambahkan gaya tambahan untuk mengatur tata letak teks jika diperlukan */
 .text_card {
   width: 235px;
-  /* tambahkan gaya tambahan untuk mengatur tata letak teks jika diperlukan */
 }
 
 /* ---------------------------------------------------------------------------- */
@@ -141,13 +144,11 @@
   width: 350px;
   height: 100px;
   border-radius: 10px;
-  background: linear-gradient(
-    to right,
-    #f0f0f0 0%,
-    #d8d8d8 20%,
-    #f0f0f0 40%,
-    #f0f0f0 100%
-  );
+  background: linear-gradient(to right,
+      #f0f0f0 0%,
+      #d8d8d8 20%,
+      #f0f0f0 40%,
+      #f0f0f0 100%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }

@@ -1,6 +1,7 @@
 import styles from "@/styles/Home.module.css";
 import { IconClock } from "@tabler/icons-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const CardCampaign = (props) => {
   const {
@@ -15,20 +16,23 @@ const CardCampaign = (props) => {
     donation_target,
     donation_collected = 0,
   } = props;
+  const [Terkumpul, setTerkumpul] = useState(0);
   const calculateRemainingTime = (eventDate) => {
     const currentDate = new Date();
     const eventDateObject = new Date(eventDate);
     const timeDifference = eventDateObject - currentDate;
 
     // Calculate remaining time in days
-    const remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+    let remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
 
-    console.log(remainingDays);
+    if (remainingDays < 0) {
+      remainingDays = 0;
+    }
+
+    console.log("remainingDays", remainingDays);
 
     return remainingDays;
   };
-  const remainingDays = calculateRemainingTime(date);
-  // console.log('remainingDays', remainingDays);
 
   const formatUang = (nominal) => {
     const formatter = new Intl.NumberFormat("id-ID", {
@@ -48,6 +52,14 @@ const CardCampaign = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (donation_target > donation_collected) {
+      setTerkumpul(donation_collected);
+    } else {
+      setTerkumpul(donation_target);
+    }
+  }, [donation_collected, donation_target]);
+
   return (
     <div className="flex justify-center mt-2.5 w-full mb-2 px-6" key={idKey}>
       <Link
@@ -61,7 +73,7 @@ const CardCampaign = (props) => {
             alt=""
           />
           <div className={`px-2 ${styles.text_card}`}>
-            <p className="mb-1 text-black font-sans font-bold text-xl">
+            <p className="mb-1 text-black font-sans font-bold text-xl capitalize">
               {title}
             </p>
             <div className="flex">
@@ -91,7 +103,7 @@ const CardCampaign = (props) => {
           <div className="flex items-center font-medium text-blue-800 font-sans text-xs">
             <IconClock size={11} />
             <p className="font-sans ml-1">
-              {remainingDays > 0 ? remainingDays : 0} Hari
+              {calculateRemainingTime(date)} Hari
             </p>
           </div>
         </div>
@@ -99,7 +111,7 @@ const CardCampaign = (props) => {
           <p className="font-sans text-xs">
             Donasi Terkumpul:
             <span className="font-sans text-xs font-medium text-blue-800 ml-2">
-              {formatUang(donation_collected ? donation_collected : 0)}
+              {formatUang(Terkumpul ? Terkumpul : 0)}
             </span>
           </p>
         </div>

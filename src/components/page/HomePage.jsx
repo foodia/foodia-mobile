@@ -103,7 +103,7 @@ const HomePage = () => {
   return (
     <>
       <div className="bg-white h-screen">
-        <SearchBar />
+        {/* <SearchBar /> */}
         <div className="flex items-center justify-center px-6 my-2">
           <div className="bg-gray-100 rounded-xl py-2">
             <div className="flex justify-between gap-5 px-1 py-3">
@@ -132,10 +132,7 @@ const HomePage = () => {
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">UMKM</p>
               </Link>
-              <Link
-                href={"/merchant"}
-                className="grid gap-2 justify-items-center w-24"
-              >
+              <Link href={""} className="grid gap-2 justify-items-center w-24">
                 <div className={`${styles.iconMenu}`}>
                   <Image
                     src={"/img/icon/icon_camp_terdekat.png"}
@@ -191,8 +188,8 @@ const HomePage = () => {
           <div
             className={`cursor-pointer px-0 pb-3 w-36 ${
               selectedStatus === "OPEN"
-                ? "text-primary text-center w-36 border pb-3 border-t-0 border-x-0 border-b-primary"
-                : "cursor-pointer text-center text-gray-500"
+                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                : "text-gray-500"
             }`}
             onClick={() => handleFilterChange("OPEN")}
           >
@@ -208,7 +205,7 @@ const HomePage = () => {
           <div
             className={`cursor-pointer text-center${
               selectedStatus === "INPROGRESS"
-                ? " text-primary text-center w-36 border border-t-0 border-x-0 border-b-primary"
+                ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
                 : "cursor-pointer text-center text-gray-500"
             }`}
             onClick={() => handleFilterChange("INPROGRESS")}
@@ -225,7 +222,7 @@ const HomePage = () => {
           <div
             className={`cursor-pointer text-center ${
               selectedStatus === "FINISHED"
-                ? "text-primary text-center w-36 border border-t-0 border-x-0 border-b-primary"
+                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
                 : "cursor-pointer text-center text-gray-500"
             }`}
             onClick={() => handleFilterChange("FINISHED")}
