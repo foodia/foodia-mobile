@@ -73,20 +73,19 @@ const CardFood = (props) => {
             />
             <div className={`text-left ml-2 w-56`}>
               <div className="flex justify-between pr-2">
-                <p className="text-primary font-bold text-md truncate">
+                <p className="text-primary font-bold text-md truncate capitalize">
                   {title}
                 </p>
                 {status !== "approved" ? (
                   <div
-                    className={`flex justify-center items-center rounded-full  ${
-                      status === "waiting"
+                    className={`flex justify-center items-center rounded-full  ${status === "waiting"
                         ? "bg-blue-600"
                         : status === "approved"
-                        ? "bg-green-500"
-                        : status === "rejected"
-                        ? "bg-red-500"
-                        : ""
-                    }`}
+                          ? "bg-green-500"
+                          : status === "rejected"
+                            ? "bg-red-500"
+                            : ""
+                      }`}
                   >
                     <p className="text-white font-medium text-[10px] px-2">
                       {getStatusIcon()}
