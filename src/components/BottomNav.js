@@ -209,20 +209,20 @@ const BottomNav = () => {
         ${pathname === "" ? "text-primary" : "text-gray-400"}
         `}
       >
-        <Link className="items-center flex flex-col gap-1" href="">
+        {/* <Link className="items-center flex flex-col gap-1" href="">
           <IconReceipt />
           <p className="text-xs">Receipt</p>
-        </Link>
+        </Link> */}
       </div>
       <div
         className={`menu3 icon_nav hover:text-primary 
         ${pathname === "" ? "text-primary" : "text-gray-400"}
         `}
       >
-        <Link className="items-center flex flex-col gap-1" href="">
+        {/* <Link className="items-center flex flex-col gap-1" href="">
           <IconMail />
           <p className="text-xs">Inbox</p>
-        </Link>
+        </Link> */}
       </div>
       {token ? (
         <div

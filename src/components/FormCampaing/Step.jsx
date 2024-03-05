@@ -99,7 +99,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
 
     // Calculate the minimum allowed date (7 days from the current date)
     const minAllowedDate = new Date();
-    minAllowedDate.setDate(currentDate.getDate() + 7);
+    minAllowedDate.setDate(currentDate.getDate() + 2);
 
     // Check if the selected date is at least 7 days from the current date
     if (selectedDateObject >= minAllowedDate) {
@@ -107,8 +107,8 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     } else {
       Swal.fire({
         icon: "error",
-        title: "Invalid Date",
-        text: "Please select a date at least 7 days from the current date.",
+        title: "Tanggal Tidak Valid",
+        text: "Pilihlah tanggal minimal 2 hari dari tanggal saat ini.",
         timer: 2000,
       });
     }
@@ -931,8 +931,8 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
           <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
             <div
               className={`flex ${Object.keys(groupedCart).length > 0
-                  ? "justify-between"
-                  : "justify-center"
+                ? "justify-between"
+                : "justify-center"
                 } w-full`}
             >
               <div className="flex">
@@ -989,15 +989,16 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
                       <img
                         className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
                         src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0
-                            ? item.images[0].image_url
-                            : ""
+                          ? item.images[0].image_url
+                          : ""
                           }`}
                         alt=""
                       />
                       <div className="flex flex-col justify-between">
                         <div className="text-left place-items-start">
-                          <div className="text-primary font-bold">
-                            {item.name} {item.imageUrl}
+                          <div className="text-primary font-bold capitalize">
+                            {item.name}
+                            {/* {item.imageUrl} */}
                           </div>
                           <div className="mb-1 font-sans text-[11px]">
                             {item.id} terjual | Disukai oleh: 20 | Max Kuota:{" "}

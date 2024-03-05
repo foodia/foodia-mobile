@@ -75,7 +75,7 @@ const BuktiPembayaran = () => {
 
                         <div className="flex justify-between mb-2">
                             <h1 className="font-bold text-gray-400">Metode Pembayaran</h1>
-                            <p className="font-semibold">{pembayaran ? 'Mayang' : '-'}</p>
+                            <p className="font-semibold">{pembayaran ? 'Mayar' : '-'}</p>
                         </div>
                         <div className="flex justify-between">
                             <h1 className="font-bold text-gray-400">Total Pembayaran</h1>

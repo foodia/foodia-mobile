@@ -73,7 +73,7 @@ const CardCampaign = (props) => {
             alt=""
           />
           <div className={`px-2 ${styles.text_card}`}>
-            <p className="mb-1 text-black font-sans font-bold text-xl">
+            <p className="mb-1 text-black font-sans font-bold text-xl capitalize">
               {title}
             </p>
             <div className="flex">

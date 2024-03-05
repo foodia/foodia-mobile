@@ -2,15 +2,34 @@ import styles from "@/styles/Campaign.module.css"
 import { IconCaretDown, IconCaretUp } from '@tabler/icons-react';
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const CardReport = ({ data }) => {
     const router = useRouter();
     const { id } = router.query;
     const [showFullText, setShowFullText] = useState(false);
+    const [buttonStatus, setButtonStatus] = useState(false);
     const toggleReadMore = () => {
         setShowFullText((prevShowFullText) => !prevShowFullText);
     };
+
+    useEffect(() => {
+        const role = sessionStorage.getItem('role');
+        // console.log('data res', data);
+        if (data.order == null) {
+            setButtonStatus(false)
+        } else {
+            if (data.order.is_rating) {
+                setButtonStatus(false)
+            } else {
+                if (role === 'detonator') {
+                    setButtonStatus(true)
+                } else {
+                    setButtonStatus(false)
+                }
+            }
+        }
+    })
     const hendleButton = () => {
         const role = sessionStorage.getItem('role');
         // console.log('data res', data);
@@ -29,7 +48,7 @@ const CardReport = ({ data }) => {
         }
     }
     return (
-        <div onClick={hendleButton} className="block m-2  bg-white rounded-lg hover:shadow-md border bg-blue-100">
+        <div onClick={hendleButton} className={`block m-2  bg-white rounded-lg hover:shadow-md border bg-blue-100 ${buttonStatus ? 'cursor-pointer' : ''}`}>
             <div className="flex p-2 ">
                 <div className="w-1/3 mr-4">
                     <img
@@ -40,7 +59,7 @@ const CardReport = ({ data }) => {
                 </div>
                 <div className="w-full">
                     <div className="flex justify-between">
-                        <h5 className="mb-1 text-sm font-bold tracking-tight text-gray-900">{` ${data.order ? data.order.merchant_product.name : data.title}`}</h5>
+                        <h5 className="mb-1 text-sm font-bold tracking-tight text-gray-900 capitalize">{` ${data.order ? data.order.merchant_product.name : data.title}`}</h5>
 
                         {data.order && data.order.is_rating ? (
                             <div className="h-4 p-2 bg-primary text-white rounded items-center flex justify-center">
