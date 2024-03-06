@@ -45,7 +45,7 @@ const LoginPage = () => {
       setLoading(true); // Set loading to true when starting authentication
 
       const response = await axios.post(
-        `${NEXT_PUBLIC_API_BASE_URL}/auth/login`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/login`,
         {
           email: inputEmail,
           password: inputPassword,
