@@ -79,7 +79,7 @@ const CardPesanan = (props) => {
       }
 
       const response = await axios.put(
-        `${NEXT_PUBLIC_API_BASE_URL}/order/update/${idOrder}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${idOrder}`,
         {
           order_status: "canceled", // Add the data object here
         },
