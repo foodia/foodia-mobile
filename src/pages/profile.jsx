@@ -116,23 +116,17 @@ const profile = (profile) => {
                   </div>
                 </div>
               </div>
-              {/* {role === "user" && <ProfileUser />}
+            </div>
+            {/* {role === "user" && <ProfileUser />}
 
               {role === "detonator" && <ProfileDetonator />}
 
               {role === "merchant" && <ProfileMerchant />} */}
-              {role === 'user' && (
-                <ProfileUser />
-              )}
+            {role === "user" && <ProfileUser />}
 
-              {role === 'detonator' && (
-                <ProfileDetonator />
-              )}
+            {role === "detonator" && <ProfileDetonator />}
 
-              {role === 'merchant' && (
-                <ProfileMerchant id={dataUser?.id} />
-              )}
-            </div>
+            {role === "merchant" && <ProfileMerchant id={dataUser?.id} />}
             <button
               onClick={btnLogout}
               className="flex items-center justify-center bg-white border-2 border-primary rounded-lg w-full h-10 text-primary font-bold text-center"

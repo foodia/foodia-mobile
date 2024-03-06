@@ -51,7 +51,7 @@ const Merchant = () => {
         });
       } else {
         const response = await axios.get(
-          `https://api.foodia-dev.nuncorp.id/api/v1/auth/check-register-status`,
+          `${NEXT_PUBLIC_API_BASE_URL}/auth/check-register-status`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -89,14 +89,19 @@ const Merchant = () => {
 
             Swal.fire({
               icon: "warning",
-              title: "Merchant Belum Terverifikasi",
+              title: "Akun Merchant Anda Belum Terverifikasi",
               text: ` Mohon tunggu konfirmasi dari admin kami.`,
               showConfirmButton: false,
-              timer: 2000,
+              showCancelButton: true,
+              cancelButtonColor: "red",
+              cancelButtonText: "Tutup",
+              // timer: 2000,
+            }).then((result) => {
+              if (result.isDismissed) {
+                // console.log("clicked");
+                router.push("/home");
+              }
             });
-            setTimeout(() => {
-              router.push("/home");
-            }, 2000);
           } else if (cekData.merchant.status == "rejected") {
             setLoading(false);
             sessionStorage.setItem("id", cekData.merchant.merchant_id);

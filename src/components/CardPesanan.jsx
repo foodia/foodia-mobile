@@ -79,7 +79,7 @@ const CardPesanan = (props) => {
       }
 
       const response = await axios.put(
-        `https://api.foodia-dev.nuncorp.id/api/v1/order/update/${idOrder}`,
+        `${NEXT_PUBLIC_API_BASE_URL}/order/update/${idOrder}`,
         {
           order_status: "canceled", // Add the data object here
         },
@@ -159,7 +159,9 @@ const CardPesanan = (props) => {
             />
             <div className={`text-left ml-2`}>
               <div className="flex justify-between">
-                <p className="text-primary font-bold text-md capitalize">{title}</p>
+                <p className="text-primary font-bold text-md capitalize">
+                  {title}
+                </p>
                 {/* <div className={`flex justify-center items-center rounded-full ${status === 'review' ? 'text-blue-600' : status === 'diproses' ? 'text-green-500' : status === 'canceled' ? 'text-red-500' : ''}`}>
                     <p className="">{getStatusIcon()}</p>
                 </div> */}
@@ -179,16 +181,17 @@ const CardPesanan = (props) => {
                   </span>
                 </div>
                 <div
-                  className={`flex justify-center items-center rounded-2xl w-auto h-5 px-2 py-0 ${status === "review"
+                  className={`flex justify-center items-center rounded-2xl w-auto h-5 px-2 py-0 ${
+                    status === "review"
                       ? "bg-blue-600"
                       : status === "diproses"
-                        ? "bg-green-500"
-                        : status === "canceled"
-                          ? "bg-red-500"
-                          : status === "selesai"
-                            ? "bg-blue-900"
-                            : ""
-                    }`}
+                      ? "bg-green-500"
+                      : status === "canceled"
+                      ? "bg-red-500"
+                      : status === "selesai"
+                      ? "bg-blue-900"
+                      : ""
+                  }`}
                 >
                   <p className="text-gray-100 font-medium text-[10px]">
                     {getStatusIcon()}
