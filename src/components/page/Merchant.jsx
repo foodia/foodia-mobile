@@ -51,7 +51,7 @@ const Merchant = () => {
         });
       } else {
         const response = await axios.get(
-          `${NEXT_PUBLIC_API_BASE_URL}/auth/check-register-status`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
