@@ -184,7 +184,7 @@ const penarikan = (penarikan) => {
                         </div>
                         <div className="mobile-w fixed flex justify-center h-28 bottom-0 my-0 mx-auto w-full max-w-screen-sm ">
                             <div className="kotak shadow-inner ">
-                                <p className="text-center text-xs font-semibold mx-6 my-2">Dengan klik tombol di bawah, kamu telah setuju denan <span className="text-primary">Syarat & Ketentuan</span> penarikan Saldo Foodia</p>
+                                <p className="text-center text-xs font-semibold mx-6 my-2">Dengan klik tombol di bawah, kamu telah setuju dengan <span className="text-primary">Syarat & Ketentuan</span> penarikan Saldo Foodia</p>
                                 <button className="bg-primary text-white w-full h-12 rounded-lg font-bold" onClick={handleTarikSaldo}>Tarik Saldo</button>
 
 

@@ -808,9 +808,8 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
           <button
             disabled={loading ? true : false}
             type="submit"
-            className={`text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center ${
-              loading ? "disabled:opacity-50 disabled:pointer-events-none" : ""
-            }`}
+            className={`text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center ${loading ? "disabled:opacity-50 disabled:pointer-events-none" : ""
+              }`}
           >
             Submit
           </button>
@@ -850,12 +849,58 @@ function StepThree({ registrasiMerchant, setRegistrasiMerchant }) {
 
   // Handle input file change Foto Selfi
   const handleFotoSelfiChange = (event) => {
-    setFotoSelfi(event.target.files[0]);
+    const file = event.target.files[0];
+
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
+        });
+        event.target.value = "";
+      } else {
+        setFotoSelfi(file);
+      }
+    }
   };
 
   // Handle input file change Foto KTP
   const handleFotoKTPChange = (event) => {
-    setFotoKTP(event.target.files[0]);
+    const file = event.target.files[0];
+
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
+        });
+        event.target.value = "";
+      } else {
+        setFotoKTP(file);
+      }
+    }
   };
 
   // Handle input number change Foto Selfi
@@ -905,8 +950,7 @@ function StepThree({ registrasiMerchant, setRegistrasiMerchant }) {
         const fileExtension = file.name.split(".").pop().toLowerCase();
         if (!allowedExtensions.includes(fileExtension)) {
           alert(
-            `File ${
-              file.name
+            `File ${file.name
             } has an invalid extension. Allowed extensions are: ${allowedExtensions.join(
               ", "
             )}`
@@ -1083,6 +1127,7 @@ function StepThree({ registrasiMerchant, setRegistrasiMerchant }) {
               />
             </label>
           </div>
+          <p className="text-xs text-red-500">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
         <div className="mb-2">
           <label
@@ -1118,6 +1163,7 @@ function StepThree({ registrasiMerchant, setRegistrasiMerchant }) {
               />
             </label>
           </div>
+          <p className="text-xs text-red-500">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
         <div className="mb-2">
           <label htmlFor="noKTP" className="text-sm font-medium text-gray-900">
@@ -1230,9 +1276,8 @@ function Stepfour({ registrasiMerchant, setRegistrasiMerchant }) {
         <div className="flex justify-center mb-2">
           {codes.map((code, index) => (
             <div key={index} className="mr-2">
-              <label htmlFor={`code-${index + 1}`} className="sr-only">{`Code ${
-                index + 1
-              }`}</label>
+              <label htmlFor={`code-${index + 1}`} className="sr-only">{`Code ${index + 1
+                }`}</label>
               <input
                 type="number"
                 maxLength="1"

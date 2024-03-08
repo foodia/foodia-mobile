@@ -42,11 +42,57 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
   }, [router]);
 
   const handleFotoSelfiChange = (event) => {
-    setFotoSelfi(event.target.files[0]);
+    const file = event.target.files[0];
+
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
+        });
+        event.target.value = "";
+      } else {
+        setFotoSelfi(file);
+      }
+    }
   };
 
   const handleFotoKTPChange = (event) => {
-    setFotoKTP(event.target.files[0]);
+    const file = event.target.files[0];
+
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
+        });
+        event.target.value = "";
+      } else {
+        setFotoKTP(file);
+      }
+    }
   };
 
   const handleNoKTPChange = (event) => {
@@ -187,6 +233,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
               />
             </label>
           </div>
+          <p className="text-xs text-red-500">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
         <div className="mb-2 px-4">
           <label
@@ -224,6 +271,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
               />
             </label>
           </div>
+          <p className="text-xs text-red-500">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
         <div className="grid gap-4 content-center px-4 h-14 pt-14">
           <div className="flex flex-row items-center px-4 p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-none">
@@ -331,8 +379,7 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
         const fileExtension = file.name.split(".").pop().toLowerCase();
         if (!allowedExtensions.includes(fileExtension)) {
           alert(
-            `File ${
-              file.name
+            `File ${file.name
             } has an invalid extension. Allowed extensions are: ${allowedExtensions.join(
               ", "
             )}`
@@ -616,9 +663,8 @@ function StepThree({ registrasiDetonator, setRegistrasiDetonator }) {
         <div className="flex justify-center mb-2">
           {codes.map((code, index) => (
             <div key={index} className="mr-2">
-              <label htmlFor={`code-${index + 1}`} className="sr-only">{`Code ${
-                index + 1
-              }`}</label>
+              <label htmlFor={`code-${index + 1}`} className="sr-only">{`Code ${index + 1
+                }`}</label>
               <input
                 type="number"
                 maxLength="1"

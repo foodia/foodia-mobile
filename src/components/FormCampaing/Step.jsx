@@ -42,7 +42,7 @@ import Market from "../../../public/img/illustration/market.png";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
-function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
+function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   const router = useRouter();
   const [eventName, setEventName] = useState(() => {
     const storedFormData = localStorage.getItem("formData");
@@ -124,8 +124,8 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     } else {
       Swal.fire({
         icon: "error",
-        title: "Invalid Time",
-        text: "Selected time is not within the allowed range (08:00 - 17:00).",
+        title: "Waktu Tidak Valid",
+        text: "Waktu yang dipilih tidak berada dalam rentang yang diizinkan (01:00 - 23:00).",
         timer: 2000,
       });
     }
@@ -134,9 +134,9 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     const selectedHour = parseInt(time.split(":")[0], 10);
     const selectedMinute = parseInt(time.split(":")[1], 10);
     return (
-      (selectedHour === 8 && selectedMinute >= 0) ||
-      (selectedHour > 8 && selectedHour < 17) ||
-      (selectedHour === 17 && selectedMinute === 0)
+      (selectedHour === 1 && selectedMinute >= 0) ||
+      (selectedHour > 1 && selectedHour < 23) ||
+      (selectedHour === 23 && selectedMinute === 0)
     );
   };
 
@@ -148,11 +148,21 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     const file = event.target.files[0];
 
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "Ukuran gambar melebihi 2MB!",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
         });
         event.target.value = "";
       } else {
@@ -166,7 +176,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
 
     if (!eventName || !TypeEvent || !Tanggal || !Waktu) {
       window.alert(
-        `All fields are required ${eventName} ${TypeEvent} ${Tanggal} ${Waktu}`
+        `All fields are required`
       );
       return;
     }
@@ -425,6 +435,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
               />
             </label>
           </div>
+          <p className="text-xs text-red-500">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
 
         <div className="grid gap-4 content-center px-4 mb-2">
@@ -439,7 +450,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     </>
   );
 }
-function StepTwo({ updateLocalStorage }) {
+function StepTwo({ updateLocalStorage, loading, setLoading }) {
   const router = useRouter();
 
   const [locationInfo, setLocationInfo] = useState(null);
@@ -559,16 +570,18 @@ function StepTwo({ updateLocalStorage }) {
         </button>
       </div>
       <form className="p-2 w-full px-6 space-y-2" onSubmit={handleSubmit}>
-        <div className="flex justify-center border-gray-300 rounded-lg mb-2">
+        <div className="flex justify-center border-gray-300 rounded-lg mb-1">
           <DynamicMap sendDataToPage={handleDataFromMap} tracking={tracking} />
+
         </div>
         <div className="grid gap-4 content-center px-4 mb-2">
-          <button
+          <p className="text-red-500 text-xs">{tracking ? "*Klik map untuk menentukan lokasi" : "*Geser marker untuk menentukan lokasi"}</p>
+          {/* <button
             type="submit"
             className="text-primary hover:text-white border-2 items-center flex justify-center gap-2 border-primary hover:bg-primary focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-lg text-md w-full sm:w-auto py-2.5 text-center"
           >
             <IconCurrentLocation color="red" /> Gunakan Lokasi Saat Ini
-          </button>
+          </button> */}
         </div>
         <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconMap />
@@ -671,8 +684,9 @@ function StepTwo({ updateLocalStorage }) {
     </>
   );
 }
-function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
+function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, setLoading }) {
   const router = useRouter();
+
   const totalCartPrice = cart.reduce((total, item) => total + item.total, 0);
   const totalCartQuantity = cart.reduce(
     (total, item) => total + item.quantity,
@@ -770,6 +784,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
 
   const handleSubmit = async () => {
     console.log("data", cart);
+    setLoading(true);
     try {
       // Retrieve formData from local storage
       const totalCartPrice = cart.reduce(
@@ -849,7 +864,8 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
           );
           localStorage.removeItem("cart");
           localStorage.removeItem("formData");
-          router.push("/detonator");
+          setLoading(false);
+          // router.push("/detonator");
 
           Swal.fire({
             icon: "success",
@@ -941,10 +957,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
                     <div className="font-medium text-xs text-gray-500">
                       Total {totalCartQuantity} Pesanan
                     </div>
-                    <div className="text-primary font-bold text-lg">{`Rp ${totalCartPrice.toLocaleString(
-                      undefined,
-                      { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-                    )}`}</div>
+                    <div className="text-primary font-bold text-lg">{`Rp ${totalCartPrice.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}</div>
                   </div>
                 ) : (
                   ""
@@ -1014,8 +1027,8 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
                           <p className="font-bold text-primary">{`Rp ${(
                             item.price * item.quantity
                           ).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
                           })}`}</p>
                           <div className="grid place-items-center">
                             <div className="flex items-center">
@@ -1160,7 +1173,13 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
             <div className="flex">
               <div className="text-left place-items-start">
                 <div className="mb-1 text-primary">
-                  Total Harga: {formatToRupiah(totalHarga)}
+                  Total Harga:
+                  {`Rp ${(
+                    totalHarga
+                  ).toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}`}
                 </div>
                 <div className="-mt-1 font-sans text-xs text-gray-500">
                   Jumlah Makanan: {jumlahMakanan}

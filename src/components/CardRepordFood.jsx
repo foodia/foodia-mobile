@@ -9,6 +9,7 @@ const CardRepordFood = (props) => {
     const { to = '#', img, title, date, approval_status = '', price, qty = 0, nameMerchant = '', order_status = '', is_rating, is_report } = props;
     const role = sessionStorage.getItem('role');
     const router = useRouter();
+    const { id } = router.query;
 
     const totalPrice = qty * price;
     const formatPrice = (price) => {
@@ -28,7 +29,7 @@ const CardRepordFood = (props) => {
                 return <IconPackageExport size={22} />;
             case 'selesai':
                 return <IconCheck size={22} />;
-            case 'rejected':
+            case 'tolak':
                 return <IconPlaystationX size={22} />;
             default:
                 return null;
@@ -80,7 +81,7 @@ const CardRepordFood = (props) => {
                             <div className="flex">
                                 <p className="font-sans text-xs  mr-2">{`jumlah :${qty}`}</p>
                                 <div
-                                    className={`font-sans text-xs  rounded-lg w-16 flex justify-center items-center px-2 ${approval_status === 'waiting' ? 'bg-blue-600' : approval_status == 'approved' ? 'bg-green-500' : approval_status == 'Rejected' ? 'bg-red-500' : ''
+                                    className={`font-sans text-xs  rounded-lg w-16 flex justify-center items-center px-2 ${approval_status === 'waiting' ? 'bg-blue-600' : approval_status == 'approved' ? 'bg-green-500' : approval_status == 'rejected' ? 'bg-red-500' : ''
                                         }`}
                                 >
                                     <p className="text-black">{approval_status}</p>
@@ -90,11 +91,18 @@ const CardRepordFood = (props) => {
                         </div>
                     </div>
                     <div className="grid place-items-center mr-2">
-                        <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'text-blue-600' : order_status === 'diproses' ? 'text-orange-500' : order_status === 'rejected' ? 'bg-red-500' : order_status === 'selesai' ? 'text-primary' : ''}`}>
+                        {order_status === 'tolak' ? <Link href={`${id}`}>
+                            <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'text-blue-600' : order_status === 'diproses' ? 'text-orange-500' : order_status === 'tolak' ? 'text-primary border border-primary' : order_status === 'selesai' ? 'text-primary' : ''}`}>
+                                <p className="mr-1">{getorder_status()}</p>
+                                <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'diproses' ? 'Makanan Di Proses' : order_status === 'tolak' ? 'Ganti Menu' : order_status === 'selesai' ? 'Telah Sampai' : ''}`}</p>
+                                {/* <p className="w-16">tes deskripsi ini panjang</p> */}
+                            </div>
+                        </Link> : <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'text-blue-600' : order_status === 'diproses' ? 'text-orange-500' : order_status === 'tolak' ? 'text-primary border border-primary' : order_status === 'selesai' ? 'text-primary' : ''}`}>
                             <p className="mr-1">{getorder_status()}</p>
-                            <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'diproses' ? 'Makanan Di Proses' : order_status === 'rejected' ? 'bg-red-500' : order_status === 'selesai' ? 'Telah Sampai' : ''}`}</p>
+                            <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'diproses' ? 'Makanan Di Proses' : order_status === 'tolak' ? 'Ganti Menu' : order_status === 'selesai' ? 'Telah Sampai' : ''}`}</p>
                             {/* <p className="w-16">tes deskripsi ini panjang</p> */}
-                        </div>
+                        </div>}
+
 
 
                     </div>
