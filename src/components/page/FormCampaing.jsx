@@ -11,6 +11,7 @@ import {
   Stepfive,
 } from "../FormCampaing/Step";
 import AddFood from "./AddFoodCamp";
+import Loading from "../Loading";
 // import StepThree from '../FormCampaing/CreateCamp';
 
 const FormCampaing = () => {
@@ -18,7 +19,7 @@ const FormCampaing = () => {
   const { step } = router.query;
   const [cart, setCart] = useState([]);
   const [uploadedFile, setUploadedFile] = useState(null);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   //     const role = sessionStorage.getItem('role');
@@ -63,7 +64,12 @@ const FormCampaing = () => {
 
   if (step === "1") {
     stepComponent = (
-      <StepOne setUploadedFile={setUploadedFile} uploadedFile={uploadedFile} />
+      <StepOne
+        setUploadedFile={setUploadedFile}
+        uploadedFile={uploadedFile}
+        loading={loading}
+        setLoading={setLoading}
+      />
     );
     setTitle = "Tanggal Pelaksanaan";
   } else if (step === "2") {
@@ -76,6 +82,8 @@ const FormCampaing = () => {
         updateCart={updateCart}
         setUploadedFile={setUploadedFile}
         uploadedFile={uploadedFile}
+        loading={loading}
+        setLoading={setLoading}
       />
     );
     setTitle = "Tambah Menu Makan";
@@ -86,6 +94,8 @@ const FormCampaing = () => {
         setCart={setCart}
         setUploadedFile={setUploadedFile}
         uploadedFile={uploadedFile}
+        loading={loading}
+        setLoading={setLoading}
       />
     );
     setTitle = "Tambah Menu Makan";
@@ -96,6 +106,8 @@ const FormCampaing = () => {
         setCart={setCart}
         setUploadedFile={setUploadedFile}
         uploadedFile={uploadedFile}
+        loading={loading}
+        setLoading={setLoading}
       />
     );
     setTitle = "";
@@ -122,6 +134,7 @@ const FormCampaing = () => {
         {/* Pass the updateLocalStorage function to each step component */}
         {React.cloneElement(stepComponent, { updateLocalStorage })}
       </div>
+      {loading && <Loading />}
     </div>
   );
 };
