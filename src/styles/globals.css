@@ -338,3 +338,9 @@ option[value="mandiri"].with-image {
     transform: rotate(-10deg)
   }
 }
+
+
+/* ==================Alert ==================== */
+.colored-toast {
+  background-color: #f87171;
+}

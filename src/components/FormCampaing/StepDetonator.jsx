@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import InputForm from "../Imput";
 import RoutStep from "../RoutStep";
+
 import {
   IconCamera,
   IconCards,
@@ -14,9 +15,11 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import SweetAlert from "../SweetAlert";
 import Swal from "sweetalert2";
+import Loading from "../Loading";
 
-function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
+function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [fotoSelfi, setFotoSelfi] = useState(
     registrasiDetonator?.fotoSelfi || null
   );
@@ -41,12 +44,24 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
     }
   }, [router]);
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'center',
+    iconColor: 'white',
+    customClass: {
+      popup: 'colored-toast',
+    },
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+  })
+
   const handleFotoSelfiChange = (event) => {
     const file = event.target.files[0];
 
     if (file) {
       const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      const maxSize = 5 * 1024 * 1024; // 2.5MB
 
       if (!allowedTypes.includes(file.type)) {
         Swal.fire({
@@ -95,12 +110,22 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
     }
   };
 
-  const handleNoKTPChange = (event) => {
-    setNoKTP(event.target.value);
+  const handleNoKTPChange = async (event) => {
+    const value = event.target.value;
+    if (value.length > 16) {
+      await Toast.fire({
+        icon: 'error',
+        title: 'Nomer KTP maksimal 16 angka',
+        iconColor: 'bg-black',
+      })
+    } else {
+      setNoKTP(value);
+    }
   };
 
   const handleStepTwoSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     // Ensure all required fields are filled
     if (!fotoSelfi || !fotoKTP || !noKTP) {
@@ -134,6 +159,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
 
       console.log("token:", token);
       console.log("API Response:", response.data);
+      setLoading(false);
       Swal.fire({
         icon: "success",
         title: "Registration successful",
@@ -148,6 +174,11 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
       // Handle the response accordingly, e.g., redirect to the next step
       // router.push('/registrasi/detonator?step=3');
     } catch (error) {
+      setLoading(false);
+      if (error.response && error.response.status === 401) {
+        sessionStorage.clear();
+        router.push("/login");
+      }
       if (error.response && error.response.status === 500) {
         // Handle 500 Internal Server Error
         const imageUrl = "/img/illustration/checklist.png";
@@ -233,7 +264,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
               />
             </label>
           </div>
-          <p className="text-xs text-red-500">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
+          <p className="text-xs text-primary font-semibold">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
         <div className="mb-2 px-4">
           <label
@@ -271,7 +302,8 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
               />
             </label>
           </div>
-          <p className="text-xs text-red-500">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
+
+          <p className="text-xs text-primary font-semibold">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
         <div className="grid gap-4 content-center px-4 h-14 pt-14">
           <div className="flex flex-row items-center px-4 p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 focus:border-none">
@@ -295,6 +327,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
           </button>
         </div>
       </form>
+      {loading && <Loading />}
     </>
   );
 }
@@ -436,6 +469,10 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
       // Redirect to the next step after successful registration
       router.push("/registrasi/detonator?step=3");
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        sessionStorage.clear();
+        router.push("/login");
+      }
       if (error.response && error.response.status === 500) {
         // Handle 500 Internal Server Error
         const imageUrl = "/img/illustration/checklist.png";
@@ -639,6 +676,10 @@ function StepThree({ registrasiDetonator, setRegistrasiDetonator }) {
       });
       router.push("/home");
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        sessionStorage.clear();
+        router.push("/login");
+      }
       console.error("Error handling submit:", error);
       const imageUrl = "/img/illustration/checklist.png";
       SweetAlert({

@@ -146,13 +146,18 @@ function StepOne({ Menu, setMenu }) {
             }, 2000);
           } catch (error) {
             console.error("Error creating campaign:", error);
-            Swal.fire({
-              icon: "error",
-              title: "Gagal Membuat Menu",
-              text: "Gagal Membuat Menu Mohon Coba Lagi",
-              showConfirmButton: false,
-              timer: 2000,
-            });
+            if (error.response && error.response.status === 401) {
+              router.push("/merchant");
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Gagal Membuat Menu",
+                text: "Gagal Membuat Menu Mohon Coba Lagi",
+                showConfirmButton: false,
+                timer: 2000,
+              });
+            }
+
           }
         }
       } else {
@@ -162,13 +167,18 @@ function StepOne({ Menu, setMenu }) {
     } catch (error) {
       console.log(error);
       console.error("Error creating campaign:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Gagal Membuat Menu",
-        text: "Gagal Membuat Menu Mohon Coba Lagi",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      if (error.response && error.response.status === 401) {
+        router.push("/merchant");
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Membuat Menu",
+          text: "Gagal Membuat Menu Mohon Coba Lagi",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
+
     }
   };
 

@@ -435,7 +435,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
               />
             </label>
           </div>
-          <p className="text-xs text-red-500">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
+          <p className="text-xs text-primary font-semibold">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
 
         <div className="grid gap-4 content-center px-4 mb-2">
@@ -575,7 +575,7 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
 
         </div>
         <div className="grid gap-4 content-center px-4 mb-2">
-          <p className="text-red-500 text-xs">{tracking ? "*Klik map untuk menentukan lokasi" : "*Geser marker untuk menentukan lokasi"}</p>
+          <p className="text-primary font-semibold text-xs">{tracking ? "*Klik map untuk menentukan lokasi" : "*Geser marker untuk menentukan lokasi"}</p>
           {/* <button
             type="submit"
             className="text-primary hover:text-white border-2 items-center flex justify-center gap-2 border-primary hover:bg-primary focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-lg text-md w-full sm:w-auto py-2.5 text-center"
@@ -708,10 +708,10 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
       (item) => item.merchant_id === parseInt(IdMerchan) && item.id === itemId
     );
 
-    console.log("IdMerchan:", IdMerchan);
-    console.log("itemId:", itemId);
-    console.log("Data updatedCart:", updatedCart);
-    console.log("itemIndex:", itemIndex);
+    // console.log("IdMerchan:", IdMerchan);
+    // console.log("itemId:", itemId);
+    // console.log("Data updatedCart:", updatedCart);
+    // console.log("itemIndex:", itemIndex);
 
     if (itemIndex !== -1) {
       const updatedItem = { ...updatedCart[itemIndex] };
@@ -742,12 +742,15 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
     }
   };
 
-  const handleIncrease = (IdMerchan, itemId) => {
+  const handleIncrease = (IdMerchan, itemId, capacity) => {
     const updatedCart = [...cart];
     const itemIndex = updatedCart.findIndex(
       (item) => item.merchant_id === parseInt(IdMerchan) && item.id === itemId
     );
 
+    if (updatedCart[itemIndex].quantity >= capacity) {
+      return;
+    }
     if (itemIndex !== -1) {
       updatedCart[itemIndex].quantity += 1;
       updatedCart[itemIndex].total =
@@ -880,21 +883,26 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
           }, 2000);
         } catch (error) {
           console.error("Error creating campaign:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Gagal Membuat Campaign",
-            text: "Gagal Membuat Campaign Mohon Coba Lagi",
-            showConfirmButton: false,
-            timer: 2000,
-          });
+          if (error.response && error.response.status === 401) {
+            router.push("/detonator");
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal Membuat Campaign",
+              text: "Gagal Membuat Campaign Mohon Coba Lagi",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+
         }
       }
     } catch (error) {
       console.error("API Error:", error);
       if (error.response && error.response.status === 401) {
-        router.push("/login/detector");
         localStorage.removeItem("cart");
         localStorage.removeItem("formData");
+        router.push("/detector");
       } else {
         Swal.fire({
           icon: "error",
@@ -915,6 +923,8 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
     router.push("/creatcampaign?step=5");
     console.log("data card", cart);
   };
+
+  console.log('groupedCart add', groupedCart);
 
   // localStorage.removeItem('formData');
   // localStorage.removeItem('cart');
@@ -1014,8 +1024,8 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
                             {/* {item.imageUrl} */}
                           </div>
                           <div className="mb-1 font-sans text-[11px]">
-                            {item.id} terjual | Disukai oleh: 20 | Max Kuota:{" "}
-                            {item.capacity}
+                            {/* terjual | Disukai oleh: 20 | */}
+                            Max Quota: {item.capacity}
                           </div>
                           <div className="mb-1 font-sans text-[11px]">
                             {item.description}
@@ -1035,7 +1045,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
                               <button
                                 className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
                                 onClick={() =>
-                                  handleDecrease(IdMerchan, item.id)
+                                  handleDecrease(IdMerchan, item.id, item.capacity)
                                 }
                               >
                                 <IconMinus size={15} />
@@ -1046,7 +1056,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
                               <button
                                 className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
                                 onClick={() =>
-                                  handleIncrease(IdMerchan, item.id)
+                                  handleIncrease(IdMerchan, item.id, item.capacity)
                                 }
                               >
                                 <IconPlus size={15} />
@@ -1124,6 +1134,9 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
       })
 
       .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          router.push("/detonator");
+        }
         console.log(error);
       });
   }, [setCart]);
@@ -1138,6 +1151,8 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
             ...item,
             quantity: item.quantity + food.quantity,
             total: (item.quantity + food.quantity) * item.price,
+            capacity: food.qty,
+
           }
           : item
       );
@@ -1161,8 +1176,9 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
     }).format(amount);
   };
 
+  console.log('groupedFoods', groupedFoods);
   // Calculate total price and total quantity
-  const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(2);
+  const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(0);
   const jumlahMakanan = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -1173,13 +1189,8 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
             <div className="flex">
               <div className="text-left place-items-start">
                 <div className="mb-1 text-primary">
-                  Total Harga:
-                  {`Rp ${(
-                    totalHarga
-                  ).toLocaleString(undefined, {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0,
-                  })}`}
+                  Total Harga: {`Rp ${parseInt(totalHarga).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
+
                 </div>
                 <div className="-mt-1 font-sans text-xs text-gray-500">
                   Jumlah Makanan: {jumlahMakanan}
@@ -1272,6 +1283,9 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         setFilteredData(approvedMerchants);
         // setLoading(false);
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          router.push("/detonator");
+        }
         console.log("error =", error);
       }
     };
