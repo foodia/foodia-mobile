@@ -1,13 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
-import axios from "axios";
-import Link from "next/link";
-import { IconCirclePlus } from "@tabler/icons-react";
-import SlideCard from "../SlideCard";
 import styles from "@/styles/Home.module.css";
-import CardCampaign from "../CardCampaign";
-import Swal from "sweetalert2";
+import axios from "axios";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+import Swal from "sweetalert2";
+import CardCampaign from "../CardCampaign";
 
 const Detonator = () => {
   const router = useRouter();
@@ -26,7 +24,7 @@ const Detonator = () => {
       const token = sessionStorage.getItem("token");
       // const status = sessionStorage.getItem('status');
       // const id = sessionStorage.getItem('id');
-      console.log("token", token);
+      // console.log("token", token);
       if (!token) {
         Swal.fire({
           icon: "error",
@@ -63,8 +61,9 @@ const Detonator = () => {
             }
           );
           const cekData = response.data.body;
+          console.log("cekData", cekData);
 
-          if (cekData.detonator.detonator_id == 0) {
+          if (!cekData.detonator) {
             // console.log('/register/detonator');
             Swal.fire({
               icon: "warning",
@@ -120,7 +119,7 @@ const Detonator = () => {
                 timer: 2000,
               });
               setTimeout(() => {
-                router.push("/home");
+                router.push("/detonator/edit");
               }, 2000);
             } else {
               sessionStorage.setItem("id", cekData.detonator.detonator_id);

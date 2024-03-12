@@ -14,6 +14,7 @@ const OTP = () => {
   const [codes, setCodes] = useState();
   const { state } = useAppState();
   const registrasi = state.registrasi;
+  console.log(registrasi);
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -66,7 +67,12 @@ const OTP = () => {
         confirmButtonColor: "#3FB648",
       }).then((result) => {
         if (result.isConfirmed) {
-          router.push("/login");
+          sessionStorage.setItem("fullname", registrasi.fullname);
+          sessionStorage.setItem("phone", registrasi.phone);
+          sessionStorage.setItem("email", registrasi.email);
+          sessionStorage.setItem("role", registrasi.role);
+          sessionStorage.setItem("token", registrasi.token);
+          router.push("/home");
         }
       });
     } catch (error) {

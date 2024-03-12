@@ -1,6 +1,7 @@
 // registrasi.js
 import Header from "@/components/Header";
 import InputForm from "@/components/Imput";
+import Loading from "@/components/Loading";
 import { useAppState } from "@/components/page/UserContext";
 import {
   IconDeviceMobile,
@@ -20,6 +21,7 @@ import Swal from "sweetalert2";
 const Registrasi = () => {
   const router = useRouter();
   const { state, setRegistrasi } = useAppState();
+  const [loading, setLoading] = useState(false);
 
   // Set initial state values or use the values from global state if available
   const [fullname, setfullname] = useState(
@@ -58,6 +60,7 @@ const Registrasi = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
 
     // Validation checks
     if (!fullname || !phone || !email || !password || !confirmPassword) {
@@ -110,10 +113,10 @@ const Registrasi = () => {
       // Save user data to global state
       console.log(userData);
       console.log("status", userData.is_active);
+      setRegistrasi(userData);
       if (userData.is_active) {
         // router.push('/login');
         console.log("login success");
-        setRegistrasi(userData);
         sessionStorage.setItem("fullname", userData.fullname);
         sessionStorage.setItem("phone", userData.phone);
         sessionStorage.setItem("email", userData.email);
@@ -137,6 +140,7 @@ const Registrasi = () => {
           timer: 2000,
         });
         setRegistrasi(userData);
+        setLoading(false);
         router.push("/otp");
       }
       // Redirect to OTP page
@@ -152,6 +156,7 @@ const Registrasi = () => {
         showConfirmButton: false,
         timer: 2000,
       });
+      setLoading(false);
       setRegistrasi(formData);
     }
 
@@ -175,7 +180,7 @@ const Registrasi = () => {
         <div className="flex flex-col items-center w-full">
           <div
             className="p-2 w-full flex flex-col gap-3"
-            // onSubmit={handleSubmit}
+          // onSubmit={handleSubmit}
           >
             {/* ... (your existing code) */}
             <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
@@ -267,6 +272,7 @@ const Registrasi = () => {
             </Link>
           </div>
         </div>
+        {loading && <Loading />}
       </div>
     </main>
   );
