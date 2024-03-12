@@ -15,6 +15,7 @@ const OTP = () => {
   const [showCountdown, setShowCountdown] = useState(false);
   const [countdownTime, setCountdownTime] = useState(Date.now() + 120000);
   const registrasi = state.registrasi;
+  console.log(registrasi);
 
   useEffect(() => {
     let countdownInterval;
@@ -119,7 +120,12 @@ const OTP = () => {
         confirmButtonColor: "#3FB648",
       }).then((result) => {
         if (result.isConfirmed) {
-          router.push("/login");
+          sessionStorage.setItem("fullname", registrasi.fullname);
+          sessionStorage.setItem("phone", registrasi.phone);
+          sessionStorage.setItem("email", registrasi.email);
+          sessionStorage.setItem("role", registrasi.role);
+          sessionStorage.setItem("token", registrasi.token);
+          router.push("/home");
         }
       });
     } catch (error) {

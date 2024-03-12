@@ -165,7 +165,7 @@ const LoginPage = () => {
             {showPassword ? <IconEye /> : <IconEyeClosed />}
           </button>
         </div>
-        <div className="flex items-start mb-4">
+        {/* <div className="flex items-start mb-4">
           <Link
             href=""
             htmlFor="remember"
@@ -173,7 +173,7 @@ const LoginPage = () => {
           >
             Forgot password?
           </Link>
-        </div>
+        </div> */}
         <div className=" grid gap-6 content-center px-4">
           <button
             onClick={handleSubmit}

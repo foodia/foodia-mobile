@@ -1,13 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
-import axios from "axios";
-import Link from "next/link";
-import Image from "next/image";
-import { IconCirclePlus } from "@tabler/icons-react";
-import SlideCard from "../SlideCard";
 import styles from "@/styles/Home.module.css";
-import CardFood from "../CardFood";
+import { IconCirclePlus } from "@tabler/icons-react";
+import axios from "axios";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
+import CardFood from "../CardFood";
 
 const Merchant = () => {
   const router = useRouter();
@@ -60,7 +59,7 @@ const Merchant = () => {
             }
           );
           const cekData = response.data.body;
-          if (cekData.merchant.merchant_id == 0) {
+          if (!cekData.merchant) {
             Swal.fire({
               icon: "warning",
               title: "Akun Belum Terdaftar sebagai Merchant",
