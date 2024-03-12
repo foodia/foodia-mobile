@@ -540,6 +540,10 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
         setLoading(false);
       }, 2000);
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        sessionStorage.clear();
+        router.push("/login");
+      }
       if (error.response && error.response.status === 500) {
         // Handle 500 Internal Server Error
         const imageUrl = "/img/illustration/checklist.png";
@@ -1017,6 +1021,10 @@ function StepThree({ registrasiMerchant, setRegistrasiMerchant }) {
       // Redirect to the next step after successful registration
       router.push("/registrasi/merchant?step=4");
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        sessionStorage.clear();
+        router.push("/login");
+      }
       if (error.response && error.response.status === 500) {
         // Handle 500 Internal Server Error
         const imageUrl = "/img/illustration/checklist.png";
@@ -1253,6 +1261,10 @@ function Stepfour({ registrasiMerchant, setRegistrasiMerchant }) {
       router.push("/home");
     } catch (error) {
       console.error("Error handling submit:", error);
+      if (error.response && error.response.status === 401) {
+        sessionStorage.clear();
+        router.push("/login");
+      }
       const imageUrl = "/img/illustration/checklist.png";
       SweetAlert({
         title: "",
