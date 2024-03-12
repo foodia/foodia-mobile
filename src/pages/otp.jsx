@@ -58,6 +58,31 @@ const OTP = () => {
     }
   };
 
+  const handleResend = () => {
+    setLoading(true);
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/resend-otp`,
+        { email: sessionStorage.getItem("email") },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer YOUR_ACCESS_TOKEN",
+          },
+        }
+      )
+      .then(() => {
+        setLoading(false);
+        Swal.fire({
+          icon: "success",
+          title: "OTP Sent",
+          text: `please check your email`,
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      });
+  };
+
   const handleSubmit = async (otp) => {
     setLoading(true);
     try {
@@ -118,7 +143,7 @@ const OTP = () => {
         Swal.fire({
           icon: "error",
           title: "Gagal Membuat Akun",
-          text: "Kode OTP Tidak Sesuai",
+          text: "Kode OTP Tidak Sesuai Atau Expired",
           width: "375px",
           showConfirmButton: true,
           confirmButtonText: "Tutup",
@@ -175,7 +200,10 @@ const OTP = () => {
             <p className="text-sm text-center text-black font-light">
               Tidak menerima OTP?
             </p>
-            <button className="text-sm text-cyan-500 hover:underline">
+            <button
+              onClick={() => handleResend()}
+              className="text-sm text-cyan-500 hover:underline"
+            >
               Kirim Ulang Kode OTP
             </button>
           </div>

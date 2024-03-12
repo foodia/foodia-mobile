@@ -85,10 +85,11 @@ const LoginPage = () => {
         }, 2000);
       } else {
         setRegistrasi(responeData);
+        sessionStorage.setItem("email", responeData.email);
         Swal.fire({
           icon: "warning",
           title: "Login Failed",
-          text: ` please activate your account by login first to access this page`,
+          text: `please activate your account by login first to access this page`,
           showConfirmButton: false,
           timer: 2000,
         });
@@ -98,7 +99,6 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.log(error);
-
       Swal.fire({
         icon: "error",
         title: "Login Failed",
