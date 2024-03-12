@@ -1,11 +1,10 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
-import SweetAlert from "@/components/SweetAlert";
 import { useAppState } from "@/components/page/UserContext";
-import { IconChecklist } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useEffect, useState, } from "react";
+import { useEffect, useState } from "react";
+import Countdown from "react-countdown";
 import Swal from "sweetalert2";
 
 const OTP = () => {
@@ -13,7 +12,37 @@ const OTP = () => {
   const router = useRouter();
   const [codes, setCodes] = useState();
   const { state } = useAppState();
+  const [showCountdown, setShowCountdown] = useState(false);
+  const [countdownTime, setCountdownTime] = useState(Date.now() + 120000);
   const registrasi = state.registrasi;
+
+  useEffect(() => {
+    let countdownInterval;
+
+    if (showCountdown) {
+      countdownInterval = setInterval(() => {
+        setCountdownTime((prevTime) => prevTime);
+      });
+    }
+
+    return () => clearInterval(countdownInterval);
+  }, [showCountdown]);
+
+  useEffect(() => {
+    if (countdownTime > 0) {
+      setShowCountdown(true);
+    } else {
+      setShowCountdown(false);
+    }
+  }, []);
+
+  const renderer = ({ hours, minutes, seconds }) => {
+    return (
+      <span>
+        {minutes}:{seconds}
+      </span>
+    );
+  };
 
   const handleChange = (event) => {
     const value = event.target.value;
@@ -21,17 +50,41 @@ const OTP = () => {
       setCodes(value);
     }
     if (value.length === 6) {
-
       const otp = {
         email: registrasi.email,
         code: value,
-      }
+      };
       handleSubmit(otp);
     }
   };
 
+  const handleResend = () => {
+    setLoading(true);
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/resend-otp`,
+        { email: sessionStorage.getItem("email") },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer YOUR_ACCESS_TOKEN",
+          },
+        }
+      )
+      .then(() => {
+        setLoading(false);
+        Swal.fire({
+          icon: "success",
+          title: "OTP Sent",
+          text: `please check your email`,
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      });
+  };
+
   const handleSubmit = async (otp) => {
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`,
@@ -70,7 +123,7 @@ const OTP = () => {
         }
       });
     } catch (error) {
-      console.log('error', error.response.data.error[0].field);
+      console.log("error", error.response.data.error[0].field);
       if (error.response.data.error[0].field === "email") {
         Swal.fire({
           icon: "error",
@@ -87,11 +140,10 @@ const OTP = () => {
         });
         setLoading(false);
       } else {
-
         Swal.fire({
           icon: "error",
           title: "Gagal Membuat Akun",
-          text: "Kode OTP Tidak Sesuai",
+          text: "Kode OTP Tidak Sesuai Atau Expired",
           width: "375px",
           showConfirmButton: true,
           confirmButtonText: "Tutup",
@@ -131,17 +183,36 @@ const OTP = () => {
           </div>
 
           <div className="flex items-center flex-col justify-center pt-10">
+            <div
+              style={{
+                display: "flex",
+                gap: "5px",
+                justifyContent: "center",
+              }}
+              className="font-bold"
+            >
+              <p>Input Sebelum :</p>
+              {showCountdown && (
+                <Countdown date={countdownTime} renderer={renderer} />
+              )}
+            </div>
+            <br />
             <p className="text-sm text-center text-black font-light">
               Tidak menerima OTP?
             </p>
-            <button className="text-sm text-cyan-500 hover:underline">
+            <button
+              onClick={() => handleResend()}
+              className="text-sm text-cyan-500 hover:underline"
+            >
               Kirim Ulang Kode OTP
             </button>
           </div>
           <div className="grid place-items-center mt-40">
             <button
               type="button"
-              onClick={() => handleSubmit({ email: registrasi.email, code: codes })} // Menggunakan arrow function untuk memanggil handleSubmit saat tombol diklik
+              onClick={() =>
+                handleSubmit({ email: registrasi.email, code: codes })
+              } // Menggunakan arrow function untuk memanggil handleSubmit saat tombol diklik
               className="text-white w-full bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl py-3 text-center"
             >
               Kirim
