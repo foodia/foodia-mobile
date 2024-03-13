@@ -10,39 +10,63 @@ import Swal from "sweetalert2";
 const OTP = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [codes, setCodes] = useState();
+  const [codes, setCodes] = useState("");
   const { state } = useAppState();
   const [showCountdown, setShowCountdown] = useState(false);
-  const [countdownTime, setCountdownTime] = useState(Date.now() + 120000);
+  const [countdownTime, setCountdownTime] = useState(Date.now() + 120000); // Set 120000 untuk 2 menit
   const registrasi = state.registrasi;
-  console.log(registrasi);
 
   useEffect(() => {
-    let countdownInterval;
-
-    if (showCountdown) {
-      countdownInterval = setInterval(() => {
-        setCountdownTime((prevTime) => prevTime);
+    console.log(registrasi);
+    if (!registrasi || !registrasi.email) {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Membuat Akun",
+        text: "Email Tidak ditemukan silahkan login kembali",
+        width: "375px",
+        showConfirmButton: true,
+        confirmButtonText: "login",
+        confirmButtonColor: "#3b82f6",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/login");
+        }
       });
     }
-
-    return () => clearInterval(countdownInterval);
-  }, [showCountdown]);
+  }, [registrasi]);
 
   useEffect(() => {
-    if (countdownTime > 0) {
-      setShowCountdown(true);
-    } else {
-      setShowCountdown(false);
-    }
+    const countdownInterval = setInterval(() => {
+      setCountdownTime((prevTime) => prevTime - 1000); // Kurangi 1 detik dari countdownTime setiap 1 detik
+    }, 1000);
+
+    return () => clearInterval(countdownInterval);
   }, []);
 
-  const renderer = ({ hours, minutes, seconds }) => {
-    return (
-      <span>
-        {minutes}:{seconds}
-      </span>
-    );
+  useEffect(() => {
+    setShowCountdown(countdownTime > 0); // Tentukan apakah countdown masih berlangsung berdasarkan countdownTime
+  }, [countdownTime]);
+
+  const renderer = ({ minutes, seconds }) => {
+    if (minutes === 0 && seconds === 0) {
+      return (
+        <div
+          onClick={handleResend}
+          className="text-sm text-cyan-500 hover:underline cursor-pointer"
+        >
+          Kirim Ulang Kode OTP
+        </div>
+      );
+    } else {
+      return (
+        <>
+          <p>Input Sebelum :</p>
+          <span>
+            {minutes}:{seconds}
+          </span>
+        </>
+      );
+    }
   };
 
   const handleChange = (event) => {
@@ -64,7 +88,7 @@ const OTP = () => {
     axios
       .post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/resend-otp`,
-        { email: sessionStorage.getItem("email") },
+        { email: registrasi.email },
         {
           headers: {
             "Content-Type": "application/json",
@@ -73,13 +97,30 @@ const OTP = () => {
         }
       )
       .then(() => {
+        setCountdownTime(Date.now() + 120000); // Set ulang countdownTime ke 2 menit
         setLoading(false);
         Swal.fire({
           icon: "success",
           title: "OTP Sent",
-          text: `please check your email`,
+          text: "Please check your email",
           showConfirmButton: false,
           timer: 2000,
+        });
+      })
+      .catch((error) => {
+        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Membuat Akun",
+          text: "Email Tidak ditemukan silahkan login kembali",
+          width: "375px",
+          showConfirmButton: true,
+          confirmButtonText: "login",
+          confirmButtonColor: "#3b82f6",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push("/login");
+          }
         });
       });
   };
@@ -161,15 +202,15 @@ const OTP = () => {
   };
 
   return (
-    <div className="container mx-auto bg-white h-screen ">
+    <div className="container mx-auto bg-white h-screen">
       <div className="grid justify-items-center w-full">
         <Header />
         <form className="justify-center pt-24 p-2 mt-5 w-full h-full">
-          <h5 className="flex justify-center text-4xl text-primary font-bold ">
+          <h5 className="flex justify-center text-4xl text-primary font-bold">
             Verifikasi
           </h5>
           <h5 className="mt-4 flex justify-center text-center text-sm font-normal">
-            Ketikan Kode Verifikasi Yang Telah Dikirimkan Ke Email Anda:{" "}
+            Ketikan Kode Verifikasi Yang Telah Dikirimkan Ke Email Anda:
           </h5>
           <h5 className="flex justify-center text-sm font-normal">
             {registrasi.email}
@@ -182,7 +223,7 @@ const OTP = () => {
               name="codes"
               type="number"
               id="codes"
-              className="w-full p-0 py-4 bg-transparent focus:border-none text-center" // Menambahkan kelas text-center di sini
+              className="w-full p-0 py-4 bg-transparent focus:border-none text-center"
               placeholder="* * * * * *"
               required
             />
@@ -197,28 +238,30 @@ const OTP = () => {
               }}
               className="font-bold"
             >
-              <p>Input Sebelum :</p>
-              {showCountdown && (
-                <Countdown date={countdownTime} renderer={renderer} />
-              )}
+              <Countdown date={countdownTime} renderer={renderer} />
             </div>
             <br />
-            <p className="text-sm text-center text-black font-light">
-              Tidak menerima OTP?
-            </p>
-            <button
-              onClick={() => handleResend()}
-              className="text-sm text-cyan-500 hover:underline"
-            >
-              Kirim Ulang Kode OTP
-            </button>
+            {/* <p className="text-sm text-center text-black font-light">
+              {!showCountdown && !loading
+                ? "Tidak menerima OTP? Tunggu hingga waktu habis sebelum mengirim ulang."
+                : "Menunggu waktu habis sebelum mengirim ulang..."}
+            </p> */}
+            {!showCountdown && !loading && (
+              <div
+                onClick={handleResend}
+                className="text-sm text-cyan-500 hover:underline cursor-pointer"
+              >
+                Kirim Ulang Kode OTP
+              </div>
+            )}
           </div>
+
           <div className="grid place-items-center mt-40">
             <button
               type="button"
               onClick={() =>
                 handleSubmit({ email: registrasi.email, code: codes })
-              } // Menggunakan arrow function untuk memanggil handleSubmit saat tombol diklik
+              }
               className="text-white w-full bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl py-3 text-center"
             >
               Kirim

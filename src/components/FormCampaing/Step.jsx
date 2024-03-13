@@ -279,7 +279,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
           >
             <option>Tipe Campaign</option>
             <option value="one_time">One Time</option>
-            <option value="regular">Regular</option>
+            {/* <option value="regular">Regular</option> */}
           </select>
         </div>
 
@@ -882,6 +882,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
             router.push("/detonator");
           }, 2000);
         } catch (error) {
+          setLoading(false);
           console.error("Error creating campaign:", error);
           if (error.response && error.response.status === 401) {
             router.push("/detonator");
@@ -898,6 +899,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
         }
       }
     } catch (error) {
+      setLoading(false);
       console.error("API Error:", error);
       if (error.response && error.response.status === 401) {
         localStorage.removeItem("cart");

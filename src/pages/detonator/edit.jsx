@@ -112,9 +112,18 @@ const Edit = () => {
         const token = sessionStorage.getItem('token');
 
         const formData = new FormData();
-        formData.append('ktp_number', ktp_number);
-        formData.append('self_photo', fotoSelfi);
-        formData.append('ktp_photo', ktpPhoto);
+
+        if (ktp_number) {
+            formData.append('ktp_number', ktp_number);
+        }
+
+        if (fotoSelfi) {
+            formData.append('self_photo', fotoSelfi);
+        }
+
+        if (ktpPhoto) {
+            formData.append('ktp_photo', ktpPhoto);
+        }
         // console.log('formData', formData);
         console.log('ktpPhoto', ktpPhoto);
         console.log('fotoSelfi', fotoSelfi);
@@ -138,9 +147,9 @@ const Edit = () => {
         } catch (error) {
             console.log('error', error);
             Swal.fire({
-                icon: "success",
-                title: "Update Detonator Success!",
-                text: `Update Detonator Success! mohon tunggu approval `,
+                icon: "error",
+                title: "Update Detonator Failed!",
+                text: `Gagal Update Detonator`,
                 showConfirmButton: false,
                 timer: 2000,
             });
