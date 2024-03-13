@@ -1,13 +1,11 @@
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
-import axios from "axios";
-import Link from "next/link";
-import { IconCirclePlus } from "@tabler/icons-react";
-import SlideCard from "../SlideCard";
 import styles from "@/styles/Home.module.css";
-import CardCampaign from "../CardCampaign";
-import Swal from "sweetalert2";
+import axios from "axios";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+import Swal from "sweetalert2";
+import CardCampaign from "../CardCampaign";
 
 const Detonator = () => {
   const router = useRouter();
@@ -18,6 +16,7 @@ const Detonator = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
+  const [errorCode, setErrorCode] = useState(null);
 
   useEffect(() => {
     const authenticateUser = async () => {
@@ -25,7 +24,7 @@ const Detonator = () => {
       const token = sessionStorage.getItem("token");
       // const status = sessionStorage.getItem('status');
       // const id = sessionStorage.getItem('id');
-      console.log("token", token);
+      // console.log("token", token);
       if (!token) {
         Swal.fire({
           icon: "error",
@@ -52,81 +51,95 @@ const Detonator = () => {
         //   router.push("/home");
         // }, 2000);
       } else {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const cekData = response.data.body;
-        if (cekData.detonator.detonator_id == 0) {
-          // console.log('/register/detonator');
-          Swal.fire({
-            icon: "warning",
-            title: "Akun Belum Terdaftar sebagai Detonator",
-            text: `Mohon untuk registrasi sebagai Detonator.`,
-            showConfirmButton: true,
-            confirmButtonColor: "green",
-            confirmButtonText: "Registrasi",
-            showCancelButton: true,
-            cancelButtonColor: "red",
-            cancelButtonText: "Tutup",
-            // timer: 2000,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // console.log("clicked");
-              router.push("/registrasi/detonator?step=1");
-            } else if (result.isDismissed) {
-              // console.log("denied");
-              router.push("/home");
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             }
-          });
-          // setTimeout(() => {
-          //   router.push("/registrasi/detonator?step=1");
-          // }, 2000);
-        } else {
-          if (cekData.detonator.status == "waiting") {
-            sessionStorage.setItem("id", cekData.detonator.detonator_id);
-            sessionStorage.setItem("role", "detonator");
-            sessionStorage.setItem("status", cekData.detonator.status);
-            sessionStorage.setItem("note", cekData.detonator.note);
+          );
+          const cekData = response.data.body;
+          console.log("cekData", cekData);
 
+          if (!cekData.detonator) {
+            // console.log('/register/detonator');
             Swal.fire({
               icon: "warning",
-              title: "Detonator Belum Terverifikasi",
-              text: ` Mohon tunggu konfirmasi dari admin kami.`,
-              showConfirmButton: false,
-              timer: 2000,
+              title: "Akun Belum Terdaftar sebagai Detonator",
+              text: `Mohon untuk registrasi sebagai Detonator.`,
+              showConfirmButton: true,
+              confirmButtonColor: "green",
+              confirmButtonText: "Registrasi",
+              showCancelButton: true,
+              cancelButtonColor: "red",
+              cancelButtonText: "Tutup",
+              // timer: 2000,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // console.log("clicked");
+                router.push("/registrasi/detonator?step=1");
+              } else if (result.isDismissed) {
+                // console.log("denied");
+                router.push("/home");
+              }
             });
-            setTimeout(() => {
-              router.push("/home");
-            }, 2000);
-          } else if (cekData.detonator.status == "rejected") {
-            setLoading(false);
-            sessionStorage.setItem("id", cekData.detonator.detonator_id);
-            sessionStorage.setItem("role", "detonator");
-            sessionStorage.setItem("status", cekData.detonator.status);
-            sessionStorage.setItem("note", cekData.detonator.note);
-            Swal.fire({
-              icon: "warning",
-              title: "Detonator Ditolak",
-              text: `${cekData.detonator.note}`,
-              showConfirmButton: false,
-              timer: 2000,
-            });
-            setTimeout(() => {
-              router.push("/home");
-            }, 2000);
+            // setTimeout(() => {
+            //   router.push("/registrasi/detonator?step=1");
+            // }, 2000);
           } else {
-            sessionStorage.setItem("id", cekData.detonator.detonator_id);
-            sessionStorage.setItem("role", "detonator");
-            sessionStorage.setItem("status", cekData.detonator.status);
-            sessionStorage.setItem("note", cekData.detonator.note);
+            if (cekData.detonator.status == "waiting") {
+              sessionStorage.setItem("id", cekData.detonator.detonator_id);
+              sessionStorage.setItem("role", "detonator");
+              sessionStorage.setItem("status", cekData.detonator.status);
+              sessionStorage.setItem("note", cekData.detonator.note);
+
+              Swal.fire({
+                icon: "warning",
+                title: "Detonator Belum Terverifikasi",
+                text: ` Mohon tunggu konfirmasi dari admin kami.`,
+                showConfirmButton: false,
+                timer: 2000,
+              });
+              setTimeout(() => {
+                router.push("/home");
+              }, 2000);
+            } else if (cekData.detonator.status == "rejected") {
+              setLoading(false);
+              sessionStorage.setItem("id", cekData.detonator.detonator_id);
+              sessionStorage.setItem("role", "detonator");
+              sessionStorage.setItem("status", cekData.detonator.status);
+              sessionStorage.setItem("note", cekData.detonator.note);
+              Swal.fire({
+                icon: "warning",
+                title: "Detonator Ditolak",
+                text: `${cekData.detonator.note}`,
+                showConfirmButton: false,
+                timer: 2000,
+              });
+              setTimeout(() => {
+                router.push("/detonator/edit");
+              }, 2000);
+            } else {
+              sessionStorage.setItem("id", cekData.detonator.detonator_id);
+              sessionStorage.setItem("role", "detonator");
+              sessionStorage.setItem("status", cekData.detonator.status);
+              sessionStorage.setItem("note", cekData.detonator.note);
+            }
+          }
+          console.log("data", cekData);
+        } catch (error) {
+          if (error.response && error.response.status === 401) {
+            sessionStorage.clear();
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            router.push("/login");
+
           }
         }
-        console.log("data", cekData);
+
+
       }
     };
 
@@ -151,6 +164,14 @@ const Detonator = () => {
         setLoading(false);
       })
       .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          sessionStorage.clear();
+          localStorage.removeItem("cart");
+          localStorage.removeItem("formData");
+          router.push("/login");
+          router.push("/login");
+
+        }
         console.log(error);
       });
   }, [selectedStatus, loading]);
@@ -172,6 +193,14 @@ const Detonator = () => {
           setLoading(false);
         })
         .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            sessionStorage.clear();
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            router.push("/login");
+            router.push("/login");
+
+          }
           console.error("Error fetching data:", error);
         });
     } else if (status === "INPROGRESS") {
@@ -185,6 +214,13 @@ const Detonator = () => {
           setLoading(false);
         })
         .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            sessionStorage.clear();
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            router.push("/login");
+
+          }
           console.error("Error fetching data:", error);
         });
     } else if (status === "FINISHED") {
@@ -198,6 +234,13 @@ const Detonator = () => {
           setLoading(false);
         })
         .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            sessionStorage.clear();
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            router.push("/login");
+
+          }
           console.error("Error fetching data:", error);
         });
     }

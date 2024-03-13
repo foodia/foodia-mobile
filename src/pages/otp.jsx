@@ -1,60 +1,132 @@
-// otp.js
-
 import Header from "@/components/Header";
-import SweetAlert from "@/components/SweetAlert";
+import Loading from "@/components/Loading";
 import { useAppState } from "@/components/page/UserContext";
-import { IconChecklist } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Countdown from "react-countdown";
 import Swal from "sweetalert2";
 
 const OTP = () => {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [codes, setCodes] = useState(["", "", "", "", "", ""]);
+  const [codes, setCodes] = useState("");
   const { state } = useAppState();
+  const [showCountdown, setShowCountdown] = useState(false);
+  const [countdownTime, setCountdownTime] = useState(Date.now() + 120000); // Set 120000 untuk 2 menit
   const registrasi = state.registrasi;
-  // useEffect(() => {
-  //     if (!registrasi || Object.keys(registrasi).length === 0) {
-  //         Swal.fire({
-  //             icon: 'error',
-  //             title: 'Data tidak ditemukan',
-  //             text: 'Silahkan isi data registrasi terlebih dahulu',
-  //             showConfirmButton: false,
-  //             timer: 2000,
-  //         });
-  //         router.push('/registrasi');
-  //     }
-  // })
 
-  const handleChange = (index, value) => {
-    const newCodes = [...codes];
-    newCodes[index] = value;
-    setCodes(newCodes);
-
-    if (value.length === 0 && index > 0) {
-      document.getElementById(`code-${index}`).focus();
-    } else if (index < 5) {
-      document.getElementById(`code-${index + 2}`).focus();
+  useEffect(() => {
+    console.log(registrasi);
+    if (!registrasi || !registrasi.email) {
+      Swal.fire({
+        icon: "error",
+        title: "Gagal Membuat Akun",
+        text: "Email Tidak ditemukan silahkan login kembali",
+        width: "375px",
+        showConfirmButton: true,
+        confirmButtonText: "login",
+        confirmButtonColor: "#3b82f6",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/login");
+        }
+      });
     }
+  }, [registrasi]);
 
-    const otp = {
-      email: registrasi.email,
-      // email: 'suryaharis22@gmail.com',
-      code: newCodes.join(""),
-    };
+  useEffect(() => {
+    const countdownInterval = setInterval(() => {
+      setCountdownTime((prevTime) => prevTime - 1000); // Kurangi 1 detik dari countdownTime setiap 1 detik
+    }, 1000);
 
-    if (newCodes.join("").length === 6) {
-      // Perform any action you want when the OTP is complete
-      // console.log('OTP is complete! Handling submit...');
-      console.log("otp data", otp);
-      // Example: Handle submit here
+    return () => clearInterval(countdownInterval);
+  }, []);
+
+  useEffect(() => {
+    setShowCountdown(countdownTime > 0); // Tentukan apakah countdown masih berlangsung berdasarkan countdownTime
+  }, [countdownTime]);
+
+  const renderer = ({ minutes, seconds }) => {
+    if (minutes === 0 && seconds === 0) {
+      return (
+        <div
+          onClick={handleResend}
+          className="text-sm text-cyan-500 hover:underline cursor-pointer"
+        >
+          Kirim Ulang Kode OTP
+        </div>
+      );
+    } else {
+      return (
+        <>
+          <p>Input Sebelum :</p>
+          <span>
+            {minutes}:{seconds}
+          </span>
+        </>
+      );
+    }
+  };
+
+  const handleChange = (event) => {
+    const value = event.target.value;
+    if (value.length < 7) {
+      setCodes(value);
+    }
+    if (value.length === 6) {
+      const otp = {
+        email: registrasi.email,
+        code: value,
+      };
       handleSubmit(otp);
     }
   };
 
+  const handleResend = () => {
+    setLoading(true);
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/resend-otp`,
+        { email: registrasi.email },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer YOUR_ACCESS_TOKEN",
+          },
+        }
+      )
+      .then(() => {
+        setCountdownTime(Date.now() + 120000); // Set ulang countdownTime ke 2 menit
+        setLoading(false);
+        Swal.fire({
+          icon: "success",
+          title: "OTP Sent",
+          text: "Please check your email",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      })
+      .catch((error) => {
+        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Membuat Akun",
+          text: "Email Tidak ditemukan silahkan login kembali",
+          width: "375px",
+          showConfirmButton: true,
+          confirmButtonText: "login",
+          confirmButtonColor: "#3b82f6",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push("/login");
+          }
+        });
+      });
+  };
+
   const handleSubmit = async (otp) => {
-    console.log("OTP:", otp);
+    setLoading(true);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`,
@@ -62,113 +134,142 @@ const OTP = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer YOUR_ACCESS_TOKEN", // Replace with your actual access token
+            Authorization: "Bearer YOUR_ACCESS_TOKEN",
           },
         }
       );
-      console.log("API Response:", response.data);
       const imageUrl = "/img/illustration/checklist.png";
+      setLoading(false);
       Swal.fire({
         position: "bottom",
         customClass: {
           popup: "custom-swal",
           icon: "custom-icon-swal",
           title: "custom-title-swal",
-          confirmButton: "custom-confirm-button-swal", // Custom class for styling
+          confirmButton: "custom-confirm-button-swal",
         },
         icon: "success",
         title: `<p class="w-auto pl-1 font-bold text-md">Akun Berhasil Di Buat</p><p class="text-sm w-auto pl-1 font-light">Terima kasih telah mendaftar untuk menjadi penolong sesama</p>`,
         html: `
-                <div class="absolute px-28 ml-4 top-0 mt-4">
-                  <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-                </div>
-                `,
+          <div class="absolute px-28 ml-4 top-0 mt-4">
+            <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+          </div>
+        `,
         width: "375px",
         showConfirmButton: true,
         confirmButtonText: "Masuk",
         confirmButtonColor: "#3FB648",
-        // timer: 2000,
       }).then((result) => {
         if (result.isConfirmed) {
-          router.push("/login");
+          sessionStorage.setItem("fullname", registrasi.fullname);
+          sessionStorage.setItem("phone", registrasi.phone);
+          sessionStorage.setItem("email", registrasi.email);
+          sessionStorage.setItem("role", registrasi.role);
+          sessionStorage.setItem("token", registrasi.token);
+          router.push("/home");
         }
       });
-      // router.push("/home");
     } catch (error) {
-      console.error("Error handling submit:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Gagal Membuat Akun",
-        text: "Kode OTP Tidak Sesuai",
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      console.log("error", error.response.data.error[0].field);
+      if (error.response.data.error[0].field === "email") {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Membuat Akun",
+          text: "Email Tidak ditemukan silahkan login kembali",
+          width: "375px",
+          showConfirmButton: true,
+          confirmButtonText: "login",
+          confirmButtonColor: "#3b82f6",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push("/login");
+          }
+        });
+        setLoading(false);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Membuat Akun",
+          text: "Kode OTP Tidak Sesuai Atau Expired",
+          width: "375px",
+          showConfirmButton: true,
+          confirmButtonText: "Tutup",
+          confirmButtonColor: "#ef4444",
+        });
+        setLoading(false);
+      }
     }
   };
 
   return (
-    <div className="container mx-auto bg-white h-screen ">
+    <div className="container mx-auto bg-white h-screen">
       <div className="grid justify-items-center w-full">
         <Header />
         <form className="justify-center pt-24 p-2 mt-5 w-full h-full">
-          <h5 className="flex justify-center text-4xl text-primary font-bold ">
+          <h5 className="flex justify-center text-4xl text-primary font-bold">
             Verifikasi
           </h5>
-
           <h5 className="mt-4 flex justify-center text-center text-sm font-normal">
-            Ketikan Kode Verifikasi Yang Telah Dikirimkan Ke Email Anda:{" "}
+            Ketikan Kode Verifikasi Yang Telah Dikirimkan Ke Email Anda:
           </h5>
           <h5 className="flex justify-center text-sm font-normal">
             {registrasi.email}
           </h5>
 
-          <div className="flex justify-center mb-2 mt-16">
-            {codes.map((code, index) => (
-              <div key={index} className="mr-2">
-                <label
-                  htmlFor={`code-${index + 1}`}
-                  className="sr-only"
-                >{`Code ${index + 1}`}</label>
-                <input
-                  type="number"
-                  maxLength="1"
-                  onChange={(e) => handleChange(index, e.target.value)}
-                  value={code}
-                  id={`code-${index + 1}`}
-                  className="block w-9 h-9 py-3 text-sm font-extrabold text-center text-gray-900 bg-gray-100 border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                  required
-                  onWheel={(e) => e.target.blur()}
-                />
-              </div>
-            ))}
+          <div className="mt-4 flex flex-row items-center px-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none">
+            <input
+              onChange={handleChange}
+              value={codes}
+              name="codes"
+              type="number"
+              id="codes"
+              className="w-full p-0 py-4 bg-transparent focus:border-none text-center"
+              placeholder="* * * * * *"
+              required
+            />
           </div>
+
           <div className="flex items-center flex-col justify-center pt-10">
-            <p className="text-sm text-center text-black font-light">
-              Tidak menerima OTP?
-            </p>
-            <button className="text-sm text-cyan-500 hover:underline">
-              Kirim Ulang Kode OTP
-            </button>
+            <div
+              style={{
+                display: "flex",
+                gap: "5px",
+                justifyContent: "center",
+              }}
+              className="font-bold"
+            >
+              <Countdown date={countdownTime} renderer={renderer} />
+            </div>
+            <br />
+            {/* <p className="text-sm text-center text-black font-light">
+              {!showCountdown && !loading
+                ? "Tidak menerima OTP? Tunggu hingga waktu habis sebelum mengirim ulang."
+                : "Menunggu waktu habis sebelum mengirim ulang..."}
+            </p> */}
+            {!showCountdown && !loading && (
+              <div
+                onClick={handleResend}
+                className="text-sm text-cyan-500 hover:underline cursor-pointer"
+              >
+                Kirim Ulang Kode OTP
+              </div>
+            )}
           </div>
 
           <div className="grid place-items-center mt-40">
-            {/* Hidden submit button */}
-            {/* <button
-              type="submit"
-              id="submit-button"
-              style={{ display: "none" }}
-            ></button> */}
-
-            {/* Visible button that triggers the auto-submit */}
             <button
-              onClick={handleSubmit}
-              className="text-white w-full bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl py-3 text-center "
+              type="button"
+              onClick={() =>
+                handleSubmit({ email: registrasi.email, code: codes })
+              }
+              className="text-white w-full bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl py-3 text-center"
             >
               Kirim
             </button>
           </div>
         </form>
       </div>
+      {loading && <Loading />}
     </div>
   );
 };

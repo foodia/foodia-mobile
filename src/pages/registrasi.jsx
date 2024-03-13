@@ -1,6 +1,7 @@
 // registrasi.js
 import Header from "@/components/Header";
 import InputForm from "@/components/Imput";
+import Loading from "@/components/Loading";
 import { useAppState } from "@/components/page/UserContext";
 import {
   IconDeviceMobile,
@@ -20,6 +21,7 @@ import Swal from "sweetalert2";
 const Registrasi = () => {
   const router = useRouter();
   const { state, setRegistrasi } = useAppState();
+  const [loading, setLoading] = useState(false);
 
   // Set initial state values or use the values from global state if available
   const [fullname, setfullname] = useState(
@@ -31,6 +33,18 @@ const Registrasi = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'center',
+    iconColor: 'white',
+    customClass: {
+      popup: 'colored-toast',
+    },
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+  })
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleClickShowConfirmPassword = () =>
@@ -59,29 +73,51 @@ const Registrasi = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+
     // Validation checks
     if (!fullname || !phone || !email || !password || !confirmPassword) {
-      window.alert("All fields are required");
+      Toast.fire({
+        icon: 'error',
+        title: 'Please fill in all fields',
+        iconColor: 'bg-black',
+      })
       return;
     }
 
     if (!/^\S+@\S+\.\S+$/.test(email)) {
-      window.alert("Invalid email format");
+      Toast.fire({
+        icon: 'error',
+        title: 'Invalid email address',
+        iconColor: 'bg-black',
+      })
       return;
     }
 
-    if (!/^\d+$/.test(phone)) {
-      window.alert("Phone number must contain only digits");
+    if (!/^08\d{8,13}$/.test(phone)) { // Mengubah ekspresi reguler untuk memeriksa nomor telepon yang diawali dengan '08' dan panjangnya antara 10 hingga 13 karakter
+      Toast.fire({
+        icon: 'error',
+        title: 'Phone number must start with "08" and contain only digits, with length between 10 and 13 characters',
+        iconColor: 'bg-black',
+      });
       return;
     }
 
     if (password.length < 8) {
-      window.alert("Password must be at least 8 characters");
+      // window.alert("Password must be at least 8 characters");
+      Toast.fire({
+        icon: 'error',
+        title: 'Password must be at least 8 characters',
+        iconColor: 'bg-black',
+      })
       return;
     }
 
     if (password !== confirmPassword) {
-      window.alert("Passwords do not match");
+      Toast.fire({
+        icon: 'error',
+        title: 'Password and confirm password do not match',
+        iconColor: 'bg-black',
+      })
       return;
     }
 
@@ -93,6 +129,7 @@ const Registrasi = () => {
       password,
     };
     try {
+      setLoading(true);
       // Assuming the API response includes data about the user or a token.
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/register`,
@@ -110,10 +147,10 @@ const Registrasi = () => {
       // Save user data to global state
       console.log(userData);
       console.log("status", userData.is_active);
+      setRegistrasi(userData);
       if (userData.is_active) {
         // router.push('/login');
         console.log("login success");
-        setRegistrasi(userData);
         sessionStorage.setItem("fullname", userData.fullname);
         sessionStorage.setItem("phone", userData.phone);
         sessionStorage.setItem("email", userData.email);
@@ -137,6 +174,7 @@ const Registrasi = () => {
           timer: 2000,
         });
         setRegistrasi(userData);
+        setLoading(false);
         router.push("/otp");
       }
       // Redirect to OTP page
@@ -152,6 +190,7 @@ const Registrasi = () => {
         showConfirmButton: false,
         timer: 2000,
       });
+      setLoading(false);
       setRegistrasi(formData);
     }
 
@@ -175,7 +214,7 @@ const Registrasi = () => {
         <div className="flex flex-col items-center w-full">
           <div
             className="p-2 w-full flex flex-col gap-3"
-            // onSubmit={handleSubmit}
+          // onSubmit={handleSubmit}
           >
             {/* ... (your existing code) */}
             <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
@@ -267,6 +306,7 @@ const Registrasi = () => {
             </Link>
           </div>
         </div>
+        {loading && <Loading />}
       </div>
     </main>
   );

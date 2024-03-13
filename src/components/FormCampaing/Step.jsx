@@ -42,7 +42,7 @@ import Market from "../../../public/img/illustration/market.png";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
-function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
+function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   const router = useRouter();
   const [eventName, setEventName] = useState(() => {
     const storedFormData = localStorage.getItem("formData");
@@ -124,8 +124,8 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     } else {
       Swal.fire({
         icon: "error",
-        title: "Invalid Time",
-        text: "Selected time is not within the allowed range (08:00 - 17:00).",
+        title: "Waktu Tidak Valid",
+        text: "Waktu yang dipilih tidak berada dalam rentang yang diizinkan (01:00 - 23:00).",
         timer: 2000,
       });
     }
@@ -134,9 +134,9 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     const selectedHour = parseInt(time.split(":")[0], 10);
     const selectedMinute = parseInt(time.split(":")[1], 10);
     return (
-      (selectedHour === 8 && selectedMinute >= 0) ||
-      (selectedHour > 8 && selectedHour < 17) ||
-      (selectedHour === 17 && selectedMinute === 0)
+      (selectedHour === 1 && selectedMinute >= 0) ||
+      (selectedHour > 1 && selectedHour < 23) ||
+      (selectedHour === 23 && selectedMinute === 0)
     );
   };
 
@@ -148,11 +148,21 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     const file = event.target.files[0];
 
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "Ukuran gambar melebihi 2MB!",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
         });
         event.target.value = "";
       } else {
@@ -166,7 +176,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
 
     if (!eventName || !TypeEvent || !Tanggal || !Waktu) {
       window.alert(
-        `All fields are required ${eventName} ${TypeEvent} ${Tanggal} ${Waktu}`
+        `All fields are required`
       );
       return;
     }
@@ -269,7 +279,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
           >
             <option>Tipe Campaign</option>
             <option value="one_time">One Time</option>
-            <option value="regular">Regular</option>
+            {/* <option value="regular">Regular</option> */}
           </select>
         </div>
 
@@ -425,6 +435,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
               />
             </label>
           </div>
+          <p className="text-xs text-primary font-semibold">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
 
         <div className="grid gap-4 content-center px-4 mb-2">
@@ -439,7 +450,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     </>
   );
 }
-function StepTwo({ updateLocalStorage }) {
+function StepTwo({ updateLocalStorage, loading, setLoading }) {
   const router = useRouter();
 
   const [locationInfo, setLocationInfo] = useState(null);
@@ -559,16 +570,18 @@ function StepTwo({ updateLocalStorage }) {
         </button>
       </div>
       <form className="p-2 w-full px-6 space-y-2" onSubmit={handleSubmit}>
-        <div className="flex justify-center border-gray-300 rounded-lg mb-2">
+        <div className="flex justify-center border-gray-300 rounded-lg mb-1">
           <DynamicMap sendDataToPage={handleDataFromMap} tracking={tracking} />
+
         </div>
         <div className="grid gap-4 content-center px-4 mb-2">
-          <button
+          <p className="text-primary font-semibold text-xs">{tracking ? "*Klik map untuk menentukan lokasi" : "*Geser marker untuk menentukan lokasi"}</p>
+          {/* <button
             type="submit"
             className="text-primary hover:text-white border-2 items-center flex justify-center gap-2 border-primary hover:bg-primary focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-lg text-md w-full sm:w-auto py-2.5 text-center"
           >
             <IconCurrentLocation color="red" /> Gunakan Lokasi Saat Ini
-          </button>
+          </button> */}
         </div>
         <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconMap />
@@ -671,8 +684,9 @@ function StepTwo({ updateLocalStorage }) {
     </>
   );
 }
-function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
+function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, setLoading }) {
   const router = useRouter();
+
   const totalCartPrice = cart.reduce((total, item) => total + item.total, 0);
   const totalCartQuantity = cart.reduce(
     (total, item) => total + item.quantity,
@@ -694,10 +708,10 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
       (item) => item.merchant_id === parseInt(IdMerchan) && item.id === itemId
     );
 
-    console.log("IdMerchan:", IdMerchan);
-    console.log("itemId:", itemId);
-    console.log("Data updatedCart:", updatedCart);
-    console.log("itemIndex:", itemIndex);
+    // console.log("IdMerchan:", IdMerchan);
+    // console.log("itemId:", itemId);
+    // console.log("Data updatedCart:", updatedCart);
+    // console.log("itemIndex:", itemIndex);
 
     if (itemIndex !== -1) {
       const updatedItem = { ...updatedCart[itemIndex] };
@@ -728,12 +742,15 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
     }
   };
 
-  const handleIncrease = (IdMerchan, itemId) => {
+  const handleIncrease = (IdMerchan, itemId, capacity) => {
     const updatedCart = [...cart];
     const itemIndex = updatedCart.findIndex(
       (item) => item.merchant_id === parseInt(IdMerchan) && item.id === itemId
     );
 
+    if (updatedCart[itemIndex].quantity >= capacity) {
+      return;
+    }
     if (itemIndex !== -1) {
       updatedCart[itemIndex].quantity += 1;
       updatedCart[itemIndex].total =
@@ -770,6 +787,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
 
   const handleSubmit = async () => {
     console.log("data", cart);
+    setLoading(true);
     try {
       // Retrieve formData from local storage
       const totalCartPrice = cart.reduce(
@@ -849,7 +867,8 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
           );
           localStorage.removeItem("cart");
           localStorage.removeItem("formData");
-          router.push("/detonator");
+          setLoading(false);
+          // router.push("/detonator");
 
           Swal.fire({
             icon: "success",
@@ -863,22 +882,29 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
             router.push("/detonator");
           }, 2000);
         } catch (error) {
+          setLoading(false);
           console.error("Error creating campaign:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Gagal Membuat Campaign",
-            text: "Gagal Membuat Campaign Mohon Coba Lagi",
-            showConfirmButton: false,
-            timer: 2000,
-          });
+          if (error.response && error.response.status === 401) {
+            router.push("/detonator");
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal Membuat Campaign",
+              text: "Gagal Membuat Campaign Mohon Coba Lagi",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+
         }
       }
     } catch (error) {
+      setLoading(false);
       console.error("API Error:", error);
       if (error.response && error.response.status === 401) {
-        router.push("/login/detector");
         localStorage.removeItem("cart");
         localStorage.removeItem("formData");
+        router.push("/detector");
       } else {
         Swal.fire({
           icon: "error",
@@ -899,6 +925,8 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
     router.push("/creatcampaign?step=5");
     console.log("data card", cart);
   };
+
+  console.log('groupedCart add', groupedCart);
 
   // localStorage.removeItem('formData');
   // localStorage.removeItem('cart');
@@ -941,10 +969,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
                     <div className="font-medium text-xs text-gray-500">
                       Total {totalCartQuantity} Pesanan
                     </div>
-                    <div className="text-primary font-bold text-lg">{`Rp ${totalCartPrice.toLocaleString(
-                      undefined,
-                      { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-                    )}`}</div>
+                    <div className="text-primary font-bold text-lg">{`Rp ${totalCartPrice.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}</div>
                   </div>
                 ) : (
                   ""
@@ -1001,8 +1026,8 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
                             {/* {item.imageUrl} */}
                           </div>
                           <div className="mb-1 font-sans text-[11px]">
-                            {item.id} terjual | Disukai oleh: 20 | Max Kuota:{" "}
-                            {item.capacity}
+                            {/* terjual | Disukai oleh: 20 | */}
+                            Max Quota: {item.capacity}
                           </div>
                           <div className="mb-1 font-sans text-[11px]">
                             {item.description}
@@ -1014,15 +1039,15 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
                           <p className="font-bold text-primary">{`Rp ${(
                             item.price * item.quantity
                           ).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
                           })}`}</p>
                           <div className="grid place-items-center">
                             <div className="flex items-center">
                               <button
                                 className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
                                 onClick={() =>
-                                  handleDecrease(IdMerchan, item.id)
+                                  handleDecrease(IdMerchan, item.id, item.capacity)
                                 }
                               >
                                 <IconMinus size={15} />
@@ -1033,7 +1058,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile }) {
                               <button
                                 className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
                                 onClick={() =>
-                                  handleIncrease(IdMerchan, item.id)
+                                  handleIncrease(IdMerchan, item.id, item.capacity)
                                 }
                               >
                                 <IconPlus size={15} />
@@ -1111,6 +1136,9 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
       })
 
       .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          router.push("/detonator");
+        }
         console.log(error);
       });
   }, [setCart]);
@@ -1125,6 +1153,8 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
             ...item,
             quantity: item.quantity + food.quantity,
             total: (item.quantity + food.quantity) * item.price,
+            capacity: food.qty,
+
           }
           : item
       );
@@ -1148,8 +1178,9 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
     }).format(amount);
   };
 
+  console.log('groupedFoods', groupedFoods);
   // Calculate total price and total quantity
-  const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(2);
+  const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(0);
   const jumlahMakanan = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -1160,7 +1191,8 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
             <div className="flex">
               <div className="text-left place-items-start">
                 <div className="mb-1 text-primary">
-                  Total Harga: {formatToRupiah(totalHarga)}
+                  Total Harga: {`Rp ${parseInt(totalHarga).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
+
                 </div>
                 <div className="-mt-1 font-sans text-xs text-gray-500">
                   Jumlah Makanan: {jumlahMakanan}
@@ -1253,6 +1285,9 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         setFilteredData(approvedMerchants);
         // setLoading(false);
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          router.push("/detonator");
+        }
         console.log("error =", error);
       }
     };

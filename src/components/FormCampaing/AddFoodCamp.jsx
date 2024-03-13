@@ -3,12 +3,15 @@ import React, { useState } from 'react';
 import { IconCirclePlus } from '@tabler/icons-react';
 
 
-const AddFoodCamp = ({ id, name, price, images, description, capacity, addToCart, merchant_id }) => {
+const AddFoodCamp = ({ id, name, price, images, description, qty, addToCart, merchant_id }) => {
     const firstImageUrl = images.length > 0 ? images[0].image_url : '';
     const [quantity, setQuantity] = useState(1);
 
     const handleIncrease = () => {
-        setQuantity(quantity + 1);
+        if (quantity < qty) {
+            setQuantity(quantity + 1);
+
+        }
         console.log(images);
     };
 
@@ -26,7 +29,7 @@ const AddFoodCamp = ({ id, name, price, images, description, capacity, addToCart
             price,
             images,
             description,
-            capacity,
+            capacity: qty,
             quantity,
             total: quantity * price,
         });
@@ -44,13 +47,14 @@ const AddFoodCamp = ({ id, name, price, images, description, capacity, addToCart
                         <div className="mb-1 capitalize">{name}</div>
                         <div className="font-sans text-xs text-gray-500">{description}</div>
                         <div className="flex">
-                            <p className="font-sans text-xs text-gray-500 mr-2">{`Capacity: ${capacity}`}</p>
+                            <p className="font-sans text-xs text-gray-500 mr-2">{`Capacity: ${qty}`}</p>
                             {/* <div className={`font-sans text-xs text-white rounded-lg flex justify-center items-center bg-blue-600 w-24`}>
                                 <p className="">{merchant_id}</p>
                             </div> */}
                         </div>
                         {/* <p className="text-gray-600 mt-2">{`Total: Rp${(quantity * price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
-                        <p className="text-xs text-gray-600 mt-2">{`Harga: Rp${(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p>
+                        {/* <p className="text-xs text-gray-600 mt-2">{`Harga: Rp${(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
+                        <p className="text-xs text-gray-600 mt-2">{`Harga: Rp ${parseInt(price).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}</p>
 
                     </div>
                 </div>

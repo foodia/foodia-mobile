@@ -76,9 +76,9 @@ const profile = (profile) => {
                     {role === "merchant" && "Merchant"}
                   </p>
                 </div>
-                <button>
+                {/* <button>
                   <IconEdit />
-                </button>
+                </button> */}
               </div>
             </div>
             {/* <div class="card md:flex max-w-lg">

@@ -1,13 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
-import axios from "axios";
-import Link from "next/link";
-import Image from "next/image";
-import { IconCirclePlus } from "@tabler/icons-react";
-import SlideCard from "../SlideCard";
 import styles from "@/styles/Home.module.css";
-import CardFood from "../CardFood";
+import { IconCirclePlus } from "@tabler/icons-react";
+import axios from "axios";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
+import CardFood from "../CardFood";
 
 const Merchant = () => {
   const router = useRouter();
@@ -50,82 +49,91 @@ const Merchant = () => {
           }
         });
       } else {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const cekData = response.data.body;
-        if (cekData.merchant.merchant_id == 0) {
-          Swal.fire({
-            icon: "warning",
-            title: "Akun Belum Terdaftar sebagai Merchant",
-            text: "Mohon untuk registrasi sebagai Merchant",
-            showConfirmButton: true,
-            confirmButtonColor: "green",
-            confirmButtonText: "Registrasi",
-            showCancelButton: true,
-            cancelButtonColor: "red",
-            cancelButtonText: "Tutup",
-            // timer: 2000,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              // console.log("clicked");
-              router.push("/registrasi/merchant?step=1");
-            } else if (result.isDismissed) {
-              // console.log("denied");
-              router.push("/home");
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             }
-          });
-        } else {
-          if (cekData.merchant.status == "waiting") {
-            sessionStorage.setItem("id", cekData.merchant.merchant_id);
-            sessionStorage.setItem("role", "merchant");
-            sessionStorage.setItem("status", cekData.merchant.status);
-            sessionStorage.setItem("note", cekData.merchant.note);
-
+          );
+          const cekData = response.data.body;
+          if (!cekData.merchant) {
             Swal.fire({
               icon: "warning",
-              title: "Akun Merchant Anda Belum Terverifikasi",
-              text: ` Mohon tunggu konfirmasi dari admin kami.`,
-              showConfirmButton: false,
+              title: "Akun Belum Terdaftar sebagai Merchant",
+              text: "Mohon untuk registrasi sebagai Merchant",
+              showConfirmButton: true,
+              confirmButtonColor: "green",
+              confirmButtonText: "Registrasi",
               showCancelButton: true,
               cancelButtonColor: "red",
               cancelButtonText: "Tutup",
               // timer: 2000,
             }).then((result) => {
-              if (result.isDismissed) {
+              if (result.isConfirmed) {
                 // console.log("clicked");
+                router.push("/registrasi/merchant?step=1");
+              } else if (result.isDismissed) {
+                // console.log("denied");
                 router.push("/home");
               }
             });
-          } else if (cekData.merchant.status == "rejected") {
-            setLoading(false);
-            sessionStorage.setItem("id", cekData.merchant.merchant_id);
-            sessionStorage.setItem("role", "merchant");
-            sessionStorage.setItem("status", cekData.merchant.status);
-            sessionStorage.setItem("note", cekData.merchant.note);
-            Swal.fire({
-              icon: "warning",
-              title: "Merchant Ditolak",
-              text: `${cekData.merchant.note}`,
-              showConfirmButton: false,
-              timer: 2000,
-            });
-            setTimeout(() => {
-              router.push("/registrasi/merchant?step=1");
-            }, 2000);
           } else {
-            sessionStorage.setItem("id", cekData.merchant.merchant_id);
-            sessionStorage.setItem("role", "merchant");
-            sessionStorage.setItem("status", cekData.merchant.status);
-            sessionStorage.setItem("note", cekData.merchant.note);
+            if (cekData.merchant.status == "waiting") {
+              sessionStorage.setItem("id", cekData.merchant.merchant_id);
+              sessionStorage.setItem("role", "merchant");
+              sessionStorage.setItem("status", cekData.merchant.status);
+              sessionStorage.setItem("note", cekData.merchant.note);
+
+              Swal.fire({
+                icon: "warning",
+                title: "Akun Merchant Anda Belum Terverifikasi",
+                text: ` Mohon tunggu konfirmasi dari admin kami.`,
+                showConfirmButton: false,
+                showCancelButton: true,
+                cancelButtonColor: "red",
+                cancelButtonText: "Tutup",
+                // timer: 2000,
+              }).then((result) => {
+                if (result.isDismissed) {
+                  // console.log("clicked");
+                  router.push("/home");
+                }
+              });
+            } else if (cekData.merchant.status == "rejected") {
+              setLoading(false);
+              sessionStorage.setItem("id", cekData.merchant.merchant_id);
+              sessionStorage.setItem("role", "merchant");
+              sessionStorage.setItem("status", cekData.merchant.status);
+              sessionStorage.setItem("note", cekData.merchant.note);
+              Swal.fire({
+                icon: "warning",
+                title: "Merchant Ditolak",
+                text: `${cekData.merchant.note}`,
+                showConfirmButton: false,
+                timer: 2000,
+              });
+              setTimeout(() => {
+                router.push("/merchant/edit");
+              }, 2000);
+            } else {
+              sessionStorage.setItem("id", cekData.merchant.merchant_id);
+              sessionStorage.setItem("role", "merchant");
+              sessionStorage.setItem("status", cekData.merchant.status);
+              sessionStorage.setItem("note", cekData.merchant.note);
+            }
+          }
+          console.log("data", cekData);
+
+        } catch (error) {
+          if (error.response && error.response.status === 401) {
+            sessionStorage.clear();
+            router.push("/login");
           }
         }
-        console.log("data", cekData);
+
       }
     };
 
@@ -163,8 +171,8 @@ const Merchant = () => {
           setHasMore(false);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
         setLoading(false);
+        console.error("Error fetching data:", error);
 
         if (error.response && error.response.status === 401) {
           // Unauthorized error (e.g., token expired)
@@ -285,11 +293,10 @@ const Merchant = () => {
 
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "approved"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "approved"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("approved")}
           >
             <span>Menu</span>
@@ -300,11 +307,10 @@ const Merchant = () => {
             ></div> */}
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "listMenu"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "listMenu"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("listMenu")}
           >
             <span>Pengajuan</span>

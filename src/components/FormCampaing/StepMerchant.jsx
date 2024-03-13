@@ -41,12 +41,37 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
     registrasiMerchant?.no_link_aja ?? ""
   );
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'center',
+    iconColor: 'white',
+    customClass: {
+      popup: 'colored-toast',
+    },
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+  })
+
   const handlemerchant_nameChange = (event) => {
     setmerchant_name(event.target.value);
   };
 
-  const handlektp_numberChange = (event) => {
-    setktp_number(event.target.value);
+  // const handlektp_numberChange = (event) => {
+  //   setktp_number(event.target.value);
+  // };
+
+  const handlektp_numberChange = async (event) => {
+    const value = event.target.value;
+    if (value.length > 16) {
+      await Toast.fire({
+        icon: 'error',
+        title: 'Nomer KTP maksimal 16 angka',
+        iconColor: 'bg-black',
+      })
+    } else {
+      setktp_number(value);
+    }
   };
   const handleself_photoChange = (event) => {
     setself_photo(event.target.files[0]);
@@ -485,6 +510,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
     console.log("data regis", registrasiMerchant);
 
     try {
+      setLoading(true);
       // Ensure the token is valid
       const token = sessionStorage.getItem("token");
       if (!token) {
@@ -536,10 +562,16 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
         timer: 2000,
       });
       setTimeout(() => {
+        setLoading(false);
         router.push("/home");
         setLoading(false);
       }, 2000);
     } catch (error) {
+      setLoading(false);
+      if (error.response && error.response.status === 401) {
+        sessionStorage.clear();
+        router.push("/login");
+      }
       if (error.response && error.response.status === 500) {
         // Handle 500 Internal Server Error
         const imageUrl = "/img/illustration/checklist.png";
@@ -808,9 +840,8 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
           <button
             disabled={loading ? true : false}
             type="submit"
-            className={`text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center ${
-              loading ? "disabled:opacity-50 disabled:pointer-events-none" : ""
-            }`}
+            className={`text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center ${loading ? "disabled:opacity-50 disabled:pointer-events-none" : ""
+              }`}
           >
             Submit
           </button>
@@ -850,12 +881,58 @@ function StepThree({ registrasiMerchant, setRegistrasiMerchant }) {
 
   // Handle input file change Foto Selfi
   const handleFotoSelfiChange = (event) => {
-    setFotoSelfi(event.target.files[0]);
+    const file = event.target.files[0];
+
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
+        });
+        event.target.value = "";
+      } else {
+        setFotoSelfi(file);
+      }
+    }
   };
 
   // Handle input file change Foto KTP
   const handleFotoKTPChange = (event) => {
-    setFotoKTP(event.target.files[0]);
+    const file = event.target.files[0];
+
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
+        });
+        event.target.value = "";
+      } else {
+        setFotoKTP(file);
+      }
+    }
   };
 
   // Handle input number change Foto Selfi
@@ -905,8 +982,7 @@ function StepThree({ registrasiMerchant, setRegistrasiMerchant }) {
         const fileExtension = file.name.split(".").pop().toLowerCase();
         if (!allowedExtensions.includes(fileExtension)) {
           alert(
-            `File ${
-              file.name
+            `File ${file.name
             } has an invalid extension. Allowed extensions are: ${allowedExtensions.join(
               ", "
             )}`
@@ -973,6 +1049,10 @@ function StepThree({ registrasiMerchant, setRegistrasiMerchant }) {
       // Redirect to the next step after successful registration
       router.push("/registrasi/merchant?step=4");
     } catch (error) {
+      if (error.response && error.response.status === 401) {
+        sessionStorage.clear();
+        router.push("/login");
+      }
       if (error.response && error.response.status === 500) {
         // Handle 500 Internal Server Error
         const imageUrl = "/img/illustration/checklist.png";
@@ -1083,6 +1163,7 @@ function StepThree({ registrasiMerchant, setRegistrasiMerchant }) {
               />
             </label>
           </div>
+          <p className="text-xs text-red-500">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
         <div className="mb-2">
           <label
@@ -1118,6 +1199,7 @@ function StepThree({ registrasiMerchant, setRegistrasiMerchant }) {
               />
             </label>
           </div>
+          <p className="text-xs text-red-500">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
         <div className="mb-2">
           <label htmlFor="noKTP" className="text-sm font-medium text-gray-900">
@@ -1207,6 +1289,10 @@ function Stepfour({ registrasiMerchant, setRegistrasiMerchant }) {
       router.push("/home");
     } catch (error) {
       console.error("Error handling submit:", error);
+      if (error.response && error.response.status === 401) {
+        sessionStorage.clear();
+        router.push("/login");
+      }
       const imageUrl = "/img/illustration/checklist.png";
       SweetAlert({
         title: "",
@@ -1230,9 +1316,8 @@ function Stepfour({ registrasiMerchant, setRegistrasiMerchant }) {
         <div className="flex justify-center mb-2">
           {codes.map((code, index) => (
             <div key={index} className="mr-2">
-              <label htmlFor={`code-${index + 1}`} className="sr-only">{`Code ${
-                index + 1
-              }`}</label>
+              <label htmlFor={`code-${index + 1}`} className="sr-only">{`Code ${index + 1
+                }`}</label>
               <input
                 type="number"
                 maxLength="1"

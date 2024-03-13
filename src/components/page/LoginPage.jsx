@@ -15,6 +15,7 @@ import {
 } from "@tabler/icons-react";
 import { IconBrandFacebook } from "@tabler/icons-react";
 import Header from "../Header";
+import Loading from "../Loading";
 
 const LoginPage = () => {
   const [inputEmail, setEmail] = useState("");
@@ -84,10 +85,11 @@ const LoginPage = () => {
         }, 2000);
       } else {
         setRegistrasi(responeData);
+        sessionStorage.setItem("email", responeData.email);
         Swal.fire({
           icon: "warning",
           title: "Login Failed",
-          text: ` please activate your account by login first to access this page`,
+          text: `please activate your account by login first to access this page`,
           showConfirmButton: false,
           timer: 2000,
         });
@@ -97,7 +99,6 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.log(error);
-
       Swal.fire({
         icon: "error",
         title: "Login Failed",
@@ -110,11 +111,11 @@ const LoginPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (loading) {
-      Swal.showLoading();
-    }
-  }, [loading]);
+  // useEffect(() => {
+  //   if (loading) {
+  //     Swal.showLoading();
+  //   }
+  // }, [loading]);
 
   return (
     <div className="container mx-auto mt-24 bg-white">
@@ -164,7 +165,7 @@ const LoginPage = () => {
             {showPassword ? <IconEye /> : <IconEyeClosed />}
           </button>
         </div>
-        <div className="flex items-start mb-4">
+        {/* <div className="flex items-start mb-4">
           <Link
             href=""
             htmlFor="remember"
@@ -172,7 +173,7 @@ const LoginPage = () => {
           >
             Forgot password?
           </Link>
-        </div>
+        </div> */}
         <div className=" grid gap-6 content-center px-4">
           <button
             onClick={handleSubmit}
@@ -183,22 +184,7 @@ const LoginPage = () => {
           </button>
         </div>
       </div>
-      {loading && <div>Loading...</div>}
-      {/* <div className="flex items-center mb-4 px-6">
-                <div className="border-t border-gray-500 flex-grow"></div>
-                <div className="mx-4 text-gray-500">OR</div>
-                <div className="border-t border-gray-500 flex-grow"></div>
-            </div> */}
 
-      {/* <div className="flex items-center mb-4 px-6">
-                <button className="bg-gray-100 shadow-md text-white px-4 py-2 rounded-full mr-2 w-40 h-16 flex flex-col items-center justify-center">
-                    <img src='icon/google.png' className=' w-6 ' />
-                </button>
-
-                <button className="bg-gray-100 shadow-md text-white px-4 py-2 rounded-full w-40 h-16 flex flex-col items-center justify-center">
-                    <img src='icon/facebook.png' className=' w-6 ' />
-                </button>
-            </div> */}
       <div className="mobile-w flex gap-1 justify-center pt-32">
         <label className="font-light text-sm">Tidak memiliki akun?</label>
         <Link
@@ -208,6 +194,7 @@ const LoginPage = () => {
           Daftar
         </Link>
       </div>
+      {loading && <Loading />}
     </div>
   );
 };
