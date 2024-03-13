@@ -160,111 +160,115 @@ const Edit = () => {
     };
 
     return (
-        <main className="my-0 mx-auto min-h-full mobile-w">
-            <div className="mx-auto bg-white h-screen text-primary">
-                <div className="flex justify-center p-4">
-                    <h1 className="text-4xl text-primary font-bold">Edit Detonator</h1>
-                </div>
-                <div className="flex items-center p-4 m-2 mb-4 text-sm text-red-800 rounded-lg bg-red-50  dark:text-red-400" role="alert">
-                    <svg className="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                    </svg>
-                    <span className="sr-only">Info</span>
-                    <div>
-                        <span className="font-medium">Rejected!</span> {noted}.
+        <div className="container mx-auto h-screen max-w-480 bg-white flex flex-col">
+            <Header title="Edit Profil" backto="/home" />
+            <main className="my-0 mx-auto min-h-full mobile-w  pt-10">
+                <div className="mx-auto bg-white h-full text-primary">
+                    <div className="flex justify-center p-4">
+                        <h1 className="text-lg text-primary font-bold">Edit Data Profil Detonator</h1>
                     </div>
-                </div>
-                <div className="flex flex-col items-center w-full">
-                    <div className="p-2 w-full flex flex-col gap-3">
-                        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-                            <IconUser />
-                            <input
-                                value={ktp_number}
-                                onChange={handleKtpNumberChange}
-                                type="text"
-                                id="ktp_number"
-                                className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
-                                placeholder="Nama Lengkap"
-                                required
-                            />
+                    <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
+                    {noted && (
+                        <div id="alert-additional-content-2" class="p-4 m-2 mb-4 text-red-800 border border-red-300 rounded-lg bg-red-50  dark:text-red-400 dark:border-red-800" role="alert">
+                            <div class="flex items-center">
+                                <svg class="flex-shrink-0 w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                                </svg>
+                                <span class="sr-only">Info</span>
+                                <h3 class="text-lg font-medium">This is rejected info</h3>
+                            </div>
+                            <div class="mt-2 mb-2 text-sm">
+                                {noted}
+                            </div>
                         </div>
-                        {/* <label htmlFor="fotoSelfi">Foto Ktp</label> */}
-                        <div className="flex items-center justify-center w-full">
-                            <label
-                                htmlFor="fotoSelfi"
-                                className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100 px-4"
-                            >
-                                {fotoSelfi ? (
-                                    <img
-                                        src={URL.createObjectURL(fotoSelfi)}
-                                        alt="Foto Selfi"
-                                        className="w-full h-full rounded-lg object-cover"
-                                    />
-                                ) : (
-                                    <img
-                                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataUser?.self_photo || ''}`}
-                                        alt="Foto Selfi"
-                                        className="w-full h-full rounded-lg object-cover"
-                                    />
-                                )}
-
+                    )}
+                    <div className="flex flex-col items-center w-full">
+                        <div className="p-2 w-full flex flex-col gap-3">
+                            <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+                                <IconUser />
                                 <input
-                                    id="fotoSelfi"
-                                    type="file"
-                                    className="hidden"
-                                    onChange={handleFotoSelfiChange}
+                                    value={ktp_number}
+                                    onChange={handleKtpNumberChange}
+                                    type="text"
+                                    id="ktp_number"
+                                    className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                                    placeholder="Nama Lengkap"
+                                    required
                                 />
-                            </label>
-                        </div>
+                            </div>
+                            {/* <label htmlFor="fotoSelfi">Foto Ktp</label> */}
+                            <div className="flex items-center justify-center w-full">
+                                <label
+                                    htmlFor="fotoSelfi"
+                                    className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100 px-4"
+                                >
+                                    {fotoSelfi ? (
+                                        <img
+                                            src={URL.createObjectURL(fotoSelfi)}
+                                            alt="Foto Selfi"
+                                            className="w-full h-full rounded-lg object-cover"
+                                        />
+                                    ) : (
+                                        <img
+                                            src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataUser?.self_photo || ''}`}
+                                            alt="Foto Selfi"
+                                            className="w-full h-full rounded-lg object-cover"
+                                        />
+                                    )}
 
-                        <div className="flex items-center justify-center w-full">
-                            <label
-                                htmlFor="ktpPhoto"
-                                className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100 px-4"
-                            >
-                                {ktpPhoto ? (
-                                    <img
-                                        src={URL.createObjectURL(ktpPhoto)}
-                                        alt="KTP Photo"
-                                        className="w-full h-full rounded-lg object-cover"
+                                    <input
+                                        id="fotoSelfi"
+                                        type="file"
+                                        className="hidden"
+                                        onChange={handleFotoSelfiChange}
                                     />
-                                ) : (
-                                    <img
-                                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataUser?.ktp_photo || ''}`}
-                                        alt="Foto Selfi"
-                                        className="w-full h-full rounded-lg object-cover"
+                                </label>
+                            </div>
+
+                            <div className="flex items-center justify-center w-full">
+                                <label
+                                    htmlFor="ktpPhoto"
+                                    className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100 px-4"
+                                >
+                                    {ktpPhoto ? (
+                                        <img
+                                            src={URL.createObjectURL(ktpPhoto)}
+                                            alt="KTP Photo"
+                                            className="w-full h-full rounded-lg object-cover"
+                                        />
+                                    ) : (
+                                        <img
+                                            src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataUser?.ktp_photo || ''}`}
+                                            alt="Foto Selfi"
+                                            className="w-full h-full rounded-lg object-cover"
+                                        />
+                                    )}
+
+                                    <input
+                                        id="ktpPhoto"
+                                        type="file"
+                                        className="hidden"
+                                        onChange={handleKtpPhotoChange}
                                     />
-                                )}
+                                </label>
+                            </div>
 
-                                <input
-                                    id="ktpPhoto"
-                                    type="file"
-                                    className="hidden"
-                                    onChange={handleKtpPhotoChange}
-                                />
-                            </label>
+                            <div className="grid gap-4 content-center">
+                                <button
+                                    onClick={handleSubmit}
+                                    type="submit"
+                                    className="text-white text-center font-bold rounded-xl bg-primary py-3"
+                                >
+                                    Kirim
+                                </button>
+                            </div>
                         </div>
 
-                        <div className="grid gap-4 content-center">
-                            <button
-                                onClick={handleSubmit}
-                                type="submit"
-                                className="text-white text-center font-bold rounded-xl bg-primary py-3"
-                            >
-                                Kirim
-                            </button>
-                        </div>
                     </div>
-                    <div className="mobile-w flex gap-1 justify-center pt-14">
-                        <label className="font-light text-sm text-black">Sudah memiliki akun?</label>
-                        <Link className="text-blue-950 font-bold hover:underline text-sm" href="/login">
-                            Masuk
-                        </Link>
-                    </div>
+                    {loading && <Loading />}
                 </div>
-                {loading && <Loading />}
-            </div>
-        </main>
+            </main>
+        </div>
     );
 };
 
