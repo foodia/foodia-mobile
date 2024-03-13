@@ -11,6 +11,7 @@ import {
   Stepfour,
 } from "../FormCampaing/StepMerchant";
 import Header from "../Header";
+import Loading from "../Loading";
 // import StepThree from '../FormCampaing/CreateCamp';
 
 const FormMenu = () => {
@@ -102,6 +103,7 @@ const FormMenu = () => {
           {/* Pass the updateLocalStorage function to each step component */}
           {React.cloneElement(stepComponent, { updateLocalStorage })}
         </div>
+        {loading && <Loading />}
       </div>
     </main>
   );
