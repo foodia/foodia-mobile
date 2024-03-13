@@ -41,12 +41,37 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
     registrasiMerchant?.no_link_aja ?? ""
   );
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'center',
+    iconColor: 'white',
+    customClass: {
+      popup: 'colored-toast',
+    },
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+  })
+
   const handlemerchant_nameChange = (event) => {
     setmerchant_name(event.target.value);
   };
 
-  const handlektp_numberChange = (event) => {
-    setktp_number(event.target.value);
+  // const handlektp_numberChange = (event) => {
+  //   setktp_number(event.target.value);
+  // };
+
+  const handlektp_numberChange = async (event) => {
+    const value = event.target.value;
+    if (value.length > 16) {
+      await Toast.fire({
+        icon: 'error',
+        title: 'Nomer KTP maksimal 16 angka',
+        iconColor: 'bg-black',
+      })
+    } else {
+      setktp_number(value);
+    }
   };
   const handleself_photoChange = (event) => {
     setself_photo(event.target.files[0]);
@@ -485,6 +510,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
     console.log("data regis", registrasiMerchant);
 
     try {
+      setLoading(true);
       // Ensure the token is valid
       const token = sessionStorage.getItem("token");
       if (!token) {
@@ -536,10 +562,12 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
         timer: 2000,
       });
       setTimeout(() => {
+        setLoading(false);
         router.push("/home");
         setLoading(false);
       }, 2000);
     } catch (error) {
+      setLoading(false);
       if (error.response && error.response.status === 401) {
         sessionStorage.clear();
         router.push("/login");

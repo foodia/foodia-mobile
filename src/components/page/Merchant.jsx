@@ -116,7 +116,7 @@ const Merchant = () => {
                 timer: 2000,
               });
               setTimeout(() => {
-                router.push("/registrasi/merchant?step=1");
+                router.push("/merchant/edit");
               }, 2000);
             } else {
               sessionStorage.setItem("id", cekData.merchant.merchant_id);
