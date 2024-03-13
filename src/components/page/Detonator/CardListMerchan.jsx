@@ -16,7 +16,17 @@ const CardListMerchan = ({ data }) => {
     router.push(
       `creatcampaign?step=4&id=${IdMerchan}&name=${data.oauth.fullname}`
     );
+    console.log("data card", data.products);
   };
+  const products = data.products;
+
+  // Filter products by status "approved"
+  const approvedProducts = products.filter(product => product.status === "approved");
+
+  // Count the number of approved products
+  const numberOfApprovedProducts = approvedProducts.length;
+
+  console.log("Number of approved products:", numberOfApprovedProducts);
 
   // console.log('data', data.products.length);
   return (
@@ -65,7 +75,7 @@ const CardListMerchan = ({ data }) => {
                   </button>
                 )}
               </div>
-              <p className="font-sans text-xs text-gray-500 mr-2 mt-2">{`Jumlah Menu :${data.products.length}`}</p>
+              <p className="font-sans text-xs text-gray-500 mr-2 mt-2">{`Jumlah Menu :${numberOfApprovedProducts}`}</p>
               <div class="flex items-center">
                 <svg
                   class="w-4 h-4 text-yellow-300 me-1"
