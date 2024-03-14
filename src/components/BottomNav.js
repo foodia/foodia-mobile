@@ -23,6 +23,7 @@ const BottomNav = () => {
   const [token, setToken] = useState("");
   const { state, setDonation } = useAppState();
   const [nominalDonasi, setNominalDonasi] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   console.log(pathname);
 
@@ -42,137 +43,92 @@ const BottomNav = () => {
   // };
 
   const showSweetAlert = async () => {
-    // const { value } = await Swal.fire({
-    //   title: "Pilih Nominal Donasi",
-    //   html: `
-    //     <div class="flex flex-col space-y-2">
-    //         <label>
-    //             <input  type="radio" name="donation" id="donation" class="hidden peer" value="50000"  />
-    //             <div class="peer-checked:bg-primary bg-green-200 py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
-    //         </label>
-    //         <label>
-    //             <input  type="radio" name="donation" id="donation" class="hidden peer" value="100000"  />
-    //             <div class="peer-checked:bg-primary bg-green-200 py-2 px-4 rounded-lg font-semibold">Rp. 100.000</div>
-    //         </label>
-    //         <label>
-    //             <input  type="radio" name="donation" id="donation" class="hidden peer" value="250000"  />
-    //             <div class="peer-checked:bg-primary bg-green-200 py-2 px-4 rounded-lg font-semibold">Rp. 250.000</div>
-    //         </label>
-    //         <label>
-    //             <input  type="radio" name="donation" id="donation" class="hidden peer" value="500000"  />
-    //             <div class="peer-checked:bg-primary bg-green-200 py-2 px-4 rounded-lg font-semibold">Rp. 500.000</div>
-    //         </label>
-
-    //         <div class="bg-gray-200 p-2 rounded-lg">
-    //       <label class=" items-center text-base ">
-    //       Nominal Donasi Lainnya
-    //       </label>
-    //         <input type="number" name="nominal" class="items-center mt-2 bg-gray-50 border border-gray-300  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 0 dark:placeholder-gray-400  ">
-
-    //       </div>
-    //     </div>`,
-    //   focusConfirm: false,
-    //   showCancelButton: true,
-    //   cancelButtonText: "Batal",
-    //   confirmButtonText: "Pilih",
-    //   preConfirm: () => {
-    //     const radioValue = document.querySelector(
-    //       'input[name="donation"]:checked'
-    //     );
-    //     if (!radioValue) {
-    //       const nominalValue = document.querySelector('input[name="nominal"]');
-    //       if (nominalValue && nominalValue.value) {
-    //         // return nominalValue.value;
-    //         handleSubmit(nominalValue.value);
-    //       } else {
-    //         return "input nominal value";
-    //       }
-    //     } else {
-    //       // return radioValue.value;
-    //       handleSubmit(radioValue.value);
-    //     }
-    //   },
-    //   customClass: {
-    //     container: "your-custom-container-class",
-    //     popup: "your-custom-popup-class",
-    //     title: "your-custom-title-class",
-    //     content: "your-custom-content-class",
-    //     confirmButton: "your-custom-confirm-button-class",
-    //     cancelButton: "your-custom-cancel-button-class",
-    //   },
-    // });
-
-    // if (value) {
-    //     setNominalDonasi(parseInt(value));
-    // }
-    Swal.fire({
-      position: "bottom",
+    const swal = Swal.mixin({
       customClass: {
         popup: "custom-swal",
         icon: "custom-icon-swal",
-        // title: "custom-title-swal",
         confirmButton: "custom-confirm-button-swal", // Custom class for styling
       },
-      // title: `<p class="text-sm pt-2">Pilih Nominal Donasi</p>`,
+      didRender: () => {
+        const nominalInput = document.querySelector('input[name="nominal"]');
+        const donationRadios = document.querySelectorAll('input[name="donation"]');
+
+        // Menambahkan event listener untuk setiap radio button nominal
+        donationRadios.forEach(radio => {
+          radio.addEventListener('click', () => {
+            // Menghapus nilai input nominal jika opsi nominal dipilih
+            nominalInput.value = '';
+          });
+        });
+
+        // Menghapus nilai input nominal jika pengguna mulai mengetik di dalamnya
+        nominalInput.addEventListener('input', () => {
+          donationRadios.forEach(radio => {
+            radio.checked = false;
+          });
+        });
+      }
+    });
+
+    await swal.fire({
+      position: "bottom",
       html: `
-              <div class="absolute px-24 ml-10 top-0 mt-4">
+            <div class="absolute px-24 ml-10 top-0 mt-4">
                 <hr class="border border-gray-400 w-10 h-1 bg-gray-400 rounded-lg "/>
-              </div>
-              <div class="mt-4">
+            </div>
+            <div class="mt-4">
                 <p class="text-md font-bold">Pilih Nominal Donasi</p>
                 <div class="flex flex-col space-y-4 pt-5">
                     <label>
-                        <input  type="radio" name="donation" id="donation" class="hidden peer" value="50000"  />
+                        <input type="radio" name="donation" class="hidden peer" value="20000" />
+                        <div class="cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100 py-2 px-4 rounded-lg font-semibold">Rp 20.000</div>
+                    </label>
+                    <label>
+                        <input type="radio" name="donation" class="hidden peer" value="50000" />
                         <div class="cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100 py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
                     </label>
                     <label>
-                        <input  type="radio" name="donation" id="donation" class="hidden peer" value="100000"  />
+                        <input type="radio" name="donation" class="hidden peer" value="100000" />
                         <div class="cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100 py-2 px-4 rounded-lg font-semibold">Rp 100.000</div>
                     </label>
                     <label>
-                        <input  type="radio" name="donation" id="donation" class="hidden peer" value="250000"  />
-                        <div class="cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100 py-2 px-4 rounded-lg font-semibold">Rp 250.000</div>
-                    </label>
-                    <label>
-                        <input  type="radio" name="donation" id="donation" class="hidden peer" value="500000"  />
-                        <div class="cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100 py-2 px-4 rounded-lg font-semibold">Rp 500.000</div>
+                        <input type="radio" name="donation" class="hidden peer" value="200000" />
+                        <div class="cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100 py-2 px-4 rounded-lg font-semibold">Rp 200.000</div>
                     </label>
                     <div class="bg-gray-100 p-3 rounded-lg">
-                      <label class=" items-center text-base ">
-                        Nominal Donasi Lainnya
-                      </label>
-                      <div class="pl-5 gap-4 flex flex-row items-center mt-2 bg-white text-sm rounded-xl focus:ring-blue-500 ">
-                        <label class="w-5">Rp </label>
-                        <input type="number" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl "> 
-                      </div>
+                        <label class=" items-center text-base ">
+                            Nominal Donasi Lainnya
+                        </label>
+                        <div class="pl-5 gap-4 flex flex-row items-center mt-2 bg-white text-sm rounded-xl focus:ring-blue-500 ">
+                            <label class="w-5">Rp </label>
+                            <input type="number" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl ">
+                        </div>
                     </div>
                 </div>
-              </div>
-              `,
+            </div>
+            `,
       width: "375px",
       showConfirmButton: true,
       confirmButtonText: "Donasi",
       confirmButtonColor: "#3FB648",
-      preConfirm: () => {
-        const radioValue = document.querySelector(
-          'input[name="donation"]:checked'
-        );
-        if (!radioValue) {
-          const nominalValue = document.querySelector('input[name="nominal"]');
-          if (nominalValue && nominalValue.value) {
-            // return nominalValue.value;
-            handleSubmit(nominalValue.value);
-          } else {
-            return "input nominal value";
-          }
-        } else {
-          // return radioValue.value;
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const radioValue = document.querySelector('input[name="donation"]:checked');
+        const nominalValue = document.querySelector('input[name="nominal"]');
+
+        setLoading(true);
+        if (!radioValue && nominalValue && nominalValue.value) {
+          handleSubmit(nominalValue.value);
+        } else if (radioValue) {
           handleSubmit(radioValue.value);
+        } else {
+          Swal.fire("Error", "Pilih atau isi nominal donasi.", "error");
         }
-      },
-      // timer: 2000,
+      }
     });
   };
+
+
 
   const handleSubmit = (value) => {
     setNominalDonasi(parseInt(value));
@@ -187,6 +143,7 @@ const BottomNav = () => {
       },
     };
     setDonation(data);
+    setLoading(false);
     router.push("/metode_pembayaran");
   };
 
