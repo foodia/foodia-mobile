@@ -1,10 +1,10 @@
-import Swal from 'sweetalert2';
-import { useEffect, useState } from 'react';
+import Header from '@/components/Header';
+import Loading from '@/components/Loading';
+import { IconUser } from '@tabler/icons-react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { IconCamera, IconUser } from '@tabler/icons-react';
-import Loading from '@/components/Loading';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 
 const Edit = () => {
     const router = useRouter();
