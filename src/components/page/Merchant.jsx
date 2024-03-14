@@ -336,6 +336,7 @@ const Merchant = () => {
               <CardFood
                 key={data.id}
                 to={`/product/${data.id}`}
+                idProduct={data.id}
                 img={
                   data.images.length > 0
                     ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.images[0].image_url}`

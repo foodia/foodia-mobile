@@ -27,6 +27,18 @@ const LoginPage = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'center',
+    iconColor: 'white',
+    customClass: {
+      popup: 'colored-toast',
+    },
+    showConfirmButton: false,
+    timer: 1500,
+    timerProgressBar: true,
+  })
+
   useEffect(() => {
     const role = sessionStorage.getItem("role");
     const token = sessionStorage.getItem("token");
@@ -41,6 +53,35 @@ const LoginPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    if (!inputEmail || !inputPassword) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Please fill in all fields',
+        iconColor: 'bg-black',
+      })
+      return;
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(inputEmail)) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Invalid email address',
+        iconColor: 'bg-black',
+      })
+      return;
+    }
+
+    if (inputPassword.length < 8) {
+      // window.alert("Password must be at least 8 characters");
+      Toast.fire({
+        icon: 'error',
+        title: 'Password must be at least 8 characters',
+        iconColor: 'bg-black',
+      })
+      return;
+    }
+
 
     try {
       setLoading(true); // Set loading to true when starting authentication

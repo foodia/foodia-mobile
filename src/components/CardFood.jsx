@@ -21,6 +21,7 @@ import Link from "next/link";
 
 const CardFood = (props) => {
   const {
+    idProduct,
     to,
     img,
     title,
@@ -79,12 +80,12 @@ const CardFood = (props) => {
                 {status !== "approved" ? (
                   <div
                     className={`flex justify-center items-center rounded-full  ${status === "waiting"
-                        ? "bg-blue-600"
-                        : status === "approved"
-                          ? "bg-green-500"
-                          : status === "rejected"
-                            ? "bg-red-500"
-                            : ""
+                      ? "bg-blue-600"
+                      : status === "approved"
+                        ? "bg-green-500"
+                        : status === "rejected"
+                          ? "bg-red-500"
+                          : ""
                       }`}
                   >
                     <p className="text-white font-medium text-[10px] px-2">
@@ -115,9 +116,9 @@ const CardFood = (props) => {
                 </p>
                 {status == "approved" ? (
                   <div className="flex pr-2 gap-1">
-                    <button className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-medium py-3 p-2 text-sm h-2 rounded">
+                    <Link href={`merchant/product/edit/${idProduct}`} className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-medium py-3 p-2 text-sm h-2 rounded">
                       <IconEdit size={15} />
-                    </button>
+                    </Link>
                     <button className="flex items-center bg-red-500 hover:bg-red-700 text-white font-medium py-3 p-2 text-sm h-2 rounded">
                       <IconTrash size={15} />
                     </button>
