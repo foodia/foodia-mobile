@@ -1,12 +1,5 @@
 import styles from "@/styles/Home.module.css";
-import {
-  IconCircleCheck,
-  IconClockFilled,
-  IconEdit,
-  IconPaint,
-  IconPlaystationX,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
 
 // key = { item.id }
@@ -60,9 +53,8 @@ const CardFood = (props) => {
 
   return (
     <div className="flex justify-center mt-1 w-full mb-2 items-center">
-      <Link
-        href={to}
-        className={`bg-white flex hover:bg-gray-100 text-black rounded-2xl items-center border border-primary shadow-lg w-80 p-1`}
+      <div
+        className={`bg-white flex text-black rounded-2xl items-center border border-primary shadow-lg w-80 p-1`}
       >
         <div className="flex justify-between items-center w-80">
           <div className="flex items-center p-1">
@@ -78,14 +70,15 @@ const CardFood = (props) => {
                 </p>
                 {status !== "approved" ? (
                   <div
-                    className={`flex justify-center items-center rounded-full  ${status === "waiting"
+                    className={`flex justify-center items-center rounded-full  ${
+                      status === "waiting"
                         ? "bg-blue-600"
                         : status === "approved"
-                          ? "bg-green-500"
-                          : status === "rejected"
-                            ? "bg-red-500"
-                            : ""
-                      }`}
+                        ? "bg-green-500"
+                        : status === "rejected"
+                        ? "bg-red-500"
+                        : ""
+                    }`}
                   >
                     <p className="text-white font-medium text-[10px] px-2">
                       {getStatusIcon()}
@@ -129,7 +122,7 @@ const CardFood = (props) => {
             </div>
           </div>
         </div>
-      </Link>
+      </div>
     </div>
   );
 };
