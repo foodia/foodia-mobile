@@ -11,6 +11,13 @@ const Home = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const session = localStorage.getItem("Session");
+    if (session === "start") {
+      router.push("/home");
+    }
+  }, []);
+
   // useEffect(() => {
   //   const redirectTimer = setTimeout(() => {
   //     router.push('/home');

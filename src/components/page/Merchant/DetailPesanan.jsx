@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
-import { IconCaretDown } from "@tabler/icons-react";
+import { IconCaretDown, IconMapPin } from "@tabler/icons-react";
 
 import { IconCaretUp } from "@tabler/icons-react";
 import Swal from "sweetalert2";
@@ -10,6 +10,7 @@ import { useAppState } from "../UserContext";
 import Header from "@/components/Header";
 import CardPesanan from "@/components/CardPesanan";
 import moment from "moment/moment";
+import Link from "next/link";
 
 const DetailPesanan = () => {
   const router = useRouter();
@@ -211,7 +212,7 @@ const DetailPesanan = () => {
             }
             title={dataApi?.campaign.event_name}
             productName={dataApi?.merchant_product.name}
-            date={moment(dataApi?.merchant_product.created_at).format(
+            date={moment(dataApi?.campaign?.event_date).format(
               "DD MMM YYYY hh:mm"
             )}
             qty={dataApi?.qty}
@@ -227,9 +228,18 @@ const DetailPesanan = () => {
               <p className="text-right text-sm">
                 {dataApi?.campaign.event_name}
               </p>
+              <p className="text-sm text-gray-400">Donation Target</p>
+              <p className="text-right text-sm text-primary">
+                Rp. {dataApi?.campaign.donation_target.toLocaleString("id-ID")}
+              </p>
+              <p className="text-sm text-gray-400">Donation Collected</p>
+              <p className="text-right text-sm text-primary">
+                Rp.{" "}
+                {dataApi?.campaign.donation_collected.toLocaleString("id-ID")}
+              </p>
             </div>
 
-            <hr className="h-px bg-gray-200 border-0 " />
+            <hr className="h-px bg-gray-200 border-0 mt-2" />
             <div className="justify-between grid grid-cols-2 gap-2 py-4">
               <p className="text-sm text-gray-400">PIC</p>
               <p className="text-right text-sm">
@@ -254,7 +264,17 @@ const DetailPesanan = () => {
             <hr className="h-px bg-gray-200 border-0" />
             <div className="justify-between grid grid-cols-2 gap-2 py-4">
               <p className="text-sm text-gray-400">Tempat</p>
-              <p className="text-right text-sm">{dataApi?.campaign.address}</p>
+              <div className="flex gap-4">
+                <p className="text-right text-sm">
+                  {dataApi?.campaign.address}
+                </p>
+                <Link
+                  href={`/lokasi_camp/${dataApi?.campaign_id}`}
+                  className="text-sm font-normal mb-12 text-red-500"
+                >
+                  <IconMapPin />
+                </Link>
+              </div>
             </div>
             <hr className="h-px bg-gray-200 border-0" />
             <div className="justify-between grid grid-cols-2 gap-2 py-4">
@@ -267,10 +287,7 @@ const DetailPesanan = () => {
             <div className="justify-between grid grid-cols-2 gap-2 py-4">
               <p className="text-sm text-gray-400">Total</p>
               <p className="text-right text-sm text-primary">
-                Rp.{" "}
-                {(
-                  (dataApi?.qty || 0) * (dataApi?.merchant_product.price || 0)
-                ).toLocaleString("id-ID")}
+                Rp. {dataApi?.total_amount.toLocaleString("id-ID")}
               </p>
             </div>
             <hr className="h-px bg-gray-200 border-0" />

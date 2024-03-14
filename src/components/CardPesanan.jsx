@@ -177,7 +177,7 @@ const CardPesanan = (props) => {
                 <div className="flex flex-col">
                   <p className="text-gray-500 font-normal text-xs italic">{`${qty} x ${productName}`}</p>
                   <span className="text-primary font-medium text-md">
-                    {formatPrice(price)}
+                    {formatPrice(totalHarga)}
                   </span>
                 </div>
                 <div

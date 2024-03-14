@@ -257,7 +257,7 @@ const PesananMerchan = () => {
                 }
                 title={data.campaign.event_name}
                 productName={data.merchant_product.name}
-                date={moment(data.merchant_product.created_at).format(
+                date={moment(data.campaign?.event_date).format(
                   "DD MMM YYYY hh:mm"
                 )}
                 qty={data.qty}
