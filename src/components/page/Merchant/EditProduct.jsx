@@ -43,7 +43,10 @@ function EditProduct() {
                 // setImages(response.data.body.images);
             })
             .catch((error) => {
-                console.log(error);
+                if (error.response && error.response.status === 401) {
+                    sessionStorage.clear();
+                    router.push('/login');
+                }
             })
     }, [router.query.id])
 
