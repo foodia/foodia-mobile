@@ -159,12 +159,12 @@ const CardFood = (props) => {
                     >
                       <IconEdit size={15} />
                     </Link>
-                    <button
+                    {/* <button
                       onClick={() => onDeleteMenu()}
                       className="flex items-center bg-red-500 hover:bg-red-700 text-white font-medium py-3 p-2 text-sm h-2 rounded"
                     >
                       <IconTrash size={15} />
-                    </button>
+                    </button> */}
                   </div>
                 ) : (
                   ""
