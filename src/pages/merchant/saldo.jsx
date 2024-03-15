@@ -291,7 +291,7 @@ const saldo = (saldo) => {
                     key={data.id}
                   >
                     <p className="font-bold">{data.campaign.event_name}</p>
-                    <p>{formatPrice(data.merchant_product.price * data.qty)}</p>
+                    <p>{formatPrice(data.total_amount)}</p>
                     <p className="text-sm">{`${data.qty} x ${data.merchant_product.name}`}</p>
                     <p className="text-gray-500 text-xs">
                       {data.campaign.event_date} {data.campaign.event_time}

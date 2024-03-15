@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import InputForm from "@/components/Imput";
+import Loading from "@/components/Loading";
 import {
   IconBuildingBank,
   IconCreditCard,
@@ -16,13 +17,12 @@ const penarikan = (penarikan) => {
   const [balance, setBalance] = useState("");
   const [bank, setBank] = useState("");
   const [recipient_name, setRecipient_name] = useState("");
+  const [loading, setLoading] = useState(true);
   const [rekening, setRekening] = useState("");
   const [method, setMethod] = useState("");
   const parsedAmount = parseInt(amount.replace(/\./g, ""), 10);
   const eWalletFee = parsedAmount * (1.5 / 100);
   const bankFee = 4000;
-
-  console.log("wallert", eWalletFee);
 
   useEffect(() => {
     const id = sessionStorage.getItem("id");
@@ -35,9 +35,11 @@ const penarikan = (penarikan) => {
         },
       })
       .then((response) => {
+        setLoading(false);
         setBalance(response.data.body.wallet.balance);
       })
       .catch((error) => {
+        setLoading(false);
         console.error("Error fetching data:", error);
       });
   }, [balance]);
@@ -57,7 +59,11 @@ const penarikan = (penarikan) => {
   const handleTarikSaldo = () => {
     Swal.fire({
       title: "Konfirmasi Penarikan Saldo",
-      text: "Anda yakin akan menarik saldo? Pastikan nomor Link Aja sudah sesuai.",
+      text: `Total penarikan ditambah biaya channel pembayaran adalah ${
+        method === "BANK"
+          ? formatPrice(parsedAmount + bankFee)
+          : formatPrice(parsedAmount + eWalletFee)
+      }`,
       showCancelButton: true,
       confirmButtonText: "Lanjut",
       cancelButtonText: "Batal",
@@ -65,102 +71,90 @@ const penarikan = (penarikan) => {
       cancelButtonColor: "#c0bfbf",
     }).then((result) => {
       if (result.isConfirmed) {
-        if (result.isConfirmed) {
-          const merchant_id = sessionStorage.getItem("id");
-          const token = sessionStorage.getItem("token");
-          if (
-            !merchant_id ||
-            !recipient_name ||
-            !bank ||
-            !rekening ||
-            !amount
-          ) {
-            Swal.fire("Oops!", "Mohon lengkapi semua field.", "error");
-          } else {
-            const bankMethod = {
-              merchant_id: parseInt(merchant_id),
-              recipient_name: recipient_name,
-              bank: bank,
-              rekening: rekening,
-              amount: parsedAmount + bankFee,
-              payment_method: method,
-            };
-            const eWalletMethod = {
-              merchant_id: parseInt(merchant_id),
-              bank: bank,
-              rekening: rekening,
-              amount: parsedAmount + eWalletFee,
-              payment_method: method,
-            };
-            {
-              method === "BANK"
-                ? axios
-                    .post(
-                      `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
-                      bankMethod,
-                      {
-                        headers: {
-                          Authorization: `Bearer ${token}`,
-                        },
-                      }
-                    )
-                    .then((response) => {
-                      // Tanggapan dari panggilan API berhasil
-                      Swal.fire("Sukses!", "Saldo telah ditarik.", "success");
-                      Swal.fire({
-                        icon: "success",
-                        title: "Saldo telah ditarik.",
-                        text: ` Pengajuan penarikan dana Berhasil`,
-                        showConfirmButton: false,
-                        timer: 2000,
-                      });
-                      setTimeout(() => {
-                        router.push("/merchant/saldo");
-                      }, 2000);
-                    })
-                    .catch((error) => {
-                      // Tanggapan dari panggilan API gagal atau terjadi kesalahan
-                      Swal.fire(
-                        "Oops!",
-                        "Terjadi kesalahan saat menarik saldo.",
-                        "error"
-                      );
-                    })
-                : axios
-                    .post(
-                      `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
-                      eWalletMethod,
-                      {
-                        headers: {
-                          Authorization: `Bearer ${token}`,
-                        },
-                      }
-                    )
-                    .then((response) => {
-                      // Tanggapan dari panggilan API berhasil
-                      Swal.fire("Sukses!", "Saldo telah ditarik.", "success");
-                      Swal.fire({
-                        icon: "success",
-                        title: "Saldo telah ditarik.",
-                        text: ` Pengajuan penarikan dana Berhasil`,
-                        showConfirmButton: false,
-                        timer: 2000,
-                      });
-                      setTimeout(() => {
-                        router.push("/merchant/saldo");
-                      }, 2000);
-                    })
-                    .catch((error) => {
-                      // Tanggapan dari panggilan API gagal atau terjadi kesalahan
-                      Swal.fire(
-                        "Oops!",
-                        "Terjadi kesalahan saat menarik saldo.",
-                        "error"
-                      );
-                    });
-            }
-          }
-          // Panggil API menggunakan Axios di sini
+        setLoading(true);
+        const merchant_id = sessionStorage.getItem("id");
+        const token = sessionStorage.getItem("token");
+        const bankMethod = {
+          merchant_id: parseInt(merchant_id),
+          recipient_name: recipient_name,
+          bank: bank,
+          rekening: rekening,
+          amount: parsedAmount + bankFee,
+          payment_method: method,
+        };
+        const eWalletMethod = {
+          merchant_id: parseInt(merchant_id),
+          bank: bank,
+          rekening: rekening,
+          amount: parsedAmount + eWalletFee,
+          payment_method: method,
+        };
+        {
+          method === "BANK"
+            ? axios
+                .post(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
+                  bankMethod,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                )
+                .then((response) => {
+                  setLoading(false);
+                  Swal.fire({
+                    icon: "success",
+                    title: "Penarikan Saldo Berhasil",
+                    text: "Silahkan cek rekening anda atau jika belum masuk sampai 1 x 24 jam, harap menghubungi admin@foodia.com",
+                    showConfirmButton: true,
+                    confirmButtonText: "Tutup",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      router.push("/merchant/saldo");
+                    }
+                  });
+                })
+                .catch((error) => {
+                  setLoading(false);
+                  Swal.fire(
+                    "Oops!",
+                    "Terjadi kesalahan saat menarik saldo.",
+                    "error"
+                  );
+                })
+            : axios
+                .post(
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
+                  eWalletMethod,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                )
+                .then((response) => {
+                  setLoading(false);
+                  Swal.fire({
+                    icon: "success",
+                    title: "Penarikan Saldo Berhasil",
+                    text: "Silahkan cek Link Aja anda atau jika belum masuk sampai 1 x 24 jam, harap menghubungi admin@foodia.com",
+                    showConfirmButton: true,
+                    confirmButtonText: "Tutup",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      router.push("/merchant/saldo");
+                    }
+                  });
+                })
+                .catch((error) => {
+                  setLoading(false);
+                  Swal.fire(
+                    "Oops!",
+                    "Terjadi kesalahan saat menarik saldo.",
+                    "error"
+                  );
+                });
         }
       }
     });
@@ -174,6 +168,7 @@ const penarikan = (penarikan) => {
 
     return formatter.format(price);
   };
+
   const handlePriceChange = (event) => {
     let inputVal = event.target.value;
     inputVal = inputVal.replace(/\D/g, ""); // Remove all non-numeric characters
@@ -234,23 +229,16 @@ const penarikan = (penarikan) => {
           </div>
 
           <div className="flex justify-between">
-            {balance - 2000 < parsedAmount ? (
-              <div className="flex flex-col">
-                <p className="text-xs text-red-500 font-semibold mt-2">
-                  Saldo anda tidak mencukupi,
-                </p>
-                <p className="text-xs text-red-500 font-semibold">
-                  Maximal Penarikan : {formatPrice(balance - 2000)}
-                </p>
-              </div>
+            {parsedAmount + bankFee > balance ||
+            parsedAmount + eWalletFee > balance ? (
+              <p className="text-xs text-red-500 font-semibold mt-2">
+                Saldo anda tidak mencukupi
+              </p>
             ) : (
               <p className="text-xs text-blue-800 font-semibold mt-2">
                 Minimal Penarikan Rp 10.000
               </p>
             )}
-            {/* <p className="text-xs text-blue-500 font-semibold mt-2">
-              Biaya Admin Rp 2.000
-            </p> */}
           </div>
         </div>
         <div className="px-4 mt-4">
@@ -355,34 +343,63 @@ const penarikan = (penarikan) => {
               <span className="text-primary">Syarat & Ketentuan</span> penarikan
               Saldo Foodia
             </p>
-            <button
-              disabled={
-                balance - 2000 < parsedAmount ||
-                parsedAmount < 10000 ||
-                amount == "" ||
-                balance == "" ||
-                bank == "" ||
-                recipient_name == "" ||
-                rekening == ""
-              }
-              className={
-                balance - 2000 < parsedAmount ||
-                parsedAmount < 10000 ||
-                amount == "" ||
-                balance == "" ||
-                bank == "" ||
-                recipient_name == "" ||
-                rekening == ""
-                  ? "bg-gray-400 text-white w-full h-12 rounded-lg font-bold"
-                  : "bg-primary text-white w-full h-12 rounded-lg font-bold"
-              }
-              onClick={handleTarikSaldo}
-            >
-              Tarik Saldo
-            </button>
+            {method === "BANK" ? (
+              <button
+                disabled={
+                  parsedAmount + bankFee > balance ||
+                  parsedAmount < 10000 ||
+                  amount == "" ||
+                  balance == "" ||
+                  bank == "" ||
+                  recipient_name == "" ||
+                  rekening == ""
+                }
+                className={
+                  parsedAmount + bankFee > balance ||
+                  parsedAmount < 10000 ||
+                  amount == "" ||
+                  balance == "" ||
+                  bank == "" ||
+                  recipient_name == "" ||
+                  rekening == ""
+                    ? "bg-gray-400 text-white w-full h-12 rounded-lg font-bold"
+                    : "bg-primary text-white w-full h-12 rounded-lg font-bold"
+                }
+                onClick={handleTarikSaldo}
+              >
+                Tarik Saldo
+              </button>
+            ) : (
+              <button
+                disabled={
+                  parsedAmount + eWalletFee > balance ||
+                  parsedAmount < 10000 ||
+                  amount == "" ||
+                  balance == "" ||
+                  bank == "" ||
+                  // recipient_name == "" ||
+                  rekening == ""
+                }
+                className={
+                  parsedAmount + eWalletFee > balance ||
+                  parsedAmount < 10000 ||
+                  amount == "" ||
+                  balance == "" ||
+                  bank == "" ||
+                  // recipient_name == "" ||
+                  rekening == ""
+                    ? "bg-gray-400 text-white w-full h-12 rounded-lg font-bold"
+                    : "bg-primary text-white w-full h-12 rounded-lg font-bold"
+                }
+                onClick={handleTarikSaldo}
+              >
+                Tarik Saldo
+              </button>
+            )}
           </div>
         </div>
       </div>
+      {loading && <Loading />}
     </div>
   );
 };
