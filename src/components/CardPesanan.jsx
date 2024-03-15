@@ -161,14 +161,12 @@ const CardPesanan = (props) => {
             <div className="flex flex-col gap-1 italic">
               <div className="flex flex-row gap-1">
                 <p className="font-sans text-xs text-gray-500">
-                  Tanggal Dibuat:{" "}
+                  Campaign Dibuat:{" "}
                 </p>{" "}
                 <p className="font-medium text-xs text-black">{created_at}</p>
               </div>
               <div className="flex flex-row gap-1">
-                <p className="font-sans text-xs text-gray-500">
-                  Tanggal Pelaksanaan:{" "}
-                </p>{" "}
+                <p className="font-sans text-xs text-gray-500">Pelaksanaan: </p>{" "}
                 <p className="font-medium text-xs text-black">{date}</p>
               </div>
             </div>
