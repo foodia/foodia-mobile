@@ -43,7 +43,11 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .swal2-confirm {
-  border-color: #3fb648;
+  border-radius: 15px !important;
+  /* Adjust border radius as needed */
+}
+
+.swal2-cancel {
   border-radius: 15px !important;
   /* Adjust border radius as needed */
 }
@@ -238,11 +242,11 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Menambahkan gambar untuk setiap opsi */
 option[value="bca"].with-image {
-  background-image: url('/bank/bca.png');
+  background-image: url("/bank/bca.png");
 }
 
 option[value="mandiri"].with-image {
-  background-image: url('/bank/mandiri.png');
+  background-image: url("/bank/mandiri.png");
 }
 
 /* ========icon Load===================== */
@@ -253,7 +257,7 @@ option[value="mandiri"].with-image {
 }
 
 .loader::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: 0;
@@ -265,11 +269,11 @@ option[value="mandiri"].with-image {
 }
 
 .loader::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   top: 0;
-  background: #FF3D00;
+  background: #ff3d00;
   width: 24px;
   height: 24px;
   transform: translateX(-50%) rotate(0deg);
@@ -278,17 +282,17 @@ option[value="mandiri"].with-image {
 
 @keyframes rotate {
   100% {
-    transform: translateX(-50%) rotate(360deg)
+    transform: translateX(-50%) rotate(360deg);
   }
 }
 
 @keyframes move {
   0% {
-    transform: rotate(10deg)
+    transform: rotate(10deg);
   }
 
   100% {
-    transform: rotate(-10deg)
+    transform: rotate(-10deg);
   }
 }
 
@@ -300,7 +304,7 @@ option[value="mandiri"].with-image {
 }
 
 .btn-loader::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: 0;
@@ -312,11 +316,11 @@ option[value="mandiri"].with-image {
 }
 
 .btn-loader::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 50%;
   top: 0;
-  background: #FF3D00;
+  background: #ff3d00;
   width: 8px;
   height: 8px;
   transform: translateX(-50%) rotate(0deg);
@@ -325,20 +329,19 @@ option[value="mandiri"].with-image {
 
 @keyframes rotate {
   100% {
-    transform: translateX(-50%) rotate(360deg)
+    transform: translateX(-50%) rotate(360deg);
   }
 }
 
 @keyframes move {
   0% {
-    transform: rotate(10deg)
+    transform: rotate(10deg);
   }
 
   100% {
-    transform: rotate(-10deg)
+    transform: rotate(-10deg);
   }
 }
-
 
 /* ==================Alert ==================== */
 .colored-toast {

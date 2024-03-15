@@ -1,13 +1,8 @@
 import styles from "@/styles/Home.module.css";
-import {
-  IconCircleCheck,
-  IconClockFilled,
-  IconEdit,
-  IconPaint,
-  IconPlaystationX,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
+import axios from "axios";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 // key = { item.id }
 // data = { item }
@@ -59,11 +54,52 @@ const CardFood = (props) => {
     }
   };
 
+  const onDeleteMenu = () => {
+    Swal.fire({
+      icon: "question",
+      title: `Hapus Menu ${title}`,
+      text: `Kamu Yakin Menghapus Menu Ini?`,
+      showConfirmButton: true,
+      showCancelButton: true,
+      cancelButtonText: "Batal",
+      confirmButtonText: "Hapus",
+      confirmButtonColor: "#3fb648",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(
+            process.env.NEXT_PUBLIC_API_BASE_URL +
+              `merchant-product/delete/${idProduct}`,
+            {
+              headers: {
+                authorization: `Bearer ${sessionStorage.getItem("token")}`,
+              },
+            }
+          )
+          .then((res) => {
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil Menghapus Menu",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal Menghapus Menu",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          });
+      }
+    });
+  };
+
   return (
     <div className="flex justify-center mt-1 w-full mb-2 items-center">
-      <Link
-        href={to}
-        className={`bg-white flex hover:bg-gray-100 text-black rounded-2xl items-center border border-primary shadow-lg w-80 p-1`}
+      <div
+        className={`bg-white flex text-black rounded-2xl items-center border border-primary shadow-lg w-80 p-1`}
       >
         <div className="flex justify-between items-center w-80">
           <div className="flex items-center p-1">
@@ -79,14 +115,15 @@ const CardFood = (props) => {
                 </p>
                 {status !== "approved" ? (
                   <div
-                    className={`flex justify-center items-center rounded-full  ${status === "waiting"
-                      ? "bg-blue-600"
-                      : status === "approved"
+                    className={`flex justify-center items-center rounded-full  ${
+                      status === "waiting"
+                        ? "bg-blue-600"
+                        : status === "approved"
                         ? "bg-green-500"
                         : status === "rejected"
-                          ? "bg-red-500"
-                          : ""
-                      }`}
+                        ? "bg-red-500"
+                        : ""
+                    }`}
                   >
                     <p className="text-white font-medium text-[10px] px-2">
                       {getStatusIcon()}
@@ -116,10 +153,16 @@ const CardFood = (props) => {
                 </p>
                 {status == "approved" ? (
                   <div className="flex pr-2 gap-1">
-                    <Link href={`merchant/product/edit/${idProduct}`} className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-medium py-3 p-2 text-sm h-2 rounded">
+                    <Link
+                      href={`merchant/product/edit/${idProduct}`}
+                      className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-medium py-3 p-2 text-sm h-2 rounded"
+                    >
                       <IconEdit size={15} />
                     </Link>
-                    <button className="flex items-center bg-red-500 hover:bg-red-700 text-white font-medium py-3 p-2 text-sm h-2 rounded">
+                    <button
+                      onClick={() => onDeleteMenu()}
+                      className="flex items-center bg-red-500 hover:bg-red-700 text-white font-medium py-3 p-2 text-sm h-2 rounded"
+                    >
                       <IconTrash size={15} />
                     </button>
                   </div>
@@ -130,7 +173,7 @@ const CardFood = (props) => {
             </div>
           </div>
         </div>
-      </Link>
+      </div>
     </div>
   );
 };

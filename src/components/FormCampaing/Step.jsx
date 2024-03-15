@@ -1,13 +1,11 @@
 // src/components/FormCampaing/Step.jsx
 
-import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import InputForm from "../Imput";
-import RoutStep from "../RoutStep";
-import "react-time-picker/dist/TimePicker.css";
+import { useEffect, useState } from "react";
 import "react-clock/dist/Clock.css";
+import "react-time-picker/dist/TimePicker.css";
+import RoutStep from "../RoutStep";
 
-import dynamic from "next/dynamic";
 import {
   Icon123,
   IconCalendar,
@@ -18,27 +16,20 @@ import {
   IconDetails,
   IconFileDescription,
   IconGardenCart,
-  IconHome,
   IconHome2,
-  IconLocation,
   IconMap,
+  IconMinus,
   IconPhotoScan,
-  IconPinned,
   IconPlus,
-  IconTrash,
-  IconUser,
+  IconUser
 } from "@tabler/icons-react";
-import CardFood from "../CardFood";
-import Link from "next/link";
 import axios from "axios";
-import AddFoodCamp from "./AddFoodCamp";
-import Swal from "sweetalert2";
-import CardListMerchan from "../page/Detonator/CardListMerchan";
-import TimePicker from "react-time-picker";
-import { IconMinus } from "@tabler/icons-react";
-import { IconLocationPin } from "@tabler/icons-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
+import Swal from "sweetalert2";
 import Market from "../../../public/img/illustration/market.png";
+import CardListMerchan from "../page/Detonator/CardListMerchan";
+import AddFoodCamp from "./AddFoodCamp";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
@@ -203,8 +194,14 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
       Waktu: 'Time',
       Description: 'Description',
     };
+
+    // Konversi eventName menjadi kapitalisasi setiap kata
+    const capitalizeEachWord = (str) => {
+      return str.replace(/\b\w/g, (char) => char.toUpperCase());
+    };
+
     const formData = {
-      eventName,
+      eventName: capitalizeEachWord(eventName), // Konversi eventName di sini
       TypeEvent,
       Tanggal,
       Waktu,
@@ -262,6 +259,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   useEffect(() => {
     console.log("gambar", uploadedFile);
   }, [uploadedFile]);
+
 
   return (
     <>
@@ -1393,4 +1391,5 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
   );
 }
 
-export { StepOne, StepTwo, StepThree, Stepfour, Stepfive };
+export { StepOne, StepThree, StepTwo, Stepfive, Stepfour };
+

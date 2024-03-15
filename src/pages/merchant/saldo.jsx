@@ -19,7 +19,6 @@ const saldo = (saldo) => {
   const [balance, setBalance] = useState(0);
   const [riwayat, setRiwayat] = useState([]);
 
-
   useEffect(() => {
     const role = sessionStorage.getItem("role");
     const token = sessionStorage.getItem("token");
@@ -46,19 +45,19 @@ const saldo = (saldo) => {
     const id = sessionStorage.getItem("id");
     const token = sessionStorage.getItem("token");
 
-    const ressponse = axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    })
+    const ressponse = axios
+      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         setBalance(response.data.body.wallet.balance);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-      })
-
-  }, [balance])
+      });
+  }, [balance]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -116,21 +115,25 @@ const saldo = (saldo) => {
           data.order_status === "canceled" || data.order_status === "selesai"
       );
     } else if (status === "penarikan") {
-      const token = sessionStorage.getItem('token');
-      const id = sessionStorage.getItem('id');
-      const resspone = axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/filter?merchant_id=${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
-      })
+      const token = sessionStorage.getItem("token");
+      const id = sessionStorage.getItem("id");
+      const resspone = axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/filter?merchant_id=${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then((response) => {
           filtered = response.data.body;
           setRiwayat(filtered);
-          console.log('response', response.data.body);
+          console.log("response", response.data.body);
         })
         .catch((error) => {
-          console.error('Error fetching data:', error);
-        })
+          console.error("Error fetching data:", error);
+        });
     }
 
     setSelectedStatus(status);
@@ -141,6 +144,7 @@ const saldo = (saldo) => {
       title: "Informasi Penarikan Saldo",
       text: "Penarikan Saldo akan dikirimkan ke nomor LinkAja anda. Pastikan nomor tujuan sudah sesuai",
       confirmButtonText: "Mengerti",
+      confirmButtonColor: "#3FB648",
     }).then((result) => {
       if (result.isConfirmed) {
         // Arahkan ke /pembayaran saat pengguna menekan tombol "Mengerti"
@@ -156,16 +160,26 @@ const saldo = (saldo) => {
     return `${day}/${month}/${year}`;
   };
 
+  const formatPrice = (price) => {
+    const formatter = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    });
+
+    return formatter.format(price);
+  };
   return (
     <>
       <div className="container mx-auto h-screen">
-        <Header title="Saldo" />
+        <Header title="Saldo" backto="/merchant" />
         <div className="container mx-auto pt-14 bg-white h-screen">
           <div className="mx-4 p-3 rounded-lg border-solid border-2 border-gray-300">
             <div className="">
               <p className="font-medium">Saldo Penghasilan</p>
-              <p className="text-primary font-medium text-3xl">{balance ? balance.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' }) : 'Rp 0,00'}</p>
-              {/* <p className="text-primary font-medium text-3xl">Rp {balance}</p> */}
+              <p className="text-primary font-medium text-3xl">
+                {formatPrice(balance)}
+              </p>
             </div>
           </div>
 
@@ -183,46 +197,36 @@ const saldo = (saldo) => {
 
           <div className="flex justify-between px-7 pt-4 pb-2">
             <div
-              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-                }`}
+              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+                selectedStatus === "diproses"
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-gray-500"
+              }`}
               onClick={() => handleFilterChange("diproses")}
             >
               <span>Berlangsung</span>
-              {/* <div
-              className={`w-32 h-0.5 ${
-                selectedStatus === "approved" ? "bg-blue-500 w-32 " : "bg-black"
-              }`}
-            ></div> */}
             </div>
             <div
-              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-                }`}
+              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+                selectedStatus === "selesai"
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-gray-500"
+              }`}
               onClick={() => handleFilterChange("selesai")}
             >
               <span>Selesai</span>
-              {/* <div
-              className={`w-32 h-0.5 ${
-                selectedStatus === "listMenu" ? "bg-blue-500 w-32 " : "bg-black"
-              }`}
-            ></div> */}
             </div>
             <div
-              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "penarikan"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-                }`}
+              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+                selectedStatus === "penarikan"
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-gray-500"
+              }`}
               onClick={() => handleFilterChange("penarikan")}
             >
               <span>Penarikan</span>
-
             </div>
           </div>
-
-
 
           {loading ? (
             <div className={`${styles.card}`}>
@@ -234,62 +238,69 @@ const saldo = (saldo) => {
             </div>
           ) : (
             <div className={`${styles.card}`}>
-              {selectedStatus === 'penarikan' ? (
+              {selectedStatus === "penarikan" ? (
                 riwayat
-                  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                  .sort(
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                  )
                   .map((data) => (
                     <div
-                      className="mx-4 mt-2 bg-white shadow-md p-4 rounded-lg"
+                      className="mx-4 mt-2 w-80 bg-white shadow-md p-4 rounded-lg"
                       key={data.id}
                     >
                       <div className="flex justify-between">
                         <p className="font-bold uppercase">{data.bank}</p>
-                        <div className={`flex justify-center items-center w-20 rounded-lg ${data.status === 'approved' ? 'bg-green-500' : data.status === 'waiting' ? 'bg-blue-500' : 'bg-red-500'}`}>
-                          <p>{data.status}</p>
+                        <div
+                          className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${
+                            data.status === "approved"
+                              ? "bg-green-500"
+                              : data.status === "waiting"
+                              ? "bg-blue-500"
+                              : "bg-red-500"
+                          }`}
+                        >
+                          <p className="">{data.status}</p>
                         </div>
                       </div>
-                      <p>
-                        {new Intl.NumberFormat("id-ID", {
-                          style: "currency",
-                          currency: "IDR",
-                        }).format(data.amount)}
-                      </p>
+                      <p>{formatPrice(data.amount)}</p>
                       <p className="text-sm">{`${data.rekening}`}</p>
                       <p className="text-gray-500 text-xs">
-                        {new Intl.DateTimeFormat('en-ID', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: false
+                        {new Intl.DateTimeFormat("en-ID", {
+                          year: "numeric",
+                          month: "short",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
                         }).format(new Date(data.created_at))}
                       </p>
                     </div>
                   ))
+              ) : filteredData.length == 0 ? (
+                <p className="text-gray-400 text-center">
+                  {selectedStatus === "diproses"
+                    ? "Tidak Ada Partisipasi Berjalan"
+                    : selectedStatus === "selesai"
+                    ? "Tidak Ada Partisipasi Selesai"
+                    : selectedStatus === "penarikan" && "Tidak Ada Penarikan"}
+                </p>
               ) : (
                 filteredData.map((data) => (
                   <div
-                    className="mx-4 mt-2 bg-white shadow-md p-4 rounded-lg"
+                    className="mx-4 mt-2 w-80 bg-white shadow-md p-4 rounded-lg"
                     key={data.id}
                   >
                     <p className="font-bold">{data.campaign.event_name}</p>
-                    <p>
-                      {new Intl.NumberFormat("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                      }).format(data.merchant_product.price * data.qty)}
-                    </p>
+                    <p>{formatPrice(data.merchant_product.price * data.qty)}</p>
                     <p className="text-sm">{`${data.qty} x ${data.merchant_product.name}`}</p>
                     <p className="text-gray-500 text-xs">
-                      21 Feb 2024 15:30:00 WIB
+                      {data.campaign.event_date} {data.campaign.event_time}
                     </p>
                   </div>
                 ))
               )}
             </div>
           )}
-
         </div>
       </div>
       <BottomNav />
