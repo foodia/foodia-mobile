@@ -42,7 +42,7 @@ const ReportCamp = () => {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${id}`
         );
 
-        console.log("data res", response.data.body.orders);
+        console.log("data report campaign", response.data.body.orders);
         setDataApi(response.data.body.orders);
         setdataCamp(response.data.body);
         setLoading(false);
@@ -106,6 +106,7 @@ const ReportCamp = () => {
 
         console.log("data Report food", response.data.body);
         setDataReport(response.data.body);
+        // setReportDetonator(response.data.body);
         setLoading(false);
       } catch (error) {
         handleRequestError(error);
@@ -114,6 +115,8 @@ const ReportCamp = () => {
 
     fetchData();
   }, [id]);
+
+  ////////////
   useEffect(() => {
     const fetchData = async () => {
       // const token = sessionStorage.getItem('token');

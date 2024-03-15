@@ -1,10 +1,9 @@
-import styles from "@/styles/Campaign.module.css"
+import styles from "@/styles/Campaign.module.css";
 import { IconCaretDown, IconCaretUp } from '@tabler/icons-react';
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from 'react';
 
-const CardReport = ({ data }) => {
+const CardReportDetonator = ({ data }) => {
     const router = useRouter();
     const { id } = router.query;
     const [showFullText, setShowFullText] = useState(false);
@@ -14,7 +13,6 @@ const CardReport = ({ data }) => {
     };
 
     useEffect(() => {
-        const id_detonator = sessionStorage.getItem('id');
         const role = sessionStorage.getItem('role');
         console.log('data res', data);
         if (data.order == null) {
@@ -24,10 +22,7 @@ const CardReport = ({ data }) => {
                 setButtonStatus(false)
             } else {
                 if (role === 'detonator') {
-                    if (12 == id_detonator) {
-
-                        setButtonStatus(true)
-                    }
+                    setButtonStatus(true)
                 } else {
                     setButtonStatus(false)
                 }
@@ -36,8 +31,7 @@ const CardReport = ({ data }) => {
     })
     const hendleButton = () => {
         const role = sessionStorage.getItem('role');
-        const id_detonator = sessionStorage.getItem('id');
-        console.log('data rprt', data.campaign.detonator_id, id_detonator);
+        // console.log('data res', data);
         if (data.order == null) {
             return
         } else {
@@ -45,10 +39,7 @@ const CardReport = ({ data }) => {
                 return
             } else {
                 if (role === 'detonator') {
-                    if (data.campaign.detonator_id === parseInt(id_detonator)) {
-
-                        router.push(`/detonator/reportfood/${data.order.id}`)
-                    }
+                    router.push(`/detonator/reportfood/${data.order.id}`)
                 } else {
                     return
                 }
@@ -95,4 +86,4 @@ const CardReport = ({ data }) => {
     );
 }
 
-export default CardReport;
+export default CardReportDetonator;
