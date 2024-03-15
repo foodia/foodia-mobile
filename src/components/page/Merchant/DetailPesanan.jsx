@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
-import { IconCaretDown } from "@tabler/icons-react";
+import { IconCaretDown, IconMapPin } from "@tabler/icons-react";
 
 import { IconCaretUp } from "@tabler/icons-react";
 import Swal from "sweetalert2";
@@ -10,6 +10,7 @@ import { useAppState } from "../UserContext";
 import Header from "@/components/Header";
 import CardPesanan from "@/components/CardPesanan";
 import moment from "moment/moment";
+import Link from "next/link";
 
 const DetailPesanan = () => {
   const router = useRouter();
@@ -82,13 +83,14 @@ const DetailPesanan = () => {
 
     // Show SweetAlert confirmation dialog
     const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You are about to reject the order. This action cannot be undone.",
-      icon: "warning",
+      title: "Apakah Anda Yakin?",
+      text: "Anda akan menolak pesanan. Tindakan ini tidak dapat dibatalkan.",
+      icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, reject it!",
+      confirmButtonText: "Ya, Tolak Pesanan",
+      cancelButtonText: "Batal",
     });
 
     // If the user confirms, call the handleReject function
@@ -126,13 +128,14 @@ const DetailPesanan = () => {
 
     // Show SweetAlert confirmation dialog
     const result = await Swal.fire({
-      title: "Apakah Anda yakin?",
+      title: "Apakah Anda Yakin?",
       text: "Anda akan menyetujui pesanan. Tindakan ini tidak dapat dibatalkan.",
-      icon: "warning",
+      icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#3FB648",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: "Ya, setujui!",
+      confirmButtonText: "Ya, Setujui Pesanan!",
+      cancelButtonText: "Batal",
     });
 
     // If the user confirms, call the handleReject function
@@ -165,7 +168,6 @@ const DetailPesanan = () => {
       // await handleAprov();
     }
   };
-
   const handleBuktiPengiriman = async (e) => {
     e.preventDefault();
     // setReportMechant(dataApi);
@@ -195,6 +197,23 @@ const DetailPesanan = () => {
 
   console.log(dataApi?.id);
 
+  const calculateRemainingTime = (eventDate) => {
+    const currentDate = new Date();
+    const eventDateObject = new Date(eventDate);
+    const timeDifference = eventDateObject - currentDate;
+
+    // Calculate remaining time in days
+    let remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+
+    if (remainingDays < 0) {
+      remainingDays = 0;
+    }
+
+    console.log("remainingDays", remainingDays);
+
+    return remainingDays;
+  };
+
   return (
     <>
       <div className="container mx-auto pt-14 bg-white h-full">
@@ -202,7 +221,7 @@ const DetailPesanan = () => {
         <div className="place-content-center">
           <CardPesanan
             key={dataApi?.id}
-            to={``}
+            to={""}
             idOrder={dataApi?.id}
             img={
               dataApi?.merchant_product.images.length > 0
@@ -211,11 +230,15 @@ const DetailPesanan = () => {
             }
             title={dataApi?.campaign.event_name}
             productName={dataApi?.merchant_product.name}
-            date={moment(dataApi?.merchant_product.created_at).format(
+            created_at={moment(dataApi?.campaign?.created_at).format(
+              "DD MMM YYYY hh:mm"
+            )}
+            date={moment(dataApi?.campaign?.event_date).format(
               "DD MMM YYYY hh:mm"
             )}
             qty={dataApi?.qty}
             price={dataApi?.merchant_product.price}
+            total_amount={dataApi?.total_amount}
             status={dataApi?.order_status}
             setLoading={setLoading}
           />
@@ -227,9 +250,18 @@ const DetailPesanan = () => {
               <p className="text-right text-sm">
                 {dataApi?.campaign.event_name}
               </p>
+              <p className="text-sm text-gray-400">Donation Target</p>
+              <p className="text-right text-sm text-primary">
+                Rp. {dataApi?.campaign.donation_target.toLocaleString("id-ID")}
+              </p>
+              <p className="text-sm text-gray-400">Donation Collected</p>
+              <p className="text-right text-sm text-primary">
+                Rp.{" "}
+                {dataApi?.campaign.donation_collected.toLocaleString("id-ID")}
+              </p>
             </div>
 
-            <hr className="h-px bg-gray-200 border-0 " />
+            <hr className="h-px bg-gray-200 border-0 mt-2" />
             <div className="justify-between grid grid-cols-2 gap-2 py-4">
               <p className="text-sm text-gray-400">PIC</p>
               <p className="text-right text-sm">
@@ -245,16 +277,25 @@ const DetailPesanan = () => {
             <div className="justify-between grid grid-cols-2 gap-2 py-4">
               <p className="text-sm text-gray-400">Tanggal Pelaksanaan</p>
               <p className="text-right text-sm">
-                {(dataApi?.campaign?.event_date || "")
-                  .split("-")
-                  .reverse()
-                  .join("/")}
+                {moment(dataApi?.campaign?.event_date).format(
+                  "DD MMM YYYY hh:mm"
+                )}
               </p>
             </div>
             <hr className="h-px bg-gray-200 border-0" />
             <div className="justify-between grid grid-cols-2 gap-2 py-4">
               <p className="text-sm text-gray-400">Tempat</p>
-              <p className="text-right text-sm">{dataApi?.campaign.address}</p>
+              <div className="flex gap-4">
+                <p className="text-right text-sm">
+                  {dataApi?.campaign.address}
+                </p>
+                <Link
+                  href={`/lokasi_camp/${dataApi?.campaign_id}`}
+                  className="text-sm font-normal mb-12 text-red-500"
+                >
+                  <IconMapPin />
+                </Link>
+              </div>
             </div>
             <hr className="h-px bg-gray-200 border-0" />
             <div className="justify-between grid grid-cols-2 gap-2 py-4">
@@ -267,10 +308,7 @@ const DetailPesanan = () => {
             <div className="justify-between grid grid-cols-2 gap-2 py-4">
               <p className="text-sm text-gray-400">Total</p>
               <p className="text-right text-sm text-primary">
-                Rp.{" "}
-                {(
-                  (dataApi?.qty || 0) * (dataApi?.merchant_product.price || 0)
-                ).toLocaleString("id-ID")}
+                Rp. {dataApi?.total_amount.toLocaleString("id-ID")}
               </p>
             </div>
             <hr className="h-px bg-gray-200 border-0" />
@@ -319,18 +357,39 @@ const DetailPesanan = () => {
                 </button>
               </>
             ) : dataApi?.order_status === "diproses" ? (
-              <button
-                onClick={handleBuktiPengiriman}
-                className="bg-primary text-white rounded-md h-10 w-full col-span-2"
-              >
-                Buat Bukti Pegiriman
-              </button>
+              calculateRemainingTime(dataApi?.campaign?.event_date) > 1 ? (
+                <div className="w-full col-span-2 flex flex-col gap-1">
+                  <p className="text-xs text-red-500">
+                    *Pesanan dapat dilanjutkan pada tanggal pelaksanaan campaign
+                  </p>
+                  <button
+                    disabled
+                    className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
+                  >
+                    Buat Bukti Pegiriman
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={handleBuktiPengiriman}
+                  className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
+                >
+                  Buat Bukti Pegiriman
+                </button>
+              )
             ) : dataApi?.order_status === "tolak" ? (
               <button className="bg-red-500 text-white rounded-md h-10 col-span-2">
                 Pesanan Ditolak
               </button>
             ) : (
-              ""
+              dataApi?.order_status === "selesai" && (
+                <button
+                  disabled
+                  className="bg-blue-400 text-white rounded-md h-10 col-span-2"
+                >
+                  Pesanan Selesai
+                </button>
+              )
             )}
           </div>
         </div>

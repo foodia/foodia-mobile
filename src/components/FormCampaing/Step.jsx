@@ -1,13 +1,11 @@
 // src/components/FormCampaing/Step.jsx
 
-import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import InputForm from "../Imput";
-import RoutStep from "../RoutStep";
-import "react-time-picker/dist/TimePicker.css";
+import { useEffect, useState } from "react";
 import "react-clock/dist/Clock.css";
+import "react-time-picker/dist/TimePicker.css";
+import RoutStep from "../RoutStep";
 
-import dynamic from "next/dynamic";
 import {
   Icon123,
   IconCalendar,
@@ -18,29 +16,34 @@ import {
   IconDetails,
   IconFileDescription,
   IconGardenCart,
-  IconHome,
   IconHome2,
-  IconLocation,
   IconMap,
+  IconMinus,
   IconPhotoScan,
-  IconPinned,
   IconPlus,
-  IconTrash,
-  IconUser,
+  IconUser
 } from "@tabler/icons-react";
-import CardFood from "../CardFood";
-import Link from "next/link";
 import axios from "axios";
-import AddFoodCamp from "./AddFoodCamp";
-import Swal from "sweetalert2";
-import CardListMerchan from "../page/Detonator/CardListMerchan";
-import TimePicker from "react-time-picker";
-import { IconMinus } from "@tabler/icons-react";
-import { IconLocationPin } from "@tabler/icons-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
+import Swal from "sweetalert2";
 import Market from "../../../public/img/illustration/market.png";
+import CardListMerchan from "../page/Detonator/CardListMerchan";
+import AddFoodCamp from "./AddFoodCamp";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'center',
+  iconColor: 'white',
+  customClass: {
+    popup: 'colored-toast',
+  },
+  showConfirmButton: false,
+  timer: 1500,
+  timerProgressBar: true,
+})
 
 function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   const router = useRouter();
@@ -141,7 +144,16 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   };
 
   const handleDescriptionChange = (event) => {
-    setDescription(event.target.value);
+    const value = event.target.value;
+    // if (value.length > 120) {
+    //   Toast.fire({
+    //     icon: 'error',
+    //     title: 'Deskripsi maksimal 120 karakter mohon periksa kembali',
+    //     iconColor: 'bg-black',
+    //     timer: 2000
+    //   });
+    // }
+    setDescription(value);
   };
 
   const handleImageCampChange = (event) => {
@@ -174,20 +186,61 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!eventName || !TypeEvent || !Tanggal || !Waktu) {
-      window.alert(
-        `All fields are required`
-      );
-      return;
-    }
+    const requiredFields = ['eventName', 'TypeEvent', 'Tanggal', 'Waktu', 'Description'];
+    const errorMessages = {
+      eventName: 'Event Name',
+      TypeEvent: 'Type of Event',
+      Tanggal: 'Date',
+      Waktu: 'Time',
+      Description: 'Description',
+    };
+
+    // Konversi eventName menjadi kapitalisasi setiap kata
+    const capitalizeEachWord = (str) => {
+      return str.replace(/\b\w/g, (char) => char.toUpperCase());
+    };
 
     const formData = {
-      eventName,
+      eventName: capitalizeEachWord(eventName), // Konversi eventName di sini
       TypeEvent,
       Tanggal,
       Waktu,
       Description,
     };
+    const emptyFields = requiredFields.filter(field => !formData[field]);
+
+    emptyFields.forEach(field => {
+      const errorMessage = `${errorMessages[field]} is required`;
+      Toast.fire({
+        icon: 'error',
+        title: errorMessage,
+        iconColor: 'bg-black',
+        timer: 2000
+      });
+    });
+
+    if (emptyFields.length > 0) {
+      return;
+    }
+    if (Description.length > 120) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Deskripsi maksimal 120 karakter mohon periksa kembali',
+        iconColor: 'bg-black',
+        timer: 2000
+      });
+      return;
+    }
+    if (!uploadedFile) {
+      Toast.fire({
+        icon: 'error',
+        title: 'Image is required',
+        iconColor: 'bg-black',
+        timer: 2000
+      });
+      return;
+    }
+
 
     // Update the local storage when form data changes
     updateLocalStorage(formData);
@@ -206,6 +259,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   useEffect(() => {
     console.log("gambar", uploadedFile);
   }, [uploadedFile]);
+
 
   return (
     <>
@@ -277,7 +331,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
             onChange={handleTypeEventChange}
             className="ml-1 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
           >
-            <option>Tipe Campaign</option>
+            <option value="">Tipe Campaign</option>
             <option value="one_time">One Time</option>
             {/* <option value="regular">Regular</option> */}
           </select>
@@ -366,12 +420,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
         </div> */}
 
         <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-          {/* <label
-            htmlFor="password"
-            className="block  text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Your password
-          </label> */}
+
           <IconFileDescription />
           <input
             onChange={handleDescriptionChange}
@@ -904,7 +953,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
       if (error.response && error.response.status === 401) {
         localStorage.removeItem("cart");
         localStorage.removeItem("formData");
-        router.push("/detector");
+        router.push("/detonator");
       } else {
         Swal.fire({
           icon: "error",
@@ -1035,7 +1084,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
                           {/* <p className="text-gray-600 mt-2">{`Total: Rp${(item.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
                           {/* <p className="text-gray-700">{`Total: $${item.total.toFixed(2)}`}</p> */}
                         </div>
-                        <div className="mt-2 flex flex-row gap-4">
+                        <div className="mt-2 flex flex-row gap-4 justify-between">
                           <p className="font-bold text-primary">{`Rp ${(
                             item.price * item.quantity
                           ).toLocaleString(undefined, {
@@ -1184,7 +1233,7 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
   const jumlahMakanan = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <div className="">
+    <div className="w-full">
       <div className="items-center justify-center mt-1 w-full">
         <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
           <div className="flex justify-between w-full">
@@ -1214,7 +1263,7 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
 
       <div className="container mx-auto mt-4 bg-white h-screen">
         <div className="items-center justify-center mt-2 w-full">
-          <div className="items-center justify-center mt-2 w-full">
+          <div className="items-center justify-center mt-2 w-full px-2">
             {Object.keys(groupedFoods).map((IdMerchan) => (
               <>
                 <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
@@ -1342,4 +1391,5 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
   );
 }
 
-export { StepOne, StepTwo, StepThree, Stepfour, Stepfive };
+export { StepOne, StepThree, StepTwo, Stepfive, Stepfour };
+

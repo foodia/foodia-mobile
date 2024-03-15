@@ -14,7 +14,7 @@ const CardListMerchan = ({ data }) => {
   const handleLink = (IdMerchan) => {
     // console.log('IdMerchan', IdMerchan);
     router.push(
-      `creatcampaign?step=4&id=${IdMerchan}&name=${data.oauth.fullname}`
+      `creatcampaign?step=4&id=${IdMerchan}&name=${data.merchant_name}`
     );
     console.log("data card", data.products);
   };
@@ -34,7 +34,7 @@ const CardListMerchan = ({ data }) => {
       <div
         onClick={() => handleLink(data.id)}
         href={"#"}
-        className={`bg-white cursor-pointer hover:bg-gray-100 text-black rounded-lg inline-flex items-center ${styles.item_card}`}
+        className={`bg-white cursor-pointer hover:bg-gray-100 text-black rounded-lg inline-flex items-center  ${styles.item_card}`}
       >
         <div className="flex justify-between w-80">
           <div className="flex p-1">
@@ -45,7 +45,7 @@ const CardListMerchan = ({ data }) => {
             />
             <div className={`text-left ml-1 ${styles.text_card}`}>
               <p className="mb-1 text-black font-sans font-semibold text-sm truncate">
-                {data.oauth.fullname}
+                {data.merchant_name}
               </p>
               <div className="flex ">
                 {/* <p className="font-sans text-xs text-gray-500 mr-2">{`${data.address}, ${data.city}, ${data.province}`}</p> */}
@@ -58,7 +58,7 @@ const CardListMerchan = ({ data }) => {
               </div>
               <div className="">
                 {showFullText ? (
-                  <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg" onClick={(e) => {
+                  <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg mb-1" onClick={(e) => {
                     e.stopPropagation();
                     toggleReadMore();
                   }}>
@@ -66,7 +66,7 @@ const CardListMerchan = ({ data }) => {
                     <IconChevronUp size={20} />
                   </button>
                 ) : (
-                  <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg" onClick={(e) => {
+                  <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg mb-1" onClick={(e) => {
                     e.stopPropagation();
                     toggleReadMore();
                   }}>
@@ -75,7 +75,7 @@ const CardListMerchan = ({ data }) => {
                   </button>
                 )}
               </div>
-              <p className="font-sans text-xs text-gray-500 mr-2 mt-2">{`Jumlah Menu :${numberOfApprovedProducts}`}</p>
+              {/* <p className="font-sans text-xs text-gray-500 mr-2 mt-2">{`Jumlah Menu :${numberOfApprovedProducts}`}</p>
               <div class="flex items-center">
                 <svg
                   class="w-4 h-4 text-yellow-300 me-1"
@@ -131,7 +131,7 @@ const CardListMerchan = ({ data }) => {
                 <p class="ms-1 text-sm font-medium text-gray-500 dark:text-gray-400">
                   5
                 </p>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="grid place-items-center"></div>

@@ -55,7 +55,18 @@ const Registrasi = () => {
   };
 
   const handlePhoneChange = (event) => {
-    setPhone(event.target.value);
+    const value = event.target.value;
+    if (value.length > 13) { // Mengubah ekspresi reguler untuk memeriksa nomor telepon yang diawali dengan '08' dan panjangnya antara 10 hingga 13 karakter
+      Toast.fire({
+        icon: 'error',
+        title: 'Nomer Handphone maksimal 13 angka',
+        iconColor: 'bg-black',
+        timer: 2000
+      });
+      return;
+    } else {
+      setPhone(value);
+    }
   };
 
   const handleEmailChange = (event) => {
@@ -80,6 +91,7 @@ const Registrasi = () => {
         icon: 'error',
         title: 'Please fill in all fields',
         iconColor: 'bg-black',
+        timer: 2000
       })
       return;
     }
@@ -89,15 +101,17 @@ const Registrasi = () => {
         icon: 'error',
         title: 'Invalid email address',
         iconColor: 'bg-black',
+        timer: 2000
       })
       return;
     }
 
-    if (!/^08\d{8,13}$/.test(phone)) { // Mengubah ekspresi reguler untuk memeriksa nomor telepon yang diawali dengan '08' dan panjangnya antara 10 hingga 13 karakter
+    if (!/^08\d{8,}$/.test(phone)) { // Mengubah ekspresi reguler untuk memeriksa nomor telepon yang diawali dengan '08' dan panjangnya antara 10 hingga 13 karakter
       Toast.fire({
         icon: 'error',
-        title: 'Phone number must start with "08" and contain only digits, with length between 10 and 13 characters',
+        title: 'Nomor telepon harus dimulai dengan 08 dan memiliki setidaknya 10 digit',
         iconColor: 'bg-black',
+        timer: 2000
       });
       return;
     }
@@ -108,6 +122,7 @@ const Registrasi = () => {
         icon: 'error',
         title: 'Password must be at least 8 characters',
         iconColor: 'bg-black',
+        timer: 2000
       })
       return;
     }
@@ -117,6 +132,7 @@ const Registrasi = () => {
         icon: 'error',
         title: 'Password and confirm password do not match',
         iconColor: 'bg-black',
+        timer: 2000
       })
       return;
     }
@@ -163,9 +179,10 @@ const Registrasi = () => {
           showConfirmButton: false,
           timer: 2000,
         });
-        setRegistrasi(userData);
+        // setRegistrasi(userData);
         router.push("/home");
       } else {
+        setRegistrasi(userData);
         Swal.fire({
           icon: "warning",
           title: "Akun telah dibuat",
@@ -173,7 +190,7 @@ const Registrasi = () => {
           showConfirmButton: false,
           timer: 2000,
         });
-        setRegistrasi(userData);
+
         setLoading(false);
         router.push("/otp");
       }

@@ -1,15 +1,8 @@
-import handler from "@/pages/api/hello";
 import styles from "@/styles/Home.module.css";
-import {
-  IconCircleCheck,
-  IconClockFilled,
-  IconHelpCircle,
-  IconPlaystationX,
-} from "@tabler/icons-react";
-import Link from "next/link";
 import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import Swal from "sweetalert2";
-import { useState } from "react";
 
 const CardPesanan = (props) => {
   const {
@@ -17,6 +10,8 @@ const CardPesanan = (props) => {
     img,
     title,
     productName,
+    total_amount,
+    created_at,
     date,
     status,
     price,
@@ -25,7 +20,8 @@ const CardPesanan = (props) => {
     setLoading,
   } = props;
 
-  const totalHarga = price * qty;
+  console.log(total_amount);
+
   const formatPrice = (price) => {
     const formatter = new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -74,10 +70,6 @@ const CardPesanan = (props) => {
       const id = sessionStorage.getItem("id");
       const token = sessionStorage.getItem("token");
 
-      if (!id || !token) {
-        throw new Error("Missing required session data");
-      }
-
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${idOrder}`,
         {
@@ -93,10 +85,14 @@ const CardPesanan = (props) => {
 
       console.log(response.data);
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 401) {
+        // Unauthorized error (e.g., token expired)
+        sessionStorage.clear();
+        router.push("/login/merchant");
+
+      }
     }
   };
-
   const handleAprovButtonClick = async (e) => {
     e.preventDefault();
 
@@ -144,65 +140,86 @@ const CardPesanan = (props) => {
     }
   };
 
-  return (
-    <div className="flex justify-center mt-1 w-full mb-2 items-center">
-      <Link
-        href={to}
-        className={`bg-white flex hover:bg-gray-100 text-black rounded-2xl items-center border border-primary shadow-lg w-80 p-1`}
-      >
-        <div className="flex justify-between items-center w-80">
-          <div className="flex items-center p-1">
-            <img
-              src={img}
-              className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
-              alt=""
-            />
-            <div className={`text-left ml-2`}>
-              <div className="flex justify-between">
-                <p className="text-primary font-bold text-md capitalize">
-                  {title}
-                </p>
-                {/* <div className={`flex justify-center items-center rounded-full ${status === 'review' ? 'text-blue-600' : status === 'diproses' ? 'text-green-500' : status === 'canceled' ? 'text-red-500' : ''}`}>
-                    <p className="">{getStatusIcon()}</p>
-                </div> */}
-              </div>
+  const router = useRouter();
 
-              <div className="flex gap-1 italic">
+  const Card = () => {
+    return (
+      <div className="flex justify-between items-center w-80">
+        <div className="flex items-center p-1">
+          <img
+            src={img}
+            className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
+            alt=""
+          />
+          <div className={`text-left ml-2`}>
+            <div className="flex justify-between">
+              <p className="text-primary font-bold text-md capitalize">
+                {title}
+              </p>
+              {/* <div className={`flex justify-center items-center rounded-full ${status === 'review' ? 'text-blue-600' : status === 'diproses' ? 'text-green-500' : status === 'canceled' ? 'text-red-500' : ''}`}>
+                    <p className="">{getStatusIcon()}</p>
+                  </div> */}
+            </div>
+
+            <div className="flex flex-col gap-1 italic">
+              <div className="flex flex-row gap-1">
                 <p className="font-sans text-xs text-gray-500">
-                  Tanggal Campaign:{" "}
+                  Campaign Dibuat:{" "}
                 </p>{" "}
+                <p className="font-medium text-xs text-black">{created_at}</p>
+              </div>
+              <div className="flex flex-row gap-1">
+                <p className="font-sans text-xs text-gray-500">Pelaksanaan: </p>{" "}
                 <p className="font-medium text-xs text-black">{date}</p>
               </div>
-              <div className="flex items-center justify-between mt-2">
-                <div className="flex flex-col">
-                  <p className="text-gray-500 font-normal text-xs italic">{`${qty} x ${productName}`}</p>
-                  <span className="text-primary font-medium text-md">
-                    {formatPrice(price)}
-                  </span>
-                </div>
-                <div
-                  className={`flex justify-center items-center rounded-2xl w-auto h-5 px-2 py-0 ${
-                    status === "review"
-                      ? "bg-blue-600"
-                      : status === "diproses"
-                      ? "bg-green-500"
-                      : status === "canceled"
+            </div>
+            <div className="flex items-center justify-between mt-2">
+              <div className="flex flex-col">
+                <p className="text-gray-500 font-normal text-xs italic">{`${qty} x ${productName}`}</p>
+                <span className="text-primary font-medium text-md">
+                  {formatPrice(total_amount)}
+                </span>
+              </div>
+              <div
+                className={`flex justify-center items-center rounded-2xl w-auto h-5 px-2 py-0 ${status === "review"
+                  ? "bg-blue-600"
+                  : status === "diproses"
+                    ? "bg-green-500"
+                    : status === "canceled"
                       ? "bg-red-500"
                       : status === "selesai"
-                      ? "bg-blue-900"
-                      : ""
+                        ? "bg-blue-900"
+                        : ""
                   }`}
-                >
-                  <p className="text-gray-100 font-medium text-[10px]">
-                    {getStatusIcon()}
-                  </p>
-                </div>
+              >
+                <p className="text-gray-100 font-medium text-[10px]">
+                  {getStatusIcon()}
+                </p>
               </div>
             </div>
           </div>
-          <div className="grid place-items-center"></div>
         </div>
-      </Link>
+        <div className="grid place-items-center"></div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex justify-center mt-1 w-full mb-2 items-center">
+      {router.pathname === "/merchant/pesanan" ? (
+        <Link
+          href={to}
+          className={`bg-white flex hover:bg-gray-100 text-black rounded-2xl items-center border border-primary shadow-lg w-80 p-1`}
+        >
+          <Card />
+        </Link>
+      ) : (
+        <div
+          className={`bg-white flex  text-black rounded-2xl items-center border border-primary shadow-lg w-80 p-1`}
+        >
+          <Card />
+        </div>
+      )}
     </div>
   );
 };

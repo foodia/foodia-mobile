@@ -41,7 +41,8 @@ const CardRepordFood = (props) => {
                 return
             } else {
                 if (role === 'detonator') {
-                    router.push(`${to}`);
+                    // router.push(`${to}`);
+                    return
                 } else {
                     return
                 }

@@ -106,6 +106,7 @@ const LoginPage = () => {
       const responeData = response.data.body;
 
       if (responeData.is_active) {
+        localStorage.setItem("Session", "start");
         sessionStorage.setItem("fullname", responeData.fullname);
         sessionStorage.setItem("phone", responeData.phone);
         sessionStorage.setItem("email", responeData.email);

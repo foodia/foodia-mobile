@@ -132,15 +132,14 @@ const DetailCamp = ({ data }) => {
               </li>
             </ol>
             <div
-              className={`flex justify-center items-center rounded-full w-24 mt-2 ${
-                data.status === "waiting"
-                  ? "bg-blue-600"
-                  : data.status === "approved"
+              className={`flex justify-center items-center rounded-full w-24 mt-2 ${data.status === "waiting"
+                ? "bg-blue-600"
+                : data.status === "approved"
                   ? "bg-green-500"
                   : data.status === "rejected"
-                  ? "bg-red-500"
-                  : ""
-              }`}
+                    ? "bg-red-500"
+                    : ""
+                }`}
             >
               <p className="text-white">{data.status}</p>
             </div>
@@ -157,12 +156,18 @@ const DetailCamp = ({ data }) => {
               <div className="flex">
                 {/* <IconSoup className=" w-7 h-7" /> */}
                 <div className="w-12 h-12 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.detonator.self_photo}`}
-                    alt="NotFound"
-                    width={100}
-                    height={100}
-                  />
+                  {data.detonator.self_photo ? (
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.detonator.self_photo}`}
+                      className="grid grid-cols-3 gap-4 place-items-end text-gray-500 w-12 h-12 object-cover rounded-full"
+                      alt="NotFound"
+                      width={100}
+                      height={100}
+                    />
+                  ) : (
+                    <IconUser className="grid grid-cols-3 gap-4 place-items-end text-gray-500" />
+                  )}
+
                 </div>
                 <div className="text-left place-items-start">
                   <div className="mb-1 text-primary">
@@ -239,9 +244,8 @@ const DetailCamp = ({ data }) => {
             Tentang Program
           </h5>
           <p
-            className={`font-normal text-gray-700 text-xs  ${
-              showFullText ? "" : styles.truncate
-            }`}
+            className={`font-normal text-gray-700 text-xs  ${showFullText ? "" : styles.truncate
+              }`}
           >
             {data.description}
           </p>

@@ -260,9 +260,9 @@ const Detonator = () => {
     setFilteredData([]);
   };
 
-  // useEffect(() => {
-  //     console.log('Data', filteredData);
-  // }, [filteredData]);
+  useEffect(() => {
+    console.log('Data filter', filteredData);
+  }, [filteredData]);
 
   return (
     <>
