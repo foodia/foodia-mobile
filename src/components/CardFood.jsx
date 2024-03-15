@@ -1,6 +1,8 @@
 import styles from "@/styles/Home.module.css";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
+import axios from "axios";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 // key = { item.id }
 // data = { item }
@@ -50,6 +52,48 @@ const CardFood = (props) => {
       default:
         return null;
     }
+  };
+
+  const onDeleteMenu = () => {
+    Swal.fire({
+      icon: "question",
+      title: `Hapus Menu ${title}`,
+      text: `Kamu Yakin Menghapus Menu Ini?`,
+      showConfirmButton: true,
+      showCancelButton: true,
+      cancelButtonText: "Batal",
+      confirmButtonText: "Hapus",
+      confirmButtonColor: "#3fb648",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(
+            process.env.NEXT_PUBLIC_API_BASE_URL +
+              `merchant-product/delete/${idProduct}`,
+            {
+              headers: {
+                authorization: `Bearer ${sessionStorage.getItem("token")}`,
+              },
+            }
+          )
+          .then((res) => {
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil Menghapus Menu",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal Menghapus Menu",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          });
+      }
+    });
   };
 
   return (
@@ -115,7 +159,10 @@ const CardFood = (props) => {
                     >
                       <IconEdit size={15} />
                     </Link>
-                    <button className="flex items-center bg-red-500 hover:bg-red-700 text-white font-medium py-3 p-2 text-sm h-2 rounded">
+                    <button
+                      onClick={() => onDeleteMenu()}
+                      className="flex items-center bg-red-500 hover:bg-red-700 text-white font-medium py-3 p-2 text-sm h-2 rounded"
+                    >
                       <IconTrash size={15} />
                     </button>
                   </div>

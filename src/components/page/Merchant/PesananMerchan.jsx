@@ -215,7 +215,7 @@ const PesananMerchan = () => {
         ) : (
           <div className={`${styles.card} `}>
             {filteredData.length == 0 ? (
-              <p>
+              <p className="text-gray-400">
                 {selectedStatus === "review"
                   ? "Tidak Ada Pesanan"
                   : selectedStatus === "diproses"
@@ -223,32 +223,30 @@ const PesananMerchan = () => {
                   : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
               </p>
             ) : (
-              <>
-                {filteredData.map((data) => (
-                  <CardPesanan
-                    key={data.id}
-                    to={`/merchant/detailpesanan/${data.id}`}
-                    idOrder={data.id}
-                    img={
-                      data.merchant_product.images.length > 0
-                        ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product.images[0].image_url}`
-                        : "/img/default-image.png"
-                    }
-                    title={data.campaign.event_name}
-                    productName={data.merchant_product.name}
-                    created_at={moment(data.campaign?.created_at).format(
-                      "DD MMM YYYY hh:mm"
-                    )}
-                    date={moment(data.campaign?.event_date).format(
-                      "DD MMM YYYY hh:mm"
-                    )}
-                    qty={data.qty}
-                    price={data.merchant_product.price}
-                    status={data.order_status}
-                    setLoading={setLoading}
-                  />
-                ))}
-              </>
+              filteredData.map((data) => (
+                <CardPesanan
+                  key={data.id}
+                  to={`/merchant/detailpesanan/${data.id}`}
+                  idOrder={data.id}
+                  img={
+                    data.merchant_product.images.length > 0
+                      ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product.images[0].image_url}`
+                      : "/img/default-image.png"
+                  }
+                  title={data.campaign.event_name}
+                  productName={data.merchant_product.name}
+                  created_at={moment(data.campaign?.created_at).format(
+                    "DD MMM YYYY hh:mm"
+                  )}
+                  date={moment(data.campaign?.event_date).format(
+                    "DD MMM YYYY hh:mm"
+                  )}
+                  qty={data.qty}
+                  price={data.merchant_product.price}
+                  status={data.order_status}
+                  setLoading={setLoading}
+                />
+              ))
             )}
           </div>
         )}

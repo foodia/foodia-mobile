@@ -292,7 +292,7 @@ const Merchant = () => {
         ) : (
           <div className={`${styles.card}`}>
             {filteredData.length == 0 ? (
-              <p>
+              <p className="text-gray-400">
                 {selectedStatus === "approved"
                   ? "Belum Ada Menu"
                   : "Tidak Ada Pengajuan"}

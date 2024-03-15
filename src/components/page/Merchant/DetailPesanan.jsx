@@ -359,7 +359,7 @@ const DetailPesanan = () => {
               calculateRemainingTime(dataApi?.campaign?.event_date) > 1 ? (
                 <div className="w-full col-span-2 flex flex-col gap-1">
                   <p className="text-xs text-red-500">
-                    *Pesanan dapat dilanjutkan pada h-1 pelaksanaan campaign
+                    *Pesanan dapat dilanjutkan pada tanggal pelaksanaan campaign
                   </p>
                   <button
                     disabled

@@ -238,59 +238,67 @@ const saldo = (saldo) => {
             </div>
           ) : (
             <div className={`${styles.card}`}>
-              {selectedStatus === "penarikan"
-                ? riwayat
-                    .sort(
-                      (a, b) => new Date(b.created_at) - new Date(a.created_at)
-                    )
-                    .map((data) => (
-                      <div
-                        className="mx-4 mt-2 w-80 bg-white shadow-md p-4 rounded-lg"
-                        key={data.id}
-                      >
-                        <div className="flex justify-between">
-                          <p className="font-bold uppercase">{data.bank}</p>
-                          <div
-                            className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${
-                              data.status === "approved"
-                                ? "bg-green-500"
-                                : data.status === "waiting"
-                                ? "bg-blue-500"
-                                : "bg-red-500"
-                            }`}
-                          >
-                            <p className="">{data.status}</p>
-                          </div>
-                        </div>
-                        <p>{formatPrice(data.amount)}</p>
-                        <p className="text-sm">{`${data.rekening}`}</p>
-                        <p className="text-gray-500 text-xs">
-                          {new Intl.DateTimeFormat("en-ID", {
-                            year: "numeric",
-                            month: "short",
-                            day: "2-digit",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: false,
-                          }).format(new Date(data.created_at))}
-                        </p>
-                      </div>
-                    ))
-                : filteredData.map((data) => (
+              {selectedStatus === "penarikan" ? (
+                riwayat
+                  .sort(
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                  )
+                  .map((data) => (
                     <div
                       className="mx-4 mt-2 w-80 bg-white shadow-md p-4 rounded-lg"
                       key={data.id}
                     >
-                      <p className="font-bold">{data.campaign.event_name}</p>
-                      <p>
-                        {formatPrice(data.merchant_product.price * data.qty)}
-                      </p>
-                      <p className="text-sm">{`${data.qty} x ${data.merchant_product.name}`}</p>
+                      <div className="flex justify-between">
+                        <p className="font-bold uppercase">{data.bank}</p>
+                        <div
+                          className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${
+                            data.status === "approved"
+                              ? "bg-green-500"
+                              : data.status === "waiting"
+                              ? "bg-blue-500"
+                              : "bg-red-500"
+                          }`}
+                        >
+                          <p className="">{data.status}</p>
+                        </div>
+                      </div>
+                      <p>{formatPrice(data.amount)}</p>
+                      <p className="text-sm">{`${data.rekening}`}</p>
                       <p className="text-gray-500 text-xs">
-                        {data.campaign.event_date} {data.campaign.event_time}
+                        {new Intl.DateTimeFormat("en-ID", {
+                          year: "numeric",
+                          month: "short",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: false,
+                        }).format(new Date(data.created_at))}
                       </p>
                     </div>
-                  ))}
+                  ))
+              ) : filteredData.length == 0 ? (
+                <p className="text-gray-400 text-center">
+                  {selectedStatus === "diproses"
+                    ? "Tidak Ada Partisipasi Berjalan"
+                    : selectedStatus === "selesai"
+                    ? "Tidak Ada Partisipasi Selesai"
+                    : selectedStatus === "penarikan" && "Tidak Ada Penarikan"}
+                </p>
+              ) : (
+                filteredData.map((data) => (
+                  <div
+                    className="mx-4 mt-2 w-80 bg-white shadow-md p-4 rounded-lg"
+                    key={data.id}
+                  >
+                    <p className="font-bold">{data.campaign.event_name}</p>
+                    <p>{formatPrice(data.merchant_product.price * data.qty)}</p>
+                    <p className="text-sm">{`${data.qty} x ${data.merchant_product.name}`}</p>
+                    <p className="text-gray-500 text-xs">
+                      {data.campaign.event_date} {data.campaign.event_time}
+                    </p>
+                  </div>
+                ))
+              )}
             </div>
           )}
         </div>
