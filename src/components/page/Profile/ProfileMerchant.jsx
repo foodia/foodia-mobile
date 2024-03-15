@@ -46,7 +46,7 @@ const ProfileMerchant = ({ id = 0 }) => {
                             </div>
                             <div className="text-left place-items-start">
                                 <div className="mb-1 text-primary">Merchant</div>
-                                <div className="-mt-1 font-sans text-xs ">{data?.products.filter(product => product.status === "approved").length} Verified Merchant </div>
+                                <div className="-mt-1 font-sans text-xs ">{data?.products.filter(product => product.status === "approved").length} Verified Menu </div>
                             </div>
                         </div>
                         <div className="grid place-items-center">

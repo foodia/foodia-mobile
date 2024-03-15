@@ -91,8 +91,8 @@ const PesananMerchan = () => {
 
     if (status === "review") {
       filtered = dataApi.filter((data) => data.order_status === "review");
-    } else if (status === "terima") {
-      filtered = dataApi.filter((data) => data.order_status === "terima");
+    } else if (status === "diproses") {
+      filtered = dataApi.filter((data) => data.order_status === "diproses");
     } else if (status === "selesai") {
       filtered = dataApi.filter(
         (data) =>
@@ -182,11 +182,11 @@ const PesananMerchan = () => {
             <span>Pesanan</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "terima"
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
               ? "text-primary border-b-2 border-primary"
               : "text-gray-500"
               }`}
-            onClick={() => handleFilterChange("terima")}
+            onClick={() => handleFilterChange("diproses")}
           >
             <span>Berlangsung</span>
           </div>
@@ -216,8 +216,8 @@ const PesananMerchan = () => {
                 {selectedStatus === "review"
                   ? "Tidak Ada Pesanan"
                   : selectedStatus === "diproses"
-                  ? "Tidak Ada Pesanan Berlangsung"
-                  : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
+                    ? "Tidak Ada Pesanan Berlangsung"
+                    : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
               </p>
             ) : (
               filteredData.map((data) => (
