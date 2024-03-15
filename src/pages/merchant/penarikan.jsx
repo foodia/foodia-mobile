@@ -17,7 +17,12 @@ const penarikan = (penarikan) => {
   const [bank, setBank] = useState("");
   const [recipient_name, setRecipient_name] = useState("");
   const [rekening, setRekening] = useState("");
+  const [method, setMethod] = useState("");
   const parsedAmount = parseInt(amount.replace(/\./g, ""), 10);
+  const eWalletFee = parsedAmount * (1.5 / 100);
+  const bankFee = 4000;
+
+  console.log("wallert", eWalletFee);
 
   useEffect(() => {
     const id = sessionStorage.getItem("id");
@@ -36,17 +41,18 @@ const penarikan = (penarikan) => {
         console.error("Error fetching data:", error);
       });
   }, [balance]);
+
   const handlerecipient_nameChange = (event) => {
     setRecipient_name(event.target.value);
   };
   const handleBankChange = (event) => {
     setBank(event.target.value);
   };
+  const handleMethodChange = (event) => {
+    setMethod(event.target.value);
+  };
   const handlerekeningChange = (event) => {
     setRekening(event.target.value);
-  };
-  const handleamountChange = (event) => {
-    setamount(parseInt(event.target.value));
   };
   const handleTarikSaldo = () => {
     Swal.fire({
@@ -71,12 +77,20 @@ const penarikan = (penarikan) => {
           ) {
             Swal.fire("Oops!", "Mohon lengkapi semua field.", "error");
           } else {
-            const data = {
+            const bankMethod = {
               merchant_id: parseInt(merchant_id),
               recipient_name: recipient_name,
               bank: bank,
               rekening: rekening,
-              amount: parsedAmount + 2000,
+              amount: parsedAmount + bankFee,
+              payment_method: method,
+            };
+            const eWalletMethod = {
+              merchant_id: parseInt(merchant_id),
+              bank: bank,
+              rekening: rekening,
+              amount: parsedAmount + eWalletFee,
+              payment_method: method,
             };
             axios
               .post(
@@ -132,7 +146,32 @@ const penarikan = (penarikan) => {
     setamount(inputVal);
   };
 
-  console.log(parsedAmount);
+  const bankOptions = [
+    {
+      id: 1,
+      value: "Mandiri",
+      label: "Mandiri",
+    },
+    {
+      id: 2,
+      value: "BCA",
+      label: "BCA",
+    },
+    {
+      id: 3,
+      value: "BRI",
+      label: "BRI",
+    },
+  ];
+
+  const eWalletOptions = [
+    {
+      id: 1,
+      value: "Link Aja",
+      label: "Link Aja",
+    },
+  ];
+
   return (
     <div className="my-0 mx-auto h-screen max-w-480 bg-white flex flex-col">
       <Header title="Penarikan Saldo" />
@@ -147,7 +186,7 @@ const penarikan = (penarikan) => {
         </div>
         <div className="mx-4 mt-6">
           <div className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10 flex gap-2 items-center pl-4">
-            <p className="font-bold">Rp.</p>
+            <p className="">Rp</p>
             <InputForm
               cssInput="bg-gray-50 border text-gray-900 text-sm w-full outline-none border-none h-full rounded-lg"
               // label="amount"
@@ -170,65 +209,112 @@ const penarikan = (penarikan) => {
                 </p>
               </div>
             ) : (
-              <p className="text-xs text-blue-500 font-semibold mt-2">
+              <p className="text-xs text-blue-800 font-semibold mt-2">
                 Minimal Penarikan Rp 10.000
               </p>
             )}
-            <p className="text-xs text-blue-500 font-semibold mt-2">
+            {/* <p className="text-xs text-blue-500 font-semibold mt-2">
               Biaya Admin Rp 2.000
-            </p>
+            </p> */}
           </div>
         </div>
-        <div className="px-4 mt-6">
-          <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10 ">
-            <IconUser />
-            <input
-              onChange={handlerecipient_nameChange}
-              value={recipient_name}
-              name="recipient_name"
-              type="text"
-              id="recipient_name"
-              className="ml-2 w-full p-0 py-2 pl-1 bg-transparent focus:border-none outline-none"
-              placeholder="Nama Penerima"
-              required
-            />
-          </div>
-
-          <div className="mt-4 flex flex-row items-center p-4 pr-4 py-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10">
-            <IconBuildingBank />
+        <div className="px-4 mt-4">
+          <div className="mt-1 flex flex-row items-center pl-3 pr-4 py-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10">
+            {/* <IconBuildingBank /> */}
             <select
               name="bank"
-              value={bank}
+              value={method}
               id="bank"
-              onChange={handleBankChange}
+              onChange={handleMethodChange}
               className={
-                bank === ""
-                  ? "text-gray-400 ml-1 w-full p-0 py-2 pl-1 bg-transparent focus:border-none outline-none"
-                  : "ml-1 w-full p-0 py-2 pl-1 bg-transparent focus:border-none outline-none"
+                method === ""
+                  ? "text-gray-400 w-full p-0 py-2 bg-transparent focus:border-none outline-none"
+                  : "bg-white w-full p-0 py-2 bg-transparent focus:border-none outline-none"
               }
             >
-              <option value="">Pilih Bank</option>
-              <option value="bca">BCA</option>
-              <option value="mandiri">Mandiri</option>
+              <option className="text-gray-400" value="">
+                Metode Pembayaran
+              </option>
+              <option value="BANK">Bank</option>
+              <option value="E_WALLET">E-Wallet</option>
             </select>
           </div>
 
-          <div className="mt-4 flex flex-row items-center p-4 pr-0 py-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10 ">
-            <IconCreditCard />
-            <input
-              onChange={handlerekeningChange}
-              value={rekening}
-              name="rekening"
-              type="number"
-              id="rekening"
-              className="ml-2 w-full p-0 py-2 pl-1 bg-transparent focus:border-none outline-none"
-              placeholder="Rekening"
-              required
-            />
-          </div>
+          {method ? (
+            <>
+              <div className="mt-2 flex flex-row items-center pl-3 pr-4 py-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10">
+                {/* <IconBuildingBank /> */}
+                <select
+                  name="bank"
+                  value={bank}
+                  id="bank"
+                  onChange={handleBankChange}
+                  className={
+                    bank === ""
+                      ? "text-gray-400 w-full p-0 py-2 bg-transparent focus:border-none outline-none"
+                      : "bg-white w-full p-0 py-2 bg-transparent focus:border-none outline-none"
+                  }
+                >
+                  <option className="text-gray-400" value="">
+                    {method === "BANK" ? "Pilih Bank" : "Pilih E-Wallet"}
+                  </option>
+                  {method === "BANK"
+                    ? bankOptions.map((data) => (
+                        <option key={data.id} value={data.value}>
+                          {data.label}
+                        </option>
+                      ))
+                    : eWalletOptions.map((data) => (
+                        <option key={data.id} value={data.value}>
+                          {data.label}
+                        </option>
+                      ))}
+                </select>
+              </div>
+
+              <p className="text-xs text-blue-800 font-semibold mt-2">
+                {method === "BANK"
+                  ? "Biaya Transaksi Rp 4.000"
+                  : "Biaya Transaksi 1,5% dari jumlah penarikan"}
+              </p>
+
+              {method === "BANK" && (
+                <div className="mt-2 flex flex-row items-center p-4 pr-0 py-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10 ">
+                  <input
+                    onChange={handlerecipient_nameChange}
+                    value={recipient_name}
+                    name="recipient_name"
+                    type="text"
+                    id="recipient_name"
+                    className="w-full p-0 py-2 bg-transparent focus:border-none outline-none"
+                    placeholder="Nama Penerima"
+                    required
+                  />
+                </div>
+              )}
+
+              <div className="mt-2 flex flex-row items-center p-4 pr-0 py-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10 ">
+                {/* <IconCreditCard /> */}
+                <input
+                  onChange={handlerekeningChange}
+                  value={rekening}
+                  name="rekening"
+                  type="number"
+                  id="rekening"
+                  className="w-full p-0 py-2 bg-transparent focus:border-none outline-none"
+                  placeholder={
+                    method === "BANK" ? "Nomor Rekening" : "Nomor E-Wallet"
+                  }
+                  required
+                />
+              </div>
+            </>
+          ) : (
+            ""
+          )}
         </div>
         <div className="mobile-w fixed flex justify-center h-28 bottom-0 my-0 mx-auto w-full max-w-screen-sm ">
-          <div className="kotak shadow-inner ">
+          <div className="kotak shadow-inner px-4">
             <p className="text-center text-xs font-semibold mx-6 my-2">
               Dengan klik tombol di bawah, kamu telah setuju dengan{" "}
               <span className="text-primary">Syarat & Ketentuan</span> penarikan

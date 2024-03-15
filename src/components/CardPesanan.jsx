@@ -10,6 +10,7 @@ const CardPesanan = (props) => {
     img,
     title,
     productName,
+    total_amount,
     created_at,
     date,
     status,
@@ -19,7 +20,8 @@ const CardPesanan = (props) => {
     setLoading,
   } = props;
 
-  const totalHarga = price * qty;
+  console.log(total_amount);
+
   const formatPrice = (price) => {
     const formatter = new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -174,7 +176,7 @@ const CardPesanan = (props) => {
               <div className="flex flex-col">
                 <p className="text-gray-500 font-normal text-xs italic">{`${qty} x ${productName}`}</p>
                 <span className="text-primary font-medium text-md">
-                  {formatPrice(totalHarga)}
+                  {formatPrice(total_amount)}
                 </span>
               </div>
               <div
