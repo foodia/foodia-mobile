@@ -1,9 +1,12 @@
 import styles from "@/styles/Home.module.css";
 import { IconClock } from "@tabler/icons-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const CardCampaign = (props) => {
+  const router = useRouter();
+  const page = router.route;
   const {
     idKey,
     to,
@@ -53,6 +56,7 @@ const CardCampaign = (props) => {
   };
 
   useEffect(() => {
+    console.log('router', router.route);
     if (donation_target > donation_collected) {
       setTerkumpul(donation_collected);
     } else {
@@ -114,12 +118,13 @@ const CardCampaign = (props) => {
               {formatUang(Terkumpul ? Terkumpul : 0)}
             </span>
           </p>
-          <div className={`flex items-center justify-center  font-medium  font-sans text-xs  rounded-lg px-1 ${status == "waiting" ? "bg-blue-600" : status == "approved" ? "bg-green-500" : status == "rejected" ? "bg-red-500" : ""}`}>
+          {page === "/home" ? '' : (<div className={`flex items-center justify-center  font-medium  font-sans text-xs  rounded-lg px-1 ${status == "waiting" ? "bg-blue-600" : status == "approved" ? "bg-green-500" : status == "rejected" ? "bg-red-500" : ""}`}>
 
             <p className={`font-sans mb-1  ${status == 'approved' ? 'text-white' : ''}`} >
               {status}
             </p>
-          </div>
+          </div>)}
+
         </div>
 
         <div className="flex justify-between px-1.5 items-center ">

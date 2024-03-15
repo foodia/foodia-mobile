@@ -68,10 +68,6 @@ const CardPesanan = (props) => {
       const id = sessionStorage.getItem("id");
       const token = sessionStorage.getItem("token");
 
-      if (!id || !token) {
-        throw new Error("Missing required session data");
-      }
-
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${idOrder}`,
         {
@@ -87,7 +83,12 @@ const CardPesanan = (props) => {
 
       console.log(response.data);
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 401) {
+        // Unauthorized error (e.g., token expired)
+        sessionStorage.clear();
+        router.push("/login/merchant");
+
+      }
     }
   };
   const handleAprovButtonClick = async (e) => {
@@ -178,17 +179,16 @@ const CardPesanan = (props) => {
                 </span>
               </div>
               <div
-                className={`flex justify-center items-center rounded-2xl w-auto h-5 px-2 py-0 ${
-                  status === "review"
-                    ? "bg-blue-600"
-                    : status === "diproses"
+                className={`flex justify-center items-center rounded-2xl w-auto h-5 px-2 py-0 ${status === "review"
+                  ? "bg-blue-600"
+                  : status === "diproses"
                     ? "bg-green-500"
                     : status === "canceled"
-                    ? "bg-red-500"
-                    : status === "selesai"
-                    ? "bg-blue-900"
-                    : ""
-                }`}
+                      ? "bg-red-500"
+                      : status === "selesai"
+                        ? "bg-blue-900"
+                        : ""
+                  }`}
               >
                 <p className="text-gray-100 font-medium text-[10px]">
                   {getStatusIcon()}
