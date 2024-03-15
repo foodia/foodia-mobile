@@ -150,7 +150,7 @@ const DetailPesanan = () => {
         const response = await axios.put(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
           {
-            order_status: "diproses",
+            order_status: "terima",
           },
           {
             headers: {
@@ -185,8 +185,8 @@ const DetailPesanan = () => {
     switch (dataApi?.order_status) {
       case "review":
         return "Review";
-      case "diproses":
-        return "Diproses";
+      case "terima":
+        return "terima";
       case "tolak":
         return "DiTolak";
       default:
@@ -335,7 +335,7 @@ const DetailPesanan = () => {
                   Terima
                 </button>
               </>
-            ) : dataApi?.order_status === "diproses" ? (
+            ) : dataApi?.order_status === "terima" ? (
               <button
                 onClick={handleBuktiPengiriman}
                 className="bg-primary text-white rounded-md h-10 w-full col-span-2"

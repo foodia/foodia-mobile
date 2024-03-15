@@ -25,7 +25,7 @@ const CardRepordFood = (props) => {
         switch (order_status) {
             case 'review':
                 return <IconHourglassEmpty size={22} />;
-            case 'diproses':
+            case 'terima':
                 return <IconPackageExport size={22} />;
             case 'selesai':
                 return <IconCheck size={22} />;
@@ -92,14 +92,14 @@ const CardRepordFood = (props) => {
                     </div>
                     <div className="grid place-items-center mr-2">
                         {order_status === 'tolak' ? <Link href={`${id}`}>
-                            <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'text-blue-600' : order_status === 'diproses' ? 'text-orange-500' : order_status === 'tolak' ? 'text-primary border border-primary' : order_status === 'selesai' ? 'text-primary' : ''}`}>
+                            <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'text-blue-600' : order_status === 'terima' ? 'text-orange-500' : order_status === 'tolak' ? 'text-primary border border-primary' : order_status === 'selesai' ? 'text-primary' : ''}`}>
                                 <p className="mr-1">{getorder_status()}</p>
-                                <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'diproses' ? 'Makanan Di Proses' : order_status === 'tolak' ? 'Ganti Menu' : order_status === 'selesai' ? 'Telah Sampai' : ''}`}</p>
+                                <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'terima' ? 'Makanan Di Proses' : order_status === 'tolak' ? 'Ganti Menu' : order_status === 'selesai' ? 'Telah Sampai' : ''}`}</p>
                                 {/* <p className="w-16">tes deskripsi ini panjang</p> */}
                             </div>
-                        </Link> : <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'text-blue-600' : order_status === 'diproses' ? 'text-orange-500' : order_status === 'tolak' ? 'text-primary border border-primary' : order_status === 'selesai' ? 'text-primary' : ''}`}>
+                        </Link> : <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'text-blue-600' : order_status === 'terima' ? 'text-orange-500' : order_status === 'tolak' ? 'text-primary border border-primary' : order_status === 'selesai' ? 'text-primary' : ''}`}>
                             <p className="mr-1">{getorder_status()}</p>
-                            <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'diproses' ? 'Makanan Di Proses' : order_status === 'tolak' ? 'Ganti Menu' : order_status === 'selesai' ? 'Telah Sampai' : ''}`}</p>
+                            <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'terima' ? 'Makanan Di Proses' : order_status === 'tolak' ? 'Ganti Menu' : order_status === 'selesai' ? 'Telah Sampai' : ''}`}</p>
                             {/* <p className="w-16">tes deskripsi ini panjang</p> */}
                         </div>}
 

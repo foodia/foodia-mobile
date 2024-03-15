@@ -91,8 +91,8 @@ const PesananMerchan = () => {
 
     if (status === "review") {
       filtered = dataApi.filter((data) => data.order_status === "review");
-    } else if (status === "diproses") {
-      filtered = dataApi.filter((data) => data.order_status === "diproses");
+    } else if (status === "terima") {
+      filtered = dataApi.filter((data) => data.order_status === "terima");
     } else if (status === "selesai") {
       filtered = dataApi.filter(
         (data) =>
@@ -189,11 +189,10 @@ const PesananMerchan = () => {
         </div> */}
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "review"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "review"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("review")}
           >
             <span>Pesanan</span>
@@ -204,12 +203,11 @@ const PesananMerchan = () => {
             ></div> */}
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "diproses"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
-            onClick={() => handleFilterChange("diproses")}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "terima"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
+            onClick={() => handleFilterChange("terima")}
           >
             <span>Berlangsung</span>
             {/* <div
@@ -219,11 +217,10 @@ const PesananMerchan = () => {
             ></div> */}
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "selesai"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("selesai")}
           >
             <span>History</span>

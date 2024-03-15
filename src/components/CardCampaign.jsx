@@ -29,7 +29,7 @@ const CardCampaign = (props) => {
       remainingDays = 0;
     }
 
-    console.log("remainingDays", remainingDays);
+    // console.log("remainingDays", remainingDays);
 
     return remainingDays;
   };
@@ -107,14 +107,21 @@ const CardCampaign = (props) => {
             </p>
           </div>
         </div>
-        <div className="flex justify-between px-1.5 mb-1.5">
+        <div className="flex justify-between px-1.5 ">
           <p className="font-sans text-xs">
             Donasi Terkumpul:
             <span className="font-sans text-xs font-medium text-blue-800 ml-2">
               {formatUang(Terkumpul ? Terkumpul : 0)}
             </span>
           </p>
+          <div className={`flex items-center justify-center  font-medium  font-sans text-xs  rounded-lg px-1 ${status == "waiting" ? "bg-blue-600" : status == "approved" ? "bg-green-500" : status == "rejected" ? "bg-red-500" : ""}`}>
+
+            <p className={`font-sans mb-1  ${status == 'approved' ? 'text-white' : ''}`} >
+              {status}
+            </p>
+          </div>
         </div>
+
         <div className="flex justify-between px-1.5 items-center ">
           <div className="w-full rounded-full h-2.5 bg-gray-200">
             <div
@@ -129,8 +136,8 @@ const CardCampaign = (props) => {
             {totalCollected(percentageCollected).toFixed()}%
           </p>
         </div>
-      </Link>
-    </div>
+      </Link >
+    </div >
   );
 };
 
