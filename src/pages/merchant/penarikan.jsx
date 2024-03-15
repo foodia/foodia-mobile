@@ -92,38 +92,73 @@ const penarikan = (penarikan) => {
               amount: parsedAmount + eWalletFee,
               payment_method: method,
             };
-            axios
-              .post(
-                `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
-                bankMethod,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              )
-              .then((response) => {
-                // Tanggapan dari panggilan API berhasil
-                Swal.fire("Sukses!", "Saldo telah ditarik.", "success");
-                Swal.fire({
-                  icon: "success",
-                  title: "Saldo telah ditarik.",
-                  text: ` Pengajuan penarikan dana Berhasil`,
-                  showConfirmButton: false,
-                  timer: 2000,
-                });
-                setTimeout(() => {
-                  router.push("/merchant/saldo");
-                }, 2000);
-              })
-              .catch((error) => {
-                // Tanggapan dari panggilan API gagal atau terjadi kesalahan
-                Swal.fire(
-                  "Oops!",
-                  "Terjadi kesalahan saat menarik saldo.",
-                  "error"
-                );
-              });
+            {
+              method === "BANK"
+                ? axios
+                    .post(
+                      `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
+                      bankMethod,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                        },
+                      }
+                    )
+                    .then((response) => {
+                      // Tanggapan dari panggilan API berhasil
+                      Swal.fire("Sukses!", "Saldo telah ditarik.", "success");
+                      Swal.fire({
+                        icon: "success",
+                        title: "Saldo telah ditarik.",
+                        text: ` Pengajuan penarikan dana Berhasil`,
+                        showConfirmButton: false,
+                        timer: 2000,
+                      });
+                      setTimeout(() => {
+                        router.push("/merchant/saldo");
+                      }, 2000);
+                    })
+                    .catch((error) => {
+                      // Tanggapan dari panggilan API gagal atau terjadi kesalahan
+                      Swal.fire(
+                        "Oops!",
+                        "Terjadi kesalahan saat menarik saldo.",
+                        "error"
+                      );
+                    })
+                : axios
+                    .post(
+                      `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
+                      eWalletMethod,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                        },
+                      }
+                    )
+                    .then((response) => {
+                      // Tanggapan dari panggilan API berhasil
+                      Swal.fire("Sukses!", "Saldo telah ditarik.", "success");
+                      Swal.fire({
+                        icon: "success",
+                        title: "Saldo telah ditarik.",
+                        text: ` Pengajuan penarikan dana Berhasil`,
+                        showConfirmButton: false,
+                        timer: 2000,
+                      });
+                      setTimeout(() => {
+                        router.push("/merchant/saldo");
+                      }, 2000);
+                    })
+                    .catch((error) => {
+                      // Tanggapan dari panggilan API gagal atau terjadi kesalahan
+                      Swal.fire(
+                        "Oops!",
+                        "Terjadi kesalahan saat menarik saldo.",
+                        "error"
+                      );
+                    });
+            }
           }
           // Panggil API menggunakan Axios di sini
         }
