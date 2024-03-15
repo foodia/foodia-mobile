@@ -244,6 +244,7 @@ const PesananMerchan = () => {
                   qty={data.qty}
                   price={data.merchant_product.price}
                   status={data.order_status}
+                  total_amount={data.total_amount}
                   setLoading={setLoading}
                 />
               ))
