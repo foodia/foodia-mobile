@@ -1,14 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
-import axios from "axios";
-import Link from "next/link";
-import Image from "next/image";
-import { IconCirclePlus } from "@tabler/icons-react";
-import styles from "@/styles/Home.module.css";
-import CardFood from "@/components/CardFood";
-import SlideCard from "@/components/SlideCard";
 import CardPesanan from "@/components/CardPesanan";
+import styles from "@/styles/Home.module.css";
+import { IconBowlFilled, IconCirclePlus } from "@tabler/icons-react";
+import axios from "axios";
 import moment from "moment/moment";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 
 const PesananMerchan = () => {
   const router = useRouter();
@@ -19,6 +17,8 @@ const PesananMerchan = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
+
+  console.log(loading);
 
   useEffect(() => {
     const role = sessionStorage.getItem("role");
@@ -115,15 +115,31 @@ const PesananMerchan = () => {
         <div className="flex items-center justify-center px-6 pt-16">
           <div className={`bg-gray-100 rounded-2xl w-full p-3`}>
             <div className="flex justify-between items-center">
-              <Link
-                href="/createmenu?step=1"
-                className="grid justify-items-center gap-1 w-24"
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <IconCirclePlus />
-                </div>
-                <p className="text-xs font-normal text-black">Tambah Menu</p>
-              </Link>
+              {router.pathname === "/merchant" ? (
+                <Link
+                  href="/createmenu?step=1"
+                  className="grid justify-items-center gap-1 w-24"
+                >
+                  <div className={`${styles.iconMenu}`}>
+                    <IconCirclePlus />
+                  </div>
+                  <p className="text-xs font-normal text-black">Tambah Menu</p>
+                </Link>
+              ) : (
+                router.pathname === "/merchant/pesanan" && (
+                  <Link
+                    href="/merchant"
+                    className="grid justify-items-center gap-1 w-24"
+                  >
+                    <div className={`${styles.iconMenu}`}>
+                      <IconBowlFilled />
+                    </div>
+                    <p className="text-xs font-normal text-black">
+                      Daftar Menu
+                    </p>
+                  </Link>
+                )
+              )}
               <Link
                 href="/merchant/pesanan"
                 className="grid justify-items-center gap-1 w-24 "
@@ -155,38 +171,6 @@ const PesananMerchan = () => {
             </div>
           </div>
         </div>
-
-        {/* <div className={` flex ${styles.slide_card}`}>
-            <SlideCard to={"/campaign/1"}
-                img="/img/card/rectangle_70.png"
-                title="Makanan Untuk Semua"
-                address="Bersama-sama Kita Bisa Mengakhiri Kelaparan."
-                date="30/10/2022"
-                status="Pending"
-            />
-            <SlideCard to={"/campaign/1"}
-                img="/img/card/rectangle_70.png"
-                title="TEBAR 1000 PAKET NASI JUMAT BERKAH"
-                address="Kav Barokah, Gg. Ceria I, Bahagia, Kec. Babelan, Kabupaten Bekasi, Jawa Barat 17121"
-                date="30/10/2022"
-                status="Approved"
-            />
-            <SlideCard to={"/campaign/1"}
-                img="/img/card/rectangle_70.png"
-                title="TEBAR 1000 PAKET NASI JUMAT BERKAH"
-                address="Kav Barokah, Gg. Ceria I, Bahagia, Kec. Babelan, Kabupaten Bekasi, Jawa Barat 17121 ppppppppppppppppppppppppppppppppppppppp"
-                date="30/10/2022"
-                status="Rejected"
-            />
-
-            <SlideCard to={"/campaign/1"}
-                img="/img/card/rectangle_70.png"
-                title="TEBAR 1000 PAKET NASI JUMAT BERKAH"
-                address="Kav Barokah, Gg. Ceria I, Bahagia, Kec. Babelan, Kabupaten Bekasi, Jawa Barat 17121"
-                date="30/10/2022"
-                status="Approved"
-            />
-        </div> */}
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
@@ -197,11 +181,6 @@ const PesananMerchan = () => {
             onClick={() => handleFilterChange("review")}
           >
             <span>Pesanan</span>
-            {/* <div
-              className={`w-32 h-0.5 ${
-                selectedStatus === "approved" ? "bg-blue-500 w-32 " : "bg-black"
-              }`}
-            ></div> */}
           </div>
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
@@ -212,11 +191,6 @@ const PesananMerchan = () => {
             onClick={() => handleFilterChange("diproses")}
           >
             <span>Berlangsung</span>
-            {/* <div
-              className={`w-32 h-0.5 ${
-                selectedStatus === "listMenu" ? "bg-blue-500 w-32 " : "bg-black"
-              }`}
-            ></div> */}
           </div>
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
@@ -227,11 +201,6 @@ const PesananMerchan = () => {
             onClick={() => handleFilterChange("selesai")}
           >
             <span>History</span>
-            {/* <div
-              className={`w-32 h-0.5 ${
-                selectedStatus === "listMenu" ? "bg-blue-500 w-32 " : "bg-black"
-              }`}
-            ></div> */}
           </div>
         </div>
 
@@ -245,27 +214,42 @@ const PesananMerchan = () => {
           </div>
         ) : (
           <div className={`${styles.card} `}>
-            {filteredData.map((data) => (
-              <CardPesanan
-                key={data.id}
-                to={`/merchant/detailpesanan/${data.id}`}
-                idOrder={data.id}
-                img={
-                  data.merchant_product.images.length > 0
-                    ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product.images[0].image_url}`
-                    : "/img/default-image.png"
-                }
-                title={data.campaign.event_name}
-                productName={data.merchant_product.name}
-                date={moment(data.campaign?.event_date).format(
-                  "DD MMM YYYY hh:mm"
-                )}
-                qty={data.qty}
-                price={data.merchant_product.price}
-                status={data.order_status}
-                setLoading={setLoading}
-              />
-            ))}
+            {filteredData.length == 0 ? (
+              <p>
+                {selectedStatus === "review"
+                  ? "Tidak Ada Pesanan"
+                  : selectedStatus === "diproses"
+                  ? "Tidak Ada Pesanan Berlangsung"
+                  : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
+              </p>
+            ) : (
+              <>
+                {filteredData.map((data) => (
+                  <CardPesanan
+                    key={data.id}
+                    to={`/merchant/detailpesanan/${data.id}`}
+                    idOrder={data.id}
+                    img={
+                      data.merchant_product.images.length > 0
+                        ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product.images[0].image_url}`
+                        : "/img/default-image.png"
+                    }
+                    title={data.campaign.event_name}
+                    productName={data.merchant_product.name}
+                    created_at={moment(data.campaign?.created_at).format(
+                      "DD MMM YYYY hh:mm"
+                    )}
+                    date={moment(data.campaign?.event_date).format(
+                      "DD MMM YYYY hh:mm"
+                    )}
+                    qty={data.qty}
+                    price={data.merchant_product.price}
+                    status={data.order_status}
+                    setLoading={setLoading}
+                  />
+                ))}
+              </>
+            )}
           </div>
         )}
       </div>
