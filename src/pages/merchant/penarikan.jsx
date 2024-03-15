@@ -95,7 +95,7 @@ const penarikan = (penarikan) => {
             axios
               .post(
                 `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
-                data,
+                bankMethod,
                 {
                   headers: {
                     Authorization: `Bearer ${token}`,
