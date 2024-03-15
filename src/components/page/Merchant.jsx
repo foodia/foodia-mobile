@@ -14,9 +14,47 @@ const Merchant = () => {
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("approved");
+  // const [cekData, setCekData] = useState("");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
+
+  const getMenus = (id, token) => {
+    axios
+      .get(
+        process.env.NEXT_PUBLIC_API_BASE_URL +
+          `merchant-product/filter?merchant_id=${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        setDataApi(response.data.body);
+        const filtered = response.data.body.filter(
+          (data) => data.status === "approved"
+        );
+        setFilteredData(filtered);
+
+        console.log("respone data menu", response.data.body);
+        setLoading(false);
+
+        if (response.data.body.length === 0) {
+          setHasMore(false);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching data:", error);
+
+        if (error.response && error.response.status === 401) {
+          // Unauthorized error (e.g., token expired)
+          sessionStorage.clear();
+          router.push("/login");
+        }
+      });
+  };
 
   useEffect(() => {
     const authenticateUser = async () => {
@@ -59,6 +97,8 @@ const Merchant = () => {
             }
           );
           const cekData = response.data.body;
+          console.log("filtered", cekData);
+          // setCekData(response.data.body)
           if (!cekData.merchant) {
             Swal.fire({
               icon: "warning",
@@ -86,7 +126,6 @@ const Merchant = () => {
               sessionStorage.setItem("role", "merchant");
               sessionStorage.setItem("status", cekData.merchant.status);
               sessionStorage.setItem("note", cekData.merchant.note);
-
               Swal.fire({
                 icon: "warning",
                 title: "Akun Merchant Anda Belum Terverifikasi",
@@ -123,9 +162,9 @@ const Merchant = () => {
               sessionStorage.setItem("role", "merchant");
               sessionStorage.setItem("status", cekData.merchant.status);
               sessionStorage.setItem("note", cekData.merchant.note);
+              getMenus(cekData.merchant.merchant_id, token);
             }
           }
-          console.log("data", cekData);
         } catch (error) {
           if (error.response && error.response.status === 401) {
             sessionStorage.clear();
@@ -136,54 +175,11 @@ const Merchant = () => {
     };
 
     authenticateUser();
-  }, [router]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const id = sessionStorage.getItem("id");
-        const token = sessionStorage.getItem("token");
-
-        if (!id || !token) {
-          throw new Error("Missing required session data");
-        }
-
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant-product/filter?merchant_id=${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setDataApi(response.data.body);
-        const filtered = response.data.body.filter(
-          (data) => data.status === "approved"
-        );
-        setFilteredData(filtered);
-
-        console.log("respone data menu", response.data.body);
-        setLoading(false);
-
-        if (response.data.body.length === 0) {
-          setHasMore(false);
-        }
-      } catch (error) {
-        setLoading(false);
-        console.error("Error fetching data:", error);
-
-        if (error.response && error.response.status === 401) {
-          // Unauthorized error (e.g., token expired)
-          sessionStorage.clear();
-          router.push("/login");
-        }
-      }
-    };
-
-    fetchData();
   }, []);
 
-  console.log(selectedStatus);
+  // useEffect(() => {
+
+  // }, []);
 
   const handleFilterChange = (status) => {
     let filtered = [];
