@@ -200,7 +200,7 @@ const DetailCamp = ({ data }) => {
                   />
                 </div>
                 <div className="text-left place-items-start">
-                  <div className="mb-1 text-primary">Merchant</div>
+                  <div className="mb-1 text-primary">Lacak Pesanan</div>
                   <div className="-mt-1 font-sans text-xs text-gray-500">
                     {data.orders ? data.orders.length : 0} Verified Merchants{" "}
                   </div>

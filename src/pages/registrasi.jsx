@@ -136,14 +136,18 @@ const Registrasi = () => {
       })
       return;
     }
+    const capitalizeEachWord = (str) => {
+      return str.replace(/\b\w/g, (char) => char.toUpperCase());
+    };
 
     // Create an object with the form data
     const formData = {
-      fullname,
+      fullname: capitalizeEachWord(fullname),
       phone,
       email,
       password,
     };
+
     try {
       setLoading(true);
       // Assuming the API response includes data about the user or a token.

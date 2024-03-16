@@ -330,7 +330,7 @@ const Detonator = () => {
               }`}
             onClick={() => handleFilterChange("DRAFT")}
           >
-            <span>Campaign Baru</span>
+            <span>Pengajuan Campaign</span>
           </div>
           <div
             className={`cursor-pointer text-center ${selectedStatus === "OPEN"

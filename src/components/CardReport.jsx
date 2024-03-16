@@ -24,7 +24,7 @@ const CardReport = ({ data }) => {
                 setButtonStatus(false)
             } else {
                 if (role === 'detonator') {
-                    if (12 == id_detonator) {
+                    if (data.campaign.detonator_id === parseInt(id_detonator)) {
 
                         setButtonStatus(true)
                     }
