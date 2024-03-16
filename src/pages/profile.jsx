@@ -43,8 +43,8 @@ const profile = (profile) => {
     <>
       <main className="my-0 mx-auto mobile-w">
         {/* <Header title="Profile" /> */}
-        <div className="my-0 mx-auto overflow-x-hidden bg-white flex flex-col px-5">
-          <div class="mx-auto h-full pt-5 pb-36">
+        <div className="my-0 mx-auto overflow-x-hidden bg-white flex flex-col px-5 h-screen">
+          <div class="mx-auto pt-5 pb-36 w-full">
             <p className="text-center font-bold">Profile</p>
             <div class="flex flex-row w-full items-center gap-2 py-5">
               {/* <Image
