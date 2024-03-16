@@ -8,7 +8,7 @@ const Report = () => {
 
   return (
     <main className="my-0 mx-auto min-h-full mobile-w">
-      <Header title="Berita Campaign" />
+      <Header title="Kabar Terbaru" />
       <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
         <ReportCamp />
       </div>

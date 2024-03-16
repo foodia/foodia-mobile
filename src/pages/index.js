@@ -10,13 +10,22 @@ const inter = Inter({ subsets: ["latin"] });
 const Home = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState("");
 
   useEffect(() => {
-    const session = localStorage.getItem("Session");
-    if (session === "start") {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      setToken(token);
       router.push("/home");
     }
-  }, []);
+  }, [token]);
+
+  // useEffect(() => {
+  //   const session = localStorage.getItem("Session");
+  //   if (session === "start") {
+  //     router.push("/home");
+  //   }
+  // }, []);
 
   // useEffect(() => {
   //   const redirectTimer = setTimeout(() => {

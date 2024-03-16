@@ -67,11 +67,11 @@ const FoodCampaign = () => {
             <main className="my-0 mx-auto min-h-full mobile-w">
                 <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
 
-                    <Header title="Food Campain" />
+                    <Header title="Lacak Pesanan" />
                     <div className="container mx-auto mt-24 bg-white h-screen">
 
                         <div className="mx-auto text-center p-2 text-primary">
-                            <h1 className="font-bold">Report Order Food</h1>
+                            <h1 className="font-bold">Status Pesanan</h1>
                             <h1>{DataAPI.event_name}</h1>
                         </div>
                         <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
@@ -83,7 +83,7 @@ const FoodCampaign = () => {
                     </Link>
                 </div> */}
 
-                        <p className="px-8 mt-2">Pesanan Terkonfirmasi : {`${jumlahPesananDiproses}/${foodOrder.length}`} </p>
+                        {/* <p className="px-8 mt-2">Pesanan Terkonfirmasi : {`${jumlahPesananDiproses}/${foodOrder.length}`} </p> */}
 
 
 
@@ -98,7 +98,7 @@ const FoodCampaign = () => {
                                     img={item.merchant_product.images.length > 0 ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${item.merchant_product.images[0].image_url}` : '/img/default-image.png'}
                                     title={item.merchant_product.name}
                                     price={item.merchant_product.price}
-                                    nameMerchant={item.merchant.oauth.fullname}
+                                    nameMerchant={item.merchant.merchant_name}
                                     qty={item.qty}
                                     approval_status={item.approval_status}
                                     order_status={item.order_status}
