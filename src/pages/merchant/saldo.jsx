@@ -1,8 +1,6 @@
-import BottomNav from "@/components/BottomNav";
 import Header from "@/components/Header";
-import axios from "axios";
-import Link from "next/link";
 import styles from "@/styles/Home.module.css";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
@@ -102,6 +100,7 @@ const saldo = (saldo) => {
 
     fetchData();
   }, [loading, selectedStatus]);
+
   const handleFilterChange = (status = "review") => {
     let filtered = [];
 
@@ -141,8 +140,8 @@ const saldo = (saldo) => {
 
   const handleRequestButton = () => {
     Swal.fire({
-      title: "Informasi Penarikan Saldo",
-      text: "Penarikan Saldo akan dikirimkan ke nomor LinkAja anda. Pastikan nomor tujuan sudah sesuai",
+      title: "Informasi Penarikan",
+      text: "Pembayaran penarikan saldo masih secara manual, pastikan isi data dengan benar",
       confirmButtonText: "Mengerti",
       confirmButtonColor: "#3FB648",
     }).then((result) => {
@@ -152,6 +151,7 @@ const saldo = (saldo) => {
       }
     });
   };
+
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
     const day = date.getDate().toString().padStart(2, "0");
@@ -169,6 +169,7 @@ const saldo = (saldo) => {
 
     return formatter.format(price);
   };
+
   return (
     <>
       <div className="container mx-auto h-screen">
@@ -303,7 +304,6 @@ const saldo = (saldo) => {
           )}
         </div>
       </div>
-      <BottomNav />
     </>
   );
 };

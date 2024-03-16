@@ -57,48 +57,38 @@ const Merchant = () => {
   };
 
   useEffect(() => {
-    const authenticateUser = async () => {
-      // const role = sessionStorage.getItem('role');
-      const token = sessionStorage.getItem("token");
-      // const status = sessionStorage.getItem('status');
-      // const id = sessionStorage.getItem('id');
-      // console.log('token', token);
-
-      if (!token) {
-        // sessionStorage.clear();
-        Swal.fire({
-          icon: "error",
-          title: "Akses Dibatasi",
-          text: ` Mohon untuk login kembali menggunakan akun Merchant.`,
-          showConfirmButton: true,
-          confirmButtonText: "Login",
-          confirmButtonColor: "green",
-          showCancelButton: true,
-          cancelButtonText: "Tutup",
-          cancelButtonColor: "red",
-          // timer: 2000,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // console.log("clicked");
-            router.push("/login");
-          } else if (result.isDismissed) {
-            // console.log("denied");
-            router.push("/home");
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      Swal.fire({
+        icon: "error",
+        title: "Akses Dibatasi",
+        text: ` Mohon untuk login kembali menggunakan akun Merchant.`,
+        showConfirmButton: true,
+        confirmButtonText: "Login",
+        confirmButtonColor: "green",
+        showCancelButton: true,
+        cancelButtonText: "Tutup",
+        cancelButtonColor: "red",
+        // timer: 2000,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/login");
+        } else if (result.isDismissed) {
+          router.push("/home");
+        }
+      });
+    } else {
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        });
-      } else {
-        try {
-          const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+        )
+        .then((response) => {
           const cekData = response.data.body;
-          console.log("filtered", cekData);
-          // setCekData(response.data.body)
           if (!cekData.merchant) {
             Swal.fire({
               icon: "warning",
@@ -113,10 +103,8 @@ const Merchant = () => {
               // timer: 2000,
             }).then((result) => {
               if (result.isConfirmed) {
-                // console.log("clicked");
-                router.push("/registrasi/merchant?step=1");
+                router.push("/merchant/syarat");
               } else if (result.isDismissed) {
-                // console.log("denied");
                 router.push("/home");
               }
             });
@@ -126,18 +114,17 @@ const Merchant = () => {
               sessionStorage.setItem("role", "merchant");
               sessionStorage.setItem("status", cekData.merchant.status);
               sessionStorage.setItem("note", cekData.merchant.note);
+
               Swal.fire({
                 icon: "warning",
                 title: "Akun Merchant Anda Belum Terverifikasi",
-                text: ` Mohon tunggu konfirmasi dari admin kami.`,
+                text: ` Mohon tunggu konfirmasi dari admin kami`,
                 showConfirmButton: false,
                 showCancelButton: true,
                 cancelButtonColor: "red",
                 cancelButtonText: "Tutup",
-                // timer: 2000,
               }).then((result) => {
                 if (result.isDismissed) {
-                  // console.log("clicked");
                   router.push("/home");
                 }
               });
@@ -165,16 +152,14 @@ const Merchant = () => {
               getMenus(cekData.merchant.merchant_id, token);
             }
           }
-        } catch (error) {
+        })
+        .catch((error) => {
           if (error.response && error.response.status === 401) {
             sessionStorage.clear();
             router.push("/login");
           }
-        }
-      }
-    };
-
-    authenticateUser();
+        });
+    }
   }, []);
 
   // useEffect(() => {
