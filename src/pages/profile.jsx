@@ -1,15 +1,8 @@
 import BottomNav from "@/components/BottomNav";
-import Header from "@/components/Header";
 import ProfileDetonator from "@/components/page/Profile/ProfileDetonator";
 import ProfileMerchant from "@/components/page/Profile/ProfileMerchant";
 import ProfileUser from "@/components/page/Profile/ProfileUser";
-import {
-  IconCircleLetterA,
-  IconEdit,
-  IconLogout,
-  IconUser,
-} from "@tabler/icons-react";
-import Image from "next/image";
+import { IconCircleLetterA, IconUser } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -64,7 +57,9 @@ const profile = (profile) => {
                 class="bg-transparent"
                 src="https://tailwindflex.com/public/images/user.png"
               /> */}
-              <IconCircleLetterA size={74} />
+              <div className="w-14 h-12 rounded-full bg-blue-100 grid place-items-center text-blue-600">
+                <IconUser />
+              </div>
               <div className="flex flex-row w-full items-center justify-between">
                 <div>
                   <p class="text-md text-primary">{`${dataUser?.fullname}`}</p>
@@ -73,7 +68,7 @@ const profile = (profile) => {
 
                     {role === "detonator" && "Verified Campaigner"}
 
-                    {role === "merchant" && "Merchant"}
+                    {role === "merchant" && "Verified Merchant"}
                   </p>
                 </div>
                 {/* <button>
@@ -81,14 +76,10 @@ const profile = (profile) => {
                 </button> */}
               </div>
             </div>
-            {/* <div class="card md:flex max-w-lg">
-              <div class="flex-grow items-center justify-center text-center md:text-left">
-              </div>
-            </div> */}
             <div className="shadow rounded-xl filter-none mb-4 p-3">
               <div class="card md:flex max-w-lg">
                 <div class="flex-grow text-center md:text-left">
-                  <div className="mt-2 mb-3">
+                  <div className="mt-2 text-center mb-3">
                     <p class="font-bold">Email</p>
                     <p>{`${dataUser?.email}`}</p>
                   </div>
@@ -96,13 +87,13 @@ const profile = (profile) => {
               </div>
               <div class="card md:flex max-w-lg">
                 <div class="flex-grow text-center md:text-left">
-                  <div className="mt-2 mb-3">
+                  <div className="mt-2 text-center mb-3">
                     <p class="font-bold">Nomer HP</p>
                     <p>{`${dataUser?.phone}`}</p>
                   </div>
                 </div>
               </div>
-              <div class="card md:flex max-w-lg">
+              {/* <div class="card md:flex max-w-lg">
                 <div class="flex-grow text-center md:text-left">
                   <div className="mt-2 mb-3">
                     <p class="font-bold">Alamat</p>
@@ -115,7 +106,7 @@ const profile = (profile) => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
             {/* {role === "user" && <ProfileUser />}
 
