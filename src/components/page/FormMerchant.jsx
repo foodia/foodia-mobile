@@ -1,10 +1,7 @@
-// src/components/FormCampaing.jsx
-
-import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
-import AddFood from "./AddFoodCamp";
+import React, { useEffect, useState } from "react";
 import {
+  OTPMerchant,
   StepOne,
   StepThree,
   StepTwo,
@@ -12,7 +9,6 @@ import {
 } from "../FormCampaing/StepMerchant";
 import Header from "../Header";
 import Loading from "../Loading";
-// import StepThree from '../FormCampaing/CreateCamp';
 
 const FormMenu = () => {
   const router = useRouter();
@@ -63,12 +59,11 @@ const FormMenu = () => {
     setTitle = "Lokasi Usaha";
   } else if (step === "3") {
     stepComponent = (
-      <StepThree
+      <OTPMerchant
         registrasiMerchant={registrasiMerchant}
         setRegistrasiMerchant={setRegistrasiMerchant}
       />
     );
-    setTitle = "Tambah Menu Makan";
   } else if (step === "4") {
     stepComponent = (
       <Stepfour
@@ -90,12 +85,12 @@ const FormMenu = () => {
   return (
     <main className="my-0 mx-auto min-h-full mobile-w">
       <div className="my-0 mx-auto pt-16 min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
-        <Header backto="/home" title="Registrasi Merchant" />
+        <Header title="Registrasi Merchant" />
         {/* <div className="flex justify-center">
           <h1 className="text-3xl font-bold">FOODIA </h1>
         </div> */}
         <div className="flex justify-center">
-          <h1 className="text-2xl text-primary w-48 text-center font-bold">
+          <h1 className="text-3xl text-primary w-64 text-center font-bold">
             {setTitle}
           </h1>
         </div>

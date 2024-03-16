@@ -1,15 +1,6 @@
 // src/components/formCampaing/StepDetonator.jsx
 
-import {
-  IconBowl,
-  IconBowlFilled,
-  IconCalendar,
-  IconCamera,
-  IconCurrencyDollar,
-  IconFileDescription,
-  IconMenuOrder,
-  IconToolsKitchen2,
-} from "@tabler/icons-react";
+import { IconBowlFilled, IconFileDescription } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -368,7 +359,7 @@ function EditProduct() {
             type="submit"
             className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center"
           >
-            Ajukan
+            Ubah
           </button>
         </div>
       </form>

@@ -1,11 +1,6 @@
 import Header from "@/components/Header";
 import InputForm from "@/components/Imput";
 import Loading from "@/components/Loading";
-import {
-  IconBuildingBank,
-  IconCreditCard,
-  IconUser,
-} from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -47,19 +42,23 @@ const penarikan = (penarikan) => {
   const handlerecipient_nameChange = (event) => {
     setRecipient_name(event.target.value);
   };
+
   const handleBankChange = (event) => {
     setBank(event.target.value);
   };
+
   const handleMethodChange = (event) => {
     setMethod(event.target.value);
   };
+
   const handlerekeningChange = (event) => {
     setRekening(event.target.value);
   };
+
   const handleTarikSaldo = () => {
     Swal.fire({
-      title: "Konfirmasi Penarikan Saldo",
-      text: `Total penarikan ditambah biaya channel pembayaran adalah ${
+      title: "Konfirmasi Penarikan",
+      text: `Total penarikan setelah dikurang biaya penarikan adalah ${
         method === "BANK"
           ? formatPrice(parsedAmount + bankFee)
           : formatPrice(parsedAmount + eWalletFee)
@@ -159,6 +158,7 @@ const penarikan = (penarikan) => {
       }
     });
   };
+
   const formatPrice = (price) => {
     const formatter = new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -252,7 +252,7 @@ const penarikan = (penarikan) => {
               className={
                 method === ""
                   ? "text-gray-400 w-full p-0 py-2 bg-transparent focus:border-none outline-none"
-                  : "bg-white w-full p-0 py-2 bg-transparent focus:border-none outline-none"
+                  : "text-black w-full p-0 py-2 bg-transparent focus:border-none outline-none"
               }
             >
               <option className="text-gray-400" value="">
@@ -275,7 +275,7 @@ const penarikan = (penarikan) => {
                   className={
                     bank === ""
                       ? "text-gray-400 w-full p-0 py-2 bg-transparent focus:border-none outline-none"
-                      : "bg-white w-full p-0 py-2 bg-transparent focus:border-none outline-none"
+                      : "text-black w-full p-0 py-2 bg-transparent focus:border-none outline-none"
                   }
                 >
                   <option className="text-gray-400" value="">
@@ -339,9 +339,8 @@ const penarikan = (penarikan) => {
         <div className="mobile-w fixed flex justify-center h-28 bottom-0 my-0 mx-auto w-full max-w-screen-sm ">
           <div className="kotak shadow-inner px-4">
             <p className="text-center text-xs font-semibold mx-6 my-2">
-              Dengan klik tombol di bawah, kamu telah setuju dengan{" "}
-              <span className="text-primary">Syarat & Ketentuan</span> penarikan
-              Saldo Foodia
+              Dengan klik tombol di bawah, anda telah memastikan tidak ada
+              kesalahan dalam pengisian data
             </p>
             {method === "BANK" ? (
               <button
@@ -367,7 +366,7 @@ const penarikan = (penarikan) => {
                 }
                 onClick={handleTarikSaldo}
               >
-                Tarik Saldo
+                Ajukan Penarikan Saldo
               </button>
             ) : (
               <button
@@ -393,7 +392,7 @@ const penarikan = (penarikan) => {
                 }
                 onClick={handleTarikSaldo}
               >
-                Tarik Saldo
+                Ajukan Penarikan Saldo
               </button>
             )}
           </div>
