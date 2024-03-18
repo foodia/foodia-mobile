@@ -1,12 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import {
-  OTPMerchant,
-  StepOne,
-  StepThree,
-  StepTwo,
-  Stepfour,
-} from "../FormCampaing/StepMerchant";
+import { StepOne, StepTwo } from "../FormCampaing/StepMerchant";
 import Header from "../Header";
 import Loading from "../Loading";
 
@@ -57,25 +51,26 @@ const FormMenu = () => {
       />
     );
     setTitle = "Lokasi Usaha";
-  } else if (step === "3") {
-    stepComponent = (
-      <OTPMerchant
-        registrasiMerchant={registrasiMerchant}
-        setRegistrasiMerchant={setRegistrasiMerchant}
-      />
-    );
-  } else if (step === "4") {
-    stepComponent = (
-      <Stepfour
-        registrasiMerchant={registrasiMerchant}
-        setRegistrasiMerchant={setRegistrasiMerchant}
-      />
-    );
-    setTitle = "Tambah Menu Makan";
-  } else {
-    stepComponent = <div>Invalid step value</div>;
-    setTitle = "Default Title";
   }
+  // else if (step === "3") {
+  //   stepComponent = (
+  //     <OTPMerchant
+  //       registrasiMerchant={registrasiMerchant}
+  //       setRegistrasiMerchant={setRegistrasiMerchant}
+  //     />
+  //   );
+  // } else if (step === "4") {
+  //   stepComponent = (
+  //     <Stepfour
+  //       registrasiMerchant={registrasiMerchant}
+  //       setRegistrasiMerchant={setRegistrasiMerchant}
+  //     />
+  //   );
+  //   setTitle = "Tambah Menu Makan";
+  // } else {
+  //   stepComponent = <div>Invalid step value</div>;
+  //   setTitle = "Default Title";
+  // }
 
   // Update local storage when formData changes
   const updateLocalStorage = (data) => {
