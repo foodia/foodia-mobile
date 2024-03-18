@@ -13,7 +13,6 @@ const FoodCampaign = () => {
     const [foodOrder, setFoodOrder] = useState([]);
     const [DataAPI, setDataApi] = useState([]);
     const [loading, setLoading] = useState(true);
-    ;
 
 
     useEffect(() => {

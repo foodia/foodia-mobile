@@ -46,14 +46,20 @@ const CardCampaign = (props) => {
 
     return formatter.format(nominal);
   };
-  const percentageCollected = (donation_collected / donation_target) * 100;
+  // const percentageCollected = (donation_collected / donation_target) * 100;
+  let percentageCollected = 0;
+  donation_target > 0 ? (percentageCollected = (donation_collected / donation_target) * 100) : (percentageCollected = 0);
+
   const totalCollected = (percentageCollected) => {
-    if (percentageCollected > 100) {
+    if (percentageCollected === undefined || percentageCollected === null) {
+      return 0;
+    } else if (percentageCollected > 100) {
       return 100;
     } else {
       return percentageCollected;
     }
   };
+
 
   useEffect(() => {
     console.log('router', router.route);
