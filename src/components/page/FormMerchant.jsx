@@ -67,10 +67,11 @@ const FormMenu = () => {
   //     />
   //   );
   //   setTitle = "Tambah Menu Makan";
-  // } else {
-  //   stepComponent = <div>Invalid step value</div>;
-  //   setTitle = "Default Title";
   // }
+  else {
+    stepComponent = <div>Invalid step value</div>;
+    setTitle = "Default Title";
+  }
 
   // Update local storage when formData changes
   const updateLocalStorage = (data) => {

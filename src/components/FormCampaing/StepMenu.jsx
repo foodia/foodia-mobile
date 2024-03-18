@@ -128,8 +128,11 @@ function StepOne({ Menu, setMenu }) {
               });
           }
         })
-        .catch(() => {
+        .catch((error) => {
           setLoading(false);
+          if (error.response.data.code === 401) {
+            router.push("/login");
+          }
         });
     } else {
       setLoading(false);
@@ -164,12 +167,12 @@ function StepOne({ Menu, setMenu }) {
           />
         </div>
         <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-          Max.
+          <p className="text-xs">Max.</p>
           <input
             onChange={handleQtyChange}
             value={qty}
             type="number"
-            className="ml-1 w-full p-0 py-4 bg-transparent focus:border-none"
+            className="ml-2 w-full p-0 py-4 bg-transparent focus:border-none"
             placeholder="Maksimal Pesanan"
             required
           />
