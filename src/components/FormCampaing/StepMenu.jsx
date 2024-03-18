@@ -169,25 +169,26 @@ function StepOne({ Menu, setMenu }) {
             onChange={handleQtyChange}
             value={qty}
             type="number"
-            className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+            className="ml-1 w-full p-0 py-4 bg-transparent focus:border-none"
             placeholder="Maksimal Pesanan"
             required
           />
         </div>
         <div>
-          <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-            <IconFileDescription />
+          <div className="flex flex-row p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+            <IconFileDescription className="mt-3.5" />
             <textarea
               maxLength={120}
               onChange={handleDescriptionChange}
               value={description}
               type="text"
-              className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
+              className="ml-2 w-full min-h-[135px] p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
               placeholder="Deskripsi Menu"
               required
+              style={{ resize: "none" }}
             />
           </div>
-          <p className="text-end text-sm">
+          <p className="text-end text-sm text-gray-400">
             <span className={description.length >= 120 && "text-red-500"}>
               {description.length}
             </span>
