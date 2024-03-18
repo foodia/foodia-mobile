@@ -201,7 +201,7 @@ const Registrasi = () => {
       // Redirect to OTP page
     } catch (error) {
       // console.error('Registration failed:', error.response);
-      const ResError = error;
+      const ResError = error.response.data.error;
       console.log("ResError", ResError);
 
       Swal.fire({
@@ -214,15 +214,6 @@ const Registrasi = () => {
       setLoading(false);
       setRegistrasi(formData);
     }
-
-    // Save the form data to the registrasi state
-
-    // Clear form fields after submission
-    // setfullname('');
-    // setPhone('');
-    // setEmail('');
-    // setPassword('');
-    // setConfirmPassword('');
   };
 
   return (

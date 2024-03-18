@@ -2,14 +2,20 @@ import styles from "@/styles/Home.module.css";
 import { IconCheck, IconCircleCheck, IconClockFilled, IconHourglassEmpty, IconPackageExport, IconPlaystationX, } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 
 const CardRepordFood = (props) => {
     const { to = '#', img, title, date, approval_status = '', price, qty = 0, nameMerchant = '', order_status = '', is_rating, is_report } = props;
-    const role = sessionStorage.getItem('role');
     const router = useRouter();
     const { id } = router.query;
+    const [role, setRole] = useState();
+
+    useEffect(() => {
+        const role = sessionStorage.getItem('role');
+        setRole(role);
+        console.log('role', role);
+    }, []);
 
     const totalPrice = qty * price;
     const formatPrice = (price) => {
@@ -91,21 +97,23 @@ const CardRepordFood = (props) => {
                             {/* <p className="mb-1 text-black font-sans font-semibold text-sm truncate">{formatPrice(totalPrice)}</p> */}
                         </div>
                     </div>
-                    <div className="grid place-items-center mr-2">
-                        {order_status === 'tolak' ? <Link href={`${id}`}>
-                            <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'text-blue-600' : order_status === 'diproses' ? 'text-orange-500' : order_status === 'tolak' ? 'text-primary border border-primary' : order_status === 'selesai' ? 'text-primary' : ''}`}>
-                                <p className="mr-1">{getorder_status()}</p>
-                                <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'diproses' ? 'Makanan Di Proses' : order_status === 'tolak' ? 'Ganti Menu' : order_status === 'selesai' ? 'Telah Sampai' : ''}`}</p>
+
+                    <div className="grid place-items-center mr-2 mt-2">
+                        {order_status === 'tolak' && role === 'detonator' ? (
+                            <Link href={`${id}`}>
+                                <div className={`flex justify-center items-center rounded-full ${order_status === 'review' ? 'text-blue-600' : order_status === 'diproses' ? 'text-orange-500' : order_status === 'tolak' ? 'text-primary border border-primary' : order_status === 'selesai' ? 'text-primary' : ''}`}>
+                                    <p className="mr-1">{getorder_status()}</p>
+                                    <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'diproses' ? 'Makanan Di Proses' : order_status === 'tolak' ? 'Ganti Menu' : order_status === 'selesai' ? 'Telah Sampai' : ''}`}</p>
+                                    {/* <p className="w-16">tes deskripsi ini panjang</p> */}
+                                </div>
+                            </Link>
+                        ) : (
+                            <div className={`flex justify-center items-center rounded-full ${order_status === 'review' ? 'text-blue-600' : order_status === 'diproses' ? 'text-orange-500' : order_status === 'selesai' ? 'text-primary' : ''}`}>
+                                <p className="mr-1">{order_status === 'tolak' ? '' : getorder_status()}</p>
+                                <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'diproses' ? 'Makanan Di Proses' : order_status === 'selesai' ? 'Telah Sampai' : ''}`}</p>
                                 {/* <p className="w-16">tes deskripsi ini panjang</p> */}
                             </div>
-                        </Link> : <div className={`flex justify-center items-center rounded-full  ${order_status === 'review' ? 'text-blue-600' : order_status === 'diproses' ? 'text-orange-500' : order_status === 'tolak' ? 'text-primary border border-primary' : order_status === 'selesai' ? 'text-primary' : ''}`}>
-                            <p className="mr-1">{getorder_status()}</p>
-                            <p className="w-16 break-words text-xs font-bold">{`${order_status === 'review' ? 'review' : order_status === 'diproses' ? 'Makanan Di Proses' : order_status === 'tolak' ? 'Ganti Menu' : order_status === 'selesai' ? 'Telah Sampai' : ''}`}</p>
-                            {/* <p className="w-16">tes deskripsi ini panjang</p> */}
-                        </div>}
-
-
-
+                        )}
                     </div>
                 </div>
             </div>
