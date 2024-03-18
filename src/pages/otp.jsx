@@ -170,7 +170,6 @@ const OTP = () => {
         }
       });
     } catch (error) {
-      console.log("error", error.response.data.error[0].field);
       if (error.response.data.error[0].field === "email") {
         Swal.fire({
           icon: "error",

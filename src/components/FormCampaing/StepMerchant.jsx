@@ -1,12 +1,9 @@
 import {
   IconCamera,
-  IconCheck,
-  IconCircle,
   IconCircleCheck,
   IconCircleX,
   IconCurrentLocation,
   IconFile,
-  IconInfoCircle,
   IconMailbox,
   IconMap,
   IconNote,
@@ -14,16 +11,14 @@ import {
   IconUser,
 } from "@tabler/icons-react";
 import axios from "axios";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import InputForm from "../Imput";
-import RoutStep from "../RoutStep";
-import SweetAlert from "../SweetAlert";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import LinkAja from "../../../public/icon/payment/LinkAja.png";
-import Countdown from "react-countdown";
+import RoutStep from "../RoutStep";
+import SweetAlert from "../SweetAlert";
 import Loading from "../Loading";
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
@@ -367,6 +362,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 
   const handleSubmit = async (e) => {
     // e.preventDefault();
+    setLoading(true);
     if (
       !address ||
       !province ||
@@ -405,7 +401,80 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
         timer: 2000,
       });
     }
-    router.push("/registrasi/merchant?step=3");
+    const formData = new FormData();
+    formData.append("merchant_name", registrasiMerchant?.merchant_name);
+    formData.append("ktp_number", registrasiMerchant?.ktp_number);
+    formData.append("self_photo", registrasiMerchant?.self_photo);
+    formData.append("ktp_photo", registrasiMerchant?.ktp_photo);
+    formData.append("province", province);
+    formData.append("city", city);
+    formData.append("sub_district", sub_district);
+    formData.append("postal_code", postal_code);
+    formData.append("address", address);
+    formData.append("latitude", coordinates.lat);
+    formData.append("longitude", coordinates.lng);
+    formData.append("no_link_aja", registrasiMerchant?.no_link_aja);
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/registration`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then(() => {
+        setLoading(false);
+        Swal.fire({
+          position: "bottom",
+          customClass: {
+            popup: "custom-swal",
+            icon: "custom-icon-swal",
+            title: "custom-title-swal",
+            confirmButton: "custom-confirm-button-swal",
+          },
+          icon: "success",
+          title: `<p class="w-auto pl-1 font-bold text-md">Pengajuan Formulir Berhasil Dikirim</p><p class="text-sm w-auto pl-1 font-light">Pendaftaran sedang di review oleh admin. Estimasi 3 x 24 jam</p>`,
+          html: `
+              <div class="absolute px-28 ml-4 top-0 mt-4">
+                <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+              </div>
+            `,
+          width: "375px",
+          showConfirmButton: true,
+          confirmButtonText: "Kembali",
+          confirmButtonColor: "#3FB648",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push("/home");
+          }
+        });
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (error.response && error.response.status === 401) {
+          sessionStorage.clear();
+          router.push("/login");
+        }
+        if (error.response && error.response.status === 500) {
+          // Handle 500 Internal Server Error
+          const imageUrl = "/img/illustration/checklist.png";
+          setLoading(false);
+          SweetAlert({
+            title: "",
+            text: "Akun sudah terdaftar",
+            imageUrl,
+            imageWidth: 200,
+            imageHeight: 200,
+            imageAlt: "Custom image",
+            width: 350,
+          });
+        }
+      });
+
+    // router.push("/registrasi/merchant?step=3");
   };
 
   return (
@@ -530,267 +599,202 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
           </div>
         </div>
       </div>
+      {loading && <Loading />}
     </>
   );
 }
 
-function OTPMerchant({ registrasiMerchant, setRegistrasiMerchant }) {
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-  const [codes, setCodes] = useState("");
-  const [showCountdown, setShowCountdown] = useState(false);
-  const [countdownTime, setCountdownTime] = useState(Date.now() + 120000); // Set 120000 untuk 2 menit
-  const [email, setEmail] = useState("");
+// function OTPMerchant({ registrasiMerchant, setRegistrasiMerchant }) {
+//   const [loading, setLoading] = useState(false);
+//   const router = useRouter();
+//   const [codes, setCodes] = useState("");
+//   const [showCountdown, setShowCountdown] = useState(false);
+//   const [countdownTime, setCountdownTime] = useState(Date.now() + 120000); // Set 120000 untuk 2 menit
+//   const [email, setEmail] = useState("");
 
-  useEffect(() => {
-    setEmail(sessionStorage.getItem("email"));
-  }, []);
+//   useEffect(() => {
+//     setEmail(sessionStorage.getItem("email"));
+//   }, []);
 
-  useEffect(() => {
-    if (email) {
-      handleResend(email);
-    }
-    console.log(email);
-    console.log("reg 3", registrasiMerchant);
-  }, [email]);
+//   useEffect(() => {
+//     if (email) {
+//       handleResend(email);
+//     }
+//     console.log(email);
+//     console.log("reg 3", registrasiMerchant);
+//   }, [email]);
 
-  useEffect(() => {
-    const countdownInterval = setInterval(() => {
-      setCountdownTime((prevTime) => prevTime - 1000); // Kurangi 1 detik dari countdownTime setiap 1 detik
-    }, 1000);
+//   useEffect(() => {
+//     const countdownInterval = setInterval(() => {
+//       setCountdownTime((prevTime) => prevTime - 1000); // Kurangi 1 detik dari countdownTime setiap 1 detik
+//     }, 1000);
 
-    return () => clearInterval(countdownInterval);
-  }, []);
+//     return () => clearInterval(countdownInterval);
+//   }, []);
 
-  useEffect(() => {
-    setShowCountdown(countdownTime > 0); // Tentukan apakah countdown masih berlangsung berdasarkan countdownTime
-  }, []);
+//   useEffect(() => {
+//     setShowCountdown(countdownTime > 0); // Tentukan apakah countdown masih berlangsung berdasarkan countdownTime
+//   }, []);
 
-  const renderer = ({ minutes, seconds }) => {
-    if (minutes === 0 && seconds === 0) {
-      return (
-        <div
-          onClick={handleResend}
-          className="text-sm text-cyan-500 hover:underline cursor-pointer"
-        >
-          Kirim Ulang Kode OTP
-        </div>
-      );
-    } else {
-      return (
-        <>
-          <p>Input Sebelum :</p>
-          <span>
-            {minutes}:{seconds}
-          </span>
-        </>
-      );
-    }
-  };
+//   const renderer = ({ minutes, seconds }) => {
+//     if (minutes === 0 && seconds === 0) {
+//       return (
+//         <div
+//           onClick={handleResend}
+//           className="text-sm text-cyan-500 hover:underline cursor-pointer"
+//         >
+//           Kirim Ulang Kode OTP
+//         </div>
+//       );
+//     } else {
+//       return (
+//         <>
+//           <p>Input Sebelum :</p>
+//           <span>
+//             {minutes}:{seconds}
+//           </span>
+//         </>
+//       );
+//     }
+//   };
 
-  const handleChange = (event) => {
-    const value = event.target.value;
-    setCodes(value);
-    // if (value.length < 7) {
-    //   setCodes(value);
-    // }
-    // if (value.length === 6) {
-    //   const otp = {
-    //     email: email,
-    //     code: value,
-    //   };
-    //   handleSubmit(otp);
-    // }
-  };
+//   const handleChange = (event) => {
+//     const value = event.target.value;
+//     setCodes(value);
+//     // if (value.length < 7) {
+//     //   setCodes(value);
+//     // }
+//     // if (value.length === 6) {
+//     //   const otp = {
+//     //     email: email,
+//     //     code: value,
+//     //   };
+//     //   handleSubmit(otp);
+//     // }
+//   };
 
-  const handleResend = (email) => {
-    setLoading(true);
-    axios
-      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/resend-otp`, { email })
-      .then(() => {
-        setLoading(false);
-        setCountdownTime(Date.now() + 120000); // Set ulang countdownTime ke 2 menit
-        Swal.fire({
-          icon: "success",
-          title: "OTP Sent",
-          text: "Please check your email",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-      })
-      .catch((error) => {
-        setLoading(false);
-        Swal.fire({
-          icon: "error",
-          title: "Gagal Mengirim OTP",
-          text: "Something Went Wrong",
-          width: "375px",
-          showConfirmButton: true,
-          confirmButtonText: "Tutup",
-          confirmButtonColor: "#3b82f6",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // router.push("/merchant/otp");
-          }
-        });
-      });
-  };
+//   const handleResend = (email) => {
+//     setLoading(true);
+//     axios
+//       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/resend-otp`, { email })
+//       .then(() => {
+//         setLoading(false);
+//         setCountdownTime(Date.now() + 120000); // Set ulang countdownTime ke 2 menit
+//         Swal.fire({
+//           icon: "success",
+//           title: "OTP Sent",
+//           text: "Please check your email",
+//           showConfirmButton: false,
+//           timer: 2000,
+//         });
+//       })
+//       .catch((error) => {
+//         setLoading(false);
+//         Swal.fire({
+//           icon: "error",
+//           title: "Gagal Mengirim OTP",
+//           text: "Something Went Wrong",
+//           width: "375px",
+//           showConfirmButton: true,
+//           confirmButtonText: "Tutup",
+//           confirmButtonColor: "#3b82f6",
+//         }).then((result) => {
+//           if (result.isConfirmed) {
+//             // router.push("/merchant/otp");
+//           }
+//         });
+//       });
+//   };
 
-  const handleSubmit = async (otp) => {
-    setLoading(true);
-    const token = sessionStorage.getItem("token");
-    const formData = new FormData();
-    formData.append("merchant_name", registrasiMerchant?.merchant_name);
-    formData.append("ktp_number", registrasiMerchant?.ktp_number);
-    formData.append("self_photo", registrasiMerchant?.self_photo);
-    formData.append("ktp_photo", registrasiMerchant?.ktp_photo);
-    formData.append("province", registrasiMerchant?.province);
-    formData.append("city", registrasiMerchant?.city);
-    formData.append("sub_district", registrasiMerchant?.sub_district);
-    formData.append("postal_code", registrasiMerchant?.postal_code);
-    formData.append("address", registrasiMerchant?.address);
-    formData.append("latitude", registrasiMerchant?.latitude);
-    formData.append("longitude", registrasiMerchant?.longitude);
-    formData.append("no_link_aja", registrasiMerchant?.no_link_aja);
+//   const handleSubmit = async (otp) => {
+//     setLoading(true);
+//     const token = sessionStorage.getItem("token");
+//     axios
+//       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`, {
+//         email,
+//         code: codes,
+//       })
+//       .then(() => {})
+//       .catch(() => {
+//         setLoading(false);
+//         setLoading(false);
+//         Swal.fire({
+//           title: "",
+//           icon: "error",
+//           text: "OTP Tidak sesuai",
+//           showConfirmButton: true,
+//           confirmButtonText: "Coba Lagi",
+//         });
+//       });
+//   };
 
-    axios
-      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`, {
-        email,
-        code: codes,
-      })
-      .then(() => {
-        axios
-          .post(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/registration`,
-            formData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          )
-          .then(() => {
-            console.log("token:", token);
-            console.log("API Response:", response.data);
+//   return (
+//     <div className="container mx-auto bg-white">
+//       <div className="grid justify-items-center w-full">
+//         <form className="justify-center pt-24 p-2 mt-5 w-full h-full">
+//           <h5 className="flex justify-center text-4xl text-primary font-bold">
+//             Verifikasi
+//           </h5>
+//           <h5 className="mt-4 flex justify-center text-center text-sm font-normal">
+//             Ketikan Kode Verifikasi Yang Telah Dikirimkan Ke Email Anda:
+//           </h5>
+//           <h5 className="flex justify-center text-sm font-normal">{email}</h5>
 
-            setLoading(false);
-          })
-          .catch((error) => {
-            setLoading(false);
-            if (error.response && error.response.status === 401) {
-              sessionStorage.clear();
-              router.push("/login");
-            }
-            if (error.response && error.response.status === 500) {
-              // Handle 500 Internal Server Error
-              const imageUrl = "/img/illustration/checklist.png";
-              SweetAlert({
-                title: "",
-                text: "Akun sudah terdaftar",
-                imageUrl,
-                imageWidth: 200,
-                imageHeight: 200,
-                imageAlt: "Custom image",
-                width: 350,
-              });
-            }
-          });
-        Swal.fire({
-          position: "bottom",
-          customClass: {
-            popup: "custom-swal",
-            icon: "custom-icon-swal",
-            title: "custom-title-swal",
-            confirmButton: "custom-confirm-button-swal",
-          },
-          icon: "success",
-          title: `<p class="w-auto pl-1 font-bold text-md">Pengajuan Formulir Berhasil Dikirim</p><p class="text-sm w-auto pl-1 font-light">Pendaftaran sedang di review oleh admin. Estimasi 3 x 24 jam</p>`,
-          html: `
-          <div class="absolute px-28 ml-4 top-0 mt-4">
-            <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-          </div>
-        `,
-          width: "375px",
-          showConfirmButton: true,
-          confirmButtonText: "Kembali",
-          confirmButtonColor: "#3FB648",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            router.push("/home");
-          }
-        });
-      })
-      .catch(() => {});
-  };
+//           <div className="mt-4 flex flex-row items-center px-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none">
+//             <input
+//               onChange={handleChange}
+//               value={codes}
+//               name="codes"
+//               type="number"
+//               id="codes"
+//               className="w-full p-0 py-4 bg-transparent focus:border-none text-center"
+//               placeholder="* * * * * *"
+//               required
+//             />
+//           </div>
 
-  return (
-    <div className="container mx-auto bg-white">
-      <div className="grid justify-items-center w-full">
-        <form className="justify-center pt-24 p-2 mt-5 w-full h-full">
-          <h5 className="flex justify-center text-4xl text-primary font-bold">
-            Verifikasi
-          </h5>
-          <h5 className="mt-4 flex justify-center text-center text-sm font-normal">
-            Ketikan Kode Verifikasi Yang Telah Dikirimkan Ke Email Anda:
-          </h5>
-          <h5 className="flex justify-center text-sm font-normal">{email}</h5>
+//           <div className="flex items-center flex-col justify-center pt-10">
+//             <div
+//               style={{
+//                 display: "flex",
+//                 gap: "5px",
+//                 justifyContent: "center",
+//               }}
+//               className="font-bold"
+//             >
+//               <Countdown date={countdownTime} renderer={renderer} />
+//             </div>
+//             <br />
+//             {/* <p className="text-sm text-center text-black font-light">
+//               {!showCountdown && !loading
+//                 ? "Tidak menerima OTP? Tunggu hingga waktu habis sebelum mengirim ulang."
+//                 : "Menunggu waktu habis sebelum mengirim ulang..."}
+//             </p> */}
+//             {!showCountdown && !loading && (
+//               <div
+//                 onClick={handleResend}
+//                 className="text-sm text-cyan-500 hover:underline cursor-pointer"
+//               >
+//                 Kirim Ulang Kode OTP
+//               </div>
+//             )}
+//           </div>
 
-          <div className="mt-4 flex flex-row items-center px-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none">
-            <input
-              onChange={handleChange}
-              value={codes}
-              name="codes"
-              type="number"
-              id="codes"
-              className="w-full p-0 py-4 bg-transparent focus:border-none text-center"
-              placeholder="* * * * * *"
-              required
-            />
-          </div>
-
-          <div className="flex items-center flex-col justify-center pt-10">
-            <div
-              style={{
-                display: "flex",
-                gap: "5px",
-                justifyContent: "center",
-              }}
-              className="font-bold"
-            >
-              <Countdown date={countdownTime} renderer={renderer} />
-            </div>
-            <br />
-            {/* <p className="text-sm text-center text-black font-light">
-              {!showCountdown && !loading
-                ? "Tidak menerima OTP? Tunggu hingga waktu habis sebelum mengirim ulang."
-                : "Menunggu waktu habis sebelum mengirim ulang..."}
-            </p> */}
-            {!showCountdown && !loading && (
-              <div
-                onClick={handleResend}
-                className="text-sm text-cyan-500 hover:underline cursor-pointer"
-              >
-                Kirim Ulang Kode OTP
-              </div>
-            )}
-          </div>
-
-          <div className="grid place-items-center mt-40">
-            <button
-              type="button"
-              onClick={() => handleSubmit()}
-              className="text-white w-full bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl py-3 text-center"
-            >
-              Kirim
-            </button>
-          </div>
-        </form>
-      </div>
-      {loading && <Loading />}
-    </div>
-  );
-}
+//           <div className="grid place-items-center mt-40">
+//             <button
+//               type="button"
+//               onClick={() => handleSubmit()}
+//               className="text-white w-full bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl py-3 text-center"
+//             >
+//               Kirim
+//             </button>
+//           </div>
+//         </form>
+//       </div>
+//       {loading && <Loading />}
+//     </div>
+//   );
+// }
 
 // function StepThree({ registrasiMerchant, setRegistrasiMerchant }) {
 //   const router = useRouter();
@@ -1305,4 +1309,4 @@ function OTPMerchant({ registrasiMerchant, setRegistrasiMerchant }) {
 //   );
 // }
 
-export { StepOne, StepTwo, OTPMerchant };
+export { StepOne, StepTwo };

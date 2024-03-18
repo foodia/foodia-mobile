@@ -5,8 +5,9 @@ import {
 } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import Loading from "../Loading";
 
 function StepOne({ Menu, setMenu }) {
   // const { stepForm } = props;
@@ -16,6 +17,11 @@ function StepOne({ Menu, setMenu }) {
   const [price, setPrice] = useState(Menu?.price ?? "");
   const [qty, setQty] = useState(Menu?.qty ?? "");
   const [images, setImages] = useState(Menu?.images ?? "");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  });
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -42,7 +48,7 @@ function StepOne({ Menu, setMenu }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevents the default form submission
-
+    setLoading(true);
     // Validation checks
     if (!name || !description || !price || !qty || !images) {
       window.alert("All fields are required");
@@ -135,10 +141,13 @@ function StepOne({ Menu, setMenu }) {
               timer: 2000,
             });
 
+            setLoading(false);
+
             setTimeout(() => {
               router.push("/merchant");
             }, 2000);
           } catch (error) {
+            setLoading(false);
             console.error("Error creating campaign:", error);
             if (error.response && error.response.status === 401) {
               router.push("/merchant");
@@ -158,6 +167,7 @@ function StepOne({ Menu, setMenu }) {
         window.alert("Please select an image file");
       }
     } catch (error) {
+      setLoading(false);
       console.log(error);
       console.error("Error creating campaign:", error);
       if (error.response && error.response.status === 401) {
@@ -262,6 +272,7 @@ function StepOne({ Menu, setMenu }) {
             Ajukan
           </button>
         </div>
+        {loading && <Loading />}
       </form>
     </>
   );
