@@ -203,7 +203,7 @@ const Detonator = () => {
           }
           console.error("Error fetching data:", error);
         });
-    } else if (status === "INPROGRESS") {
+    } else if (status === "OPEN,INPROGRESS") {
       axios
         .get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`
@@ -333,11 +333,11 @@ const Detonator = () => {
             <span>Pengajuan Campaign</span>
           </div>
           <div
-            className={`cursor-pointer text-center ${selectedStatus === "OPEN"
+            className={`cursor-pointer text-center ${selectedStatus === "OPEN,INPROGRESS"
               ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
               : "text-gray-500"
               }`}
-            onClick={() => handleFilterChange("OPEN")}
+            onClick={() => handleFilterChange("OPEN,INPROGRESS")}
           >
             <span>Campaign Berjalan</span>
           </div>

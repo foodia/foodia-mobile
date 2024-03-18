@@ -246,7 +246,7 @@ const Registrasi = () => {
               <input
                 value={phone}
                 onChange={handlePhoneChange}
-                type="text"
+                type="number"
                 id="phone"
                 className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="Nomor Hp"

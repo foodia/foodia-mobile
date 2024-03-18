@@ -60,7 +60,7 @@ const OTP = () => {
     } else {
       return (
         <>
-          <p>Kirim ulang OTP dalam waktu :</p>
+          <p className="text-sm text-gray-400">Tidak menerima email? Kirim ulang OTP dalam waktu:</p>
           <span>
             {minutes}:{seconds}
           </span>
