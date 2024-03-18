@@ -32,7 +32,7 @@ const FormMenu = () => {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  let stepComponent = "";
+  let stepComponent;
   let setTitle;
 
   if (step === "1") {
@@ -51,6 +51,9 @@ const FormMenu = () => {
       />
     );
     setTitle = "Lokasi Usaha";
+  } else {
+    stepComponent = <div>Invalid step value</div>;
+    setTitle = "Default Title";
   }
   // else if (step === "3") {
   //   stepComponent = (
@@ -68,10 +71,6 @@ const FormMenu = () => {
   //   );
   //   setTitle = "Tambah Menu Makan";
   // }
-  else {
-    stepComponent = <div>Invalid step value</div>;
-    setTitle = "Default Title";
-  }
 
   // Update local storage when formData changes
   const updateLocalStorage = (data) => {
@@ -92,7 +91,7 @@ const FormMenu = () => {
         </div>
         <div className="grid justify-items-center w-full">
           {/* Pass the updateLocalStorage function to each step component */}
-          {React.cloneElement(stepComponent, { updateLocalStorage })}
+          {stepComponent}
         </div>
         {loading && <Loading />}
       </div>
