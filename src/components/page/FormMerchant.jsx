@@ -32,7 +32,7 @@ const FormMenu = () => {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  let stepComponent;
+  let stepComponent = "";
   let setTitle;
 
   if (step === "1") {
