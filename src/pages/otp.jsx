@@ -60,7 +60,7 @@ const OTP = () => {
     } else {
       return (
         <>
-          <p>Input Sebelum :</p>
+          <p>Kirim ulang OTP dalam waktu :</p>
           <span>
             {minutes}:{seconds}
           </span>
