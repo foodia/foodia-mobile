@@ -52,18 +52,20 @@ const OTP = () => {
       return (
         <div
           onClick={handleResend}
-          className="text-sm text-cyan-500 hover:underline cursor-pointer"
+          className="text-xs text-gray-400 "
         >
-          Kirim Ulang Kode OTP
+          Tidak menerima email? Kirim ulang OTP dalam waktu:
+          <br />
+          <span className="text-blue-500 hover:underline cursor-pointer">
+            Kirim Ulang Kode OTP
+          </span>
         </div>
       );
     } else {
       return (
         <>
-          <p className="text-sm text-gray-400">Tidak menerima email? Kirim ulang OTP dalam waktu:</p>
-          <span>
-            {minutes}:{seconds}
-          </span>
+          <p className="text-xs text-gray-400">Tidak menerima email? Kirim ulang OTP dalam waktu: {minutes}:{seconds}</p>
+
         </>
       );
     }
