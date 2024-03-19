@@ -181,7 +181,7 @@ function StepOne({ Menu, setMenu }) {
           <div className="flex flex-row p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
             <IconFileDescription className="mt-3.5" />
             <textarea
-              maxLength={120}
+              // maxLength={256}
               onChange={handleDescriptionChange}
               value={description}
               type="text"
@@ -192,10 +192,10 @@ function StepOne({ Menu, setMenu }) {
             />
           </div>
           <p className="text-end text-sm text-gray-400">
-            <span className={description.length >= 120 && "text-red-500"}>
+            <span className={description.length > 256 && "text-red-500"}>
               {description.length}
             </span>
-            /120
+            /256
           </p>
         </div>
         <div className="mb-2">
@@ -233,11 +233,23 @@ function StepOne({ Menu, setMenu }) {
 
         <div className="grid gap-4 content-center">
           <button
-            disabled={!name || !description || !price || !qty || !images}
+            disabled={
+              !name ||
+              !description ||
+              !price ||
+              !qty ||
+              !images ||
+              description.length > 256
+            }
             onClick={() => handleSubmit()}
             type="submit"
             className={
-              !name || !description || !price || !qty || !images
+              !name ||
+              !description ||
+              !price ||
+              !qty ||
+              !images ||
+              description.length > 256
                 ? "bg-slate-400 text-white focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center"
                 : "text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center"
             }
