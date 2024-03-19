@@ -110,12 +110,12 @@ const CardFood = (props) => {
             />
             <div className={`text-left ml-2 w-56`}>
               <div className="flex justify-between pr-2">
-                <p className="text-primary font-bold text-md truncate capitalize">
+                <p className="text-primary font-bold text-md capitalize">
                   {title}
                 </p>
                 {status !== "approved" ? (
                   <div
-                    className={`flex justify-center items-center rounded-full  ${
+                    className={`flex justify-center items-center rounded-full h-5 ${
                       status === "waiting"
                         ? "bg-blue-600"
                         : status === "approved"
@@ -133,20 +133,15 @@ const CardFood = (props) => {
                   ""
                 )}
               </div>
-              <div className="inline-block">
-                <p className="font-medium text-[10px] italic text-black mr-2 line-clamp-2 ">
-                  -
-                </p>
-                <p className="font-medium text-[10px] italic text-black mr-2 line-clamp-2 ">
-                  {description}
-                </p>
-                {/* <div
+              <p className="font-medium text-[10px] italic text-black mr-2 truncate ">
+                {description}
+              </p>
+              {/* <div
                         className={`font-sans text-xs text-white rounded-lg w-14 h-10 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'approved' ? 'bg-green-500' : status == 'Rejected' ? 'bg-red-500' : ''
                             }`}
                     >
                         <p className="">{status}</p>
                     </div> */}
-              </div>
               <div className="flex justify-between w-full">
                 <p className="mb-1 text-primary font-sans font-semibold text-sm truncate">
                   {formatPrice(price)}
