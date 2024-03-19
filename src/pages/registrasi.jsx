@@ -136,14 +136,18 @@ const Registrasi = () => {
       })
       return;
     }
+    const capitalizeEachWord = (str) => {
+      return str.replace(/\b\w/g, (char) => char.toUpperCase());
+    };
 
     // Create an object with the form data
     const formData = {
-      fullname,
+      fullname: capitalizeEachWord(fullname),
       phone,
       email,
       password,
     };
+
     try {
       setLoading(true);
       // Assuming the API response includes data about the user or a token.
@@ -197,7 +201,7 @@ const Registrasi = () => {
       // Redirect to OTP page
     } catch (error) {
       // console.error('Registration failed:', error.response);
-      const ResError = error;
+      const ResError = error.response.data.error;
       console.log("ResError", ResError);
 
       Swal.fire({
@@ -210,15 +214,6 @@ const Registrasi = () => {
       setLoading(false);
       setRegistrasi(formData);
     }
-
-    // Save the form data to the registrasi state
-
-    // Clear form fields after submission
-    // setfullname('');
-    // setPhone('');
-    // setEmail('');
-    // setPassword('');
-    // setConfirmPassword('');
   };
 
   return (
@@ -251,7 +246,7 @@ const Registrasi = () => {
               <input
                 value={phone}
                 onChange={handlePhoneChange}
-                type="text"
+                type="number"
                 id="phone"
                 className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="Nomor Hp"

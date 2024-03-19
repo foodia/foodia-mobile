@@ -261,8 +261,6 @@ const EditMerchant = () => {
                         </div>
                     )}
 
-
-
                     <div className="flex flex-col items-center w-full">
                         <div className="p-2 w-full flex flex-col gap-3">
                             <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
@@ -308,7 +306,7 @@ const EditMerchant = () => {
                                 >
                                     {fotoSelfi ? (
                                         <img
-                                            src={URL.createObjectURL(fotoSelfi)}
+                                            src={URL.createObjectURL(fotlfi)}
                                             alt="Foto Selfi"
                                             className="w-full h-full rounded-lg object-cover"
                                         />

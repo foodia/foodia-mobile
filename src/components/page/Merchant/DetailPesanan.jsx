@@ -1,21 +1,17 @@
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
 import axios from "axios";
-
-import { IconCaretDown, IconMapPin } from "@tabler/icons-react";
-
-import { IconCaretUp } from "@tabler/icons-react";
-import Swal from "sweetalert2";
-import { useAppState } from "../UserContext";
-import Header from "@/components/Header";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { IconMapPin } from "@tabler/icons-react";
 import CardPesanan from "@/components/CardPesanan";
+import Header from "@/components/Header";
 import moment from "moment/moment";
 import Link from "next/link";
+import Swal from "sweetalert2";
+import { useAppState } from "../UserContext";
 
 const DetailPesanan = () => {
   const router = useRouter();
   const { state, setReportMechant } = useAppState();
-
   const id_order = router.query.id;
   const [loading, setLoading] = useState(true);
   const [showFullText, setShowFullText] = useState(false);
@@ -317,27 +313,6 @@ const DetailPesanan = () => {
               <p className={`font-normal mt-2 text-sm `}>
                 {dataApi?.campaign.description}
               </p>
-              {/* <p
-                className={`font-normal mt-2 text-sm ${
-                  showFullText ? "" : "ketProduk"
-                }`}
-              >
-                {dataApi?.campaign.description}
-              </p> */}
-              {/* <div className="hover:bg-gray-100 w-full grid place-content-center rounded-sm text-primary text-sm mt-2">
-                <button className="flex" onClick={toggleReadMore}>
-                  {showFullText ? (
-                    <>
-                      Selengkapnya <Ico size={20} />
-                    </>
-                  ) : (
-                    <>
-                      Lebih Sedikit
-                      <IconCaretDown size={20} />
-                    </>
-                  )}
-                </button>
-              </div> */}
             </div>
           </div>
           <div className=" h-20 bottom-0 my-0 p-2rounded-md mt-2 mx-2 grid grid-cols-2 gap-4 place-content-center">
@@ -360,7 +335,7 @@ const DetailPesanan = () => {
               calculateRemainingTime(dataApi?.campaign?.event_date) > 1 ? (
                 <div className="w-full col-span-2 flex flex-col gap-1">
                   <p className="text-xs text-red-500">
-                    *Pesanan dapat dilanjutkan pada tanggal pelaksanaan campaign
+                    Bukti pengiriman dapat dibuat saat tanggal pelaksanaan
                   </p>
                   <button
                     disabled

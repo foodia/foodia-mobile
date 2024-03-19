@@ -82,6 +82,8 @@ const DetailCamp = ({ data }) => {
 
         // Menghapus nilai input nominal jika pengguna mulai mengetik di dalamnya
         nominalInput.addEventListener('input', () => {
+          // Format input nominal dengan titik setiap 3 digit
+          nominalInput.value = formatNominal(nominalInput.value);
           donationRadios.forEach(radio => {
             radio.checked = false;
           });
@@ -145,10 +147,12 @@ const DetailCamp = ({ data }) => {
             </label>
             <div class="pl-5 gap-4 flex flex-row items-center mt-2 bg-white text-sm rounded-xl focus:ring-blue-500 ">
               <label class="w-5">Rp </label>
-              <input type="number" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
+
+              
+              <input type="text" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
             </div>
-            <p class="text-xs text-gray-500">Maksimum donasi ${data.donation_target - data.donation_collected
-        }</p>
+            <p class="text-xs text-primary font-semibold">Sisa maksimal donasi Rp. ${new Intl.NumberFormat('id-ID').format(data.donation_target - data.donation_collected)}</p>
+
           </div>
       </div>
     </div>
@@ -164,7 +168,7 @@ const DetailCamp = ({ data }) => {
         if (!radioValue) {
           const nominalValue = document.querySelector('input[name="nominal"]');
           if (nominalValue && nominalValue.value) {
-            handleSubmit(nominalValue.value);
+            handleSubmit(nominalValue.value.replace(/\./g, ''));
           } else {
             return "input nominal value";
           }
@@ -178,15 +182,20 @@ const DetailCamp = ({ data }) => {
         const nominalValue = document.querySelector('input[name="nominal"]');
 
         if (!radioValue && nominalValue && nominalValue.value) {
-          handleSubmit(nominalValue.value);
+          handleSubmit(nominalValue.value.replace(/\./g, ''));
         } else if (radioValue) {
           handleSubmit(radioValue.value);
         } else {
-          Swal.fire("Error", "Pilih atau isi nominal donasi.", "error");
+          Swal.fire("Melewati Target Donasi", "Nominal donasi tidak dapat melebihi target donasi.", "error");
         }
       }
     });
   };
+
+  function formatNominal(value) {
+    value = value.replace(/[.,]/g, '');
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
 
 
 
@@ -374,7 +383,7 @@ const DetailCamp = ({ data }) => {
                   />
                 </div>
                 <div className="text-left place-items-start">
-                  <div className="mb-1 text-primary">Merchant</div>
+                  <div className="mb-1 text-primary">Lacak Merchant</div>
                   <div className="-mt-1 font-sans text-xs text-gray-500">
                     {data.orders ? data.orders.length : 0} Verified Merchants{" "}
                   </div>

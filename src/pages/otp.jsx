@@ -60,7 +60,7 @@ const OTP = () => {
     } else {
       return (
         <>
-          <p>Input Sebelum :</p>
+          <p className="text-sm text-gray-400">Tidak menerima email? Kirim ulang OTP dalam waktu:</p>
           <span>
             {minutes}:{seconds}
           </span>
@@ -170,7 +170,6 @@ const OTP = () => {
         }
       });
     } catch (error) {
-      console.log("error", error.response.data.error[0].field);
       if (error.response.data.error[0].field === "email") {
         Swal.fire({
           icon: "error",
