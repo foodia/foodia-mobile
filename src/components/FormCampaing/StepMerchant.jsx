@@ -4,6 +4,7 @@ import {
   IconCircleX,
   IconCurrentLocation,
   IconFile,
+  IconInfoCircle,
   IconMailbox,
   IconMap,
   IconNote,
@@ -59,15 +60,15 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
 
   const handlektp_numberChange = async (event) => {
     const value = event.target.value;
-    if (value.length > 16) {
-      await Toast.fire({
-        icon: "error",
-        title: "Nomer KTP maksimal 16 angka",
-        iconColor: "bg-black",
-      });
-    } else {
-      setktp_number(value);
-    }
+    // if (value.length > 16) {
+    //   await Toast.fire({
+    //     icon: "error",
+    //     title: "Nomer KTP maksimal 16 angka",
+    //     iconColor: "bg-black",
+    //   });
+    // } else {
+    setktp_number(value);
+    // }
   };
   const handleself_photoChange = (event) => {
     setself_photo(event.target.files[0]);
@@ -113,12 +114,28 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
     console.log("Step1:", registrasiMerchant);
   }, [registrasiMerchant]);
 
-  const PHONE_REGEX = /^(\+62|62|0)8[1-9][0-9]{4,12}$/;
+  const NAME_REGEX = /^[^\r\n]{1,64}$/;
+  const PHONE_REGEX = /^(\+62|62|0)8[1-9][0-9]{7,10}$/;
+  const KTP_REGEX = /^[1-9][0-9]{15,15}$/;
+  const [validName, setValidName] = useState(false);
   const [validPhone, setValidPhone] = useState(false);
+  const [validKTP, setValidKTP] = useState(false);
+
+  useEffect(() => {
+    setValidName(NAME_REGEX.test(merchant_name));
+  }, [merchant_name]);
 
   useEffect(() => {
     setValidPhone(PHONE_REGEX.test(no_link_aja));
   }, [no_link_aja]);
+
+  useEffect(() => {
+    setValidPhone(PHONE_REGEX.test(no_link_aja));
+  }, [no_link_aja]);
+
+  useEffect(() => {
+    setValidKTP(KTP_REGEX.test(ktp_number));
+  }, [ktp_number]);
 
   return (
     <>
@@ -130,22 +147,10 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
           iconName={"User"}
         />
         <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-gray-300`}
-          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-gray-300`}
-          iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-          iconName={"BuildingStore"}
-        />
-        <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-gray-300`}
-          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-gray-300`}
-          iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-          iconName={"Id"}
-        />
-        <RoutStep
           liCss={`flex items-center`}
           divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-9 lg:w-9 shrink-0 bg-gray-300`}
           iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-          iconName={"Key"}
+          iconName={"BuildingStore"}
         />
       </ol>
       <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
@@ -159,48 +164,67 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
         </div>
       </div>
       <div className="p-2 w-full space-y-3 px-7">
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-          <IconUser />
-          <input
-            value={merchant_name}
-            onChange={handlemerchant_nameChange}
-            type="text"
-            id="name"
-            className="ml-2 w-full p-0 py-4 text-black pl-1 bg-transparent focus:border-none outline-none"
-            placeholder="Nama Toko"
-            required
-          />
+        <div>
+          <div className="flex flex-row p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none pr-2">
+            <IconUser className="mt-3.5" />
+            <textarea
+              maxLength={120}
+              onChange={handlemerchant_nameChange}
+              value={merchant_name}
+              type="text"
+              className="ml-2 w-full text-black min-h-[95px] p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
+              placeholder="Nama Toko"
+              required
+              style={{ resize: "none" }}
+            />
+            {/* <IconCircleCheck
+              className={validName ? "text-green-600" : "hidden"}
+            />
+            <IconCircleX
+              className={
+                !merchant_name || validName ? "hidden" : "text-red-600"
+              }
+            /> */}
+          </div>
+          <p className="text-gray-400 text-end text-xs">
+            <span className={merchant_name.length > 64 && "text-red-400"}>
+              {merchant_name.length}
+            </span>
+            /64
+          </p>
         </div>
-        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none pr-2">
-          <Image src={LinkAja} width={23} />
-          <input
-            value={no_link_aja}
-            onChange={handleNo_link_ajaChange}
-            type="number"
-            id="email"
-            className="ml-2 w-full p-0 py-4 pl-1 text-black bg-transparent focus:border-none  outline-none"
-            placeholder="Number Link Aja"
-            required
-          />
-          <IconCircleCheck
-            className={validPhone ? "text-green-600" : "hidden"}
-          />
-          <IconCircleX
-            className={!no_link_aja || validPhone ? "hidden" : "text-red-600"}
-          />
+        <div>
+          <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none pr-2">
+            <Image src={LinkAja} width={23} />
+            <input
+              value={no_link_aja}
+              onChange={handleNo_link_ajaChange}
+              type="number"
+              id="number"
+              className="ml-2 w-full p-0 py-4 pl-1 text-black bg-transparent focus:border-none  outline-none"
+              placeholder="Number Link Aja"
+              required
+            />
+            <IconCircleCheck
+              className={validPhone ? "text-green-600" : "hidden"}
+            />
+            <IconCircleX
+              className={!no_link_aja || validPhone ? "hidden" : "text-red-600"}
+            />
+          </div>
+          <p
+            className={
+              no_link_aja && !validPhone
+                ? "instructions italic text-[10px] flex items-center"
+                : "hidden"
+            }
+          >
+            <IconInfoCircle size={15} className="mr-1 text-red-600" />
+            <span className="text-red-600">
+              Diawali (08), Minimal 10 dan maksimal 13 angka.
+            </span>
+          </p>
         </div>
-        {/* <p
-          className={
-            no_link_aja && !validPhone
-              ? "instructions italic text-xs flex items-center"
-              : "hidden"
-          }
-        >
-          <IconInfoCircle className="mr-1 text-red-600" />
-          <span className="text-red-600">
-            Diawali (08), Minimal 7 dan maksimal 15 angka.
-          </span>
-        </p> */}
         <div className="mb-2">
           <div className="flex items-start justify-center w-full">
             <label className="flex flex-col items-start justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-400 hover:bg-gray-100">
@@ -260,18 +284,39 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
           </div>
         </div>
 
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-          <IconFile />
-          <input
-            value={ktp_number}
-            onChange={handlektp_numberChange}
-            type="number"
-            id="email"
-            className="ml-2 w-full p-0 py-4 pl-1 text-black outline-nones bg-transparent focus:border-none"
-            placeholder="No. KTP"
-            required
-          />
+        <div>
+          <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none pr-2">
+            <IconFile />
+            <input
+              value={ktp_number}
+              onChange={handlektp_numberChange}
+              type="number"
+              id="email"
+              className="ml-2 w-full p-0 py-4 pl-1 text-black outline-nones bg-transparent focus:border-none"
+              placeholder="No. KTP"
+              required
+            />
+            <IconCircleCheck
+              className={validKTP ? "text-green-600" : "hidden"}
+            />
+            <IconCircleX
+              className={!ktp_number || validKTP ? "hidden" : "text-red-600"}
+            />
+          </div>
+          <p
+            className={
+              ktp_number && !validKTP
+                ? "instructions italic text-[10px] flex items-center"
+                : "hidden"
+            }
+          >
+            <IconInfoCircle size={15} className="mr-1 text-red-600" />
+            <span className="text-red-600">
+              Minimal 16 dan maksimal 16 angka.
+            </span>
+          </p>
         </div>
+
         <div className="grid gap-4 content-center">
           <button
             disabled={
@@ -279,7 +324,10 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
               !ktp_number ||
               !self_photo ||
               !ktp_photo ||
-              !validPhone
+              !validPhone ||
+              !validKTP ||
+              !validName ||
+              merchant_name.length > 64
             }
             onClick={() => handleSubmit()}
             type="submit"
@@ -288,7 +336,10 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
               !ktp_number ||
               !self_photo ||
               !ktp_photo ||
-              !validPhone
+              !validPhone ||
+              !validKTP ||
+              !validName ||
+              merchant_name.length > 64
                 ? "text-white bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-xl w-full sm:w-auto px-5 py-2.5 text-center"
                 : "text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-xl w-full sm:w-auto px-5 py-2.5 text-center"
             }
@@ -321,11 +372,17 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
   );
   const [loading, setLoading] = useState(false);
   const [tracking, setTracking] = useState(true);
-  console.log("reg", registrasiMerchant);
 
   const handleDataFromMap = (receivedLocationInfo) => {
     setLocationInfo(receivedLocationInfo);
   };
+
+  useEffect(() => {
+    if (tracking) {
+      handleDataFromMap();
+    }
+  });
+
   const getCurrentLocation = () => {
     setTracking((prevTracking) => !prevTracking);
   };
@@ -487,38 +544,39 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
           iconName={"User"}
         />
         <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-primary`}
-          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
+          liCss={`flex items-center`}
+          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
           iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
           iconName={"BuildingStore"}
         />
-        <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-primary`}
-          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
-          iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-          iconName={"Id"}
-        />
-        <RoutStep
-          liCss={`flex items-center`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-9 lg:w-9 shrink-0 bg-gray-300`}
-          iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-          iconName={"Key"}
-        />
       </ol>
       <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
-      <div className="p-2 mt-2 w-full px-10">
+      <div className="py-2 mt-2 w-full px-5 flex flex-row justify-between">
         <button
           onClick={getCurrentLocation}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 m-1"
+          className={
+            tracking
+              ? "bg-gray-50 border border-primary text-gray-900 text-sm rounded-xl block w-[60%] p-2.5 m-1 outline-none hover:bg-gray-200"
+              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl block w-[60%] p-2.5 m-1 outline-none hover:bg-gray-200"
+          }
         >
-          {tracking ? (
-            <div className="flex items-center justify-center gap-1 p-0">
-              <IconCurrentLocation color="green" />
-              <p>Gunakan Lokasi Saat Ini</p>
-            </div>
-          ) : (
-            <p>Custom Location</p>
-          )}
+          <div className="flex items-center justify-center gap-1 p-0">
+            {/* <IconCurrentLocation color="green" /> */}
+            <p>Gunakan Lokasi Saat Ini</p>
+          </div>
+        </button>
+        <button
+          onClick={getCurrentLocation}
+          className={
+            !tracking
+              ? "bg-gray-50 border border-primary text-gray-900 text-sm rounded-xl block w-[40%] p-2.5 m-1 outline-none hover:bg-gray-200"
+              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl block w-[40%] p-2.5 m-1 outline-none hover:bg-gray-200"
+          }
+        >
+          <div className="flex items-center justify-center gap-1 p-0">
+            {/* <IconCurrentLocation color="green" /> */}
+            <p>Pilih Lokasi</p>
+          </div>
         </button>
       </div>
       <div className="w-full space-y-3">
@@ -530,7 +588,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
             <IconMap />
             <textarea
               // onChange={(e) => setLocation(e.target.value)}
-              disabled
+              // disabled
               value={address}
               type="text"
               className="ml-2 w-full text-black px-1 p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"

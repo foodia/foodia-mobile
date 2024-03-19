@@ -76,15 +76,10 @@ const syarat = () => {
                 onChange={handleCheckboxChange}
                 style={{ transform: "scale(1.8)" }}
               />
-              <div>
-                <p className="text-left text-sm tracking-wide font-semibold mx-4">
-                  Saya Telah Membaca dan Setuju
-                </p>
-                <p className="text-left text-sm tracking-wide font-semibold mx-4">
-                  <span className="text-primary"> Syarat & Ketentuan </span> dan
-                  <span className="text-primary"> Kebijakan Privasi</span>
-                </p>
-              </div>
+              <p className="text-left text-sm tracking-wide font-semibold mx-4">
+                Saya Telah Membaca dan Setuju Syarat & Ketentuan dan Kebijakan
+                Privasi
+              </p>
             </div>
             <button
               disabled={!isChecked}
