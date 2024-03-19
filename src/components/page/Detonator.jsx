@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import CardCampaign from "../CardCampaign";
+import Error401 from "../error401";
+
 
 const Detonator = () => {
   const router = useRouter();
@@ -131,10 +133,11 @@ const Detonator = () => {
           console.log("data", cekData);
         } catch (error) {
           if (error.response && error.response.status === 401) {
-            sessionStorage.clear();
-            localStorage.removeItem("cart");
-            localStorage.removeItem("formData");
-            router.push("/login");
+            Error401(error, router);
+            // sessionStorage.clear();
+            // localStorage.removeItem("cart");
+            // localStorage.removeItem("formData");
+            // router.push("/login");
 
           }
         }
@@ -165,6 +168,7 @@ const Detonator = () => {
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
+          Error401(error);
           sessionStorage.clear();
           localStorage.removeItem("cart");
           localStorage.removeItem("formData");
@@ -179,13 +183,18 @@ const Detonator = () => {
   const handleFilterChange = (status) => {
     let filtered = [];
     const id = sessionStorage.getItem("id");
+    const token = sessionStorage.getItem("token");
 
     setLoading(true);
     setSelectedStatus(status);
     if (status === "DRAFT") {
       axios
         .get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
         )
         .then((response) => {
           setDataApi(response.data.body);
@@ -194,6 +203,7 @@ const Detonator = () => {
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
+            Error401(error);
             sessionStorage.clear();
             localStorage.removeItem("cart");
             localStorage.removeItem("formData");
@@ -204,10 +214,14 @@ const Detonator = () => {
           console.error("Error fetching data:", error);
         });
     } else if (status === "OPEN,INPROGRESS") {
-      axios
-        .get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`
-        )
+      axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token + 'dwwdw'}`,
+          }
+        }
+      )
         .then((response) => {
           setDataApi(response.data.body);
           setFilteredData(response.data.body);
@@ -215,6 +229,7 @@ const Detonator = () => {
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
+            Error401(error);
             sessionStorage.clear();
             localStorage.removeItem("cart");
             localStorage.removeItem("formData");
@@ -226,7 +241,11 @@ const Detonator = () => {
     } else if (status === "FINISHED") {
       axios
         .get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
         )
         .then((response) => {
           setDataApi(response.data.body);
@@ -235,10 +254,11 @@ const Detonator = () => {
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
-            sessionStorage.clear();
-            localStorage.removeItem("cart");
-            localStorage.removeItem("formData");
-            router.push("/login");
+            Error401(error);
+            // sessionStorage.clear();
+            // localStorage.removeItem("cart");
+            // localStorage.removeItem("formData");
+            // router.push("/login");
 
           }
           console.error("Error fetching data:", error);
