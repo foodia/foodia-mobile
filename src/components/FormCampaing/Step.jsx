@@ -30,6 +30,7 @@ import Swal from "sweetalert2";
 import Market from "../../../public/img/illustration/market.png";
 import CardListMerchan from "../page/Detonator/CardListMerchan";
 import AddFoodCamp from "./AddFoodCamp";
+import Error401 from "../error401";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
@@ -934,7 +935,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
           setLoading(false);
           console.error("Error creating campaign:", error);
           if (error.response && error.response.status === 401) {
-            router.push("/detonator");
+            Error401(error, router);
           } else {
             Swal.fire({
               icon: "error",
@@ -953,7 +954,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
       if (error.response && error.response.status === 401) {
         localStorage.removeItem("cart");
         localStorage.removeItem("formData");
-        router.push("/detonator");
+        Error401(error, router);
       } else {
         Swal.fire({
           icon: "error",
@@ -1186,7 +1187,7 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
 
       .catch((error) => {
         if (error.response && error.response.status === 401) {
-          router.push("/detonator");
+          Error401(error, router);
         }
         console.log(error);
       });
@@ -1325,7 +1326,6 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
 
         const approvedMerchants = response.data.body.filter(
           (merchant) => {
-            // Filter merchant yang memiliki status approved dan memiliki setidaknya satu produk yang disetujui
             return merchant.status === "approved" && merchant.products.some(product => product.status === "approved");
           }
         );
@@ -1335,7 +1335,7 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         // setLoading(false);
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          router.push("/detonator");
+          Error401(error, router);
         }
         console.log("error =", error);
       }
