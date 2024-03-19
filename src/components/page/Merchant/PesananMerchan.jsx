@@ -173,28 +173,31 @@ const PesananMerchan = () => {
         </div>
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "review"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "review"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("review")}
           >
             <span>Pesanan</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "diproses"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("diproses")}
           >
             <span>Berlangsung</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "selesai"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("selesai")}
           >
             <span>History</span>
@@ -216,8 +219,8 @@ const PesananMerchan = () => {
                 {selectedStatus === "review"
                   ? "Tidak Ada Pesanan"
                   : selectedStatus === "diproses"
-                    ? "Tidak Ada Pesanan Berlangsung"
-                    : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
+                  ? "Tidak Ada Pesanan Berlangsung"
+                  : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
               </p>
             ) : (
               filteredData.map((data) => (
@@ -235,9 +238,9 @@ const PesananMerchan = () => {
                   created_at={moment(data.campaign?.created_at).format(
                     "DD MMM YYYY hh:mm"
                   )}
-                  date={moment(data.campaign?.event_date).format(
-                    "DD MMM YYYY hh:mm"
-                  )}
+                  date={`${moment(data.campaign?.event_date).format(
+                    "DD MMM YYYY"
+                  )} ${data.campaign?.event_time}`}
                   qty={data.qty}
                   price={data.merchant_product.price}
                   status={data.order_status}

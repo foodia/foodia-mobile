@@ -165,7 +165,7 @@ const DetailPesanan = () => {
     }
   };
   const handleBuktiPengiriman = async (e) => {
-    e.preventDefault();
+    setLoading(true);
     // setReportMechant(dataApi);
     try {
       // Menggunakan setReportMechant untuk menyimpan data
@@ -173,7 +173,9 @@ const DetailPesanan = () => {
 
       // Arahkan pengguna ke '/merchant/report'
       router.push("/merchant/report");
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Gagal memasukkan data:", error);
       console.log("Tidak berhasil dimasukan");
     }
@@ -229,9 +231,9 @@ const DetailPesanan = () => {
             created_at={moment(dataApi?.campaign?.created_at).format(
               "DD MMM YYYY hh:mm"
             )}
-            date={moment(dataApi?.campaign?.event_date).format(
-              "DD MMM YYYY hh:mm"
-            )}
+            date={`${moment(dataApi?.campaign?.event_date).format(
+              "DD MMM YYYY"
+            )} ${dataApi?.campaign?.event_time}`}
             qty={dataApi?.qty}
             price={dataApi?.merchant_product.price}
             total_amount={dataApi?.total_amount}
@@ -273,9 +275,9 @@ const DetailPesanan = () => {
             <div className="justify-between grid grid-cols-2 gap-2 py-4">
               <p className="text-sm text-gray-400">Tanggal Pelaksanaan</p>
               <p className="text-right text-sm">
-                {moment(dataApi?.campaign?.event_date).format(
-                  "DD MMM YYYY hh:mm"
-                )}
+                {`${moment(dataApi?.campaign?.event_date).format(
+                  "DD MMM YYYY"
+                )} ${dataApi?.campaign?.event_time}`}
               </p>
             </div>
             <hr className="h-px bg-gray-200 border-0" />

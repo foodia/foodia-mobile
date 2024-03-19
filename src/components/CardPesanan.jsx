@@ -20,8 +20,6 @@ const CardPesanan = (props) => {
     setLoading,
   } = props;
 
-  console.log(total_amount);
-
   const formatPrice = (price) => {
     const formatter = new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -89,7 +87,6 @@ const CardPesanan = (props) => {
         // Unauthorized error (e.g., token expired)
         sessionStorage.clear();
         router.push("/login/merchant");
-
       }
     }
   };
@@ -181,16 +178,17 @@ const CardPesanan = (props) => {
                 </span>
               </div>
               <div
-                className={`flex justify-center items-center rounded-2xl w-auto h-5 px-2 py-0 ${status === "review"
-                  ? "bg-blue-600"
-                  : status === "diproses"
+                className={`flex justify-center items-center rounded-2xl w-auto h-5 px-2 py-0 ${
+                  status === "review"
+                    ? "bg-blue-600"
+                    : status === "diproses"
                     ? "bg-green-500"
                     : status === "canceled"
-                      ? "bg-red-500"
-                      : status === "selesai"
-                        ? "bg-blue-900"
-                        : ""
-                  }`}
+                    ? "bg-red-500"
+                    : status === "selesai"
+                    ? "bg-blue-900"
+                    : ""
+                }`}
               >
                 <p className="text-gray-100 font-medium text-[10px]">
                   {getStatusIcon()}
