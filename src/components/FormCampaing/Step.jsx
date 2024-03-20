@@ -1228,7 +1228,7 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
     }).format(amount);
   };
 
-  console.log('groupedFoods', groupedFoods);
+  // console.log('groupedFoods', groupedFoods);
   // Calculate total price and total quantity
   const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(0);
   const jumlahMakanan = cart.reduce((acc, item) => acc + item.quantity, 0);
