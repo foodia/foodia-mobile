@@ -16,14 +16,16 @@ const penarikan = (penarikan) => {
   const [rekening, setRekening] = useState("");
   const [method, setMethod] = useState("");
   const parsedAmount = parseInt(amount.replace(/\./g, ""), 10);
-  const eWalletFee = parsedAmount * (1.5 / 100);
+  const eWalletFee = 1015;
   const bankFee = 4000;
+  const maxWitdrawalEwallet = `${(balance / eWalletFee).toFixed(3)}`;
+  const maxWitdrawalBank = `${balance - bankFee}`;
 
   useEffect(() => {
     const id = sessionStorage.getItem("id");
     const token = sessionStorage.getItem("token");
 
-    const ressponse = axios
+    axios
       .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -49,6 +51,7 @@ const penarikan = (penarikan) => {
 
   const handleMethodChange = (event) => {
     setMethod(event.target.value);
+    setamount("");
   };
 
   const handlerekeningChange = (event) => {
@@ -215,7 +218,7 @@ const penarikan = (penarikan) => {
           </div>
         </div>
         <div className="mx-4 mt-6">
-          <div className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10 flex gap-2 items-center pl-4">
+          <div className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10 flex gap-2 items-center pl-4 pr-4">
             <p className="">Rp</p>
             <InputForm
               cssInput="bg-gray-50 border text-gray-900 text-sm w-full outline-none border-none h-full rounded-lg"
@@ -226,18 +229,52 @@ const penarikan = (penarikan) => {
               onChange={handlePriceChange}
               placeholder="Nominal Penarikan"
             />
+            <button
+              hidden={!method}
+              onClick={() =>
+                method === "BANK"
+                  ? setamount(
+                      maxWitdrawalBank.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                    )
+                  : setamount(
+                      maxWitdrawalEwallet.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                    )
+              }
+              title="Tarik Maksimal Penarikan"
+              className="text-primary"
+            >
+              Max.
+            </button>
           </div>
 
           <div className="flex justify-between">
-            {parsedAmount + bankFee > balance ||
-            parsedAmount + eWalletFee > balance ? (
+            {(method === "BANK" && parsedAmount + bankFee > balance) ||
+            (method === "E_WALLET" && parsedAmount + eWalletFee > balance) ? (
               <p className="text-xs text-red-500 font-semibold mt-2">
                 Saldo anda tidak mencukupi
               </p>
             ) : (
-              <p className="text-xs text-blue-800 font-semibold mt-2">
-                Minimal Penarikan Rp 10.000
-              </p>
+              <div className="flex flex-row items-center text-center justify-between w-full">
+                <p className="text-xs text-blue-800 font-semibold mt-2">
+                  Minimal Penarikan Rp 10.000
+                </p>
+                {method === "BANK" ? (
+                  <p className="text-xs text-blue-800 font-semibold mt-2">
+                    Max Penarikan {formatPrice(maxWitdrawalBank)}
+                  </p>
+                ) : method === "E_WALLET" ? (
+                  <p className="text-xs text-blue-800 font-semibold mt-2">
+                    Max Penarikan{" "}
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 3,
+                    }).format(maxWitdrawalEwallet)}
+                  </p>
+                ) : (
+                  ""
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -297,8 +334,12 @@ const penarikan = (penarikan) => {
 
               <p className="text-xs text-blue-800 font-semibold mt-2">
                 {method === "BANK"
-                  ? "Biaya Transaksi Rp 4.000"
-                  : "Biaya Transaksi 1,5% dari jumlah penarikan"}
+                  ? `Biaya Transaksi ${formatPrice(
+                      bankFee
+                    )} dari jumlah penarikan`
+                  : `Biaya Transaksi ${formatPrice(
+                      eWalletFee
+                    )} dari jumlah penarikan`}
               </p>
 
               {method === "BANK" && (

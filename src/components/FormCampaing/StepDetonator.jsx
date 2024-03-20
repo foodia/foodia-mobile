@@ -176,8 +176,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
     } catch (error) {
       setLoading(false);
       if (error.response && error.response.status === 401) {
-        sessionStorage.clear();
-        router.push("/login");
+        Error401(error, router);
       }
       if (error.response && error.response.status === 500) {
         // Handle 500 Internal Server Error
@@ -470,8 +469,7 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
       router.push("/registrasi/detonator?step=3");
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        sessionStorage.clear();
-        router.push("/login");
+        Error401(error, router);
       }
       if (error.response && error.response.status === 500) {
         // Handle 500 Internal Server Error
@@ -677,8 +675,7 @@ function StepThree({ registrasiDetonator, setRegistrasiDetonator }) {
       router.push("/home");
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        sessionStorage.clear();
-        router.push("/login");
+        Error401(error, router);
       }
       console.error("Error handling submit:", error);
       const imageUrl = "/img/illustration/checklist.png";

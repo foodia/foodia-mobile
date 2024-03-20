@@ -30,6 +30,7 @@ import Swal from "sweetalert2";
 import Market from "../../../public/img/illustration/market.png";
 import CardListMerchan from "../page/Detonator/CardListMerchan";
 import AddFoodCamp from "./AddFoodCamp";
+import Error401 from "../error401";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
@@ -74,7 +75,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   const [Description, setDescription] = useState(() => {
     const storedFormData = localStorage.getItem("formData");
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-    return parsedFormData.Description || "";
+    return parsedFormData.Description || ""; Description
   });
 
   // const [ImageCamp, setImageCamp] = useState(() => {
@@ -222,15 +223,15 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
     if (emptyFields.length > 0) {
       return;
     }
-    if (Description.length > 120) {
-      Toast.fire({
-        icon: 'error',
-        title: 'Deskripsi maksimal 120 karakter mohon periksa kembali',
-        iconColor: 'bg-black',
-        timer: 2000
-      });
-      return;
-    }
+    // if (Description.length > 120) {
+    //   Toast.fire({
+    //     icon: 'error',
+    //     title: 'Deskripsi maksimal 120 karakter mohon periksa kembali',
+    //     iconColor: 'bg-black',
+    //     timer: 2000
+    //   });
+    //   return;
+    // }
     if (!uploadedFile) {
       Toast.fire({
         icon: 'error',
@@ -420,18 +421,18 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
         </div> */}
 
         <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-
           <IconFileDescription />
-          <input
+          <textarea
             onChange={handleDescriptionChange}
             value={Description}
-            type="text"
             className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
             placeholder="Description"
             required
             name="Description"
+            rows={2} // Atur jumlah baris sesuai kebutuhan
           />
         </div>
+
 
         {/* <div className="mb-2 px-4">
           <label
@@ -934,7 +935,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
           setLoading(false);
           console.error("Error creating campaign:", error);
           if (error.response && error.response.status === 401) {
-            router.push("/detonator");
+            Error401(error, router);
           } else {
             Swal.fire({
               icon: "error",
@@ -953,7 +954,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
       if (error.response && error.response.status === 401) {
         localStorage.removeItem("cart");
         localStorage.removeItem("formData");
-        router.push("/detonator");
+        Error401(error, router);
       } else {
         Swal.fire({
           icon: "error",
@@ -1186,7 +1187,7 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
 
       .catch((error) => {
         if (error.response && error.response.status === 401) {
-          router.push("/detonator");
+          Error401(error, router);
         }
         console.log(error);
       });
@@ -1315,7 +1316,7 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         }
 
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/filter`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/filter?per_page=100000`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -1325,7 +1326,6 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
 
         const approvedMerchants = response.data.body.filter(
           (merchant) => {
-            // Filter merchant yang memiliki status approved dan memiliki setidaknya satu produk yang disetujui
             return merchant.status === "approved" && merchant.products.some(product => product.status === "approved");
           }
         );
@@ -1335,7 +1335,7 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         // setLoading(false);
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          router.push("/detonator");
+          Error401(error, router);
         }
         console.log("error =", error);
       }
