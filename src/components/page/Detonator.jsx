@@ -168,7 +168,7 @@ const Detonator = () => {
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
-          Error401(error);
+          Error401(error, router);
           sessionStorage.clear();
           localStorage.removeItem("cart");
           localStorage.removeItem("formData");
@@ -203,7 +203,7 @@ const Detonator = () => {
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
-            Error401(error);
+            Error401(error, router);
             sessionStorage.clear();
             localStorage.removeItem("cart");
             localStorage.removeItem("formData");
@@ -229,7 +229,7 @@ const Detonator = () => {
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
-            Error401(error);
+            Error401(error, router);
             sessionStorage.clear();
             localStorage.removeItem("cart");
             localStorage.removeItem("formData");
@@ -254,7 +254,7 @@ const Detonator = () => {
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
-            Error401(error);
+            Error401(error, router);
             // sessionStorage.clear();
             // localStorage.removeItem("cart");
             // localStorage.removeItem("formData");
