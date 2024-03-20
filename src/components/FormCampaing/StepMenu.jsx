@@ -202,7 +202,7 @@ function StepOne({ Menu, setMenu }) {
           <div className="flex items-center justify-center w-full">
             <label
               htmlFor="images"
-              className="flex flex-col justify-center px-2 w-full h-32 border-2 border-black border-dashed rounded-lg cursor-pointer bg-gray-200 hover:bg-gray-100"
+              className="flex flex-col justify-center w-full h-32 border-2 border-black border-dashed rounded-lg cursor-pointer bg-gray-200 hover:bg-gray-100"
             >
               {images ? (
                 <img

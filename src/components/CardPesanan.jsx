@@ -142,13 +142,13 @@ const CardPesanan = (props) => {
   const Card = () => {
     return (
       <div className="flex justify-between items-center w-80">
-        <div className="flex items-center p-1">
+        <div className="flex items-center w-full p-1">
           <img
             src={img}
             className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
             alt=""
           />
-          <div className={`text-left ml-2`}>
+          <div className="text-left ml-2 w-full">
             <div className="flex justify-between">
               <p className="text-primary font-bold text-md capitalize">
                 {title}
