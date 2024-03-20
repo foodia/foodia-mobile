@@ -56,6 +56,7 @@ const DetailCamp = ({ data }) => {
   });
 
   const showSweetAlert = async () => {
+    let nominal;
     const swal = Swal.mixin({
       customClass: {
         popup: "custom-swal",
@@ -83,11 +84,24 @@ const DetailCamp = ({ data }) => {
           donationRadios.forEach((radio) => {
             radio.checked = false;
           });
+          nominal = parseInt(nominalInput.value.replace(/\./g, ""));
+          if (
+            parseInt(nominalInput.value.replace(/\./g, "")) +
+              data.donation_collected >
+            data.donation_target
+          ) {
+            Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
+            Swal.disableButtons();
+          } else {
+            Swal.getConfirmButton().style.backgroundColor = "#3FB648";
+            Swal.enableButtons();
+          }
+
+          console.log("asdada", nominal);
         });
       },
     });
-
-    await swal
+    swal
       .fire({
         position: "bottom",
         html: `
@@ -98,26 +112,30 @@ const DetailCamp = ({ data }) => {
       <p class="text-md font-bold">Pilih Nominal Donasi</p>
       <div class="flex flex-col space-y-2 pt-5">
       <label>
-      <input type="radio" name="donation" id="donation_20000" class="hidden peer" value="20000"  ${
-        20000 + data.donation_collected > data.donation_target ? "disabled" : ""
-      }/>
-      <div class=" ${
-        data.donation_collected + 20000 > data.donation_target
-          ? "cursor-not-allowed bg-gray-300"
-          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-      }   py-2 px-4 rounded-lg font-semibold">Rp 20.000</div>
-  </label>
-  <label>
-      <input  type="radio" name="donation" id="donation_50000" class="hidden peer" value="50000"  ${
-        50000 + data.donation_collected > data.donation_target ? "disabled" : ""
-      }/>
-      <div class=" ${
-        data.donation_collected + 50000 > data.donation_target
-          ? "cursor-not-allowed bg-gray-300"
-          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-      }   py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
-  </label>
-  <label>
+        <input type="radio" name="donation" id="donation_20000" class="hidden peer" value="20000"  ${
+          20000 + data.donation_collected > data.donation_target
+            ? "disabled"
+            : ""
+        }/>
+        <div class=" ${
+          data.donation_collected + 20000 > data.donation_target
+            ? "cursor-not-allowed bg-gray-300"
+            : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+        }   py-2 px-4 rounded-lg font-semibold">Rp 20.000</div>
+      </label>
+      <label>
+          <input  type="radio" name="donation" id="donation_50000" class="hidden peer" value="50000"  ${
+            50000 + data.donation_collected > data.donation_target
+              ? "disabled"
+              : ""
+          }/>
+          <div class=" ${
+            data.donation_collected + 50000 > data.donation_target
+              ? "cursor-not-allowed bg-gray-300"
+              : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+          }   py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
+      </label>
+      <label>
       <input  type="radio" name="donation" id="donation_100000" class="hidden peer" value="100000"  ${
         100000 + data.donation_collected > data.donation_target
           ? "disabled"
@@ -128,35 +146,32 @@ const DetailCamp = ({ data }) => {
           ? "cursor-not-allowed bg-gray-300"
           : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
       }   py-2 px-4 rounded-lg font-semibold">Rp 100.000</div>
-  </label>
-  <label>
-      <input  type="radio" name="donation" id="donation_200000" class="hidden peer" value="200000"  ${
-        200000 + data.donation_collected > data.donation_target
-          ? "disabled"
-          : ""
-      }/>
-      <div class=" ${
-        data.donation_collected + 200000 > data.donation_target
-          ? "cursor-not-allowed bg-gray-300"
-          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-      }   py-2 px-4 rounded-lg font-semibold">Rp 200.000</div>
-  </label>
-  
-          <div class="bg-gray-100 p-3 rounded-lg">
-            <label class=" items-center text-base ">
-              Nominal Donasi Lainnya
-            </label>
-            <div class="pl-5 gap-4 flex flex-row items-center mt-2 bg-white text-sm rounded-xl focus:ring-blue-500 ">
-              <label class="w-6">Rp </label>
-
-              
-              <input type="text" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
-            </div>
-            <p class="text-xs text-primary font-semibold">Sisa maksimal donasi Rp. ${new Intl.NumberFormat(
-              "id-ID"
-            ).format(data.donation_target - data.donation_collected)}</p>
-
+      </label>
+      <label>
+          <input  type="radio" name="donation" id="donation_200000" class="hidden peer" value="200000"  ${
+            200000 + data.donation_collected > data.donation_target
+              ? "disabled"
+              : ""
+          }/>
+          <div class=" ${
+            data.donation_collected + 200000 > data.donation_target
+              ? "cursor-not-allowed bg-gray-300"
+              : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+          }   py-2 px-4 rounded-lg font-semibold">Rp 200.000</div>
+      </label>
+        <div class="bg-gray-100 p-3 rounded-lg">
+          <label class=" items-center text-base ">
+            Nominal Donasi Lainnya
+          </label>
+          <div class="pl-5 gap-4 flex flex-row items-center mt-2 bg-white text-sm rounded-xl focus:ring-blue-500 ">
+            <label class="w-5">Rp</label>
+            <input type="text" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
           </div>
+          <p class="text-xs pt-2 text-primary font-semibold">Sisa maksimal donasi Rp. ${new Intl.NumberFormat(
+            "id-ID"
+          ).format(data.donation_target - data.donation_collected)}
+          </p>
+        </div>
       </div>
     </div>
         `,
@@ -188,7 +203,6 @@ const DetailCamp = ({ data }) => {
             'input[name="donation"]:checked'
           );
           const nominalValue = document.querySelector('input[name="nominal"]');
-
           if (!radioValue && nominalValue && nominalValue.value) {
             handleSubmit(nominalValue.value.replace(/\./g, ""));
           } else if (radioValue) {
