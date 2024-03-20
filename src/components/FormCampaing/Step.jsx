@@ -75,7 +75,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   const [Description, setDescription] = useState(() => {
     const storedFormData = localStorage.getItem("formData");
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-    return parsedFormData.Description || "";
+    return parsedFormData.Description || ""; Description
   });
 
   // const [ImageCamp, setImageCamp] = useState(() => {
@@ -223,15 +223,15 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
     if (emptyFields.length > 0) {
       return;
     }
-    if (Description.length > 120) {
-      Toast.fire({
-        icon: 'error',
-        title: 'Deskripsi maksimal 120 karakter mohon periksa kembali',
-        iconColor: 'bg-black',
-        timer: 2000
-      });
-      return;
-    }
+    // if (Description.length > 120) {
+    //   Toast.fire({
+    //     icon: 'error',
+    //     title: 'Deskripsi maksimal 120 karakter mohon periksa kembali',
+    //     iconColor: 'bg-black',
+    //     timer: 2000
+    //   });
+    //   return;
+    // }
     if (!uploadedFile) {
       Toast.fire({
         icon: 'error',
@@ -421,18 +421,18 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
         </div> */}
 
         <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-
           <IconFileDescription />
-          <input
+          <textarea
             onChange={handleDescriptionChange}
             value={Description}
-            type="text"
             className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
             placeholder="Description"
             required
             name="Description"
+            rows={2} // Atur jumlah baris sesuai kebutuhan
           />
         </div>
+
 
         {/* <div className="mb-2 px-4">
           <label
@@ -1316,7 +1316,7 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         }
 
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/filter`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/filter?per_page=100000`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

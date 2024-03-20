@@ -11,7 +11,7 @@ const Error401 = (errCode, router) => {
             title: "Sesi Anda Berakhir",
             text: `Silakan Login Kembali untuk Melanjutkan`,
             showConfirmButton: true,
-            confirmButtonText: "Loginpp",
+            confirmButtonText: "Loginp",
             confirmButtonColor: "green",
             showCancelButton: true,
             cancelButtonText: "Tutup",

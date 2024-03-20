@@ -292,7 +292,7 @@ const Detonator = () => {
             <div className="flex justify-center gap-5 px-1 py-3">
               <Link
                 href={"/creatcampaign?step=1"}
-                className="grid gap-2 justify-items-center w-24"
+                className="grid gap-3 justify-items-center w-24"
               >
                 <div className={`${styles.iconMenu}`}>
                   <Image
