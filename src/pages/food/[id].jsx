@@ -9,10 +9,12 @@ import CardRepordFood from "@/components/CardRepordFood";
 const FoodCampaign = () => {
     const router = useRouter();
     const { id } = router.query;
-    console.log('rout', id);
+    // console.log('rout', id);
     const [foodOrder, setFoodOrder] = useState([]);
     const [DataAPI, setDataApi] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [detonator_id, setDetonatorId] = useState();
+
 
 
     useEffect(() => {
@@ -29,6 +31,7 @@ const FoodCampaign = () => {
 
                 setFoodOrder(response.data.body.orders);
                 setDataApi(response.data.body);
+                setDetonatorId(response.data.body.detonator_id);
                 setLoading(false);
                 console.log('order', response.data.body.orders);
                 console.log('data', response.data.body);
@@ -39,7 +42,8 @@ const FoodCampaign = () => {
         };
 
         fetchData();
-    }, [id]);
+        console.log('detonator_id', detonator_id);
+    }, [id, detonator_id]);
 
     const handleRequestError = (error) => {
         console.error('Error fetching data:', error);
@@ -93,6 +97,7 @@ const FoodCampaign = () => {
 
                                 <CardRepordFood
                                     key={item.id}
+                                    detonator_id={detonator_id}
                                     to={`/detonator/reportfood/${item.id}`}
                                     img={item.merchant_product.images.length > 0 ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${item.merchant_product.images[0].image_url}` : '/img/default-image.png'}
                                     title={item.merchant_product.name}
