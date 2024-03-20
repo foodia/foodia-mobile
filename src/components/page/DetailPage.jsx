@@ -56,7 +56,6 @@ const DetailCamp = ({ data }) => {
   });
 
   const showSweetAlert = async () => {
-    let nominal;
     const swal = Swal.mixin({
       customClass: {
         popup: "custom-swal",
@@ -64,6 +63,8 @@ const DetailCamp = ({ data }) => {
         confirmButton: "custom-confirm-button-swal", // Custom class for styling
       },
       didRender: () => {
+        let nominal;
+        let radios;
         const nominalInput = document.querySelector('input[name="nominal"]');
         const donationRadios = document.querySelectorAll(
           'input[name="donation"]'
@@ -74,6 +75,14 @@ const DetailCamp = ({ data }) => {
           radio.addEventListener("click", () => {
             // Menghapus nilai input nominal jika opsi nominal dipilih
             nominalInput.value = "";
+            console.log("radio", radio.checked);
+            if (!radio.checked) {
+              Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
+              Swal.disableButtons();
+            } else {
+              Swal.getConfirmButton().style.backgroundColor = "#3FB648";
+              Swal.enableButtons();
+            }
           });
         });
 
@@ -83,12 +92,13 @@ const DetailCamp = ({ data }) => {
           nominalInput.value = formatNominal(nominalInput.value);
           donationRadios.forEach((radio) => {
             radio.checked = false;
+            console.log("radio", radio.checked);
           });
           nominal = parseInt(nominalInput.value.replace(/\./g, ""));
           if (
-            parseInt(nominalInput.value.replace(/\./g, "")) +
-              data.donation_collected >
-            data.donation_target
+            nominal + data.donation_collected > data.donation_target ||
+            nominal == 0 ||
+            nominalInput.value === ""
           ) {
             Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
             Swal.disableButtons();
@@ -96,9 +106,11 @@ const DetailCamp = ({ data }) => {
             Swal.getConfirmButton().style.backgroundColor = "#3FB648";
             Swal.enableButtons();
           }
-
-          console.log("asdada", nominal);
         });
+        if (radios == undefined || nominalInput.value === "") {
+          Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
+          Swal.disableButtons();
+        }
       },
     });
     swal
