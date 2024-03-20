@@ -98,12 +98,22 @@ const DetailCamp = ({ data }) => {
           />
         </div>
 
+
         <div className="place-content-center mt-4  p-2">
           <div className="flex">
             <h1>{data.event_name}</h1>
           </div>
           <div className="flex">
             <p>{data.address}</p>
+          </div>
+          <div className="flex justify-between">
+            <p className="font-sans text-sm">
+              Tanggal Kegiatan :
+              <span className="font-sans text-sm font-medium text-blue-800 ml-1">
+                {`${('0' + new Date(data.event_date).getDate()).slice(-2)}-${('0' + (new Date(data.event_date).getMonth() + 1)).slice(-2)}-${new Date(data.event_date).getFullYear()}`}
+              </span>
+            </p>
+
           </div>
           <div className="flex flex-wrap items-center justify-between ">
             <h4> {formatUang(data.donation_target)}</h4>
@@ -113,7 +123,9 @@ const DetailCamp = ({ data }) => {
             </h4>
           </div>
 
+
           <div className="flex justify-between ">
+
             <ol className="flex items-center mt-2">
               <li className="flex w-24 items-center after:w-full after:border-b after:border-4 after:border-primary">
                 <span className="flex items-center justify-center w-6 h-6  rounded-full  bg-primary shrink-0">

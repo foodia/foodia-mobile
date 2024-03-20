@@ -146,7 +146,7 @@ const DetailCamp = ({ data }) => {
               Nominal Donasi Lainnya
             </label>
             <div class="pl-5 gap-4 flex flex-row items-center mt-2 bg-white text-sm rounded-xl focus:ring-blue-500 ">
-              <label class="w-5">Rp </label>
+              <label class="w-6">Rp </label>
 
               
               <input type="text" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
@@ -291,6 +291,15 @@ const DetailCamp = ({ data }) => {
             </Link>
           </div>
           <div>
+            <div className="flex justify-between">
+              <p className="font-sans text-sm">
+                Tanggal Kegiatan :
+                <span className="font-sans text-sm font-medium text-blue-800 ml-1">
+                  {`${('0' + new Date(data.event_date).getDate()).slice(-2)}-${('0' + (new Date(data.event_date).getMonth() + 1)).slice(-2)}-${new Date(data.event_date).getFullYear()}`}
+                </span>
+              </p>
+
+            </div>
             <div className="flex justify-between">
               <p className="font-sans text-sm">
                 Target Donasi :
