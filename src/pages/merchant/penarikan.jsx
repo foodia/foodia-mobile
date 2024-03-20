@@ -1,6 +1,8 @@
 import Header from "@/components/Header";
 import InputForm from "@/components/Imput";
 import Loading from "@/components/Loading";
+import { IconCircleX, IconInfoCircle } from "@tabler/icons-react";
+import { IconCircleCheck } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -22,6 +24,13 @@ const penarikan = (penarikan) => {
     balance > 0 ? (balance / eWalletFee).toFixed(3) : balance
   }`;
   const maxWitdrawalBank = `${balance > 0 ? balance - bankFee : balance}`;
+
+  const PHONE_REGEX = /^(\+62|62|0)8[1-9][0-9]{7,10}$/;
+  const [validPhone, setValidPhone] = useState(false);
+
+  useEffect(() => {
+    setValidPhone(PHONE_REGEX.test(rekening));
+  }, [rekening]);
 
   useEffect(() => {
     const id = sessionStorage.getItem("id");
@@ -358,21 +367,52 @@ const penarikan = (penarikan) => {
                   />
                 </div>
               )}
-
-              <div className="mt-2 flex flex-row items-center p-4 pr-0 py-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10 ">
-                {/* <IconCreditCard /> */}
-                <input
-                  onChange={handlerekeningChange}
-                  value={rekening}
-                  name="rekening"
-                  type="number"
-                  id="rekening"
-                  className="w-full p-0 py-2 bg-transparent focus:border-none outline-none"
-                  placeholder={
-                    method === "BANK" ? "Nomor Rekening" : "Nomor E-Wallet"
-                  }
-                  required
-                />
+              <div>
+                <div className="mt-2 flex flex-row items-center p-4 pr-0 py-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full h-10 ">
+                  {/* <IconCreditCard /> */}
+                  <input
+                    onChange={handlerekeningChange}
+                    value={rekening}
+                    name="rekening"
+                    type="number"
+                    id="rekening"
+                    className="w-full p-0 py-2 bg-transparent focus:border-none outline-none"
+                    placeholder={
+                      method === "BANK" ? "Nomor Rekening" : "Nomor E-Wallet"
+                    }
+                    required
+                  />
+                  {method === "E_WALLET" && (
+                    <>
+                      <IconCircleCheck
+                        className={
+                          validPhone ? "text-green-600 pr-1" : "hidden"
+                        }
+                      />
+                      <IconCircleX
+                        className={
+                          !rekening || validPhone
+                            ? "hidden"
+                            : "text-red-600 pr-1"
+                        }
+                      />
+                    </>
+                  )}
+                </div>
+                {method === "E_WALLET" && (
+                  <p
+                    className={
+                      rekening && !validPhone
+                        ? "instructions italic text-[10px] flex items-center"
+                        : "hidden"
+                    }
+                  >
+                    <IconInfoCircle size={15} className="mr-1 text-red-600" />
+                    <span className="text-red-600">
+                      Diawali (08), Minimal 10 dan maksimal 13 angka.
+                    </span>
+                  </p>
+                )}
               </div>
             </>
           ) : (
@@ -394,7 +434,8 @@ const penarikan = (penarikan) => {
                   balance == "" ||
                   bank == "" ||
                   recipient_name == "" ||
-                  rekening == ""
+                  rekening == "" ||
+                  !validPhone
                 }
                 className={
                   parsedAmount + bankFee > balance ||
@@ -403,7 +444,8 @@ const penarikan = (penarikan) => {
                   balance == "" ||
                   bank == "" ||
                   recipient_name == "" ||
-                  rekening == ""
+                  rekening == "" ||
+                  !validPhone
                     ? "bg-gray-400 text-white w-full h-12 rounded-lg font-bold"
                     : "bg-primary text-white w-full h-12 rounded-lg font-bold"
                 }
@@ -420,7 +462,8 @@ const penarikan = (penarikan) => {
                   balance == "" ||
                   bank == "" ||
                   // recipient_name == "" ||
-                  rekening == ""
+                  rekening == "" ||
+                  !validPhone
                 }
                 className={
                   parsedAmount + eWalletFee > balance ||
@@ -429,7 +472,8 @@ const penarikan = (penarikan) => {
                   balance == "" ||
                   bank == "" ||
                   // recipient_name == "" ||
-                  rekening == ""
+                  rekening == "" ||
+                  !validPhone
                     ? "bg-gray-400 text-white w-full h-12 rounded-lg font-bold"
                     : "bg-primary text-white w-full h-12 rounded-lg font-bold"
                 }
