@@ -193,8 +193,6 @@ const DetailPesanan = () => {
     }
   };
 
-  console.log(dataApi?.id);
-
   const calculateRemainingTime = (eventDate) => {
     const currentDate = new Date();
     const eventDateObject = new Date(eventDate);
@@ -207,10 +205,13 @@ const DetailPesanan = () => {
       remainingDays = 0;
     }
 
-    console.log("remainingDays", remainingDays);
-
     return remainingDays;
   };
+
+  console.log(
+    "remainingDays",
+    calculateRemainingTime(dataApi?.campaign?.event_date)
+  );
 
   return (
     <>
@@ -334,7 +335,7 @@ const DetailPesanan = () => {
                 </button>
               </>
             ) : dataApi?.order_status === "diproses" ? (
-              calculateRemainingTime(dataApi?.campaign?.event_date) > 1 ? (
+              calculateRemainingTime(dataApi?.campaign?.event_date) > 0 ? (
                 <div className="w-full col-span-2 flex flex-col gap-1">
                   <p className="text-xs text-red-500">
                     Bukti pengiriman dapat dibuat saat tanggal pelaksanaan

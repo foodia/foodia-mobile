@@ -59,12 +59,13 @@ const penarikan = (penarikan) => {
   };
 
   const handleTarikSaldo = () => {
+    let bankTotal = formatPrice(parsedAmount + bankFee);
+    let ewalletTotal = formatPrice(parsedAmount + eWalletFee);
+
     Swal.fire({
       title: "Konfirmasi Penarikan",
-      text: `Total penarikan setelah dikurang biaya penarikan adalah ${
-        method === "BANK"
-          ? formatPrice(parsedAmount + bankFee)
-          : formatPrice(parsedAmount + eWalletFee)
+      text: `Total penarikan setelah ditambah biaya penarikan adalah ${
+        method === "BANK" ? bankTotal : ewalletTotal
       }`,
       showCancelButton: true,
       confirmButtonText: "Lanjut",
