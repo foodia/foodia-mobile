@@ -18,8 +18,10 @@ const penarikan = (penarikan) => {
   const parsedAmount = parseInt(amount.replace(/\./g, ""), 10);
   const eWalletFee = 1015;
   const bankFee = 4000;
-  const maxWitdrawalEwallet = `${(balance / eWalletFee).toFixed(3)}`;
-  const maxWitdrawalBank = `${balance - bankFee}`;
+  const maxWitdrawalEwallet = `${
+    balance > 0 ? (balance / eWalletFee).toFixed(3) : balance
+  }`;
+  const maxWitdrawalBank = `${balance > 0 ? balance - bankFee : balance}`;
 
   useEffect(() => {
     const id = sessionStorage.getItem("id");
@@ -59,13 +61,12 @@ const penarikan = (penarikan) => {
   };
 
   const handleTarikSaldo = () => {
-    let bankTotal = formatPrice(parsedAmount + bankFee);
-    let ewalletTotal = formatPrice(parsedAmount + eWalletFee);
-
     Swal.fire({
       title: "Konfirmasi Penarikan",
-      text: `Total penarikan setelah ditambah biaya penarikan adalah ${
-        method === "BANK" ? bankTotal : ewalletTotal
+      text: `Total penarikan setelah dikurang biaya penarikan adalah ${
+        method === "BANK"
+          ? formatPrice(parsedAmount + bankFee)
+          : formatPrice(parsedAmount + eWalletFee)
       }`,
       showCancelButton: true,
       confirmButtonText: "Lanjut",
