@@ -105,8 +105,8 @@ const MerchantReting = (MerchantReting) => {
       <div className="container mx-auto pt-14 bg-white h-screen">
         <Header title="Review Detonator" />
         <div className="place-content-center">
-          <div className="w-full p-2">
-            <div className="flex justify-between items-center  w-full p-2 border-0 border-gray-500 rounded-lg">
+          <div className=" w-full p-2">
+            <div className="flex justify-between items-center  w-full p-2  border border-0 border-gray-500 rounded-lg">
               <div className="flex ">
                 <div className="w-12 h-12 bg-white rounded-full">
                   <img
