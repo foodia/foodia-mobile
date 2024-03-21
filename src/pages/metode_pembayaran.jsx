@@ -16,7 +16,10 @@ const MetodePembayaran = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!state.donation.amount) {
+    const pajakAmount = state.donation.amount * 0.025; // 2.5% tax
+    const totalBayar = state.donation.amount + pajakAmount;
+
+    if (!state.donation.amount || totalBayar === 0) {
       // Use SweetAlert to show a warning
       Swal.fire({
         icon: "error",
@@ -30,13 +33,11 @@ const MetodePembayaran = () => {
       }, 2000);
       return; // Stop execution if no amount
     }
-
     // Data exists, proceed with calculations
-    const pajakAmount = state.donation.amount * 0.025; // 2.5% tax
-    const totalBayar = state.donation.amount + pajakAmount;
     setNominalDonasi(state.donation.amount);
     setPajak(pajakAmount);
     setTotal(totalBayar);
+    console.log(totalBayar);
   }, [state.donation]);
 
   // useEffect(() => {
