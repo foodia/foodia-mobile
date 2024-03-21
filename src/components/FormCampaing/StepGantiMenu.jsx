@@ -23,6 +23,7 @@ import CardListMerchan from "../page/Detonator/CardListMerchan";
 import AddFoodCamp from "./AddFoodCamp";
 import CardChangeMerchant from "../page/Detonator/CardChangeMerchant";
 import ChangeFood from "./ChangeFood";
+import { IconTrash } from "@tabler/icons-react";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
@@ -39,7 +40,7 @@ const Toast = Swal.mixin({
 })
 
 
-function StepOne({ cart, updateCart, setUploadedFile, uploadedFile, loading, setLoading, dataCamopaign, order_id }) {
+function StepOne({ cart, setCart, updateCart, setUploadedFile, uploadedFile, loading, setLoading, dataCamopaign, order_id, totalRejected }) {
     const router = useRouter();
 
     const totalCartPrice = cart.reduce((total, item) => total + item.total, 0);
@@ -141,11 +142,11 @@ function StepOne({ cart, updateCart, setUploadedFile, uploadedFile, loading, set
     };
 
     const handleSubmit = () => {
+        // console.log('total Rejected', totalRejected);
         console.log("data", cart);
         setLoading(true);
         const detonator_id = sessionStorage.getItem("id");
         const token = sessionStorage.getItem("token");
-        // Retrieve formData from local storage
         const totalCartPrice = cart.reduce(
             (total, item) => total + item.total,
             0
@@ -154,38 +155,95 @@ function StepOne({ cart, updateCart, setUploadedFile, uploadedFile, loading, set
             (total, item) => total + item.quantity,
             0
         );
-        const products = cart.map((item) => ({
-            merchant_id: parseInt(item.merchant_id),
-            merchant_product_id: parseInt(item.id),
-            qty: parseInt(item.quantity),
-        }));
 
-        const eventData = {
-            order_id: parseInt(order_id),
-            products: products,
-        };
-        const response = axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}campaign/change-menu`, eventData, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        })
-            .then((response) => {
-                console.log("API Response:", response.data);
-                setLoading(false);
-                router.push(`/food/${dataCamopaign.id}`);
-            }).catch((error) => {
-                if (401 === error.response?.status) {
-                    Error401(error, router)
-
-                }
+        if (totalCartPrice < totalRejected || totalCartPrice === totalRejected) {
+            const eventData = {
+                order_id: parseInt(order_id),
+                product: {
+                    merchant_id: parseInt(cart[0].merchant_id),
+                    merchant_product_id: parseInt(cart[0].id),
+                    qty: 2
+                },
+            };
+            console.log("eventData", eventData);
+            const response = axios.post(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/change-menu`, eventData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
             })
+                .then((response) => {
+                    console.log("API Response:", response.data);
+                    setLoading(false);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Menu Order Berhasil!",
+                        text: "Menu Order Berhasil Di Ubah",
+                        showConfirmButton: false,
+                        timer: 2000,
+                    });
+
+                    setTimeout(() => {
+                        localStorage.removeItem("cart");
+                        setCart([]);
+                        router.push(`/food/${dataCamopaign.id}`);
+                    }, 2000);
+
+                }).catch((error) => {
+                    setLoading(false);
+                    if (401 === error.response?.status) {
+                        localStorage.removeItem("cart");
+                        setCart([]);
+                        Error401(error, router)
+
+                    }
+                })
+        } else {
+            Swal.fire({
+                icon: "warning",
+                title: "Oops...",
+                text: "Total Harga Melebihi Dosasi Target",
+                showConfirmButton: true,
+                confirmButtonText: "Tutup",
+                confirmButtonColor: "red",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem("cart");
+                    setCart([]);
+                    // router.push(`/detonator/ganti-menu?ord=${order_id}&cmp=${dataCamopaign.id}&step=3`);
+                }
+            });
+        }
+        return;
+
+
+
+        // Retrieve formData from local storage
+        // const totalCartPrice = cart.reduce(
+        //     (total, item) => total + item.total,
+        //     0
+        // );
+
+        // const products = cart.map((item) => ({
+        //     merchant_id: parseInt(item.merchant_id),
+        //     merchant_product_id: parseInt(item.id),
+        //     qty: parseInt(item.quantity),
+        // }));
+
+
+        // return;
+
+
     };
 
     const handleLink = () => {
         router.push(`/detonator/ganti-menu?ord=${order_id}&cmp=${dataCamopaign.id}&step=2`);
         console.log("data card", cart);
     };
+    const handleRemoveAll = () => {
+        localStorage.removeItem("cart");
+        setCart([]);
+    }
 
     console.log('groupedCart add', groupedCart);
 
@@ -263,7 +321,7 @@ function StepOne({ cart, updateCart, setUploadedFile, uploadedFile, loading, set
                                         key={itemIndex}
                                         className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
                                     >
-                                        <div className="flex justify-between h-30 w-full">
+                                        <div className="flex justify-between h-30 w-full ">
                                             <img
                                                 className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
                                                 src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0
@@ -272,7 +330,7 @@ function StepOne({ cart, updateCart, setUploadedFile, uploadedFile, loading, set
                                                     }`}
                                                 alt=""
                                             />
-                                            <div className="flex flex-col justify-between">
+                                            <div className="flex flex-col justify-between w-full">
                                                 <div className="text-left place-items-start">
                                                     <div className="text-primary font-bold capitalize">
                                                         {item.name}
@@ -296,27 +354,7 @@ function StepOne({ cart, updateCart, setUploadedFile, uploadedFile, loading, set
                                                         maximumFractionDigits: 0,
                                                     })}`}</p>
                                                     <div className="grid place-items-center">
-                                                        <div className="flex items-center">
-                                                            <button
-                                                                className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                                                onClick={() =>
-                                                                    handleDecrease(IdMerchan, item.id, item.capacity)
-                                                                }
-                                                            >
-                                                                <IconMinus size={15} />
-                                                            </button>
-                                                            <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
-                                                                {item.quantity}
-                                                            </span>
-                                                            <button
-                                                                className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                                                onClick={() =>
-                                                                    handleIncrease(IdMerchan, item.id, item.capacity)
-                                                                }
-                                                            >
-                                                                <IconPlus size={15} />
-                                                            </button>
-                                                        </div>
+                                                        <button onClick={handleRemoveAll} className="p-2 text-white hover:text-red-800 bg-red-500 rounded-lg"><IconTrash size={20} /></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -443,7 +481,7 @@ function StepTwo({ cart, setCart, setUploadedFile, uploadedFile, loading, dataCa
         </div>
     );
 }
-function StepThree({ cart, setCart, setUploadedFile, uploadedFile, dataCamopaign, order_id }) {
+function StepThree({ cart, setCart, setUploadedFile, uploadedFile, dataCamopaign, order_id, totalRejected }) {
     const [groupedFoods, setGroupedFoods] = useState({});
     const router = useRouter();
     const IdMerchan = router.query.id;
@@ -528,9 +566,8 @@ function StepThree({ cart, setCart, setUploadedFile, uploadedFile, dataCamopaign
 
     const handleLink = () => {
         // const totalHarga = cart.reduce((acc, item) => acc + item.total, 0);
-        const dosasiTarget = dataCamopaign?.donation_target;
 
-        if (HargaTotal < dosasiTarget || HargaTotal === dosasiTarget) {
+        if (HargaTotal < totalRejected || HargaTotal === totalRejected) {
             // router.push("/detonator/ganti-menu?step=1");
             router.push(`/detonator/ganti-menu?ord=${order_id}&cmp=${dataCamopaign.id}&step=1`);
         } else {
@@ -560,6 +597,7 @@ function StepThree({ cart, setCart, setUploadedFile, uploadedFile, dataCamopaign
 
     // console.log('groupedFoods', groupedFoods);
     // Calculate total price and total quantity
+    const maxNominal = totalRejected.toFixed(0);
     const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(0);
     const jumlahMakanan = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -576,6 +614,9 @@ function StepThree({ cart, setCart, setUploadedFile, uploadedFile, dataCamopaign
                                 </div>
                                 <div className="-mt-1 font-sans text-xs text-gray-500">
                                     Jumlah Makanan: {jumlahMakanan}
+                                </div>
+                                <div className="-mt-1 font-sans text-xs text-black">
+                                    Max Nomilan: {`Rp ${parseInt(totalRejected).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
                                 </div>
                             </div>
                         </div>
@@ -601,9 +642,11 @@ function StepThree({ cart, setCart, setUploadedFile, uploadedFile, dataCamopaign
                                 <div key={IdMerchan} className="mb-4">
                                     <h2 className="text-xl font-bold">Store :{nameMerchant}</h2>
                                     {groupedFoods[IdMerchan].map((food) => (
-                                        <AddFoodCamp
+                                        <ChangeFood
                                             key={groupedFoods.id}
                                             {...food}
+                                            totalAmount={totalHarga}
+                                            totalAmountRejected={totalRejected}
                                             addToCart={addToCart}
                                         />
                                     ))}
