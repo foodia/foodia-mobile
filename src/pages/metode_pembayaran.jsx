@@ -17,8 +17,6 @@ const MetodePembayaran = () => {
 
   useEffect(() => {
     if (!state.donation.amount) {
-      console.log("No data");
-
       // Use SweetAlert to show a warning
       Swal.fire({
         icon: "error",
@@ -39,9 +37,6 @@ const MetodePembayaran = () => {
     setNominalDonasi(state.donation.amount);
     setPajak(pajakAmount);
     setTotal(totalBayar);
-    console.log("data", state.donation);
-    console.log("pajak amount", pajakAmount);
-    console.log("pajak amount", total);
   }, [state.donation]);
 
   // useEffect(() => {
@@ -110,9 +105,9 @@ const MetodePembayaran = () => {
         },
       })
       .then((response) => {
+        // setLoading(true);
         const responeUrl = response.data.body.actions.desktop_web_checkout_url;
         router.push(`${responeUrl}`);
-        setLoading(false);
       })
       .catch(() => {
         setLoading(false);
