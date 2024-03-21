@@ -177,7 +177,7 @@ const DetailCamp = ({ data }) => {
           </label>
           <div class="pl-5 gap-4 flex flex-row items-center mt-2 bg-white text-sm rounded-xl focus:ring-blue-500 ">
             <label class="w-5">Rp</label>
-            <input type="number" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
+            <input type="text" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
           </div>
           <p class="text-xs pt-2 text-primary font-semibold">Sisa maksimal donasi Rp. ${new Intl.NumberFormat(
             "id-ID"
@@ -231,7 +231,7 @@ const DetailCamp = ({ data }) => {
   };
 
   function formatNominal(value) {
-    value = value.replace(/[.,]/g, "");
+    value = value.replace(/\D/g, "");
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
