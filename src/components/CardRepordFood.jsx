@@ -7,11 +7,15 @@ import {
     IconPackageExport,
     IconPlaystationX,
 } from "@tabler/icons-react";
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import Loading from "./Loading";
 
 const CardRepordFood = (props) => {
+    const [loading, setLoading] = useState(false);
     const {
         id_order = "#",
         detonator_id,
@@ -63,14 +67,58 @@ const CardRepordFood = (props) => {
         }
     };
     const handleButoon = () => {
+        const token = sessionStorage.getItem("token");
         if (order_status === "tolak") {
             if (is_rating) {
                 return;
             } else {
                 if (role === "detonator" && parseInt(detonator_id) === parseInt(id_detonator)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Ganti Menu',
+                        text: 'Apakah anda ingin mengganti menu ini? atau lanjutkan campaign?',
+                        showConfirmButton: true,
+                        confirmButtonText: "Ganti Menu",
+                        confirmButtonColor: "green",
+                        showCancelButton: true,
+                        cancelButtonText: "Lanjutkan Campaign",
+                        cancelButtonColor: "orange",
+                        // timer: 2000,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            router.push(`/detonator/ganti-menu?ord=${id_order}&cmp=${id}&step=1`);
+                        } else if (result.isDismissed) {
+                            // router.push("/home");
+                            setLoading(true);
+                            const response = axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/continue-order/${id_order}`, {
+                                headers: {
+                                    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+                                },
+                            })
+                                .then((response) => {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Lanjutkan Campaign',
+                                        showConfirmButton: true,
+                                        confirmButtonText: "Lanjutkan",
+                                        confirmButtonColor: "green",
+
+                                    })
+                                    setLoading(false);
+                                    console.log("response", response);
+                                    // router.push(`/detonator/campaign/${id}`);
+                                })
+                                .catch((error) => {
+                                    setLoading(false);
+                                    if (error.response && error.response.status === 401) {
+                                        sessionStorage.clear();
+                                        router.push('/login');
+                                    }
+                                })
+                        }
+                    });
                     // console.log("to", to);
                     // console.log("cek iddetonator", detonator_id);
-                    router.push(`/detonator/ganti-menu?ord=${id_order}&cmp=${id}&step=1`);
 
                 } else {
                     return;
@@ -122,7 +170,7 @@ const CardRepordFood = (props) => {
                                             ? "bg-green-500"
                                             : approval_status == "rejected"
                                                 ? "bg-red-500"
-                                                : ""
+                                                : approval_status == "canceled" && "bg-orange-500"
                                         }`}
                                 >
                                     <p className="text-black">{approval_status}</p>
@@ -131,8 +179,7 @@ const CardRepordFood = (props) => {
                             {/* <p className="mb-1 text-black font-sans font-semibold text-sm truncate">{formatPrice(totalPrice)}</p> */}
                         </div>
                     </div>
-
-                    <div className="grid place-items-center mr-2 mt-2">
+                    {approval_status === "canceled" ? '' : (<div className="grid place-items-center mr-2 mt-2">
                         {order_status === "tolak" && role === "detonator" ? (
                             <div onClick={handleButoon} className={`rounded-full ${detonator_id != id_detonator ? "cursor-not-allowed hover:bg-gray-300" : "cursor-pointer hover:bg-blue-300"}`}>
                                 <div
@@ -186,9 +233,11 @@ const CardRepordFood = (props) => {
                                 {/* <p className="w-16">tes deskripsi ini panjang</p> */}
                             </div>
                         )}
-                    </div>
+                    </div>)}
+
                 </div>
             </div>
+            {loading && <Loading />}
         </div>
     );
 };

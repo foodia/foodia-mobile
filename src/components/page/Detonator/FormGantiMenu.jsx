@@ -17,6 +17,7 @@ const FormCampaing = () => {
     const [loading, setLoading] = useState(false);
     const [dataCamopaign, setDataCampaign] = useState(null);
     const [order_id, setOrder_id] = useState(null);
+    const [totalRejected, setTotalRejected] = useState(0);
 
     // useEffect(() => {
     //     const role = sessionStorage.getItem('role');
@@ -47,6 +48,11 @@ const FormCampaing = () => {
         })
             .then((response) => {
                 setDataCampaign(response.data.body);
+                const DataOrder = response.data.body.orders;
+                const rejectedOrders = DataOrder.filter((item) => item.approval_status === "rejected");
+                const totalRejectedAmount = rejectedOrders.reduce((total, item) => total + item.total_amount, 0);
+                // console.log('Total jumlah total_amount dari order yang ditolak:', totalRejectedAmount);
+                setTotalRejected(totalRejectedAmount);
                 console.log('data Camp', response.data.body);
             })
             .catch((error) => {
@@ -87,6 +93,7 @@ const FormCampaing = () => {
                 setCart={setCart}
                 dataCamopaign={dataCamopaign}
                 order_id={order_id}
+                totalRejected={totalRejected}
                 setUploadedFile={setUploadedFile}
                 uploadedFile={uploadedFile}
                 loading={loading}
@@ -114,6 +121,7 @@ const FormCampaing = () => {
                 cart={cart}
                 setCart={setCart}
                 order_id={order_id}
+                totalRejected={totalRejected}
                 dataCamopaign={dataCamopaign}
                 setUploadedFile={setUploadedFile}
                 uploadedFile={uploadedFile}
