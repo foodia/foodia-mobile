@@ -1,8 +1,13 @@
 import styles from "@/styles/Home.module.css";
-import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
+import {
+  IconBuildingStore,
+  IconChevronDown,
+  IconChevronUp,
+} from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import Store from "../../../../public/icon/Store.png";
 
 const CardListMerchan = ({ data }) => {
   const router = useRouter();
@@ -10,6 +15,7 @@ const CardListMerchan = ({ data }) => {
   const toggleReadMore = () => {
     setShowFullText((prevShowFullText) => !prevShowFullText);
   };
+  const address = `${data.address}, ${data.city}, ${data.province}`;
 
   const handleLink = (IdMerchan) => {
     // console.log('IdMerchan', IdMerchan);
@@ -21,7 +27,9 @@ const CardListMerchan = ({ data }) => {
   const products = data.products;
 
   // Filter products by status "approved"
-  const approvedProducts = products.filter(product => product.status === "approved");
+  const approvedProducts = products.filter(
+    (product) => product.status === "approved"
+  );
 
   // Count the number of approved products
   const numberOfApprovedProducts = approvedProducts.length;
@@ -34,47 +42,58 @@ const CardListMerchan = ({ data }) => {
       <div
         onClick={() => handleLink(data.id)}
         href={"#"}
-        className={`bg-white cursor-pointer hover:bg-gray-100 text-black rounded-lg inline-flex items-center  ${styles.item_card}`}
+        className={`bg-white cursor-pointer py-2 border border-primary hover:bg-gray-100 text-black rounded-lg inline-flex ${styles.item_card}`}
       >
-        <div className="flex justify-between w-80">
-          <div className="flex p-1">
-            <img
-              src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.self_photo}`}
+        <div className="w-full px-2">
+          <div className="flex flex-row justify-between p-1 items-start">
+            {/* <img
+              src={Store}
               className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
               alt=""
+            /> */}
+            <IconBuildingStore
+              size="70px"
+              className="flex items-center justify-center bg-green-200 rounded-lg p-2"
             />
             <div className={`text-left ml-1 ${styles.text_card}`}>
-              <p className="mb-1 text-black font-sans font-semibold text-sm truncate">
+              <p className="mb-1 text-primary font-sans font-semibold text-sm truncate">
                 {data.merchant_name}
               </p>
               <div className="flex ">
                 {/* <p className="font-sans text-xs text-gray-500 mr-2">{`${data.address}, ${data.city}, ${data.province}`}</p> */}
                 <p
-                  className={`font-sans text-xs text-gray-500 mr-2   ${showFullText ? "" : styles.cutTextCard
-                    }`}
+                  className={`font-sans text-xs text-gray-500   ${
+                    showFullText ? "" : styles.cutTextCard
+                  }`}
                 >
-                  {`${data.address}, ${data.city}, ${data.province}`}
+                  {address}
                 </p>
               </div>
-              <div className="">
-                {showFullText ? (
-                  <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg mb-1" onClick={(e) => {
+              {showFullText ? (
+                <button
+                  className="justify-end items-center text-xs py-1 text-primary w-full flex flex-row"
+                  onClick={(e) => {
                     e.stopPropagation();
                     toggleReadMore();
-                  }}>
-                    <p>Lebih Sedikit</p>
-                    <IconChevronUp size={20} />
-                  </button>
-                ) : (
-                  <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg mb-1" onClick={(e) => {
+                  }}
+                >
+                  <p>Lebih Sedikit</p>
+                  <IconChevronUp size={20} />
+                </button>
+              ) : address.length > 80 ? (
+                <button
+                  onClick={(e) => {
                     e.stopPropagation();
                     toggleReadMore();
-                  }}>
-                    <p>Selengkapnya</p>
-                    <IconChevronDown size={20} />
-                  </button>
-                )}
-              </div>
+                  }}
+                  className="justify-end items-center text-xs py-1 text-primary w-full flex flex-row"
+                >
+                  Selengkapnya{" "}
+                  <IconChevronDown className="mt-0.5" size="15px" />
+                </button>
+              ) : (
+                ""
+              )}
               {/* <p className="font-sans text-xs text-gray-500 mr-2 mt-2">{`Jumlah Menu :${numberOfApprovedProducts}`}</p>
               <div class="flex items-center">
                 <svg

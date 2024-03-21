@@ -1,18 +1,9 @@
 import styles from "@/styles/Home.module.css";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronUp, IconEdit } from "@tabler/icons-react";
 import axios from "axios";
 import Link from "next/link";
+import { useState } from "react";
 import Swal from "sweetalert2";
-
-// key = { item.id }
-// data = { item }
-// to = {`food/${item.id}`}
-// img = "/img/card/rectangle_70.png"
-// title = { item.merchant_product.name }
-// price = { item.merchant_product.price }
-// name = "Warung Makan Amar"
-// qty = { item.qty }
-// status = { item.order_status }
 
 const CardFood = (props) => {
   const {
@@ -27,8 +18,8 @@ const CardFood = (props) => {
     price,
     qty = 0,
   } = props;
+  const [showDesc, setShowDesc] = useState(false);
 
-  const totalPrice = qty * price;
   const formatPrice = (price) => {
     const formatter = new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -113,37 +104,40 @@ const CardFood = (props) => {
                 <p className="text-primary font-bold text-md capitalize">
                   {title}
                 </p>
-                {status !== "approved" ? (
-                  <div
-                    className={`flex justify-center items-center rounded-full h-5 ${
-                      status === "waiting"
-                        ? "bg-blue-600"
-                        : status === "approved"
-                        ? "bg-green-500"
-                        : status === "rejected"
-                        ? "bg-red-500"
-                        : ""
-                    }`}
-                  >
-                    <p className="text-white font-medium text-[10px] px-2">
-                      {getStatusIcon()}
-                    </p>
-                  </div>
-                ) : (
-                  ""
-                )}
               </div>
-              <p className="font-medium text-[10px] italic text-black mr-2 truncate ">
-                {description}
-              </p>
-              {/* <div
-                        className={`font-sans text-xs text-white rounded-lg w-14 h-10 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'approved' ? 'bg-green-500' : status == 'Rejected' ? 'bg-red-500' : ''
-                            }`}
+              {!showDesc ? (
+                <>
+                  <p
+                    className={`font-medium text-[10px] italic text-black mr-2 truncate`}
+                  >
+                    {description}
+                  </p>
+                  {description.length > 40 && (
+                    <button
+                      onClick={() => setShowDesc(!showDesc)}
+                      className="justify-end items-center text-xs py-1 text-primary w-full flex flex-row"
                     >
-                        <p className="">{status}</p>
-                    </div> */}
-              <div className="flex justify-between w-full">
-                <p className="mb-1 text-primary font-sans font-semibold text-sm truncate">
+                      Selengkapnya{" "}
+                      <IconChevronDown className="mt-0.5" size="15px" />
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <p className="font-medium text-[10px] italic text-black mr-2">
+                    {description}
+                  </p>
+                  <button
+                    onClick={() => setShowDesc(!showDesc)}
+                    className="justify-end items-center text-xs py-1 text-primary w-full flex flex-row"
+                  >
+                    Lebih Sedikit{" "}
+                    <IconChevronUp className="mt-0.5" size="15px" />
+                  </button>
+                </>
+              )}
+              <div className="flex py-3 pr-2 justify-between w-full">
+                <p className="text-primary font-sans font-semibold text-sm">
                   {formatPrice(price)}
                 </p>
                 {status == "approved" ? (
@@ -162,7 +156,21 @@ const CardFood = (props) => {
                     </button> */}
                   </div>
                 ) : (
-                  ""
+                  <div
+                    className={`flex justify-center items-center rounded-full h-5 ${
+                      status === "waiting"
+                        ? "bg-blue-600"
+                        : status === "approved"
+                        ? "bg-green-500"
+                        : status === "rejected"
+                        ? "bg-red-500"
+                        : ""
+                    }`}
+                  >
+                    <p className="text-white font-medium text-[10px] px-2">
+                      {getStatusIcon()}
+                    </p>
+                  </div>
                 )}
               </div>
             </div>

@@ -21,7 +21,7 @@ import {
   IconMinus,
   IconPhotoScan,
   IconPlus,
-  IconUser
+  IconUser,
 } from "@tabler/icons-react";
 import axios from "axios";
 import dynamic from "next/dynamic";
@@ -31,22 +31,23 @@ import Market from "../../../public/img/illustration/market.png";
 import CardListMerchan from "../page/Detonator/CardListMerchan";
 import AddFoodCamp from "./AddFoodCamp";
 import Error401 from "../error401";
+import Header from "../Header";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
 const Toast = Swal.mixin({
   toast: true,
-  position: 'center',
-  iconColor: 'white',
+  position: "center",
+  iconColor: "white",
   customClass: {
-    popup: 'colored-toast',
+    popup: "colored-toast",
   },
   showConfirmButton: false,
   timer: 1500,
   timerProgressBar: true,
-})
+});
 
-function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
+function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
   const router = useRouter();
   const [eventName, setEventName] = useState(() => {
     const storedFormData = localStorage.getItem("formData");
@@ -75,7 +76,8 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   const [Description, setDescription] = useState(() => {
     const storedFormData = localStorage.getItem("formData");
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-    return parsedFormData.Description || ""; Description
+    return parsedFormData.Description || "";
+    Description;
   });
 
   // const [ImageCamp, setImageCamp] = useState(() => {
@@ -187,13 +189,19 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const requiredFields = ['eventName', 'TypeEvent', 'Tanggal', 'Waktu', 'Description'];
+    const requiredFields = [
+      "eventName",
+      "TypeEvent",
+      "Tanggal",
+      "Waktu",
+      "Description",
+    ];
     const errorMessages = {
-      eventName: 'Event Name',
-      TypeEvent: 'Type of Event',
-      Tanggal: 'Date',
-      Waktu: 'Time',
-      Description: 'Description',
+      eventName: "Event Name",
+      TypeEvent: "Type of Event",
+      Tanggal: "Date",
+      Waktu: "Time",
+      Description: "Description",
     };
 
     // Konversi eventName menjadi kapitalisasi setiap kata
@@ -208,15 +216,15 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
       Waktu,
       Description,
     };
-    const emptyFields = requiredFields.filter(field => !formData[field]);
+    const emptyFields = requiredFields.filter((field) => !formData[field]);
 
-    emptyFields.forEach(field => {
+    emptyFields.forEach((field) => {
       const errorMessage = `${errorMessages[field]} is required`;
       Toast.fire({
-        icon: 'error',
+        icon: "error",
         title: errorMessage,
-        iconColor: 'bg-black',
-        timer: 2000
+        iconColor: "bg-black",
+        timer: 2000,
       });
     });
 
@@ -234,14 +242,13 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
     // }
     if (!uploadedFile) {
       Toast.fire({
-        icon: 'error',
-        title: 'Image is required',
-        iconColor: 'bg-black',
-        timer: 2000
+        icon: "error",
+        title: "Image is required",
+        iconColor: "bg-black",
+        timer: 2000,
       });
       return;
     }
-
 
     // Update the local storage when form data changes
     updateLocalStorage(formData);
@@ -260,7 +267,6 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
   useEffect(() => {
     console.log("gambar", uploadedFile);
   }, [uploadedFile]);
-
 
   return (
     <>
@@ -433,7 +439,6 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
           />
         </div>
 
-
         {/* <div className="mb-2 px-4">
           <label
             htmlFor="Description"
@@ -485,7 +490,9 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile, }) {
               />
             </label>
           </div>
-          <p className="text-xs text-primary font-semibold">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
+          <p className="text-xs text-primary font-semibold">
+            *file yang diperbolehkan jpg, jpeg, png dan max 5mb
+          </p>
         </div>
 
         <div className="grid gap-4 content-center px-4 mb-2">
@@ -622,10 +629,13 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
       <form className="p-2 w-full px-6 space-y-2" onSubmit={handleSubmit}>
         <div className="flex justify-center border-gray-300 rounded-lg mb-1">
           <DynamicMap sendDataToPage={handleDataFromMap} tracking={tracking} />
-
         </div>
         <div className="grid gap-4 content-center px-4 mb-2">
-          <p className="text-primary font-semibold text-xs">{tracking ? "*Klik map untuk menentukan lokasi" : "*Geser marker untuk menentukan lokasi"}</p>
+          <p className="text-primary font-semibold text-xs">
+            {tracking
+              ? "*Klik map untuk menentukan lokasi"
+              : "*Geser marker untuk menentukan lokasi"}
+          </p>
           {/* <button
             type="submit"
             className="text-primary hover:text-white border-2 items-center flex justify-center gap-2 border-primary hover:bg-primary focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-lg text-md w-full sm:w-auto py-2.5 text-center"
@@ -734,7 +744,14 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
     </>
   );
 }
-function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, setLoading }) {
+function StepThree({
+  cart,
+  updateCart,
+  setUploadedFile,
+  uploadedFile,
+  loading,
+  setLoading,
+}) {
   const router = useRouter();
 
   const totalCartPrice = cart.reduce((total, item) => total + item.total, 0);
@@ -945,7 +962,6 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
               timer: 2000,
             });
           }
-
         }
       }
     } catch (error) {
@@ -976,7 +992,7 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
     console.log("data card", cart);
   };
 
-  console.log('groupedCart add', groupedCart);
+  console.log("groupedCart add", groupedCart);
 
   // localStorage.removeItem('formData');
   // localStorage.removeItem('cart');
@@ -1008,10 +1024,11 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
         <div className="items-center justify-center mt-5 w-full">
           <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
             <div
-              className={`flex ${Object.keys(groupedCart).length > 0
-                ? "justify-between"
-                : "justify-center"
-                } w-full`}
+              className={`flex ${
+                Object.keys(groupedCart).length > 0
+                  ? "justify-between"
+                  : "justify-center"
+              } w-full`}
             >
               <div className="flex">
                 {Object.keys(groupedCart).length > 0 ? (
@@ -1019,7 +1036,10 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
                     <div className="font-medium text-xs text-gray-500">
                       Total {totalCartQuantity} Pesanan
                     </div>
-                    <div className="text-primary font-bold text-lg">{`Rp ${totalCartPrice.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}</div>
+                    <div className="text-primary font-bold text-lg">{`Rp ${totalCartPrice.toLocaleString(
+                      undefined,
+                      { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+                    )}`}</div>
                   </div>
                 ) : (
                   ""
@@ -1053,75 +1073,84 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
           {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
           {Object.keys(groupedCart).length > 0
             ? Object.keys(groupedCart).map((IdMerchan, storeIndex) => (
-              <div key={storeIndex} className="mb-4 p-2">
-                {/* <h2 className="text-xl font-semibold my-2">ID :{IdMerchan}</h2> */}
-                {groupedCart[IdMerchan].map((item, itemIndex) => (
-                  <div
-                    key={itemIndex}
-                    className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
-                  >
-                    <div className="flex justify-between h-30 w-full">
-                      <img
-                        className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
-                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0
-                          ? item.images[0].image_url
-                          : ""
+                <div key={storeIndex} className="mb-4 p-2">
+                  {/* <h2 className="text-xl font-semibold my-2">ID :{IdMerchan}</h2> */}
+                  {groupedCart[IdMerchan].map((item, itemIndex) => (
+                    <div
+                      key={itemIndex}
+                      className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
+                    >
+                      <div className="flex h-30 w-full">
+                        <img
+                          className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
+                          src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${
+                            item.images.length > 0
+                              ? item.images[0].image_url
+                              : ""
                           }`}
-                        alt=""
-                      />
-                      <div className="flex flex-col justify-between">
-                        <div className="text-left place-items-start">
-                          <div className="text-primary font-bold capitalize">
-                            {item.name}
-                            {/* {item.imageUrl} */}
+                          alt=""
+                        />
+                        <div className="flex flex-col justify-between w-full">
+                          <div className="text-left place-items-start">
+                            <div className="text-primary font-bold capitalize">
+                              {item.name}
+                              {/* {item.imageUrl} */}
+                            </div>
+                            <div className="mb-1 font-sans text-[11px]">
+                              {/* terjual | Disukai oleh: 20 | */}
+                              Max Quota: {item.capacity}
+                            </div>
+                            <div className="mb-1 font-sans text-[11px]">
+                              {item.description}
+                            </div>
+                            {/* <p className="text-gray-600 mt-2">{`Total: Rp${(item.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
+                            {/* <p className="text-gray-700">{`Total: $${item.total.toFixed(2)}`}</p> */}
                           </div>
-                          <div className="mb-1 font-sans text-[11px]">
-                            {/* terjual | Disukai oleh: 20 | */}
-                            Max Quota: {item.capacity}
-                          </div>
-                          <div className="mb-1 font-sans text-[11px]">
-                            {item.description}
-                          </div>
-                          {/* <p className="text-gray-600 mt-2">{`Total: Rp${(item.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
-                          {/* <p className="text-gray-700">{`Total: $${item.total.toFixed(2)}`}</p> */}
-                        </div>
-                        <div className="mt-2 flex flex-row gap-4 justify-between">
-                          <p className="font-bold text-primary">{`Rp ${(
-                            item.price * item.quantity
-                          ).toLocaleString(undefined, {
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 0,
-                          })}`}</p>
-                          <div className="grid place-items-center">
-                            <div className="flex items-center">
-                              <button
-                                className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                onClick={() =>
-                                  handleDecrease(IdMerchan, item.id, item.capacity)
-                                }
-                              >
-                                <IconMinus size={15} />
-                              </button>
-                              <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
-                                {item.quantity}
-                              </span>
-                              <button
-                                className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                onClick={() =>
-                                  handleIncrease(IdMerchan, item.id, item.capacity)
-                                }
-                              >
-                                <IconPlus size={15} />
-                              </button>
+                          <div className="mt-2 flex flex-row gap-4 justify-between">
+                            <p className="font-bold text-primary">{`Rp ${(
+                              item.price * item.quantity
+                            ).toLocaleString(undefined, {
+                              minimumFractionDigits: 0,
+                              maximumFractionDigits: 0,
+                            })}`}</p>
+                            <div className="grid place-items-center">
+                              <div className="flex items-center">
+                                <button
+                                  className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                  onClick={() =>
+                                    handleDecrease(
+                                      IdMerchan,
+                                      item.id,
+                                      item.capacity
+                                    )
+                                  }
+                                >
+                                  <IconMinus size={15} />
+                                </button>
+                                <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                  onClick={() =>
+                                    handleIncrease(
+                                      IdMerchan,
+                                      item.id,
+                                      item.capacity
+                                    )
+                                  }
+                                >
+                                  <IconPlus size={15} />
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ))
+                  ))}
+                </div>
+              ))
             : ""}
         </div>
         {/* </div> */}
@@ -1143,7 +1172,13 @@ function StepThree({ cart, updateCart, setUploadedFile, uploadedFile, loading, s
   );
 }
 
-function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
+function Stepfour({
+  cart,
+  updateCart,
+  setCart,
+  setUploadedFile,
+  uploadedFile,
+}) {
   const [groupedFoods, setGroupedFoods] = useState({});
   const router = useRouter();
   const IdMerchan = router.query.id;
@@ -1200,12 +1235,11 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
       const updatedCart = cart.map((item, index) =>
         index === existingItemIndex
           ? {
-            ...item,
-            quantity: item.quantity + food.quantity,
-            total: (item.quantity + food.quantity) * item.price,
-            capacity: food.qty,
-
-          }
+              ...item,
+              quantity: item.quantity + food.quantity,
+              total: (item.quantity + food.quantity) * item.price,
+              capacity: food.qty,
+            }
           : item
       );
       setCart(updatedCart);
@@ -1215,6 +1249,22 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
       setCart(updatedCart);
       localStorage.setItem("cart", JSON.stringify(updatedCart));
     }
+  };
+
+  const removeFromCart = (food) => {
+    const updatedCart = cart.filter(
+      (item) =>
+        !(item.merchant_id === parseInt(IdMerchan) && item.id === food.id)
+    );
+    const totalCartPrice = updatedCart.reduce(
+      (total, item) => total + item.total,
+      0
+    );
+    const totalCartQuantity = updatedCart.reduce(
+      (total, item) => total + item.quantity,
+      0
+    );
+    updateCart(updatedCart, totalCartPrice, totalCartQuantity);
   };
 
   const handleLink = () => {
@@ -1228,24 +1278,28 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
     }).format(amount);
   };
 
-  console.log('groupedFoods', groupedFoods);
+  // console.log('groupedFoods', groupedFoods);
   // Calculate total price and total quantity
   const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(0);
   const jumlahMakanan = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <div className="w-full">
+      <Header title={"Pilih Menu"} />
       <div className="items-center justify-center mt-1 w-full">
         <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
           <div className="flex justify-between w-full">
             <div className="flex">
               <div className="text-left place-items-start">
                 <div className="mb-1 text-primary">
-                  Total Harga: {`Rp ${parseInt(totalHarga).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
-
+                  Total Harga:{" "}
+                  {`Rp ${parseInt(totalHarga).toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })}`}
                 </div>
                 <div className="-mt-1 font-sans text-xs text-gray-500">
-                  Jumlah Makanan: {jumlahMakanan}
+                  Jumlah Menu: {cart.length}
                 </div>
               </div>
             </div>
@@ -1261,28 +1315,33 @@ function Stepfour({ cart, setCart, setUploadedFile, uploadedFile }) {
           </div>
         </div>
       </div>
-
-      <div className="container mx-auto mt-4 bg-white h-screen">
-        <div className="items-center justify-center mt-2 w-full">
-          <div className="items-center justify-center mt-2 w-full px-2">
-            {Object.keys(groupedFoods).map((IdMerchan) => (
-              <>
-                <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
-                <div key={IdMerchan} className="mb-4">
-                  <h2 className="text-xl font-bold">Store :{nameMerchant}</h2>
-                  {groupedFoods[IdMerchan].map((food) => (
-                    <AddFoodCamp
-                      key={groupedFoods.id}
-                      {...food}
-                      addToCart={addToCart}
-                    />
-                  ))}
-                </div>
-              </>
-            ))}
-          </div>
-        </div>
+      <div className="items-center justify-center mt-2 w-full px-4">
+        {Object.keys(groupedFoods).map((IdMerchan) => (
+          <>
+            {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
+            <div key={IdMerchan} className="mb-4 flex flex-col gap-2">
+              <h2 className="text-xl font-bold">{nameMerchant}</h2>
+              {groupedFoods[IdMerchan].map((food) => (
+                <>
+                  <AddFoodCamp
+                    cart={cart}
+                    key={groupedFoods.id}
+                    {...food}
+                    addToCart={addToCart}
+                    removeFromCart={removeFromCart}
+                  />
+                </>
+              ))}
+            </div>
+          </>
+        ))}
       </div>
+
+      {/* <div className="container mx-auto mt-4 bg-white h-screen">
+        <div className="items-center justify-center mt-2 w-full">
+          
+        </div>
+      </div> */}
     </div>
   );
 }
@@ -1324,11 +1383,12 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
           }
         );
 
-        const approvedMerchants = response.data.body.filter(
-          (merchant) => {
-            return merchant.status === "approved" && merchant.products.some(product => product.status === "approved");
-          }
-        );
+        const approvedMerchants = response.data.body.filter((merchant) => {
+          return (
+            merchant.status === "approved" &&
+            merchant.products.some((product) => product.status === "approved")
+          );
+        });
         console.log("page creat camp data", approvedMerchants);
         setDataApi(approvedMerchants);
         setFilteredData(approvedMerchants);
@@ -1354,6 +1414,7 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
 
   return (
     <div className="container mx-auto px-4 bg-white">
+      <Header title={"Pilih Merchant"} />
       {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
 
       {/* <div className="items-center justify-center mt-2 w-full h-full ">
@@ -1392,4 +1453,3 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
 }
 
 export { StepOne, StepThree, StepTwo, Stepfive, Stepfour };
-

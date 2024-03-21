@@ -1,20 +1,12 @@
 import styles from "@/styles/Campaign.module.css";
 import {
-  IconClock,
-  IconCalendarEvent,
-  IconCreditCard,
-  IconClipboardCheck,
-  IconSoup,
   IconArrowNarrowRight,
   IconBellRingingFilled,
-  IconCaretDown,
-  IconCaretUp,
-  IconMapPin,
-  IconArrowDown,
-  IconArrowUp,
   IconChevronDown,
   IconChevronUp,
+  IconClock,
   IconClockFilled,
+  IconMapPin,
   IconUser,
 } from "@tabler/icons-react";
 import Link from "next/link";
@@ -22,13 +14,13 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useAppState } from "./UserContext";
-import Image from "next/image";
-import { data } from "autoprefixer";
+import Loading from "../Loading";
 
 const DetailCamp = ({ data }) => {
   const router = useRouter();
   const idCamp = router.query.id;
   const [showFullText, setShowFullText] = useState(false);
+  const [loading, setloading] = useState(true);
   const { state, setDonation } = useAppState();
   const [nominalDonasi, setNominalDonasi] = useState(0);
   const toggleReadMore = () => {
@@ -56,10 +48,12 @@ const DetailCamp = ({ data }) => {
     return remainingDays;
   };
 
-  if (!data) {
-    // Handle the case where data is not available yet
-    return <p>Loading...</p>;
-  }
+  useEffect(() => {
+    if (data) {
+      // Handle the case where data is not available yet
+      setloading(false);
+    }
+  });
 
   const showSweetAlert = async () => {
     const swal = Swal.mixin({
@@ -69,31 +63,60 @@ const DetailCamp = ({ data }) => {
         confirmButton: "custom-confirm-button-swal", // Custom class for styling
       },
       didRender: () => {
+        let nominal;
+        let radios;
         const nominalInput = document.querySelector('input[name="nominal"]');
-        const donationRadios = document.querySelectorAll('input[name="donation"]');
+        const donationRadios = document.querySelectorAll(
+          'input[name="donation"]'
+        );
 
         // Menambahkan event listener untuk setiap radio button nominal
-        donationRadios.forEach(radio => {
-          radio.addEventListener('click', () => {
+        donationRadios.forEach((radio) => {
+          radio.addEventListener("click", () => {
             // Menghapus nilai input nominal jika opsi nominal dipilih
-            nominalInput.value = '';
+            nominalInput.value = "";
+            console.log("radio", radio.checked);
+            if (!radio.checked) {
+              Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
+              Swal.disableButtons();
+            } else {
+              Swal.getConfirmButton().style.backgroundColor = "#3FB648";
+              Swal.enableButtons();
+            }
           });
         });
 
         // Menghapus nilai input nominal jika pengguna mulai mengetik di dalamnya
-        nominalInput.addEventListener('input', () => {
+        nominalInput.addEventListener("input", () => {
           // Format input nominal dengan titik setiap 3 digit
           nominalInput.value = formatNominal(nominalInput.value);
-          donationRadios.forEach(radio => {
+          donationRadios.forEach((radio) => {
             radio.checked = false;
+            console.log("radio", radio.checked);
           });
+          nominal = parseInt(nominalInput.value.replace(/\./g, ""));
+          if (
+            nominal + data.donation_collected > data.donation_target ||
+            nominal == 0 ||
+            nominalInput.value === ""
+          ) {
+            Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
+            Swal.disableButtons();
+          } else {
+            Swal.getConfirmButton().style.backgroundColor = "#3FB648";
+            Swal.enableButtons();
+          }
         });
-      }
+        if (radios == undefined || nominalInput.value === "") {
+          Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
+          Swal.disableButtons();
+        }
+      },
     });
-
-    await swal.fire({
-      position: "bottom",
-      html: `
+    swal
+      .fire({
+        position: "bottom",
+        html: `
       <div class="absolute px-24 ml-10 top-0 mt-4">
       <hr class="border border-gray-400 w-10 h-1 bg-gray-400 rounded-lg "/>
     </div>
@@ -101,103 +124,116 @@ const DetailCamp = ({ data }) => {
       <p class="text-md font-bold">Pilih Nominal Donasi</p>
       <div class="flex flex-col space-y-2 pt-5">
       <label>
-      <input type="radio" name="donation" id="donation_20000" class="hidden peer" value="20000"  ${20000 + data.donation_collected > data.donation_target
-          ? "disabled"
-          : ""
+        <input type="radio" name="donation" id="donation_20000" class="hidden peer" value="20000"  ${
+          20000 + data.donation_collected > data.donation_target
+            ? "disabled"
+            : ""
         }/>
-      <div class=" ${data.donation_collected + 20000 > data.donation_target
-          ? "cursor-not-allowed bg-gray-300"
-          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+        <div class=" ${
+          data.donation_collected + 20000 > data.donation_target
+            ? "cursor-not-allowed bg-gray-300"
+            : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
         }   py-2 px-4 rounded-lg font-semibold">Rp 20.000</div>
-  </label>
-  <label>
-      <input  type="radio" name="donation" id="donation_50000" class="hidden peer" value="50000"  ${50000 + data.donation_collected > data.donation_target
+      </label>
+      <label>
+          <input  type="radio" name="donation" id="donation_50000" class="hidden peer" value="50000"  ${
+            50000 + data.donation_collected > data.donation_target
+              ? "disabled"
+              : ""
+          }/>
+          <div class=" ${
+            data.donation_collected + 50000 > data.donation_target
+              ? "cursor-not-allowed bg-gray-300"
+              : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+          }   py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
+      </label>
+      <label>
+      <input  type="radio" name="donation" id="donation_100000" class="hidden peer" value="100000"  ${
+        100000 + data.donation_collected > data.donation_target
           ? "disabled"
           : ""
-        }/>
-      <div class=" ${data.donation_collected + 50000 > data.donation_target
+      }/>
+      <div class=" ${
+        data.donation_collected + 100000 > data.donation_target
           ? "cursor-not-allowed bg-gray-300"
           : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-        }   py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
-  </label>
-  <label>
-      <input  type="radio" name="donation" id="donation_100000" class="hidden peer" value="100000"  ${100000 + data.donation_collected > data.donation_target
-          ? "disabled"
-          : ""
-        }/>
-      <div class=" ${data.donation_collected + 100000 > data.donation_target
-          ? "cursor-not-allowed bg-gray-300"
-          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-        }   py-2 px-4 rounded-lg font-semibold">Rp 100.000</div>
-  </label>
-  <label>
-      <input  type="radio" name="donation" id="donation_200000" class="hidden peer" value="200000"  ${200000 + data.donation_collected > data.donation_target
-          ? "disabled"
-          : ""
-        }/>
-      <div class=" ${data.donation_collected + 200000 > data.donation_target
-          ? "cursor-not-allowed bg-gray-300"
-          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-        }   py-2 px-4 rounded-lg font-semibold">Rp 200.000</div>
-  </label>
-  
-          <div class="bg-gray-100 p-3 rounded-lg">
-            <label class=" items-center text-base ">
-              Nominal Donasi Lainnya
-            </label>
-            <div class="pl-5 gap-4 flex flex-row items-center mt-2 bg-white text-sm rounded-xl focus:ring-blue-500 ">
-              <label class="w-5">Rp </label>
-
-              
-              <input type="text" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
-            </div>
-            <p class="text-xs text-primary font-semibold">Sisa maksimal donasi Rp. ${new Intl.NumberFormat('id-ID').format(data.donation_target - data.donation_collected)}</p>
-
+      }   py-2 px-4 rounded-lg font-semibold">Rp 100.000</div>
+      </label>
+      <label>
+          <input  type="radio" name="donation" id="donation_200000" class="hidden peer" value="200000"  ${
+            200000 + data.donation_collected > data.donation_target
+              ? "disabled"
+              : ""
+          }/>
+          <div class=" ${
+            data.donation_collected + 200000 > data.donation_target
+              ? "cursor-not-allowed bg-gray-300"
+              : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+          }   py-2 px-4 rounded-lg font-semibold">Rp 200.000</div>
+      </label>
+        <div class="bg-gray-100 p-3 rounded-lg">
+          <label class=" items-center text-base ">
+            Nominal Donasi Lainnya
+          </label>
+          <div class="pl-5 gap-4 flex flex-row items-center mt-2 bg-white text-sm rounded-xl focus:ring-blue-500 ">
+            <label class="w-5">Rp</label>
+            <input type="text" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
           </div>
+          <p class="text-xs pt-2 text-primary font-semibold">Sisa maksimal donasi Rp. ${new Intl.NumberFormat(
+            "id-ID"
+          ).format(data.donation_target - data.donation_collected)}
+          </p>
+        </div>
       </div>
     </div>
         `,
-      width: "375px",
-      showConfirmButton: true,
-      confirmButtonText: "Donasi",
-      confirmButtonColor: "#3FB648",
-      preConfirm: () => {
-        const radioValue = document.querySelector(
-          'input[name="donation"]:checked'
-        );
-        if (!radioValue) {
-          const nominalValue = document.querySelector('input[name="nominal"]');
-          if (nominalValue && nominalValue.value) {
-            handleSubmit(nominalValue.value.replace(/\./g, ''));
+        width: "375px",
+        showConfirmButton: true,
+        confirmButtonText: "Donasi",
+        confirmButtonColor: "#3FB648",
+        preConfirm: () => {
+          const radioValue = document.querySelector(
+            'input[name="donation"]:checked'
+          );
+          if (!radioValue) {
+            const nominalValue = document.querySelector(
+              'input[name="nominal"]'
+            );
+            if (nominalValue && nominalValue.value) {
+              handleSubmit(nominalValue.value.replace(/\./g, ""));
+            } else {
+              return "input nominal value";
+            }
           } else {
-            return "input nominal value";
+            handleSubmit(radioValue.value);
           }
-        } else {
-          handleSubmit(radioValue.value);
+        },
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          const radioValue = document.querySelector(
+            'input[name="donation"]:checked'
+          );
+          const nominalValue = document.querySelector('input[name="nominal"]');
+          if (!radioValue && nominalValue && nominalValue.value) {
+            handleSubmit(nominalValue.value.replace(/\./g, ""));
+          } else if (radioValue) {
+            handleSubmit(radioValue.value);
+          } else {
+            Swal.fire(
+              "Melewati Target Donasi",
+              "Nominal donasi tidak dapat melebihi target donasi.",
+              "error"
+            );
+          }
         }
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const radioValue = document.querySelector('input[name="donation"]:checked');
-        const nominalValue = document.querySelector('input[name="nominal"]');
-
-        if (!radioValue && nominalValue && nominalValue.value) {
-          handleSubmit(nominalValue.value.replace(/\./g, ''));
-        } else if (radioValue) {
-          handleSubmit(radioValue.value);
-        } else {
-          Swal.fire("Melewati Target Donasi", "Nominal donasi tidak dapat melebihi target donasi.", "error");
-        }
-      }
-    });
+      });
   };
 
   function formatNominal(value) {
-    value = value.replace(/[.,]/g, '');
+    value = value.replace(/\D/g, "");
     return value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
-
-
 
   const handleSubmit = (value) => {
     setNominalDonasi(parseInt(value));
@@ -293,6 +329,17 @@ const DetailCamp = ({ data }) => {
           <div>
             <div className="flex justify-between">
               <p className="font-sans text-sm">
+                Tanggal Kegiatan :
+                <span className="font-sans text-sm font-medium text-blue-800 ml-1">
+                  {`${("0" + new Date(data.event_date).getDate()).slice(-2)}-${(
+                    "0" +
+                    (new Date(data.event_date).getMonth() + 1)
+                  ).slice(-2)}-${new Date(data.event_date).getFullYear()}`}
+                </span>
+              </p>
+            </div>
+            <div className="flex justify-between">
+              <p className="font-sans text-sm">
                 Target Donasi :
                 <span className="font-sans text-sm font-medium text-blue-800 ml-1">
                   {formatUang(data.donation_target ? data.donation_target : 0)}
@@ -313,8 +360,8 @@ const DetailCamp = ({ data }) => {
                     data.donation_collected > data.donation_target
                       ? data.donation_target
                       : data.donation_collected
-                        ? data.donation_collected
-                        : 0
+                      ? data.donation_collected
+                      : 0
                   )}
                 </span>
               </p>
@@ -350,7 +397,6 @@ const DetailCamp = ({ data }) => {
                   ) : (
                     <IconUser className="grid grid-cols-3 gap-4 place-items-end text-gray-500" />
                   )}
-
                 </div>
                 <div className="text-left place-items-start">
                   <div className="mb-1 text-primary">
@@ -426,8 +472,9 @@ const DetailCamp = ({ data }) => {
             Tentang Program
           </h5>
           <p
-            className={`font-normal text-gray-700 text-xs  ${showFullText ? "" : styles.truncate
-              }`}
+            className={`font-normal text-gray-700 text-xs  ${
+              showFullText ? "" : styles.truncate
+            }`}
           >
             {data.description}
           </p>
@@ -483,9 +530,6 @@ const DetailCamp = ({ data }) => {
                       </div>
                     </div>
                   </div>
-                  {/* <div className="grid place-items-center">
-                                        <IconArrowNarrowRight className=" grid grid-cols-3 gap-4 place-items-end text-gray-500" />
-                                    </div> */}
                 </div>
               </div>
             )
@@ -510,12 +554,8 @@ const DetailCamp = ({ data }) => {
               )}
             </div>
           </div>
-          {/* <div className="bg-white hover:bg-gray-100 w-full grid place-content-center rounded-sm text-primary text-xs mt-2">
-                        <button className="flex" onClick={toggleReadMore}>
-                            Selengkapnya {showFullText ? <IconCaretUp size={20} /> : <IconCaretDown size={20} />}
-                        </button>
-                    </div> */}
         </div>
+        {loading && <Loading />}
       </div>
     </>
   );
