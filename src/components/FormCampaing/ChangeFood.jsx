@@ -1,9 +1,10 @@
 // components/FormCampaing/AddFoodCamp.jsx
 import React, { useState } from 'react';
 import { IconCirclePlus } from '@tabler/icons-react';
+import Swal from 'sweetalert2';
 
 
-const ChangeFood = ({ id, name, price, images, description, qty, addToCart, merchant_id }) => {
+const ChangeFood = ({ id, name, price, images, description, qty, addToCart, merchant_id, totalAmountRejected, totalAmount }) => {
     const firstImageUrl = images.length > 0 ? images[0].image_url : '';
     const [quantity, setQuantity] = useState(1);
 
@@ -22,18 +23,40 @@ const ChangeFood = ({ id, name, price, images, description, qty, addToCart, merc
     };
 
     const handleAddToCart = () => {
-        addToCart({
-            id,
-            merchant_id,
-            name,
-            price,
-            images,
-            description,
-            capacity: qty,
-            quantity,
-            total: quantity * price,
-        });
-        setQuantity(1);
+        const SubTotal = quantity * price
+        if (parseInt(totalAmount) < parseInt(totalAmountRejected)) {
+            if (SubTotal <= parseInt(totalAmountRejected)) {
+                addToCart({
+                    id,
+                    merchant_id,
+                    name,
+                    price,
+                    images,
+                    description,
+                    capacity: qty,
+                    quantity,
+                    total: quantity * price,
+                });
+                setQuantity(1);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Jumlah Nomilan melebihi batas',
+                    confirmButtonText: 'OK',
+                })
+            }
+
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Jumlah Nomilan melebihi batas',
+                confirmButtonText: 'OK',
+            })
+        }
+
     };
 
     return (
