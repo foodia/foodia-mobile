@@ -18,11 +18,9 @@ const penarikan = (penarikan) => {
   const [rekening, setRekening] = useState("");
   const [method, setMethod] = useState("");
   const parsedAmount = parseInt(amount.replace(/\./g, ""), 10);
-  const eWalletFee = 1015;
+  const eWalletFee = 1.5 / 100;
   const bankFee = 4000;
-  const maxWitdrawalEwallet = `${
-    balance > 0 ? (balance / eWalletFee).toFixed(3) : balance
-  }`;
+  const maxWitdrawalEwallet = `${balance - balance * eWalletFee}`;
   const maxWitdrawalBank = `${balance > 0 ? balance - bankFee : balance}`;
 
   const PHONE_REGEX = /^(\+62|62|0)8[1-9][0-9]{7,10}$/;
@@ -72,10 +70,10 @@ const penarikan = (penarikan) => {
   const handleTarikSaldo = () => {
     Swal.fire({
       title: "Konfirmasi Penarikan",
-      text: `Total penarikan setelah dikurang biaya penarikan adalah ${
+      text: `Total penarikan setelah ditambah biaya penarikan adalah ${
         method === "BANK"
           ? formatPrice(parsedAmount + bankFee)
-          : formatPrice(parsedAmount + eWalletFee)
+          : formatPrice(parsedAmount + balance * eWalletFee)
       }`,
       showCancelButton: true,
       confirmButtonText: "Lanjut",
@@ -99,7 +97,7 @@ const penarikan = (penarikan) => {
           merchant_id: parseInt(merchant_id),
           bank: bank,
           rekening: rekening,
-          amount: parsedAmount + eWalletFee,
+          amount: parsedAmount + parsedAmount * eWalletFee,
           payment_method: method,
         };
         {
@@ -275,12 +273,7 @@ const penarikan = (penarikan) => {
                   </p>
                 ) : method === "E_WALLET" ? (
                   <p className="text-xs text-blue-800 font-semibold mt-2">
-                    Max Penarikan{" "}
-                    {new Intl.NumberFormat("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                      minimumFractionDigits: 3,
-                    }).format(maxWitdrawalEwallet)}
+                    Max Penarikan {formatPrice(maxWitdrawalEwallet)}
                   </p>
                 ) : (
                   ""
@@ -348,9 +341,7 @@ const penarikan = (penarikan) => {
                   ? `Biaya Transaksi ${formatPrice(
                       bankFee
                     )} dari jumlah penarikan`
-                  : `Biaya Transaksi ${formatPrice(
-                      eWalletFee
-                    )} dari jumlah penarikan`}
+                  : `Biaya Transaksi 1,5% dari jumlah penarikan`}
               </p>
 
               {method === "BANK" && (
