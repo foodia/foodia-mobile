@@ -1,11 +1,5 @@
 import styles from "@/styles/Home.module.css";
-import { IconChevronUp } from "@tabler/icons-react";
-import {
-  IconChevronCompactDown,
-  IconChevronDown,
-  IconEdit,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconChevronDown, IconChevronUp, IconEdit } from "@tabler/icons-react";
 import axios from "axios";
 import Link from "next/link";
 import { useState } from "react";

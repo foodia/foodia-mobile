@@ -91,6 +91,7 @@ const FormCampaing = () => {
     stepComponent = (
       <Stepfour
         cart={cart}
+        updateCart={updateCart}
         setCart={setCart}
         setUploadedFile={setUploadedFile}
         uploadedFile={uploadedFile}
