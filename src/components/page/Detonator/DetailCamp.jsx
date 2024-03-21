@@ -84,6 +84,18 @@ const DetailCamp = ({ data }) => {
     // Handle the case where data is not available yet
     return <p>Loading...</p>;
   }
+  let percentageCollected = 0;
+  data.donation_target > 0 ? (percentageCollected = (data.donation_collected / data.donation_target) * 100) : (percentageCollected = 0);
+
+  const totalCollected = (percentageCollected) => {
+    if (percentageCollected === undefined || percentageCollected === null) {
+      return 0;
+    } else if (percentageCollected > 100) {
+      return 100;
+    } else {
+      return percentageCollected;
+    }
+  };
 
   const remainingDays = calculateRemainingTime(data.event_date);
   return (
@@ -143,6 +155,7 @@ const DetailCamp = ({ data }) => {
                 </span>
               </li>
             </ol>
+
             <div
               className={`flex justify-center items-center rounded-full w-24 mt-2 ${data.status === "waiting"
                 ? "bg-blue-600"
@@ -155,6 +168,21 @@ const DetailCamp = ({ data }) => {
             >
               <p className="text-white">{data.status}</p>
             </div>
+
+          </div>
+          <div className="flex justify-between px-1.5 items-center ">
+            <div className="w-full rounded-full h-2.5 bg-gray-200">
+              <div
+                className="bg-primary h-2.5 rounded-full w-max-"
+                style={{
+                  width: `${totalCollected(percentageCollected)}%`,
+                  maxWidth: "100%",
+                }}
+              ></div>
+            </div>
+            <p className="text-primary font-sans ml-1 mb-1 text-xs">
+              {totalCollected(percentageCollected).toFixed()}%
+            </p>
           </div>
         </div>
         <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
