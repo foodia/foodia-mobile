@@ -124,51 +124,43 @@ const DetailCamp = ({ data }) => {
       <p class="text-md font-bold">Pilih Nominal Donasi</p>
       <div class="flex flex-col space-y-2 pt-5">
       <label>
-        <input type="radio" name="donation" id="donation_20000" class="hidden peer" value="20000"  ${
-          20000 + data.donation_collected > data.donation_target
+        <input type="radio" name="donation" id="donation_20000" class="hidden peer" value="20000"  ${20000 + data.donation_collected > data.donation_target
             ? "disabled"
             : ""
-        }/>
-        <div class=" ${
-          data.donation_collected + 20000 > data.donation_target
+          }/>
+        <div class=" ${data.donation_collected + 20000 > data.donation_target
             ? "cursor-not-allowed bg-gray-300"
             : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-        }   py-2 px-4 rounded-lg font-semibold">Rp 20.000</div>
+          }   py-2 px-4 rounded-lg font-semibold">Rp 20.000</div>
       </label>
       <label>
-          <input  type="radio" name="donation" id="donation_50000" class="hidden peer" value="50000"  ${
-            50000 + data.donation_collected > data.donation_target
-              ? "disabled"
-              : ""
+          <input  type="radio" name="donation" id="donation_50000" class="hidden peer" value="50000"  ${50000 + data.donation_collected > data.donation_target
+            ? "disabled"
+            : ""
           }/>
-          <div class=" ${
-            data.donation_collected + 50000 > data.donation_target
-              ? "cursor-not-allowed bg-gray-300"
-              : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+          <div class=" ${data.donation_collected + 50000 > data.donation_target
+            ? "cursor-not-allowed bg-gray-300"
+            : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
           }   py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
       </label>
       <label>
-      <input  type="radio" name="donation" id="donation_100000" class="hidden peer" value="100000"  ${
-        100000 + data.donation_collected > data.donation_target
-          ? "disabled"
-          : ""
-      }/>
-      <div class=" ${
-        data.donation_collected + 100000 > data.donation_target
-          ? "cursor-not-allowed bg-gray-300"
-          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-      }   py-2 px-4 rounded-lg font-semibold">Rp 100.000</div>
+      <input  type="radio" name="donation" id="donation_100000" class="hidden peer" value="100000"  ${100000 + data.donation_collected > data.donation_target
+            ? "disabled"
+            : ""
+          }/>
+      <div class=" ${data.donation_collected + 100000 > data.donation_target
+            ? "cursor-not-allowed bg-gray-300"
+            : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+          }   py-2 px-4 rounded-lg font-semibold">Rp 100.000</div>
       </label>
       <label>
-          <input  type="radio" name="donation" id="donation_200000" class="hidden peer" value="200000"  ${
-            200000 + data.donation_collected > data.donation_target
-              ? "disabled"
-              : ""
+          <input  type="radio" name="donation" id="donation_200000" class="hidden peer" value="200000"  ${200000 + data.donation_collected > data.donation_target
+            ? "disabled"
+            : ""
           }/>
-          <div class=" ${
-            data.donation_collected + 200000 > data.donation_target
-              ? "cursor-not-allowed bg-gray-300"
-              : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+          <div class=" ${data.donation_collected + 200000 > data.donation_target
+            ? "cursor-not-allowed bg-gray-300"
+            : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
           }   py-2 px-4 rounded-lg font-semibold">Rp 200.000</div>
       </label>
         <div class="bg-gray-100 p-3 rounded-lg">
@@ -299,6 +291,18 @@ const DetailCamp = ({ data }) => {
       currency: "IDR",
     }).format(amount);
   };
+  let percentageCollected = 0;
+  data.donation_target > 0 ? (percentageCollected = (data.donation_collected / data.donation_target) * 100) : (percentageCollected = 0);
+
+  const totalCollected = (percentageCollected) => {
+    if (percentageCollected === undefined || percentageCollected === null) {
+      return 0;
+    } else if (percentageCollected > 100) {
+      return 100;
+    } else {
+      return percentageCollected;
+    }
+  };
 
   const remainingDays = calculateRemainingTime(data.event_date);
   return (
@@ -360,10 +364,24 @@ const DetailCamp = ({ data }) => {
                     data.donation_collected > data.donation_target
                       ? data.donation_target
                       : data.donation_collected
-                      ? data.donation_collected
-                      : 0
+                        ? data.donation_collected
+                        : 0
                   )}
                 </span>
+              </p>
+            </div>
+            <div className="flex justify-between px-1.5 items-center ">
+              <div className="w-full rounded-full h-2.5 bg-gray-200">
+                <div
+                  className="bg-primary h-2.5 rounded-full w-max-"
+                  style={{
+                    width: `${totalCollected(percentageCollected)}%`,
+                    maxWidth: "100%",
+                  }}
+                ></div>
+              </div>
+              <p className="text-primary font-sans ml-1 mb-1 text-xs">
+                {totalCollected(percentageCollected).toFixed()}%
               </p>
             </div>
             <button
@@ -472,9 +490,8 @@ const DetailCamp = ({ data }) => {
             Tentang Program
           </h5>
           <p
-            className={`font-normal text-gray-700 text-xs  ${
-              showFullText ? "" : styles.truncate
-            }`}
+            className={`font-normal text-gray-700 text-xs  ${showFullText ? "" : styles.truncate
+              }`}
           >
             {data.description}
           </p>
