@@ -42,7 +42,12 @@ const BottomNav = () => {
   //   router.push('/home');
   // };
 
-  const showSweetAlert = async () => {
+  function formatNominal(value) {
+    value = value.replace(/\D/g, "");
+    return value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+
+  const showSweetAlert = () => {
     const swal = Swal.mixin({
       customClass: {
         popup: "custom-swal",
@@ -50,29 +55,54 @@ const BottomNav = () => {
         confirmButton: "custom-confirm-button-swal", // Custom class for styling
       },
       didRender: () => {
+        let nominal;
+        let radios;
         const nominalInput = document.querySelector('input[name="nominal"]');
-        const donationRadios = document.querySelectorAll('input[name="donation"]');
+        const donationRadios = document.querySelectorAll(
+          'input[name="donation"]'
+        );
 
         // Menambahkan event listener untuk setiap radio button nominal
-        donationRadios.forEach(radio => {
-          radio.addEventListener('click', () => {
+        donationRadios.forEach((radio) => {
+          radio.addEventListener("click", () => {
             // Menghapus nilai input nominal jika opsi nominal dipilih
-            nominalInput.value = '';
+            nominalInput.value = "";
+            if (!radio.checked) {
+              Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
+              Swal.disableButtons();
+            } else {
+              Swal.getConfirmButton().style.backgroundColor = "#3FB648";
+              Swal.enableButtons();
+            }
           });
         });
 
         // Menghapus nilai input nominal jika pengguna mulai mengetik di dalamnya
-        nominalInput.addEventListener('input', () => {
-          donationRadios.forEach(radio => {
+        nominalInput.addEventListener("input", () => {
+          // Format input nominal dengan titik setiap 3 digit
+          nominalInput.value = formatNominal(nominalInput.value);
+          donationRadios.forEach((radio) => {
             radio.checked = false;
           });
+          nominal = parseInt(nominalInput.value.replace(/\./g, ""));
+          if (nominal == 0 || nominalInput.value === "") {
+            Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
+            Swal.disableButtons();
+          } else {
+            Swal.getConfirmButton().style.backgroundColor = "#3FB648";
+            Swal.enableButtons();
+          }
         });
-      }
+        if (radios == undefined || nominalInput.value === "") {
+          Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
+          Swal.disableButtons();
+        }
+      },
     });
-
-    await swal.fire({
-      position: "bottom",
-      html: `
+    swal
+      .fire({
+        position: "bottom",
+        html: `
             <div class="absolute px-24 ml-10 top-0 mt-4">
                 <hr class="border border-gray-400 w-10 h-1 bg-gray-400 rounded-lg "/>
             </div>
@@ -100,35 +130,36 @@ const BottomNav = () => {
                             Nominal Donasi Lainnya
                         </label>
                         <div class="pl-5 gap-4 flex flex-row items-center mt-2 bg-white text-sm rounded-xl focus:ring-blue-500 ">
-                            <label class="w-6">Rp </label>
-                            <input type="number" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl ">
+                          <label class="w-5">Rp</label>
+                          <input type="text" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
                         </div>
                     </div>
                 </div>
             </div>
             `,
-      width: "375px",
-      showConfirmButton: true,
-      confirmButtonText: "Donasi",
-      confirmButtonColor: "#3FB648",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const radioValue = document.querySelector('input[name="donation"]:checked');
-        const nominalValue = document.querySelector('input[name="nominal"]');
+        width: "375px",
+        showConfirmButton: true,
+        confirmButtonText: "Donasi",
+        confirmButtonColor: "#3FB648",
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          const radioValue = document.querySelector(
+            'input[name="donation"]:checked'
+          );
+          const nominalValue = document.querySelector('input[name="nominal"]');
 
-        setLoading(true);
-        if (!radioValue && nominalValue && nominalValue.value) {
-          handleSubmit(nominalValue.value);
-        } else if (radioValue) {
-          handleSubmit(radioValue.value);
-        } else {
-          Swal.fire("Error", "Pilih atau isi nominal donasi.", "error");
+          setLoading(true);
+          if (!radioValue && nominalValue && nominalValue.value) {
+            handleSubmit(nominalValue.value);
+          } else if (radioValue) {
+            handleSubmit(radioValue.value);
+          } else {
+            Swal.fire("Error", "Pilih atau isi nominal donasi.", "error");
+          }
         }
-      }
-    });
+      });
   };
-
-
 
   const handleSubmit = (value) => {
     setNominalDonasi(parseInt(value));
