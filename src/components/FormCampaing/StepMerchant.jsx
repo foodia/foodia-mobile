@@ -71,10 +71,54 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
     // }
   };
   const handleself_photoChange = (event) => {
-    setself_photo(event.target.files[0]);
+    const file = event.target.files[0];
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
+        });
+        event.target.value = "";
+      } else {
+        setself_photo(file);
+      }
+    }
   };
   const handlektp_photoChange = (event) => {
-    setktp_photo(event.target.files[0]);
+    const file = event.target.files[0];
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
+        });
+        event.target.value = "";
+      } else {
+        setktp_photo(file);
+      }
+    }
   };
   const handleNo_link_ajaChange = (event) => {
     setno_link_aja(event.target.value);
@@ -417,8 +461,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
     }
   }, [locationInfo]);
 
-  const handleSubmit = async (e) => {
-    // e.preventDefault();
+  const handleSubmit = (e) => {
     setLoading(true);
     if (
       !address ||
@@ -442,8 +485,6 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
       longitude: coordinates.lng,
       DetaiAlamat,
     }));
-    console.log("data regis", registrasiMerchant);
-    // Ensure the token is valid
     const token = sessionStorage.getItem("token");
     if (!token) {
       router.push("/login");
@@ -656,8 +697,8 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
             </button>
           </div>
         </div>
+        {loading && <Loading />}
       </div>
-      {loading && <Loading />}
     </>
   );
 }
