@@ -590,8 +590,6 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
     // upload data to local storage
     updateLocalStorage(formData);
 
-    console.log("dssd", formData.location);
-
     router.push(`creatcampaign?step=3`);
   };
 
@@ -636,12 +634,6 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
               ? "*Klik map untuk menentukan lokasi"
               : "*Geser marker untuk menentukan lokasi"}
           </p>
-          {/* <button
-            type="submit"
-            className="text-primary hover:text-white border-2 items-center flex justify-center gap-2 border-primary hover:bg-primary focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-lg text-md w-full sm:w-auto py-2.5 text-center"
-          >
-            <IconCurrentLocation color="red" /> Gunakan Lokasi Saat Ini
-          </button> */}
         </div>
         <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconMap />
@@ -654,24 +646,6 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
             required
           />
         </div>
-        {/* <div className="mb-2 px-4">
-          <label
-            htmlFor="location"
-            className="text-sm font-medium text-gray-900"
-          >
-            Location
-          </label>
-          <InputForm
-            cssInput={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 m-1`}
-            label="Location Name"
-            type="text"
-            name="location"
-            value={location}
-            defaultValue={location} // Use defaultValue instead of value
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="Location Name"
-          />
-        </div> */}
         <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconHome2 />
           <input
@@ -683,24 +657,6 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
             required
           />
         </div>
-        {/* <div className="mb-2 px-4">
-          <label
-            htmlFor="Jalan"
-            className="  text-sm font-medium text-gray-900"
-          >
-            Nama Jalan
-          </label>
-
-          <InputForm
-            cssInput="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 m-1"
-            label="Jalan"
-            type="text"
-            name="Jalan"
-            value={Jalan}
-            onChange={handleJalanChange}
-            placeholder="Nama Jalan"
-          />
-        </div> */}
 
         <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none ">
           <IconDetails />
@@ -713,25 +669,6 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
             required
           />
         </div>
-
-        {/* <div className="mb-2 px-4">
-          <label
-            htmlFor="DetaiAlamat"
-            className="  text-sm font-medium text-gray-900"
-          >
-            Detai Alamat
-          </label>
-          <InputForm
-            cssInput="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 m-1"
-            label="DetaiAlamat"
-            type="text"
-            name="DetaiAlamat"
-            value={DetaiAlamat}
-            onChange={handleDetaiAlamatChange}
-            placeholder="Detail Lainnya (Cth: Block/Unit No., Patokan)"
-          />
-        </div> */}
-
         <div className="grid gap-4 content-center pt-20 mb-2">
           <button
             type="submit"
