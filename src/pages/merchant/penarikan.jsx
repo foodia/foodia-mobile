@@ -70,11 +70,10 @@ const penarikan = (penarikan) => {
   const handleTarikSaldo = () => {
     Swal.fire({
       title: "Konfirmasi Penarikan",
-      text: `Total penarikan setelah ditambah biaya penarikan adalah ${
-        method === "BANK"
-          ? formatPrice(parsedAmount + bankFee)
-          : formatPrice(parsedAmount + balance * eWalletFee)
-      }`,
+      text: `Total penarikan setelah ditambah biaya penarikan adalah ${method === "BANK"
+        ? formatPrice(parsedAmount + bankFee)
+        : formatPrice(parsedAmount + balance * eWalletFee)
+        }`,
       showCancelButton: true,
       confirmButtonText: "Lanjut",
       cancelButtonText: "Batal",
@@ -103,69 +102,69 @@ const penarikan = (penarikan) => {
         {
           method === "BANK"
             ? axios
-                .post(
-                  `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
-                  bankMethod,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
+              .post(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
+                bankMethod,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              )
+              .then((response) => {
+                setLoading(false);
+                Swal.fire({
+                  icon: "success",
+                  title: "Penarikan Saldo Berhasil",
+                  text: "Silahkan cek rekening anda atau jika belum masuk sampai 1 x 24 jam, harap menghubungi admin@foodia.com",
+                  showConfirmButton: true,
+                  confirmButtonText: "Tutup",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    router.push("/merchant/saldo");
                   }
-                )
-                .then((response) => {
-                  setLoading(false);
-                  Swal.fire({
-                    icon: "success",
-                    title: "Penarikan Saldo Berhasil",
-                    text: "Silahkan cek rekening anda atau jika belum masuk sampai 1 x 24 jam, harap menghubungi admin@foodia.com",
-                    showConfirmButton: true,
-                    confirmButtonText: "Tutup",
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      router.push("/merchant/saldo");
-                    }
-                  });
-                })
-                .catch((error) => {
-                  setLoading(false);
-                  Swal.fire(
-                    "Oops!",
-                    "Terjadi kesalahan saat menarik saldo.",
-                    "error"
-                  );
-                })
-            : axios
-                .post(
-                  `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
-                  eWalletMethod,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
-                  }
-                )
-                .then((response) => {
-                  setLoading(false);
-                  Swal.fire({
-                    icon: "success",
-                    title: "Penarikan Saldo Berhasil",
-                    text: "Silahkan cek Link Aja anda atau jika belum masuk sampai 1 x 24 jam, harap menghubungi admin@foodia.com",
-                    showConfirmButton: true,
-                    confirmButtonText: "Tutup",
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      router.push("/merchant/saldo");
-                    }
-                  });
-                })
-                .catch((error) => {
-                  setLoading(false);
-                  Swal.fire(
-                    "Oops!",
-                    "Terjadi kesalahan saat menarik saldo.",
-                    "error"
-                  );
                 });
+              })
+              .catch((error) => {
+                setLoading(false);
+                Swal.fire(
+                  "Oops!",
+                  "Terjadi kesalahan saat menarik saldo.",
+                  "error"
+                );
+              })
+            : axios
+              .post(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/request`,
+                eWalletMethod,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              )
+              .then((response) => {
+                setLoading(false);
+                Swal.fire({
+                  icon: "success",
+                  title: "Penarikan Saldo Berhasil",
+                  text: "Silahkan cek Link Aja anda atau jika belum masuk sampai 1 x 24 jam, harap menghubungi admin@foodia.com",
+                  showConfirmButton: true,
+                  confirmButtonText: "Tutup",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    router.push("/merchant/saldo");
+                  }
+                });
+              })
+              .catch((error) => {
+                setLoading(false);
+                Swal.fire(
+                  "Oops!",
+                  "Terjadi kesalahan saat menarik saldo.",
+                  "error"
+                );
+              });
         }
       }
     });
@@ -243,11 +242,11 @@ const penarikan = (penarikan) => {
               onClick={() =>
                 method === "BANK"
                   ? setamount(
-                      maxWitdrawalBank.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                    )
+                    maxWitdrawalBank.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                  )
                   : setamount(
-                      maxWitdrawalEwallet.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                    )
+                    maxWitdrawalEwallet.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                  )
               }
               title="Tarik Maksimal Penarikan"
               className="text-primary"
@@ -258,7 +257,7 @@ const penarikan = (penarikan) => {
 
           <div className="flex justify-between">
             {(method === "BANK" && parsedAmount + bankFee > balance) ||
-            (method === "E_WALLET" && parsedAmount + eWalletFee > balance) ? (
+              (method === "E_WALLET" && parsedAmount + eWalletFee > balance) ? (
               <p className="text-xs text-red-500 font-semibold mt-2">
                 Saldo anda tidak mencukupi
               </p>
@@ -324,23 +323,23 @@ const penarikan = (penarikan) => {
                   </option>
                   {method === "BANK"
                     ? bankOptions.map((data) => (
-                        <option key={data.id} value={data.value}>
-                          {data.label}
-                        </option>
-                      ))
+                      <option key={data.id} value={data.value}>
+                        {data.label}
+                      </option>
+                    ))
                     : eWalletOptions.map((data) => (
-                        <option key={data.id} value={data.value}>
-                          {data.label}
-                        </option>
-                      ))}
+                      <option key={data.id} value={data.value}>
+                        {data.label}
+                      </option>
+                    ))}
                 </select>
               </div>
 
               <p className="text-xs text-blue-800 font-semibold mt-2">
                 {method === "BANK"
                   ? `Biaya Transaksi ${formatPrice(
-                      bankFee
-                    )} dari jumlah penarikan`
+                    bankFee
+                  )} dari jumlah penarikan`
                   : `Biaya Transaksi 1,5% dari jumlah penarikan`}
               </p>
 
@@ -425,18 +424,16 @@ const penarikan = (penarikan) => {
                   balance == "" ||
                   bank == "" ||
                   recipient_name == "" ||
-                  rekening == "" ||
-                  !validPhone
+                  rekening == ""
                 }
                 className={
                   parsedAmount + bankFee > balance ||
-                  parsedAmount < 10000 ||
-                  amount == "" ||
-                  balance == "" ||
-                  bank == "" ||
-                  recipient_name == "" ||
-                  rekening == "" ||
-                  !validPhone
+                    parsedAmount < 10000 ||
+                    amount == "" ||
+                    balance == "" ||
+                    bank == "" ||
+                    recipient_name == "" ||
+                    rekening == ""
                     ? "bg-gray-400 text-white w-full h-12 rounded-lg font-bold"
                     : "bg-primary text-white w-full h-12 rounded-lg font-bold"
                 }
@@ -458,13 +455,13 @@ const penarikan = (penarikan) => {
                 }
                 className={
                   parsedAmount + eWalletFee > balance ||
-                  parsedAmount < 10000 ||
-                  amount == "" ||
-                  balance == "" ||
-                  bank == "" ||
-                  // recipient_name == "" ||
-                  rekening == "" ||
-                  !validPhone
+                    parsedAmount < 10000 ||
+                    amount == "" ||
+                    balance == "" ||
+                    bank == "" ||
+                    // recipient_name == "" ||
+                    rekening == "" ||
+                    !validPhone
                     ? "bg-gray-400 text-white w-full h-12 rounded-lg font-bold"
                     : "bg-primary text-white w-full h-12 rounded-lg font-bold"
                 }
