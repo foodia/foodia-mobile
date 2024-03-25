@@ -151,7 +151,7 @@ const BottomNav = () => {
 
           setLoading(true);
           if (!radioValue && nominalValue && nominalValue.value) {
-            handleSubmit(nominalValue.value);
+            handleSubmit(nominalValue.value.replace(/\./g, ""));
           } else if (radioValue) {
             handleSubmit(radioValue.value);
           } else {
