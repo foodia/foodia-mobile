@@ -37,6 +37,7 @@ const AddFoodCamp = ({
   };
 
   const handleAddToCart = () => {
+    setQuantity(1);
     addToCart({
       id,
       merchant_id,
@@ -45,13 +46,15 @@ const AddFoodCamp = ({
       images,
       description,
       capacity: qty,
-      quantity,
-      total: quantity * price,
+      quantity: 1,
+      total: price,
     });
-    setQuantity(1);
+
   };
 
   const handleRemoveFromCart = () => {
+
+    setQuantity(0);
     removeFromCart({
       id,
       merchant_id,
@@ -63,7 +66,6 @@ const AddFoodCamp = ({
       quantity,
       total: price,
     });
-    setQuantity(0);
   };
 
   const [showDesc, setShowDesc] = useState(false);
