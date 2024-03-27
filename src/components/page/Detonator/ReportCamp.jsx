@@ -21,10 +21,13 @@ const ReportCamp = () => {
   const [buttonStatus, setButtonStatus] = useState(false);
   const [token, setToken] = useState(null);
   const [role, setRole] = useState(null);
+  const [detonator_id, setDetonator_id] = useState(null);
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     const role = sessionStorage.getItem("role");
+    const idDetonator = sessionStorage.getItem("id");
+    setDetonator_id(idDetonator);
     setToken(token);
     setRole(role);
   }, []);
@@ -46,6 +49,7 @@ const ReportCamp = () => {
         setDataApi(response.data.body.orders);
         setdataCamp(response.data.body);
         setLoading(false);
+        console.log('Data detonator id', response.data.body.detonator.id);
       } catch (error) {
         handleRequestError(error);
         console.log("error =", error);
@@ -209,51 +213,61 @@ const ReportCamp = () => {
       </div>
 
       {/* button */}
+
       <div className="mobile-w fixed flex justify-center h-20 bottom-0 my-0 w-full">
-        {token && (
+        {detonator_id == dataCamp.detonator?.id ? (
           <>
-            {role === "user" ? (
-              <div className="w-full flex items-center p-2">
-                {buttonStatus ? (
-                  <Link
-                    href={`/report/${id}`}
-                    className="bg-primary text-white w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
-                  >
-                    Unduh Laporan
-                  </Link>
+            {token && (
+              <>
+                {role === "user" ? (
+                  <div className="w-full flex items-center p-2">
+
+                    {buttonStatus ? (
+                      <Link
+                        href={`/report/${id}`}
+                        className="bg-primary text-white w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
+                      >
+
+                        Unduh Laporan
+                      </Link>
+                    ) : (
+                      <button
+                        className="bg-gray-300 text-gray-500 w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
+                        disabled
+                      >
+                        Unduh Laporan
+                      </button>
+                    )}
+                  </div>
+                ) : role === "detonator" ? (
+                  <div className="w-full flex items-center p-2">
+                    {buttonStatus ? (
+                      <Link
+                        href={`/detonator/createreport/${id}`}
+                        className="bg-primary text-white w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
+                      >
+                        <IconCirclePlus className="mr-2" />
+                        Buat Laporan
+                      </Link>
+                    ) : (
+                      <button
+                        className="bg-gray-300 text-gray-500 w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
+                        disabled
+                      >
+                        Export Report
+                      </button>
+                    )}
+                  </div>
                 ) : (
-                  <button
-                    className="bg-gray-300 text-gray-500 w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
-                    disabled
-                  >
-                    Unduh Laporan
-                  </button>
+                  ""
                 )}
-              </div>
-            ) : role === "detonator" ? (
-              <div className="w-full flex items-center p-2">
-                {buttonStatus ? (
-                  <Link
-                    href={`/detonator/createreport/${id}`}
-                    className="bg-primary text-white w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
-                  >
-                    <IconCirclePlus className="mr-2" />
-                    Buat Laporan
-                  </Link>
-                ) : (
-                  <button
-                    className="bg-gray-300 text-gray-500 w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
-                    disabled
-                  >
-                    Export Report
-                  </button>
-                )}
-              </div>
-            ) : (
-              ""
+              </>
             )}
           </>
+        ) : (
+          ''
         )}
+
       </div>
     </>
   );

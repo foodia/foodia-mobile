@@ -573,6 +573,17 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
       window.alert("All fields are required");
       return;
     }
+    if (!coordinates) {
+      Swal.fire({
+        icon: "error",
+        title: "Koordinat tidak ditemukan",
+        text: "lokasi tidak ditemukan, Silakan pilih lokasi di peta",
+        showConfirmButton: false,
+        timer: 2000
+
+      })
+      return;
+    }
 
     const formData = {
       // set the existing data
@@ -792,6 +803,38 @@ function StepThree({
   const handleSubmit = async () => {
     console.log("data", cart);
     setLoading(true);
+    const emptyFields = [];
+
+    // Validate data
+    if (!detonator_id) emptyFields.push("Detonator ID");
+    if (!campData.eventName) emptyFields.push("Event Name");
+    if (!campData.TypeEvent) emptyFields.push("Event Type");
+    if (!campData.Tanggal) emptyFields.push("Event Date");
+    if (!campData.Waktu) emptyFields.push("Event Time");
+    if (!campData.Description) emptyFields.push("Description");
+    if (!campData.province) emptyFields.push("Province");
+    if (!campData.city) emptyFields.push("City");
+    if (!campData.sub_district) emptyFields.push("Sub District");
+    if (!campData.postal_code) emptyFields.push("Postal Code");
+    if (!campData.location) emptyFields.push("Address");
+    if (!campData.coordinates.lat) emptyFields.push("Latitude");
+    if (!campData.coordinates.lng) emptyFields.push("Longitude");
+    if (!mediaUploadResponse.data.body.file_url) emptyFields.push("Image URL");
+    if (!products) emptyFields.push("Products");
+
+    if (emptyFields.length > 0) {
+      const errorMessage = `Please fill in all required fields: ${emptyFields.join(", ")}`;
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
+        showConfirmButton: false,
+        timer: 2000
+      });
+
+      setLoading(false);
+      return;
+    }
     try {
       // Retrieve formData from local storage
       const totalCartPrice = cart.reduce(
