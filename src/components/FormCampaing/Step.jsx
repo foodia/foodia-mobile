@@ -163,7 +163,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     const file = event.target.files[0];
 
     if (file) {
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.type)) {
@@ -836,7 +836,6 @@ function StepThree({
       return;
     }
     try {
-      // Retrieve formData from local storage
       const totalCartPrice = cart.reduce(
         (total, item) => total + item.total,
         0

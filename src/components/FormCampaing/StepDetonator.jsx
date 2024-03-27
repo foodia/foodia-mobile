@@ -16,6 +16,7 @@ import axios from "axios";
 import SweetAlert from "../SweetAlert";
 import Swal from "sweetalert2";
 import Loading from "../Loading";
+import Error401 from "../error401";
 
 function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
   const router = useRouter();
@@ -87,7 +88,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
     const file = event.target.files[0];
 
     if (file) {
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.type)) {
