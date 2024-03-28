@@ -60,7 +60,7 @@ const CardFood = (props) => {
         axios
           .delete(
             process.env.NEXT_PUBLIC_API_BASE_URL +
-              `merchant-product/delete/${idProduct}`,
+            `merchant-product/delete/${idProduct}`,
             {
               headers: {
                 authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -76,6 +76,9 @@ const CardFood = (props) => {
             });
           })
           .catch((error) => {
+            if (error.response && error.response.status === 401) {
+              Error401(error, router);
+            }
             Swal.fire({
               icon: "error",
               title: "Gagal Menghapus Menu",
@@ -157,15 +160,14 @@ const CardFood = (props) => {
                   </div>
                 ) : (
                   <div
-                    className={`flex justify-center items-center rounded-full h-5 ${
-                      status === "waiting"
+                    className={`flex justify-center items-center rounded-full h-5 ${status === "waiting"
                         ? "bg-blue-600"
                         : status === "approved"
-                        ? "bg-green-500"
-                        : status === "rejected"
-                        ? "bg-red-500"
-                        : ""
-                    }`}
+                          ? "bg-green-500"
+                          : status === "rejected"
+                            ? "bg-red-500"
+                            : ""
+                      }`}
                   >
                     <p className="text-white font-medium text-[10px] px-2">
                       {getStatusIcon()}

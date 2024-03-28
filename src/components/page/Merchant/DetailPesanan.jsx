@@ -8,6 +8,7 @@ import moment from "moment/moment";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { useAppState } from "../UserContext";
+import Error401 from "@/components/error401";
 
 const DetailPesanan = () => {
   const router = useRouter();
@@ -67,6 +68,9 @@ const DetailPesanan = () => {
         setLoading(false);
         // console.log('data', dataApi);
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+        }
         console.error("Error fetching data:", error);
         setLoading(false);
       }
@@ -115,6 +119,10 @@ const DetailPesanan = () => {
 
         console.log(response.data);
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         console.error(error);
       }
     }
@@ -159,6 +167,10 @@ const DetailPesanan = () => {
         setLoading(true);
         console.log(response.data);
       } catch (error) {
+        if (error.response.status === 401) {
+          Error401(error, router);
+
+        }
         console.error(error);
       }
       // await handleAprov();
@@ -176,8 +188,9 @@ const DetailPesanan = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.error("Gagal memasukkan data:", error);
-      console.log("Tidak berhasil dimasukan");
+      if (error.response && error.response.status === 401) {
+        Error401(error, router);
+      }
     }
   };
   const getStatusIcon = () => {

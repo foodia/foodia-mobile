@@ -4,8 +4,11 @@ import RoutStep from '../RoutStep';
 import { IconCirclePlus } from '@tabler/icons-react';
 import Link from 'next/link';
 import axios from 'axios';
+import Error401 from '../error401';
+import { useRouter } from 'next/navigation';
 
 function StepThree({ cart, updateCart, stepForm = 0 }) {
+    const router = useRouter();
     const groupedCart = cart.reduce((acc, item) => {
         const storeName = item.store;
         if (!acc[storeName]) {
@@ -84,8 +87,9 @@ function StepThree({ cart, updateCart, stepForm = 0 }) {
 
             // Handle success, e.g., show a success message or navigate to another page
         } catch (error) {
-            // Handle error, e.g., show an error message
-            console.error('API Error:', error);
+            if (error.response && error.response.status === 401) {
+                Error401(error, router);
+            }
         }
     };
 

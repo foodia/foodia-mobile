@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axios from 'axios';
 import Header from "@/components/Header";
+import Error401 from "@/components/error401";
 
 const ReportFood = (ReportFood) => {
     const router = useRouter();
@@ -87,6 +88,10 @@ const ReportFood = (ReportFood) => {
                         router.back();
                     }, 2000);
                 } catch (error) {
+                    if (error.response && error.response.status === 401) {
+                        Error401(error, router);
+
+                    }
                     console.error('Error creating campaign:', error.response.data)
                     console.error('Error creating campaign:', error);
                     Swal.fire({
@@ -112,6 +117,10 @@ const ReportFood = (ReportFood) => {
 
         } catch (error) {
             console.log(error);
+            if (error.response && error.response.status === 401) {
+                Error401(error, router);
+
+            }
             let errorMessage = 'Gagal membuat kampanye. Mohon coba lagi.';
             if (error.response && error.response.data && error.response.data.message) {
                 errorMessage = error.response.data.message;

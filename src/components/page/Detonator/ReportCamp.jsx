@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import CardReport from "@/components/CardReport";
 import CardReting from "@/components/CardReting";
+import Error401 from "@/components/error401";
 const ReportCamp = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -113,6 +114,10 @@ const ReportCamp = () => {
         // setReportDetonator(response.data.body);
         setLoading(false);
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         handleRequestError(error);
       }
     };
@@ -142,6 +147,10 @@ const ReportCamp = () => {
         setReportDetonator(response.data.body);
         setLoading(false);
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         handleRequestError(error);
       }
     };

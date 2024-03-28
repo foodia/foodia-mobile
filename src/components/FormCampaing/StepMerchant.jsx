@@ -21,6 +21,7 @@ import LinkAja from "../../../public/icon/payment/LinkAja.png";
 import RoutStep from "../RoutStep";
 import SweetAlert from "../SweetAlert";
 import Loading from "../Loading";
+import Error401 from "../error401";
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
 function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
@@ -553,8 +554,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
       .catch((error) => {
         setLoading(false);
         if (error.response && error.response.status === 401) {
-          sessionStorage.clear();
-          router.push("/login");
+          Error401(error, router);
         }
         else if (error.response && error.response.status === 500) {
           // Handle 500 Internal Server Error

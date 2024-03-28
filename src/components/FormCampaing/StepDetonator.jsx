@@ -61,7 +61,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
     const file = event.target.files[0];
 
     if (file) {
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
       const maxSize = 5 * 1024 * 1024; // 2.5MB
 
       if (!allowedTypes.includes(file.type)) {

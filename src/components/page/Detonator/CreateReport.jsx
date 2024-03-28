@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from 'axios';
 import Swal from "sweetalert2";
 import Header from "@/components/Header";
+import Error401 from "@/components/error401";
 
 const CreateReport = (CreateReport) => {
     // const { stepForm } = props;
@@ -23,6 +24,9 @@ const CreateReport = (CreateReport) => {
             console.log('respones', response.data.body);
         })
             .catch((error) => {
+                if (error.response && error.response.status === 401) {
+                    Error401(error, router);
+                }
                 console.error(error);
             })
     }, [campaign_id])
@@ -103,6 +107,10 @@ const CreateReport = (CreateReport) => {
                         router.push(`/detonator/report/${campaign_id}`);
                     }, 2000);
                 } catch (error) {
+                    if (error.response && error.response.status === 401) {
+                        Error401(error, router);
+
+                    }
                     console.error('Error creating campaign:', error.response.data)
                     console.error('Error creating campaign:', error);
                     Swal.fire({
@@ -127,6 +135,10 @@ const CreateReport = (CreateReport) => {
             }
 
         } catch (error) {
+            if (error.response && error.response.status === 401) {
+                Error401(error, router);
+
+            }
             console.log(error);
             let errorMessage = 'Gagal membuat kampanye. Mohon coba lagi.';
             if (error.response && error.response.data && error.response.data.message) {

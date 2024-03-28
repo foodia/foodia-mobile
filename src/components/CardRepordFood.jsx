@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Loading from "./Loading";
+import Error401 from "./error401";
 
 const CardRepordFood = (props) => {
     const [loading, setLoading] = useState(false);
@@ -111,8 +112,7 @@ const CardRepordFood = (props) => {
                                 .catch((error) => {
                                     setLoading(false);
                                     if (error.response && error.response.status === 401) {
-                                        sessionStorage.clear();
-                                        router.push('/login');
+                                        Error401(error, router);
                                     }
                                 })
                         }

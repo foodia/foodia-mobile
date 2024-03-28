@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import Error401 from "@/components/error401";
 import styles from "@/styles/Home.module.css";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -131,6 +132,10 @@ const saldo = (saldo) => {
           console.log("response", response.data.body);
         })
         .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            Error401(error, router);
+
+          }
           console.error("Error fetching data:", error);
         });
     }
@@ -198,31 +203,28 @@ const saldo = (saldo) => {
 
           <div className="flex justify-between px-7 pt-4 pb-2">
             <div
-              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-                selectedStatus === "diproses"
+              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
                   ? "text-primary border-b-2 border-primary"
                   : "text-gray-500"
-              }`}
+                }`}
               onClick={() => handleFilterChange("diproses")}
             >
               <span>Berlangsung</span>
             </div>
             <div
-              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-                selectedStatus === "selesai"
+              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
                   ? "text-primary border-b-2 border-primary"
                   : "text-gray-500"
-              }`}
+                }`}
               onClick={() => handleFilterChange("selesai")}
             >
               <span>Selesai</span>
             </div>
             <div
-              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-                selectedStatus === "penarikan"
+              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "penarikan"
                   ? "text-primary border-b-2 border-primary"
                   : "text-gray-500"
-              }`}
+                }`}
               onClick={() => handleFilterChange("penarikan")}
             >
               <span>Penarikan</span>
@@ -252,13 +254,12 @@ const saldo = (saldo) => {
                       <div className="flex justify-between">
                         <p className="font-bold uppercase">{data.bank}</p>
                         <div
-                          className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${
-                            data.status === "approved"
+                          className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${data.status === "approved"
                               ? "bg-green-500"
                               : data.status === "waiting"
-                              ? "bg-blue-500"
-                              : "bg-red-500"
-                          }`}
+                                ? "bg-blue-500"
+                                : "bg-red-500"
+                            }`}
                         >
                           <p className="">{data.status}</p>
                         </div>
@@ -282,8 +283,8 @@ const saldo = (saldo) => {
                   {selectedStatus === "diproses"
                     ? "Tidak Ada Partisipasi Berjalan"
                     : selectedStatus === "selesai"
-                    ? "Tidak Ada Partisipasi Selesai"
-                    : selectedStatus === "penarikan" && "Tidak Ada Penarikan"}
+                      ? "Tidak Ada Partisipasi Selesai"
+                      : selectedStatus === "penarikan" && "Tidak Ada Penarikan"}
                 </p>
               ) : (
                 filteredData.map((data) => (
