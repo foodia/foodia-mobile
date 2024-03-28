@@ -1,5 +1,6 @@
 // src/components/formCampaing/StepDetonator.jsx
 
+import Error401 from "@/components/error401";
 import { IconBowlFilled, IconFileDescription } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -190,7 +191,7 @@ function EditProduct() {
         } catch (error) {
           console.error("Error creating campaign:", error);
           if (error.response && error.response.status === 401) {
-            router.push("/merchant");
+            Error401(error, router);
           } else {
             Swal.fire({
               icon: "error",
@@ -238,7 +239,7 @@ function EditProduct() {
           .catch((error) => {
             console.error("Error creating campaign:", error);
             if (error.response && error.response.status === 401) {
-              router.push("/merchant");
+              Error401(error, router);
             } else {
               Swal.fire({
                 icon: "error",

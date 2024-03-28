@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
 import { useAppState } from "@/components/page/UserContext";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -110,8 +111,12 @@ const MetodePembayaran = () => {
         const responeUrl = response.data.body.actions.desktop_web_checkout_url;
         router.push(`${responeUrl}`);
       })
-      .catch(() => {
+      .catch((error) => {
         setLoading(false);
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         Swal.fire({
           icon: "error",
           title: "Donasi gagal",

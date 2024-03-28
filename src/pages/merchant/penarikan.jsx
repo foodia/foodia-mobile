@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import InputForm from "@/components/Imput";
 import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
 import { IconCircleX, IconInfoCircle } from "@tabler/icons-react";
 import { IconCircleCheck } from "@tabler/icons-react";
 import axios from "axios";
@@ -46,6 +47,10 @@ const penarikan = (penarikan) => {
       })
       .catch((error) => {
         setLoading(false);
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         console.error("Error fetching data:", error);
       });
   }, [balance]);
@@ -127,6 +132,10 @@ const penarikan = (penarikan) => {
               })
               .catch((error) => {
                 setLoading(false);
+                if (error.response && error.response.status === 401) {
+                  Error401(error, router);
+
+                }
                 Swal.fire(
                   "Oops!",
                   "Terjadi kesalahan saat menarik saldo.",
@@ -159,6 +168,10 @@ const penarikan = (penarikan) => {
               })
               .catch((error) => {
                 setLoading(false);
+                if (error.response && error.response.status === 401) {
+                  Error401(error, router);
+
+                }
                 Swal.fire(
                   "Oops!",
                   "Terjadi kesalahan saat menarik saldo.",

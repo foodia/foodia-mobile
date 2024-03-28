@@ -8,6 +8,7 @@ import styles from "@/styles/Home.module.css";
 import CardFood from "@/components/CardFood";
 import SlideCard from "@/components/SlideCard";
 import CardPesanan from "@/components/CardPesanan";
+import Error401 from "@/components/error401";
 
 
 const PesananMerchan = () => {
@@ -64,9 +65,7 @@ const PesananMerchan = () => {
                 setLoading(false);
 
                 if (error.response && error.response.status === 401) {
-                    // Unauthorized error (e.g., token expired)
-                    sessionStorage.clear();
-                    router.push('/login/merchant');
+                    Error401(error, router);
                 }
             }
         };
