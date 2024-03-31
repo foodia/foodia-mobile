@@ -124,6 +124,8 @@ const MetodePembayaran = () => {
           showConfirmButton: false,
           timer: 2000,
         });
+        console.log(error);
+        Error401(error, router);
       });
   };
 
