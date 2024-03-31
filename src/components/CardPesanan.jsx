@@ -3,8 +3,10 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
+import Error401 from "./error401";
 
 const CardPesanan = (props) => {
+  const router = useRouter();
   const {
     to,
     img,
@@ -84,9 +86,7 @@ const CardPesanan = (props) => {
       console.log(response.data);
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        // Unauthorized error (e.g., token expired)
-        sessionStorage.clear();
-        router.push("/login/merchant");
+        Error401(error, router);
       }
     }
   };
@@ -133,11 +133,12 @@ const CardPesanan = (props) => {
       setLoading(true);
       console.log(response.data);
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 401) {
+        Error401(error, router);
+      }
     }
   };
 
-  const router = useRouter();
 
   const Card = () => {
     return (
@@ -178,17 +179,16 @@ const CardPesanan = (props) => {
                 </span>
               </div>
               <div
-                className={`flex justify-center items-center rounded-2xl w-auto h-5 px-2 py-0 ${
-                  status === "review"
-                    ? "bg-blue-600"
-                    : status === "diproses"
+                className={`flex justify-center items-center rounded-2xl w-auto h-5 px-2 py-0 ${status === "review"
+                  ? "bg-blue-600"
+                  : status === "diproses"
                     ? "bg-green-500"
                     : status === "canceled"
-                    ? "bg-red-500"
-                    : status === "selesai"
-                    ? "bg-blue-900"
-                    : ""
-                }`}
+                      ? "bg-red-500"
+                      : status === "selesai"
+                        ? "bg-blue-900"
+                        : ""
+                  }`}
               >
                 <p className="text-gray-100 font-medium text-[10px]">
                   {getStatusIcon()}

@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Link } from "tabler-icons-react";
 import CardRepordFood from "@/components/CardRepordFood";
 import Header from "@/components/Header";
+import Error401 from "@/components/error401";
 const FoodCampaign = () => {
     const router = useRouter();
     const { id } = router.query;
@@ -40,6 +41,10 @@ const FoodCampaign = () => {
                 console.log('data', response.data.body);
 
             } catch (error) {
+                if (error.response && error.response.status === 401) {
+                    Error401(error, router);
+
+                }
                 handleRequestError(error);
             }
         };

@@ -113,6 +113,10 @@ const MetodePembayaran = () => {
       })
       .catch((error) => {
         setLoading(false);
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         Swal.fire({
           icon: "error",
           title: "Donasi gagal",

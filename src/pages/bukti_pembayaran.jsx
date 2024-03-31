@@ -1,3 +1,4 @@
+import Error401 from "@/components/error401";
 import { useAppState } from "@/components/page/UserContext";
 import { IconCheck } from "@tabler/icons-react";
 import axios from "axios";
@@ -27,6 +28,10 @@ const BuktiPembayaran = () => {
         console.log("pembayaran", response.data.body);
       })
       .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         console.error("Error fetching data:", error);
       });
   }, [router]);
@@ -48,9 +53,9 @@ const BuktiPembayaran = () => {
               <p className="text-3xl font-bold text-primary">
                 {pembayaran.total_amount
                   ? pembayaran.total_amount.toLocaleString("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    })
+                    style: "currency",
+                    currency: "IDR",
+                  })
                   : "Rp 0,00"}
               </p>
             </div>
@@ -61,14 +66,14 @@ const BuktiPembayaran = () => {
               <p className="font-semibold">
                 {pembayaran.transaction_date
                   ? new Date(pembayaran.transaction_date)
-                      .toLocaleString("en-GB", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
-                      .replace(",", "")
+                    .toLocaleString("en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                    .replace(",", "")
                   : "00/00/0000 00:00"}
               </p>
             </div>
@@ -98,9 +103,9 @@ const BuktiPembayaran = () => {
               <p className="font-semibold">
                 {pembayaran.total_amount
                   ? pembayaran.total_amount.toLocaleString("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    })
+                    style: "currency",
+                    currency: "IDR",
+                  })
                   : "Rp 0,00"}
               </p>
             </div>
@@ -111,9 +116,9 @@ const BuktiPembayaran = () => {
               <p className="font-semibold text-primary">
                 {pembayaran.total_amount
                   ? pembayaran.total_amount.toLocaleString("id-ID", {
-                      style: "currency",
-                      currency: "IDR",
-                    })
+                    style: "currency",
+                    currency: "IDR",
+                  })
                   : "Rp 0,00"}
               </p>
             </div>

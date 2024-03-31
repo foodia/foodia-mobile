@@ -46,8 +46,6 @@ const ChangeFood = ({ id, name, price, images, description, qty, addToCart, merc
                     confirmButtonText: 'OK',
                 })
             }
-
-
         } else {
             Swal.fire({
                 icon: 'error',

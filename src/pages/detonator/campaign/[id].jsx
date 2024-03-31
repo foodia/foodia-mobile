@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import DetailCamp from "@/components/page/Detonator/DetailCamp";
 import Header from "@/components/Header";
+import Error401 from "@/components/error401";
 
 const Campaign = () => {
   const router = useRouter();
@@ -23,6 +24,10 @@ const Campaign = () => {
         );
         setCampaignData(response.data.body);
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         console.error(error);
       }
     };
