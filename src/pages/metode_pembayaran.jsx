@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
 import { useAppState } from "@/components/page/UserContext";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -110,7 +111,7 @@ const MetodePembayaran = () => {
         const responeUrl = response.data.body.actions.desktop_web_checkout_url;
         router.push(`${responeUrl}`);
       })
-      .catch(() => {
+      .catch((error) => {
         setLoading(false);
         Swal.fire({
           icon: "error",
@@ -119,6 +120,8 @@ const MetodePembayaran = () => {
           showConfirmButton: false,
           timer: 2000,
         });
+        console.log(error);
+        Error401(error, router);
       });
   };
 
