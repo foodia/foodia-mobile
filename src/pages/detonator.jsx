@@ -9,7 +9,7 @@ export default function PageDetonator() {
   return (
     <>
       <div className="container mx-auto h-screen max-w-480 bg-white flex flex-col">
-        <Header title="Detonator" />
+        <Header title="Detonator" backto="/home" />
         <Detonator />
       </div>
       <BottomNav />
