@@ -75,7 +75,7 @@ const FoodCampaign = () => {
             <main className="my-0 mx-auto min-h-full mobile-w">
                 <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
 
-                    <Header title="Lacak Pesanan" />
+                    <Header title="Lacak Pesanan" backto={`/detonator/campaign/${id}`} />
                     <div className="container mx-auto mt-24 bg-white h-screen">
 
                         <div className="mx-auto text-center p-2 text-primary">

@@ -5,77 +5,77 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 const CardChangeMerchant = ({ data, order_id, id_camp }) => {
-    const router = useRouter();
-    const [showFullText, setShowFullText] = useState(false);
-    const toggleReadMore = () => {
-        setShowFullText((prevShowFullText) => !prevShowFullText);
-    };
+  const router = useRouter();
+  const [showFullText, setShowFullText] = useState(false);
+  const toggleReadMore = () => {
+    setShowFullText((prevShowFullText) => !prevShowFullText);
+  };
 
-    const handleLink = (IdMerchan) => {
-        // console.log('IdMerchan', IdMerchan);
-        router.push(
-            `/detonator/ganti-menu?id=${IdMerchan}&name=${data.merchant_name}&ord=${order_id}&cmp=${id_camp}&step=3`
-        );
-        console.log("data card", data.products);
-    };
-    const products = data.products;
+  const handleLink = (IdMerchan) => {
+    // console.log('IdMerchan', IdMerchan);
+    router.push(
+      `/detonator/ganti-menu?id=${IdMerchan}&name=${data.merchant_name}&ord=${order_id}&cmp=${id_camp}&step=3`
+    );
+    console.log("data card", data.products);
+  };
+  const products = data.products;
 
-    // Filter products by status "approved"
-    const approvedProducts = products.filter(product => product.status === "approved");
+  // Filter products by status "approved"
+  const approvedProducts = products.filter(product => product.status === "approved");
 
-    // Count the number of approved products
-    const numberOfApprovedProducts = approvedProducts.length;
+  // Count the number of approved products
+  const numberOfApprovedProducts = approvedProducts.length;
 
-    console.log("Number of approved products:", numberOfApprovedProducts);
+  console.log("Number of approved products:", numberOfApprovedProducts);
 
-    // console.log('data', data.products.length);
-    return (
-        <div className="flex justify-center mt-1 w-full mb-2 ">
-            <div
-                onClick={() => handleLink(data.id)}
-                href={"#"}
-                className={`bg-white cursor-pointer hover:bg-gray-100 text-black rounded-lg inline-flex items-center  ${styles.item_card}`}
-            >
-                <div className="flex justify-between w-80">
-                    <div className="flex p-1">
-                        <img
-                            src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.self_photo}`}
-                            className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
-                            alt=""
-                        />
-                        <div className={`text-left ml-1 ${styles.text_card}`}>
-                            <p className="mb-1 text-black font-sans font-semibold text-sm truncate">
-                                {data.merchant_name}
-                            </p>
-                            <div className="flex ">
-                                {/* <p className="font-sans text-xs text-gray-500 mr-2">{`${data.address}, ${data.city}, ${data.province}`}</p> */}
-                                <p
-                                    className={`font-sans text-xs text-gray-500 mr-2   ${showFullText ? "" : styles.cutTextCard
-                                        }`}
-                                >
-                                    {`${data.address}, ${data.city}, ${data.province}`}
-                                </p>
-                            </div>
-                            <div className="">
-                                {showFullText ? (
-                                    <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg mb-1" onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleReadMore();
-                                    }}>
-                                        <p>Lebih Sedikit</p>
-                                        <IconChevronUp size={20} />
-                                    </button>
-                                ) : (
-                                    <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg mb-1" onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleReadMore();
-                                    }}>
-                                        <p>Selengkapnya</p>
-                                        <IconChevronDown size={20} />
-                                    </button>
-                                )}
-                            </div>
-                            {/* <p className="font-sans text-xs text-gray-500 mr-2 mt-2">{`Jumlah Menu :${numberOfApprovedProducts}`}</p>
+  // console.log('data', data.products.length);
+  return (
+    <div className="flex justify-center mt-1 w-full mb-2 ">
+      <div
+        onClick={() => handleLink(data.id)}
+        href={"#"}
+        className={`bg-white cursor-pointer hover:bg-gray-100 text-black rounded-lg inline-flex items-center  ${styles.item_card}`}
+      >
+        <div className="flex justify-between w-80">
+          <div className="flex p-1">
+            <img
+              src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.self_photo}`}
+              className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
+              alt=""
+            />
+            <div className={`text-left ml-1 ${styles.text_card}`}>
+              <p className="mb-1 text-black font-sans font-semibold text-sm truncate">
+                {data.merchant_name}
+              </p>
+              <div className="flex ">
+                {/* <p className="font-sans text-xs text-gray-500 mr-2">{`${data.address}, ${data.city}, ${data.province}`}</p> */}
+                <p
+                  className={`font-sans text-xs text-gray-500 mr-2   ${showFullText ? "" : styles.cutTextCard
+                    }`}
+                >
+                  {`${data.address}, ${data.city}, ${data.province}`}
+                </p>
+              </div>
+              <div className="">
+                {showFullText ? (
+                  <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg mb-1" onClick={(e) => {
+                    e.stopPropagation();
+                    toggleReadMore();
+                  }}>
+                    <p>Lebih Sedikit</p>
+                    <IconChevronUp size={20} />
+                  </button>
+                ) : (
+                  <button className="flex bg-white text-primary text-xs mt-2 w-full items-center justify-center rounded-lg mb-1" onClick={(e) => {
+                    e.stopPropagation();
+                    toggleReadMore();
+                  }}>
+                    <p>Selengkapnya</p>
+                    <IconChevronDown size={20} />
+                  </button>
+                )}
+              </div>
+              {/* <p className="font-sans text-xs text-gray-500 mr-2 mt-2">{`Jumlah Menu :${numberOfApprovedProducts}`}</p>
               <div class="flex items-center">
                 <svg
                   class="w-4 h-4 text-yellow-300 me-1"
@@ -132,13 +132,13 @@ const CardChangeMerchant = ({ data, order_id, id_camp }) => {
                   5
                 </p>
               </div> */}
-                        </div>
-                    </div>
-                    <div className="grid place-items-center"></div>
-                </div>
             </div>
+          </div>
+          <div className="grid place-items-center"></div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default CardChangeMerchant;

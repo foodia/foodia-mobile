@@ -38,7 +38,7 @@ const Campaign = () => {
 
   return (
     <div className="h-full max-w-480 bg-white flex flex-col">
-      <Header title="Informasi" />
+      <Header title="Informasi" backto="/home" />
       {campaignData && <DetailCamp data={campaignData} />}
       {/* <BottomNav /> */}
     </div>

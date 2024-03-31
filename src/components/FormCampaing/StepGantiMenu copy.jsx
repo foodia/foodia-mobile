@@ -40,7 +40,7 @@ const Toast = Swal.mixin({
 })
 
 
-function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign, order_id, totalRejected, RejectedQty }) {
+function StepOne({ cart, setCart, updateCart, setUploadedFile, uploadedFile, loading, setLoading, dataCamopaign, order_id, totalRejected }) {
     const router = useRouter();
 
     const totalCartPrice = cart.reduce((total, item) => total + item.total, 0);
@@ -99,14 +99,12 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
     };
 
     const handleIncrease = (IdMerchan, itemId, capacity) => {
-        console.log("capacity:", capacity);
-        console.log("RejectedQty:", RejectedQty);
         const updatedCart = [...cart];
         const itemIndex = updatedCart.findIndex(
             (item) => item.merchant_id === parseInt(IdMerchan) && item.id === itemId
         );
 
-        if (updatedCart[itemIndex].quantity >= capacity || updatedCart[itemIndex].quantity >= RejectedQty) {
+        if (updatedCart[itemIndex].quantity >= capacity) {
             return;
         }
         if (itemIndex !== -1) {
@@ -157,10 +155,8 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
             (total, item) => total + item.quantity,
             0
         );
-        console.log("totalCartQuantity:", totalCartQuantity);
-        console.log("RejectedQty:", RejectedQty);
 
-        if (totalCartQuantity < RejectedQty || totalCartQuantity === RejectedQty) {
+        if (totalCartPrice < totalRejected || totalCartPrice === totalRejected) {
             const eventData = {
                 order_id: parseInt(order_id),
                 product: {
@@ -201,14 +197,6 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
                         Error401(error, router)
 
                     }
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Maaf Perminttan Di Tolak",
-                        text: "Total menu order melebihi jumlah sebelumnya",
-                        showConfirmButton: true,
-                        confirmButtonText: "Tutup",
-                        confirmButtonColor: "red",
-                    })
                 })
         } else {
             Swal.fire({
@@ -220,7 +208,6 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
                 confirmButtonColor: "red",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    setLoading(false);
                     localStorage.removeItem("cart");
                     setCart([]);
                     // router.push(`/detonator/ganti-menu?ord=${order_id}&cmp=${dataCamopaign.id}&step=3`);
@@ -334,7 +321,7 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
                                         key={itemIndex}
                                         className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
                                     >
-                                        <div className="flex h-30 w-full">
+                                        <div className="flex justify-between h-30 w-full ">
                                             <img
                                                 className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
                                                 src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0
@@ -367,35 +354,7 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
                                                         maximumFractionDigits: 0,
                                                     })}`}</p>
                                                     <div className="grid place-items-center">
-                                                        <div className="flex items-center">
-                                                            <button
-                                                                className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                                                onClick={() =>
-                                                                    handleDecrease(
-                                                                        IdMerchan,
-                                                                        item.id,
-                                                                        item.capacity
-                                                                    )
-                                                                }
-                                                            >
-                                                                <IconMinus size={15} />
-                                                            </button>
-                                                            <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
-                                                                {item.quantity}
-                                                            </span>
-                                                            <button
-                                                                className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                                                onClick={() =>
-                                                                    handleIncrease(
-                                                                        IdMerchan,
-                                                                        item.id,
-                                                                        item.capacity
-                                                                    )
-                                                                }
-                                                            >
-                                                                <IconPlus size={15} />
-                                                            </button>
-                                                        </div>
+                                                        <button onClick={handleRemoveAll} className="p-2 text-white hover:text-red-800 bg-red-500 rounded-lg"><IconTrash size={20} /></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -522,7 +481,7 @@ function StepTwo({ cart, setCart, setUploadedFile, uploadedFile, loading, dataCa
         </div>
     );
 }
-function StepThree({ cart, setCart, updateCart, uploadedFile, dataCamopaign, order_id, totalRejected, RejectedQty }) {
+function StepThree({ cart, setCart, setUploadedFile, uploadedFile, dataCamopaign, order_id, totalRejected, RejectedQty }) {
     const [groupedFoods, setGroupedFoods] = useState({});
     const router = useRouter();
     const IdMerchan = router.query.id;
@@ -631,21 +590,6 @@ function StepThree({ cart, setCart, updateCart, uploadedFile, dataCamopaign, ord
             });
         }
     };
-    const removeFromCart = (food) => {
-        const updatedCart = cart.filter(
-            (item) =>
-                !(item.merchant_id === parseInt(IdMerchan) && item.id === food.id)
-        );
-        const totalCartPrice = updatedCart.reduce(
-            (total, item) => total + item.total,
-            0
-        );
-        const totalCartQuantity = updatedCart.reduce(
-            (total, item) => total + item.quantity,
-            0
-        );
-        updateCart(updatedCart, totalCartPrice, totalCartQuantity);
-    };
 
     const formatToRupiah = (amount) => {
         return new Intl.NumberFormat("id-ID", {
@@ -703,13 +647,11 @@ function StepThree({ cart, setCart, updateCart, uploadedFile, dataCamopaign, ord
                                         <ChangeFood
                                             key={groupedFoods.id}
                                             {...food}
-                                            cart={cart}
                                             jumlahMakanan={jumlahMakanan}
                                             RejectedQty={RejectedQty}
                                             totalAmount={totalHarga}
                                             totalAmountRejected={totalRejected}
                                             addToCart={addToCart}
-                                            removeFromCart={removeFromCart}
                                         />
                                     ))}
                                 </div>

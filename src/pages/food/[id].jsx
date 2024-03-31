@@ -70,11 +70,11 @@ const FoodCampaign = () => {
             <main className="my-0 mx-auto min-h-full mobile-w">
                 <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
 
-                    <Header title="Lacak Pesanan" />
+                    <Header title="Lacak Pesanan" backto={`/campaign/${id}`} />
                     <div className="container mx-auto mt-24 bg-white h-screen">
 
                         <div className="mx-auto text-center p-2 text-primary">
-                            <h1 className="font-bold">Status Pesanan</h1>
+                            <h1 className="font-bold">Status Pesanan p</h1>
                             <h1>{DataAPI.event_name}</h1>
                         </div>
                         <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
