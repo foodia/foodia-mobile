@@ -20,9 +20,11 @@ const Error401 = (errCode, router) => {
     }).then((result) => {
       if (result.isConfirmed) {
         sessionStorage.clear();
+        localStorage.clear();
         router.push("/login");
       } else if (result.isDismissed) {
         sessionStorage.clear();
+        localStorage.clear();
         router.push("/home");
       }
     });

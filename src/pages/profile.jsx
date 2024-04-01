@@ -32,6 +32,7 @@ const profile = (profile) => {
 
   const btnLogout = () => {
     sessionStorage.clear();
+    localStorage.clear();
     localStorage.removeItem("cart");
     localStorage.removeItem("formData");
     router.push("/login");
