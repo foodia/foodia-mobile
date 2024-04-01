@@ -5,7 +5,7 @@ const Error401 = (errCode, router) => {
   const code = errCode?.response?.data?.code;
 
   if (code === 401) {
-    sessionStorage.clear();
+    localStorage.clear();
     Swal.fire({
       icon: "error",
       title: "Sesi Anda Berakhir",
@@ -19,11 +19,11 @@ const Error401 = (errCode, router) => {
       // timer: 2000,
     }).then((result) => {
       if (result.isConfirmed) {
-        sessionStorage.clear();
+        localStorage.clear();
         localStorage.clear();
         router.push("/login");
       } else if (result.isDismissed) {
-        sessionStorage.clear();
+        localStorage.clear();
         localStorage.clear();
         router.push("/home");
       }

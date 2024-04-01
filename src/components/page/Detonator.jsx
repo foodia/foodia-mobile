@@ -22,10 +22,10 @@ const Detonator = () => {
 
   useEffect(() => {
     const authenticateUser = async () => {
-      // const role = sessionStorage.getItem('role');
-      const token = sessionStorage.getItem("token");
-      // const status = sessionStorage.getItem('status');
-      // const id = sessionStorage.getItem('id');
+      // const role = localStorage.getItem('role');
+      const token = localStorage.getItem("token");
+      // const status = localStorage.getItem('status');
+      // const id = localStorage.getItem('id');
       // console.log("token", token);
       if (!token) {
         Swal.fire({
@@ -137,7 +137,7 @@ const Detonator = () => {
         } catch (error) {
           if (error.response && error.response.status === 401) {
             Error401(error, router);
-            // sessionStorage.clear();
+            // localStorage.clear();
             // localStorage.removeItem("cart");
             // localStorage.removeItem("formData");
             // router.push("/login");
@@ -153,8 +153,8 @@ const Detonator = () => {
   }, []);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const id = sessionStorage.getItem("id");
+    const token = localStorage.getItem("token");
+    const id = localStorage.getItem("id");
     axios
       .get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${selectedStatus}`,
@@ -172,7 +172,7 @@ const Detonator = () => {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           Error401(error, router);
-          sessionStorage.clear();
+          localStorage.clear();
           localStorage.removeItem("cart");
           localStorage.removeItem("formData");
           router.push("/login");
@@ -185,8 +185,8 @@ const Detonator = () => {
 
   const handleFilterChange = (status) => {
     let filtered = [];
-    const id = sessionStorage.getItem("id");
-    const token = sessionStorage.getItem("token");
+    const id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
 
     setLoading(true);
     setSelectedStatus(status);
@@ -207,7 +207,7 @@ const Detonator = () => {
         .catch((error) => {
           if (error.response && error.response.status === 401) {
             Error401(error, router);
-            sessionStorage.clear();
+            localStorage.clear();
             localStorage.removeItem("cart");
             localStorage.removeItem("formData");
             router.push("/login");
@@ -233,7 +233,7 @@ const Detonator = () => {
         .catch((error) => {
           if (error.response && error.response.status === 401) {
             Error401(error, router);
-            sessionStorage.clear();
+            localStorage.clear();
             localStorage.removeItem("cart");
             localStorage.removeItem("formData");
             router.push("/login");
@@ -258,7 +258,7 @@ const Detonator = () => {
         .catch((error) => {
           if (error.response && error.response.status === 401) {
             Error401(error, router);
-            // sessionStorage.clear();
+            // localStorage.clear();
             // localStorage.removeItem("cart");
             // localStorage.removeItem("formData");
             // router.push("/login");
@@ -275,7 +275,7 @@ const Detonator = () => {
     console.error("Error fetching data:", error);
 
     if (error.response && error.response.status === 401) {
-      sessionStorage.clear();
+      localStorage.clear();
       router.push("/login/detonator");
     }
 

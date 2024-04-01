@@ -25,7 +25,7 @@ const FormReportMerchan = () => {
 
   useEffect(() => {
     // Ensure the user is logged in
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
     } else {
@@ -48,8 +48,8 @@ const FormReportMerchan = () => {
       return;
     }
 
-    const token = sessionStorage.getItem("token");
-    const id_merchant = sessionStorage.getItem("id");
+    const token = localStorage.getItem("token");
+    const id_merchant = localStorage.getItem("id");
     const formData = new FormData();
     formData.append("destination", "rating");
     formData.append("file", image_url);

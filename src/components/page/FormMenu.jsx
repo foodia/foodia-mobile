@@ -12,10 +12,10 @@ const FormMenu = () => {
   const [Menu, setMenu] = useState(null);
 
   useEffect(() => {
-    const role = sessionStorage.getItem("role");
-    const token = sessionStorage.getItem("token");
-    const status = sessionStorage.getItem("status");
-    const idMerchant = sessionStorage.getItem("id");
+    const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+    const status = localStorage.getItem("status");
+    const idMerchant = localStorage.getItem("id");
 
     if (
       !role ||
@@ -25,7 +25,7 @@ const FormMenu = () => {
       !idMerchant
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
-      sessionStorage.clear();
+      localStorage.clear();
       localStorage.removeItem("cart");
       localStorage.removeItem("formData");
       router.push("/login/merchant");

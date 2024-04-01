@@ -163,11 +163,11 @@ const OTP = () => {
         confirmButtonColor: "#3FB648",
       }).then((result) => {
         if (result.isConfirmed) {
-          sessionStorage.setItem("fullname", registrasi.fullname);
-          sessionStorage.setItem("phone", registrasi.phone);
-          sessionStorage.setItem("email", registrasi.email);
-          sessionStorage.setItem("role", registrasi.role);
-          sessionStorage.setItem("token", registrasi.token);
+          localStorage.setItem("fullname", registrasi.fullname);
+          localStorage.setItem("phone", registrasi.phone);
+          localStorage.setItem("email", registrasi.email);
+          localStorage.setItem("role", registrasi.role);
+          localStorage.setItem("token", registrasi.token);
           router.push("/home");
         }
       });

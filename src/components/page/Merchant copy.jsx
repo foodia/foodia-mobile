@@ -18,8 +18,8 @@ const Merchant = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const id = sessionStorage.getItem('id');
-                const token = sessionStorage.getItem('token');
+                const id = localStorage.getItem('id');
+                const token = localStorage.getItem('token');
 
                 if (!id || !token) {
                     throw new Error('Missing required session data');
@@ -41,7 +41,7 @@ const Merchant = () => {
                 // You may want to handle specific errors differently (e.g., show an error message)
                 if (error.response && error.response.status === 401) {
                     // Unauthorized error (e.g., token expired)
-                    sessionStorage.clear();
+                    localStorage.clear();
                     router.push('/login');
                 }
             }
@@ -49,13 +49,13 @@ const Merchant = () => {
 
         fetchData();
 
-        const role = sessionStorage.getItem('role');
-        const token = sessionStorage.getItem('token');
-        const status = sessionStorage.getItem('status');
-        const idMerchant = sessionStorage.getItem('id');
+        const role = localStorage.getItem('role');
+        const token = localStorage.getItem('token');
+        const status = localStorage.getItem('status');
+        const idMerchant = localStorage.getItem('id');
 
         if (!role || !token || role !== 'merchant' || status !== 'approved' || !idMerchant) {
-            sessionStorage.clear();
+            localStorage.clear();
             router.push('/login');
         } else {
             setLoading(false);

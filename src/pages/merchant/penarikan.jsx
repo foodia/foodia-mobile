@@ -32,8 +32,8 @@ const penarikan = (penarikan) => {
   }, [rekening]);
 
   useEffect(() => {
-    const id = sessionStorage.getItem("id");
-    const token = sessionStorage.getItem("token");
+    const id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
 
     axios
       .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${id}`, {
@@ -87,8 +87,8 @@ const penarikan = (penarikan) => {
     }).then((result) => {
       if (result.isConfirmed) {
         setLoading(true);
-        const merchant_id = sessionStorage.getItem("id");
-        const token = sessionStorage.getItem("token");
+        const merchant_id = localStorage.getItem("id");
+        const token = localStorage.getItem("token");
         const bankMethod = {
           merchant_id: parseInt(merchant_id),
           recipient_name: recipient_name,

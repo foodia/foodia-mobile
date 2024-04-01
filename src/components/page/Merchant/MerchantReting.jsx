@@ -36,8 +36,8 @@ const MerchantReting = (MerchantReting) => {
   // };
   const handleSubmit = (event) => {
     setloading(true);
-    const id_merchant = sessionStorage.getItem("id");
-    const token = sessionStorage.getItem("token");
+    const id_merchant = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
 
     // Validation checks
     if (!star || !description) {

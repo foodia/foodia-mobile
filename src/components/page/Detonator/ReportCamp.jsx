@@ -25,9 +25,9 @@ const ReportCamp = () => {
   const [detonator_id, setDetonator_id] = useState(null);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const role = sessionStorage.getItem("role");
-    const idDetonator = sessionStorage.getItem("id");
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    const idDetonator = localStorage.getItem("id");
     setDetonator_id(idDetonator);
     setToken(token);
     setRole(role);
@@ -36,7 +36,7 @@ const ReportCamp = () => {
   //get data campaign
   useEffect(() => {
     const fetchData = async () => {
-      // const token = sessionStorage.getItem('token');
+      // const token = localStorage.getItem('token');
       try {
         if (!id) {
           throw new Error("Missing required session data");
@@ -64,7 +64,7 @@ const ReportCamp = () => {
   //get data rating
   useEffect(() => {
     const fetchData = async () => {
-      // const token = sessionStorage.getItem('token');
+      // const token = localStorage.getItem('token');
       try {
         if (!id) {
           throw new Error("Missing required session data");
@@ -94,7 +94,7 @@ const ReportCamp = () => {
   //get data report
   useEffect(() => {
     const fetchData = async () => {
-      // const token = sessionStorage.getItem('token');
+      // const token = localStorage.getItem('token');
       try {
         if (!id) {
           throw new Error("Missing required session data");
@@ -128,7 +128,7 @@ const ReportCamp = () => {
   ////////////
   useEffect(() => {
     const fetchData = async () => {
-      // const token = sessionStorage.getItem('token');
+      // const token = localStorage.getItem('token');
       try {
         if (!id) {
           throw new Error("Missing required session data");
@@ -187,7 +187,7 @@ const ReportCamp = () => {
     console.error("Error fetching data:", error);
 
     if (error.response && error.response.status === 401) {
-      sessionStorage.clear();
+      localStorage.clear();
       router.push("/login/detonator");
     }
 
