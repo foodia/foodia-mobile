@@ -805,8 +805,8 @@ function StepThree({
     setLoading(true);
     const emptyFields = [];
     const campData = JSON.parse(localStorage.getItem("formData"));
-    const detonator_id = sessionStorage.getItem("id");
-    const token = sessionStorage.getItem("token");
+    const detonator_id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
 
     const products = cart.map((item) => ({
       merchant_id: parseInt(item.merchant_id),
@@ -1164,8 +1164,8 @@ function Stepfour({
   const IdMerchan = router.query.id;
   const nameMerchant = router.query.name;
   console.log("router", router);
-  const detonator_id = sessionStorage.getItem("id");
-  const token = sessionStorage.getItem("token");
+  const detonator_id = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     // Load cart data from local storage on component mount
@@ -1335,8 +1335,8 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [location, setLocation] = useState("");
-  const detonator_id = sessionStorage.getItem("id");
-  const token = sessionStorage.getItem("token");
+  const detonator_id = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     // Check local storage for existing form data

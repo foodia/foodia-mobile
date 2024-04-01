@@ -147,8 +147,8 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
         // console.log('total Rejected', totalRejected);
         console.log("data", cart);
         setLoading(true);
-        const detonator_id = sessionStorage.getItem("id");
-        const token = sessionStorage.getItem("token");
+        const detonator_id = localStorage.getItem("id");
+        const token = localStorage.getItem("token");
         const totalCartPrice = cart.reduce(
             (total, item) => total + item.total,
             0
@@ -431,8 +431,8 @@ function StepTwo({ cart, setCart, setUploadedFile, uploadedFile, loading, dataCa
     const [dataApi, setDataApi] = useState([]);
     const id_camp = dataCamopaign?.id;
 
-    const detonator_id = sessionStorage.getItem("id");
-    const token = sessionStorage.getItem("token");
+    const detonator_id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
 
     // useEffect(() => {
     //     console.log('id order', id_order);
@@ -529,13 +529,13 @@ function StepThree({ cart, setCart, updateCart, uploadedFile, dataCamopaign, ord
     const nameMerchant = router.query.name;
     console.log("router", router);
     const [HargaTotal, setHargaTotal] = useState(0);
-    const detonator_id = sessionStorage.getItem("id");
-    const token = sessionStorage.getItem("token");
+    const detonator_id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
     const maxNominal = totalRejected.toFixed(0);
     const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(0);
     const jumlahMakanan = cart.reduce((acc, item) => acc + item.quantity, 0);
 
-    // const id_order = sessionStorage.getItem("id_order");
+    // const id_order = localStorage.getItem("id_order");
     useEffect(() => {
         console.log('data campaign stp3', dataCamopaign);
         console.log("id order", order_id);

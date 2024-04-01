@@ -40,9 +40,9 @@ const LoginPage = () => {
   })
 
   useEffect(() => {
-    const role = sessionStorage.getItem("role");
-    const token = sessionStorage.getItem("token");
-    const status = sessionStorage.getItem("status");
+    const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+    const status = localStorage.getItem("status");
 
     if (role === "detonator" && token && status === "approved") {
       router.push("/detonator");

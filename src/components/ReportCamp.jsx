@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from 'react';
 import CardReport from "./CardReport";
 import axios from 'axios';
+import Error401 from "./error401";
 const ReportCamp = () => {
     const router = useRouter();
     const { id } = router.query;
@@ -35,6 +36,9 @@ const ReportCamp = () => {
                 setLoading(false);
 
             } catch (error) {
+                if (error.response && error.response.status === 401) {
+                    Error401(error, router);
+                }
                 handleRequestError(error);
             }
         };
@@ -46,7 +50,7 @@ const ReportCamp = () => {
         console.error('Error fetching data:', error);
 
         if (error.response && error.response.status === 401) {
-            sessionStorage.clear();
+            localStorage.clear();
             router.push('/login/detonator');
         }
 

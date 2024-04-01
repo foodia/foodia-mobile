@@ -19,7 +19,7 @@ const FoodCampaign = () => {
 
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const fetchData = async () => {
             try {
                 if (!id) {
@@ -54,7 +54,7 @@ const FoodCampaign = () => {
         console.error('Error fetching data:', error);
 
         if (error.response && error.response.status === 401) {
-            sessionStorage.clear();
+            localStorage.clear();
             router.push('/login/detonator');
         }
 

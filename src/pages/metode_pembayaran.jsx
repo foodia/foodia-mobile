@@ -99,7 +99,7 @@ const MetodePembayaran = () => {
         donation_type: state.donation.detail.donation_type,
       },
     };
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     axios
       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}donation/payment`, data, {
         headers: {

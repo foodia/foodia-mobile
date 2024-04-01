@@ -77,7 +77,7 @@ const CreateReport = (CreateReport) => {
             return;
         }
         try {
-            const token = sessionStorage.getItem('token');
+            const token = localStorage.getItem('token');
             const formData = new FormData();
             formData.append('destination', 'report');
             formData.append('file', imgReport);

@@ -22,14 +22,14 @@ const PesananMerchan = () => {
     const observer = useRef();
 
     useEffect(() => {
-        const role = sessionStorage.getItem('role');
-        const token = sessionStorage.getItem('token');
-        const status = sessionStorage.getItem('status');
-        const id = sessionStorage.getItem('id');
+        const role = localStorage.getItem('role');
+        const token = localStorage.getItem('token');
+        const status = localStorage.getItem('status');
+        const id = localStorage.getItem('id');
 
         if (!role || !token || role !== 'merchant' || status !== 'approved' || !id) {
             // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
-            sessionStorage.clear();
+            localStorage.clear();
             router.push('/login/merchant');
         } else {
             // Role is 'detonator' and token is present
@@ -41,8 +41,8 @@ const PesananMerchan = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const id = sessionStorage.getItem('id');
-                const token = sessionStorage.getItem('token');
+                const id = localStorage.getItem('id');
+                const token = localStorage.getItem('token');
 
                 if (!id || !token) {
                     throw new Error('Missing required session data');

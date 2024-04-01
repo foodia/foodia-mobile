@@ -14,7 +14,7 @@ const ProfileMerchant = ({ id = 0 }) => {
     const response = axios
       .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${id}`, {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
       .then((response) => {

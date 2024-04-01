@@ -39,7 +39,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
 
   useEffect(() => {
     // Ensure the user is logged in
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
     }
@@ -136,7 +136,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
 
     try {
       // Ensure the token is valid
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       if (!token) {
         router.push("/login");
         return;
@@ -447,7 +447,7 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
       formData.append("self_photo", fotoSelfi);
       formData.append("ktp_photo", fotoKTP);
 
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       // Log the FormData for debugging purposes
       // console.error('Data req:', formData);
 

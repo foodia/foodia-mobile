@@ -486,7 +486,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
       longitude: coordinates.lng,
       DetaiAlamat,
     }));
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
       return;
@@ -718,7 +718,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 //   const [email, setEmail] = useState("");
 
 //   useEffect(() => {
-//     setEmail(sessionStorage.getItem("email"));
+//     setEmail(localStorage.getItem("email"));
 //   }, []);
 
 //   useEffect(() => {
@@ -813,7 +813,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 
 //   const handleSubmit = async (otp) => {
 //     setLoading(true);
-//     const token = sessionStorage.getItem("token");
+//     const token = localStorage.getItem("token");
 //     axios
 //       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`, {
 //         email,
@@ -1078,7 +1078,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 //       formData.append("latitude", registrasiMerchant.coordinates.lat);
 //       formData.append("longitude", registrasiMerchant.coordinates.lng);
 
-//       const token = sessionStorage.getItem("token");
+//       const token = localStorage.getItem("token");
 //       // Log the FormData for debugging purposes
 //       // console.error('Data req:', formData);
 
@@ -1101,7 +1101,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 //       router.push("/registrasi/merchant?step=4");
 //     } catch (error) {
 //       if (error.response && error.response.status === 401) {
-//         sessionStorage.clear();
+//         localStorage.clear();
 //         router.push("/login");
 //       }
 //       if (error.response && error.response.status === 500) {
@@ -1345,7 +1345,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 //     } catch (error) {
 //       console.error("Error handling submit:", error);
 //       if (error.response && error.response.status === 401) {
-//         sessionStorage.clear();
+//         localStorage.clear();
 //         router.push("/login");
 //       }
 //       const imageUrl = "/img/illustration/checklist.png";

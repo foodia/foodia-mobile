@@ -62,8 +62,8 @@ const ReportFood = (ReportFood) => {
             return;
         }
         try {
-            const token = sessionStorage.getItem('token');
-            const id_detonator = sessionStorage.getItem('id');
+            const token = localStorage.getItem('token');
+            const id_detonator = localStorage.getItem('id');
             const formData = new FormData();
             formData.append('destination', 'rating');
             formData.append('file', imgReport);

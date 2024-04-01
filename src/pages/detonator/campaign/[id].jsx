@@ -11,7 +11,7 @@ const Campaign = () => {
   const [campaignData, setCampaignData] = useState(null);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const fetchData = async () => {
       try {
         const response = await axios.get(

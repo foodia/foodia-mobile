@@ -12,14 +12,14 @@ const profile = (profile) => {
   const [dataUser, setDataUser] = useState();
 
   useEffect(() => {
-    const sesionRole = sessionStorage.getItem("role");
+    const sesionRole = localStorage.getItem("role");
     const userData = {
-      fullname: sessionStorage.getItem("fullname"),
-      phone: sessionStorage.getItem("phone"),
-      email: sessionStorage.getItem("email"),
-      role: sessionStorage.getItem("role"),
-      token: sessionStorage.getItem("token"),
-      id: sessionStorage.getItem("id"),
+      fullname: localStorage.getItem("fullname"),
+      phone: localStorage.getItem("phone"),
+      email: localStorage.getItem("email"),
+      role: localStorage.getItem("role"),
+      token: localStorage.getItem("token"),
+      id: localStorage.getItem("id"),
     };
     setDataUser(userData);
 
@@ -31,7 +31,7 @@ const profile = (profile) => {
   }, [role]);
 
   const btnLogout = () => {
-    sessionStorage.clear();
+    localStorage.clear();
     localStorage.clear();
     localStorage.removeItem("cart");
     localStorage.removeItem("formData");

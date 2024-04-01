@@ -17,8 +17,8 @@ const Edit = () => {
     const [noted, setNoted] = useState('');
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
-        const id = sessionStorage.getItem('id');
+        const token = localStorage.getItem('token');
+        const id = localStorage.getItem('id');
         if (!token || !id) {
             router.push('/login');
         }
@@ -109,7 +109,7 @@ const Edit = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
 
         const formData = new FormData();
 

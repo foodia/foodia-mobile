@@ -63,7 +63,7 @@ const CardFood = (props) => {
             `merchant-product/delete/${idProduct}`,
             {
               headers: {
-                authorization: `Bearer ${sessionStorage.getItem("token")}`,
+                authorization: `Bearer ${localStorage.getItem("token")}`,
               },
             }
           )
@@ -161,12 +161,12 @@ const CardFood = (props) => {
                 ) : (
                   <div
                     className={`flex justify-center items-center rounded-full h-5 ${status === "waiting"
-                        ? "bg-blue-600"
-                        : status === "approved"
-                          ? "bg-green-500"
-                          : status === "rejected"
-                            ? "bg-red-500"
-                            : ""
+                      ? "bg-blue-600"
+                      : status === "approved"
+                        ? "bg-green-500"
+                        : status === "rejected"
+                          ? "bg-red-500"
+                          : ""
                       }`}
                   >
                     <p className="text-white font-medium text-[10px] px-2">

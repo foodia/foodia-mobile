@@ -51,14 +51,14 @@ const Merchant = () => {
 
         if (error.response && error.response.status === 401) {
           // Unauthorized error (e.g., token expired)
-          sessionStorage.clear();
+          localStorage.clear();
           router.push("/login");
         }
       });
   };
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       Swal.fire({
         icon: "error",

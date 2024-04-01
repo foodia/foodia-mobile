@@ -22,14 +22,14 @@ const FormCampaing = () => {
   const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
-  //     const role = sessionStorage.getItem('role');
-  //     const token = sessionStorage.getItem('token');
-  //     const status = sessionStorage.getItem('status');
-  //     const idDetonator = sessionStorage.getItem('id');
+  //     const role = localStorage.getItem('role');
+  //     const token = localStorage.getItem('token');
+  //     const status = localStorage.getItem('status');
+  //     const idDetonator = localStorage.getItem('id');
 
   //     if (!role || !token || role !== 'detonator' || status !== 'approved' || !idDetonator) {
   //         // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
-  //         sessionStorage.clear();
+  //         localStorage.clear();
   //         localStorage.removeItem('cart');
   //         localStorage.removeItem('formData');
   //         router.push('/login/detonator');
