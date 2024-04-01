@@ -8,7 +8,7 @@ import NextTopLoader from "nextjs-toploader";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter(); // Deklarasikan useRouter
-  const id_user = localStorage.getItem("id");
+  const [id_user, setIdUser] = useState("");
   const [userData, setUserData] = useState({
     id: "",
     fullname: "",
@@ -21,6 +21,7 @@ export default function App({ Component, pageProps }) {
   }); // Buat state untuk menyimpan data pengguna
 
   useEffect(() => {
+    setIdUser(sessionStorage.getItem("id"));
     const fullname = localStorage.getItem("fullname");
     const phone = localStorage.getItem("phone");
     const email = localStorage.getItem("email");

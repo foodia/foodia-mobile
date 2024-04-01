@@ -92,10 +92,13 @@ const Detonator = () => {
             // }, 2000);
           } else {
             if (cekData.detonator.status == "waiting") {
-              sessionStorage.setItem("id", cekData.detonator.detonator_id);
-              sessionStorage.setItem("role", "detonator");
-              sessionStorage.setItem("status", cekData.detonator.status);
-              sessionStorage.setItem("note", cekData.detonator.note);
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
+              //       localStorage.setItem("id", responeData.id || " ");
+              // localStorage.setItem("status", responeData.status || " ");
+              // localStorage.setItem("note", responeData.note || " ");
 
               Swal.fire({
                 icon: "warning",
@@ -109,10 +112,10 @@ const Detonator = () => {
               }, 2000);
             } else if (cekData.detonator.status == "rejected") {
               setLoading(false);
-              sessionStorage.setItem("id", cekData.detonator.detonator_id);
-              sessionStorage.setItem("role", "detonator");
-              sessionStorage.setItem("status", cekData.detonator.status);
-              sessionStorage.setItem("note", cekData.detonator.note);
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
               Swal.fire({
                 icon: "warning",
                 title: "Detonator Ditolak",
@@ -124,10 +127,10 @@ const Detonator = () => {
                 router.push("/detonator/edit");
               }, 2000);
             } else {
-              sessionStorage.setItem("id", cekData.detonator.detonator_id);
-              sessionStorage.setItem("role", "detonator");
-              sessionStorage.setItem("status", cekData.detonator.status);
-              sessionStorage.setItem("note", cekData.detonator.note);
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
             }
           }
           console.log("data", cekData);
