@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Link } from "tabler-icons-react";
 import Header from "@/components/Header";
 import CardRepordFood from "@/components/CardRepordFood";
+import Error401 from "@/components/error401";
 const FoodCampaign = () => {
     const router = useRouter();
     const { id } = router.query;
@@ -18,7 +19,7 @@ const FoodCampaign = () => {
 
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const fetchData = async () => {
             try {
                 if (!id) {
@@ -37,6 +38,10 @@ const FoodCampaign = () => {
                 console.log('data', response.data.body);
 
             } catch (error) {
+                if (error.response && error.response.status === 401) {
+                    Error401(error, router);
+
+                }
                 handleRequestError(error);
             }
         };
@@ -49,7 +54,7 @@ const FoodCampaign = () => {
         console.error('Error fetching data:', error);
 
         if (error.response && error.response.status === 401) {
-            sessionStorage.clear();
+            localStorage.clear();
             router.push('/login/detonator');
         }
 
@@ -70,7 +75,7 @@ const FoodCampaign = () => {
             <main className="my-0 mx-auto min-h-full mobile-w">
                 <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
 
-                    <Header title="Lacak Pesanan" />
+                    <Header title="Lacak Pesanan" backto={`/detonator/campaign/${id}`} />
                     <div className="container mx-auto mt-24 bg-white h-screen">
 
                         <div className="mx-auto text-center p-2 text-primary">

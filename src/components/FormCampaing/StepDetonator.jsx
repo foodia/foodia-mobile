@@ -16,6 +16,7 @@ import axios from "axios";
 import SweetAlert from "../SweetAlert";
 import Swal from "sweetalert2";
 import Loading from "../Loading";
+import Error401 from "../error401";
 
 function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
   const router = useRouter();
@@ -38,7 +39,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
 
   useEffect(() => {
     // Ensure the user is logged in
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
     }
@@ -60,7 +61,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
     const file = event.target.files[0];
 
     if (file) {
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
       const maxSize = 5 * 1024 * 1024; // 2.5MB
 
       if (!allowedTypes.includes(file.type)) {
@@ -87,7 +88,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
     const file = event.target.files[0];
 
     if (file) {
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.type)) {
@@ -135,7 +136,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
 
     try {
       // Ensure the token is valid
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       if (!token) {
         router.push("/login");
         return;
@@ -446,7 +447,7 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
       formData.append("self_photo", fotoSelfi);
       formData.append("ktp_photo", fotoKTP);
 
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       // Log the FormData for debugging purposes
       // console.error('Data req:', formData);
 

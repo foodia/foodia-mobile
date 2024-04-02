@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import Loading from '@/components/Loading';
+import Error401 from '@/components/error401';
 import { IconUser } from '@tabler/icons-react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -16,8 +17,8 @@ const Edit = () => {
     const [noted, setNoted] = useState('');
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
-        const id = sessionStorage.getItem('id');
+        const token = localStorage.getItem('token');
+        const id = localStorage.getItem('id');
         if (!token || !id) {
             router.push('/login');
         }
@@ -37,8 +38,7 @@ const Edit = () => {
                 setNoted(response.data.body?.note || '');
             } catch (error) {
                 if (error.response && error.response.status === 401) {
-                    sessionStorage.clear();
-                    router.push('/login');
+                    Error401(error, router);
                 }
             } finally {
                 setLoading(false);
@@ -109,7 +109,7 @@ const Edit = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
 
         const formData = new FormData();
 
@@ -145,6 +145,10 @@ const Edit = () => {
                 router.push("/home");
             }, 2000);
         } catch (error) {
+            if (error.response && error.response.status === 401) {
+                Error401(error, router);
+
+            }
             console.log('error', error);
             Swal.fire({
                 icon: "error",

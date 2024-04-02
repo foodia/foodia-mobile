@@ -6,8 +6,8 @@ import { useRouter } from "next/router";
 
 const GantiMenu = ({ pageProps }) => {
     // useEffect(() => {
-    //     const role = sessionStorage.getItem('role');
-    //     const token = sessionStorage.getItem('token');
+    //     const role = localStorage.getItem('role');
+    //     const token = localStorage.getItem('token');
 
     //     if (!role || !token || role !== 'detonator') {
     //         // Redirect to login if either role or token is missing or role is not 'detonator'

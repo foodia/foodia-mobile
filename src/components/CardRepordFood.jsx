@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Loading from "./Loading";
+import Error401 from "./error401";
 
 const CardRepordFood = (props) => {
     const [loading, setLoading] = useState(false);
@@ -36,8 +37,8 @@ const CardRepordFood = (props) => {
     const [id_detonator, setIdDetonator] = useState();
 
     useEffect(() => {
-        const role = sessionStorage.getItem("role");
-        setIdDetonator(sessionStorage.getItem("id"));
+        const role = localStorage.getItem("role");
+        setIdDetonator(localStorage.getItem("id"));
         setRole(role);
         console.log("role", role);
     }, []);
@@ -67,7 +68,7 @@ const CardRepordFood = (props) => {
         }
     };
     const handleButoon = () => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         if (order_status === "tolak") {
             if (is_rating) {
                 return;
@@ -80,19 +81,23 @@ const CardRepordFood = (props) => {
                         showConfirmButton: true,
                         confirmButtonText: "Ganti Menu",
                         confirmButtonColor: "green",
-                        showCancelButton: true,
-                        cancelButtonText: "Lanjutkan Campaign",
-                        cancelButtonColor: "orange",
+                        showDenyButton: true,
+                        denyButtonText: "Lanjutkan Campaign",
+                        denyButtonColor: "Orange",
                         // timer: 2000,
                     }).then((result) => {
                         if (result.isConfirmed) {
                             router.push(`/detonator/ganti-menu?ord=${id_order}&cmp=${id}&step=1`);
+                            // console.log("ganti menu");
                         } else if (result.isDismissed) {
-                            // router.push("/home");
+
+                        } else if (result.isDenied) {
+                            /// Lanjutkan Campaign
+
                             setLoading(true);
-                            const response = axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/continue-order/${id_order}`, {
+                            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/continue-order/${id_order}`, {
                                 headers: {
-                                    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                                 },
                             })
                                 .then((response) => {
@@ -102,8 +107,7 @@ const CardRepordFood = (props) => {
                                         showConfirmButton: true,
                                         confirmButtonText: "Lanjutkan",
                                         confirmButtonColor: "green",
-
-                                    })
+                                    });
                                     setLoading(false);
                                     console.log("response", response);
                                     // router.push(`/detonator/campaign/${id}`);
@@ -111,17 +115,21 @@ const CardRepordFood = (props) => {
                                 .catch((error) => {
                                     setLoading(false);
                                     if (error.response && error.response.status === 401) {
-                                        sessionStorage.clear();
-                                        router.push('/login');
+                                        Error401(error, router);
                                     }
-                                })
+                                });
+                            // console.log("Tidak ada tindakan yang diambil");
+                        } else {
+                            // console.log("lanjutkan");
+                            return;
                         }
                     });
+
+
                     // console.log("to", to);
                     // console.log("cek iddetonator", detonator_id);
 
                 } else {
-                    return;
                 }
             }
         } else {

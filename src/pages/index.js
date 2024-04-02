@@ -13,7 +13,7 @@ const Home = () => {
   const [token, setToken] = useState("");
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (token) {
       setToken(token);
       router.push("/home");

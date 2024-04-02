@@ -163,7 +163,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     const file = event.target.files[0];
 
     if (file) {
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.type)) {
@@ -573,6 +573,17 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
       window.alert("All fields are required");
       return;
     }
+    if (!coordinates) {
+      Swal.fire({
+        icon: "error",
+        title: "Koordinat tidak ditemukan",
+        text: "lokasi tidak ditemukan, Silakan pilih lokasi di peta",
+        showConfirmButton: false,
+        timer: 2000
+
+      })
+      return;
+    }
 
     const formData = {
       // set the existing data
@@ -792,8 +803,48 @@ function StepThree({
   const handleSubmit = async () => {
     console.log("data", cart);
     setLoading(true);
+    const emptyFields = [];
+    const campData = JSON.parse(localStorage.getItem("formData"));
+    const detonator_id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
+
+    const products = cart.map((item) => ({
+      merchant_id: parseInt(item.merchant_id),
+      merchant_product_id: parseInt(item.id),
+      qty: parseInt(item.quantity),
+    }));
+
+    // Validate data
+    if (!detonator_id) emptyFields.push("Detonator ID");
+    if (!campData.eventName) emptyFields.push("Event Name");
+    if (!campData.TypeEvent) emptyFields.push("Event Type");
+    if (!campData.Tanggal) emptyFields.push("Event Date");
+    if (!campData.Waktu) emptyFields.push("Event Time");
+    if (!campData.Description) emptyFields.push("Description");
+    if (!campData.province) emptyFields.push("Province");
+    if (!campData.city) emptyFields.push("City");
+    // if (!campData.sub_district) emptyFields.push("Sub District");
+    // if (!campData.postal_code) emptyFields.push("Postal Code");
+    if (!campData.location) emptyFields.push("Address");
+    if (!campData.coordinates.lat) emptyFields.push("Latitude");
+    if (!campData.coordinates.lng) emptyFields.push("Longitude");
+    // if (!mediaUploadResponse.data.body.file_url) emptyFields.push("Image URL");
+    if (!products) emptyFields.push("Products");
+
+    if (emptyFields.length > 0) {
+      const errorMessage = `Please fill in all required fields: ${emptyFields.join(", ")}`;
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
+        showConfirmButton: false,
+        timer: 2000
+      });
+
+      setLoading(false);
+      return;
+    }
     try {
-      // Retrieve formData from local storage
       const totalCartPrice = cart.reduce(
         (total, item) => total + item.total,
         0
@@ -802,9 +853,7 @@ function StepThree({
         (total, item) => total + item.quantity,
         0
       );
-      const campData = JSON.parse(localStorage.getItem("formData"));
-      const detonator_id = sessionStorage.getItem("id");
-      const token = sessionStorage.getItem("token");
+
 
       const formData = new FormData();
       formData.append("destination", "campaign");
@@ -826,11 +875,7 @@ function StepThree({
       );
 
       if (mediaUploadResponse.status === 200) {
-        const products = cart.map((item) => ({
-          merchant_id: parseInt(item.merchant_id),
-          merchant_product_id: parseInt(item.id),
-          qty: parseInt(item.quantity),
-        }));
+
 
         const eventData = {
           detonator_id: parseInt(detonator_id),
@@ -961,11 +1006,10 @@ function StepThree({
         <div className="items-center justify-center mt-5 w-full">
           <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
             <div
-              className={`flex ${
-                Object.keys(groupedCart).length > 0
-                  ? "justify-between"
-                  : "justify-center"
-              } w-full`}
+              className={`flex ${Object.keys(groupedCart).length > 0
+                ? "justify-between"
+                : "justify-center"
+                } w-full`}
             >
               <div className="flex">
                 {Object.keys(groupedCart).length > 0 ? (
@@ -1010,84 +1054,83 @@ function StepThree({
           {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
           {Object.keys(groupedCart).length > 0
             ? Object.keys(groupedCart).map((IdMerchan, storeIndex) => (
-                <div key={storeIndex} className="mb-4 p-2">
-                  {/* <h2 className="text-xl font-semibold my-2">ID :{IdMerchan}</h2> */}
-                  {groupedCart[IdMerchan].map((item, itemIndex) => (
-                    <div
-                      key={itemIndex}
-                      className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
-                    >
-                      <div className="flex h-30 w-full">
-                        <img
-                          className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
-                          src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${
-                            item.images.length > 0
-                              ? item.images[0].image_url
-                              : ""
+              <div key={storeIndex} className="mb-4 p-2">
+                {/* <h2 className="text-xl font-semibold my-2">ID :{IdMerchan}</h2> */}
+                {groupedCart[IdMerchan].map((item, itemIndex) => (
+                  <div
+                    key={itemIndex}
+                    className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
+                  >
+                    <div className="flex h-30 w-full">
+                      <img
+                        className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
+                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0
+                          ? item.images[0].image_url
+                          : ""
                           }`}
-                          alt=""
-                        />
-                        <div className="flex flex-col justify-between w-full">
-                          <div className="text-left place-items-start">
-                            <div className="text-primary font-bold capitalize">
-                              {item.name}
-                              {/* {item.imageUrl} */}
-                            </div>
-                            <div className="mb-1 font-sans text-[11px]">
-                              {/* terjual | Disukai oleh: 20 | */}
-                              Max Quota: {item.capacity}
-                            </div>
-                            <div className="mb-1 font-sans text-[11px]">
-                              {item.description}
-                            </div>
-                            {/* <p className="text-gray-600 mt-2">{`Total: Rp${(item.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
-                            {/* <p className="text-gray-700">{`Total: $${item.total.toFixed(2)}`}</p> */}
+                        alt=""
+                      />
+                      <div className="flex flex-col justify-between w-full">
+                        <div className="text-left place-items-start">
+                          <div className="text-primary font-bold capitalize">
+                            {item.name}
+                            {/* {item.imageUrl} */}
                           </div>
-                          <div className="mt-2 flex flex-row gap-4 justify-between">
-                            <p className="font-bold text-primary">{`Rp ${(
-                              item.price * item.quantity
-                            ).toLocaleString(undefined, {
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 0,
-                            })}`}</p>
-                            <div className="grid place-items-center">
-                              <div className="flex items-center">
-                                <button
-                                  className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                  onClick={() =>
-                                    handleDecrease(
-                                      IdMerchan,
-                                      item.id,
-                                      item.capacity
-                                    )
-                                  }
-                                >
-                                  <IconMinus size={15} />
-                                </button>
-                                <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
-                                  {item.quantity}
-                                </span>
-                                <button
-                                  className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                  onClick={() =>
-                                    handleIncrease(
-                                      IdMerchan,
-                                      item.id,
-                                      item.capacity
-                                    )
-                                  }
-                                >
-                                  <IconPlus size={15} />
-                                </button>
-                              </div>
+                          <div className="mb-1 font-sans text-[11px]">
+                            {/* terjual | Disukai oleh: 20 | */}
+                            Max Quota: {item.capacity}
+                          </div>
+                          <div className="mb-1 font-sans text-[11px]">
+                            {item.description}
+                          </div>
+                          {/* <p className="text-gray-600 mt-2">{`Total: Rp${(item.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
+                          {/* <p className="text-gray-700">{`Total: $${item.total.toFixed(2)}`}</p> */}
+                        </div>
+                        <div className="mt-2 flex flex-row gap-4 justify-between">
+                          <p className="font-bold text-primary">{`Rp ${(
+                            item.price * item.quantity
+                          ).toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                          })}`}</p>
+                          <div className="grid place-items-center">
+                            <div className="flex items-center">
+                              <button
+                                className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                onClick={() =>
+                                  handleDecrease(
+                                    IdMerchan,
+                                    item.id,
+                                    item.capacity
+                                  )
+                                }
+                              >
+                                <IconMinus size={15} />
+                              </button>
+                              <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
+                                {item.quantity}
+                              </span>
+                              <button
+                                className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                onClick={() =>
+                                  handleIncrease(
+                                    IdMerchan,
+                                    item.id,
+                                    item.capacity
+                                  )
+                                }
+                              >
+                                <IconPlus size={15} />
+                              </button>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              ))
+                  </div>
+                ))}
+              </div>
+            ))
             : ""}
         </div>
         {/* </div> */}
@@ -1121,8 +1164,8 @@ function Stepfour({
   const IdMerchan = router.query.id;
   const nameMerchant = router.query.name;
   console.log("router", router);
-  const detonator_id = sessionStorage.getItem("id");
-  const token = sessionStorage.getItem("token");
+  const detonator_id = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     // Load cart data from local storage on component mount
@@ -1172,11 +1215,11 @@ function Stepfour({
       const updatedCart = cart.map((item, index) =>
         index === existingItemIndex
           ? {
-              ...item,
-              quantity: item.quantity + food.quantity,
-              total: (item.quantity + food.quantity) * item.price,
-              capacity: food.qty,
-            }
+            ...item,
+            quantity: item.quantity + food.quantity,
+            total: (item.quantity + food.quantity) * item.price,
+            capacity: food.qty,
+          }
           : item
       );
       setCart(updatedCart);
@@ -1217,7 +1260,10 @@ function Stepfour({
 
   // console.log('groupedFoods', groupedFoods);
   // Calculate total price and total quantity
-  const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(0);
+  // const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(0);
+  const totalHarga = cart.reduce((acc, item) => acc + parseFloat(item.total), 0).toFixed(0);
+
+  console.log('Total harga:', totalHarga);
   const jumlahMakanan = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
@@ -1289,8 +1335,8 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [location, setLocation] = useState("");
-  const detonator_id = sessionStorage.getItem("id");
-  const token = sessionStorage.getItem("token");
+  const detonator_id = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     // Check local storage for existing form data

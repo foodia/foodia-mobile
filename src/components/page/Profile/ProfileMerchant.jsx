@@ -1,9 +1,12 @@
+import Error401 from "@/components/error401";
 import { IconEdit } from "@tabler/icons-react";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const ProfileMerchant = ({ id = 0 }) => {
+  const router = useRouter();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
 
@@ -11,7 +14,7 @@ const ProfileMerchant = ({ id = 0 }) => {
     const response = axios
       .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${id}`, {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
       .then((response) => {
@@ -19,6 +22,10 @@ const ProfileMerchant = ({ id = 0 }) => {
         setLoading(false);
       })
       .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         console.error("Error fetching data:", error);
       });
     console.log("data Merchant", data);

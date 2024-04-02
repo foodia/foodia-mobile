@@ -8,6 +8,7 @@ import moment from "moment/moment";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { useAppState } from "../UserContext";
+import Error401 from "@/components/error401";
 
 const DetailPesanan = () => {
   const router = useRouter();
@@ -22,10 +23,10 @@ const DetailPesanan = () => {
   };
 
   useEffect(() => {
-    const role = sessionStorage.getItem("role");
-    const token = sessionStorage.getItem("token");
-    const status = sessionStorage.getItem("status");
-    const id = sessionStorage.getItem("id");
+    const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+    const status = localStorage.getItem("status");
+    const id = localStorage.getItem("id");
 
     if (
       !role ||
@@ -35,7 +36,7 @@ const DetailPesanan = () => {
       !id
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
-      sessionStorage.clear();
+      localStorage.clear();
       router.push("/login/merchant");
     } else {
       // Role is 'detonator' and token is present
@@ -45,7 +46,7 @@ const DetailPesanan = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
 
         if (!token) {
           throw new Error("Missing required session data token");
@@ -67,6 +68,9 @@ const DetailPesanan = () => {
         setLoading(false);
         // console.log('data', dataApi);
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+        }
         console.error("Error fetching data:", error);
         setLoading(false);
       }
@@ -93,8 +97,8 @@ const DetailPesanan = () => {
     if (result.isConfirmed) {
       setLoading(false);
       try {
-        const id = sessionStorage.getItem("id");
-        const token = sessionStorage.getItem("token");
+        const id = localStorage.getItem("id");
+        const token = localStorage.getItem("token");
 
         if (!id || !token) {
           throw new Error("Missing required session data");
@@ -115,6 +119,10 @@ const DetailPesanan = () => {
 
         console.log(response.data);
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         console.error(error);
       }
     }
@@ -138,8 +146,8 @@ const DetailPesanan = () => {
     if (result.isConfirmed) {
       setLoading(false);
       try {
-        const id = sessionStorage.getItem("id");
-        const token = sessionStorage.getItem("token");
+        const id = localStorage.getItem("id");
+        const token = localStorage.getItem("token");
 
         if (!id || !token) {
           throw new Error("Missing required session data");
@@ -159,6 +167,10 @@ const DetailPesanan = () => {
         setLoading(true);
         console.log(response.data);
       } catch (error) {
+        if (error.response.status === 401) {
+          Error401(error, router);
+
+        }
         console.error(error);
       }
       // await handleAprov();
@@ -176,8 +188,9 @@ const DetailPesanan = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.error("Gagal memasukkan data:", error);
-      console.log("Tidak berhasil dimasukan");
+      if (error.response && error.response.status === 401) {
+        Error401(error, router);
+      }
     }
   };
   const getStatusIcon = () => {

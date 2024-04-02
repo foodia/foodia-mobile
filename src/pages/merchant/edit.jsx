@@ -7,6 +7,7 @@ import { IconUser, IconCurrentLocation, IconMap, IconBuilding, IconHome, IconMai
 import Loading from '@/components/Loading';
 import { IconId } from '@tabler/icons-react';
 import Header from '@/components/Header';
+import Error401 from '@/components/error401';
 
 const DynamicMap = dynamic(() => import('@/components/page/GeoMap'), { ssr: false });
 
@@ -56,8 +57,8 @@ const EditMerchant = () => {
     };
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
-        const id = sessionStorage.getItem('id');
+        const token = localStorage.getItem('token');
+        const id = localStorage.getItem('id');
         if (!token || !id) {
             router.push('/login');
         }
@@ -82,8 +83,7 @@ const EditMerchant = () => {
                 setNoted(response.data.body?.note || '');
             } catch (error) {
                 if (error.response && error.response.status === 401) {
-                    sessionStorage.clear();
-                    router.push('/login');
+                    Error401(error, router);
                 }
             } finally {
                 setLoading(false);
@@ -165,7 +165,7 @@ const EditMerchant = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const formData = new FormData();
         if (fotoSelfi) {
             formData.append('self_photo', fotoSelfi);
@@ -226,6 +226,9 @@ const EditMerchant = () => {
                 router.push('/home');
             }, 2000);
         } catch (error) {
+            if (error.response && error.response.status === 401) {
+                Error401(error, router);
+            }
             console.error('Update merchant Failed:', error);
             Swal.fire({
                 icon: 'error',

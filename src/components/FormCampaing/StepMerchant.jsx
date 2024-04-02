@@ -21,6 +21,7 @@ import LinkAja from "../../../public/icon/payment/LinkAja.png";
 import RoutStep from "../RoutStep";
 import SweetAlert from "../SweetAlert";
 import Loading from "../Loading";
+import Error401 from "../error401";
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
 function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
@@ -73,7 +74,7 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
   const handleself_photoChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.type)) {
@@ -98,7 +99,7 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
   const handlektp_photoChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.type)) {
@@ -377,13 +378,13 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
             type="submit"
             className={
               !merchant_name ||
-              !ktp_number ||
-              !self_photo ||
-              !ktp_photo ||
-              !validPhone ||
-              !validKTP ||
-              !validName ||
-              merchant_name.length > 64
+                !ktp_number ||
+                !self_photo ||
+                !ktp_photo ||
+                !validPhone ||
+                !validKTP ||
+                !validName ||
+                merchant_name.length > 64
                 ? "text-white bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-xl w-full sm:w-auto px-5 py-2.5 text-center"
                 : "text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-xl w-full sm:w-auto px-5 py-2.5 text-center"
             }
@@ -485,7 +486,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
       longitude: coordinates.lng,
       DetaiAlamat,
     }));
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
       return;
@@ -553,10 +554,9 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
       .catch((error) => {
         setLoading(false);
         if (error.response && error.response.status === 401) {
-          sessionStorage.clear();
-          router.push("/login");
+          Error401(error, router);
         }
-        if (error.response && error.response.status === 500) {
+        else if (error.response && error.response.status === 500) {
           // Handle 500 Internal Server Error
           const imageUrl = "/img/illustration/checklist.png";
           setLoading(false);
@@ -569,11 +569,17 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
             imageAlt: "Custom image",
             width: 350,
           });
+        } else {
+          setLoading(false);
+          SweetAlert({
+            title: "",
+            text: `${error.response.data.message}`,
+            width: 350,
+          });
         }
+        // router.push("/registrasi/merchant?step=3");
       });
-
-    // router.push("/registrasi/merchant?step=3");
-  };
+  }
 
   return (
     <>
@@ -634,7 +640,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
               type="text"
               className="ml-2 w-full text-black px-1 p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
               placeholder="Wilayah"
-              // required
+            // required
             />
           </div>
           <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
@@ -684,11 +690,11 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
               type="submit"
               className={
                 !address ||
-                !province ||
-                !city ||
-                !sub_district ||
-                !postal_code ||
-                !coordinates
+                  !province ||
+                  !city ||
+                  !sub_district ||
+                  !postal_code ||
+                  !coordinates
                   ? `text-white bg-gray-400 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center`
                   : `text-white bg-primary focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center`
               }
@@ -712,7 +718,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 //   const [email, setEmail] = useState("");
 
 //   useEffect(() => {
-//     setEmail(sessionStorage.getItem("email"));
+//     setEmail(localStorage.getItem("email"));
 //   }, []);
 
 //   useEffect(() => {
@@ -807,7 +813,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 
 //   const handleSubmit = async (otp) => {
 //     setLoading(true);
-//     const token = sessionStorage.getItem("token");
+//     const token = localStorage.getItem("token");
 //     axios
 //       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`, {
 //         email,
@@ -1072,7 +1078,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 //       formData.append("latitude", registrasiMerchant.coordinates.lat);
 //       formData.append("longitude", registrasiMerchant.coordinates.lng);
 
-//       const token = sessionStorage.getItem("token");
+//       const token = localStorage.getItem("token");
 //       // Log the FormData for debugging purposes
 //       // console.error('Data req:', formData);
 
@@ -1095,7 +1101,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 //       router.push("/registrasi/merchant?step=4");
 //     } catch (error) {
 //       if (error.response && error.response.status === 401) {
-//         sessionStorage.clear();
+//         localStorage.clear();
 //         router.push("/login");
 //       }
 //       if (error.response && error.response.status === 500) {
@@ -1339,7 +1345,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 //     } catch (error) {
 //       console.error("Error handling submit:", error);
 //       if (error.response && error.response.status === 401) {
-//         sessionStorage.clear();
+//         localStorage.clear();
 //         router.push("/login");
 //       }
 //       const imageUrl = "/img/illustration/checklist.png";

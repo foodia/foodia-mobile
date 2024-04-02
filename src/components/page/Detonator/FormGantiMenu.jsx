@@ -18,16 +18,17 @@ const FormCampaing = () => {
     const [dataCamopaign, setDataCampaign] = useState(null);
     const [order_id, setOrder_id] = useState(null);
     const [totalRejected, setTotalRejected] = useState(0);
+    const [RejectedQty, setRejectedQty] = useState(0);
 
     // useEffect(() => {
-    //     const role = sessionStorage.getItem('role');
-    //     const token = sessionStorage.getItem('token');
-    //     const status = sessionStorage.getItem('status');
-    //     const idDetonator = sessionStorage.getItem('id');
+    //     const role = localStorage.getItem('role');
+    //     const token = localStorage.getItem('token');
+    //     const status = localStorage.getItem('status');
+    //     const idDetonator = localStorage.getItem('id');
 
     //     if (!role || !token || role !== 'detonator' || status !== 'approved' || !idDetonator) {
     //         // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
-    //         sessionStorage.clear();
+    //         localStorage.clear();
     //         localStorage.removeItem('cart');
     //         localStorage.removeItem('formData');
     //         router.push('/login/detonator');
@@ -40,7 +41,7 @@ const FormCampaing = () => {
     // Retrieve form data from local storage on component mount
     useEffect(() => {
         setOrder_id(ord);
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const response = axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${id_camp}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -49,11 +50,14 @@ const FormCampaing = () => {
             .then((response) => {
                 setDataCampaign(response.data.body);
                 const DataOrder = response.data.body.orders;
-                const rejectedOrders = DataOrder.filter((item) => item.approval_status === "rejected");
+                const rejectedOrders = DataOrder.filter((order) => order.id === parseInt(ord));
                 const totalRejectedAmount = rejectedOrders.reduce((total, item) => total + item.total_amount, 0);
                 // console.log('Total jumlah total_amount dari order yang ditolak:', totalRejectedAmount);
                 setTotalRejected(totalRejectedAmount);
+                setRejectedQty(rejectedOrders[0].qty);
+                console.log('jumlah qty rejected', RejectedQty);
                 console.log('data Camp', response.data.body);
+                console.log('data order rejected', rejectedOrders);
             })
             .catch((error) => {
                 if (error.response && error.response.status === 401) {
@@ -92,11 +96,13 @@ const FormCampaing = () => {
                 cart={cart}
                 setCart={setCart}
                 dataCamopaign={dataCamopaign}
+                RejectedQty={RejectedQty}
                 order_id={order_id}
                 totalRejected={totalRejected}
                 setUploadedFile={setUploadedFile}
                 uploadedFile={uploadedFile}
                 loading={loading}
+                updateCart={updateCart}
                 setLoading={setLoading}
             />
         );
@@ -104,6 +110,7 @@ const FormCampaing = () => {
     } else if (step === "2") {
         stepComponent = (
             <StepTwo
+
                 cart={cart}
                 setCart={setCart}
                 dataCamopaign={dataCamopaign}
@@ -120,9 +127,11 @@ const FormCampaing = () => {
             <StepThree
                 cart={cart}
                 setCart={setCart}
+                RejectedQty={RejectedQty}
                 order_id={order_id}
                 totalRejected={totalRejected}
                 dataCamopaign={dataCamopaign}
+                updateCart={updateCart}
                 setUploadedFile={setUploadedFile}
                 uploadedFile={uploadedFile}
                 loading={loading}

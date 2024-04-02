@@ -1,17 +1,31 @@
-// components/FormCampaing/AddFoodCamp.jsx
-import React, { useState } from 'react';
-import { IconCirclePlus } from '@tabler/icons-react';
-import Swal from 'sweetalert2';
+// components/FormCampaing/ChangeFood.jsx
+import React, { useEffect, useState } from "react";
+import {
+    IconChevronDown,
+    IconChevronUp,
+    IconCirclePlus,
+    IconPlus,
+    IconTrash,
+} from "@tabler/icons-react";
 
-
-const ChangeFood = ({ id, name, price, images, description, qty, addToCart, merchant_id, totalAmountRejected, totalAmount }) => {
-    const firstImageUrl = images.length > 0 ? images[0].image_url : '';
+const ChangeFood = ({
+    id,
+    name,
+    price,
+    images,
+    description,
+    qty,
+    addToCart,
+    removeFromCart,
+    merchant_id,
+    cart,
+}) => {
+    const firstImageUrl = images.length > 0 ? images[0].image_url : "";
     const [quantity, setQuantity] = useState(1);
 
     const handleIncrease = () => {
         if (quantity < qty) {
             setQuantity(quantity + 1);
-
         }
         console.log(images);
     };
@@ -23,90 +37,131 @@ const ChangeFood = ({ id, name, price, images, description, qty, addToCart, merc
     };
 
     const handleAddToCart = () => {
-        const SubTotal = quantity * price
-        if (parseInt(totalAmount) < parseInt(totalAmountRejected)) {
-            if (SubTotal <= parseInt(totalAmountRejected)) {
-                addToCart({
-                    id,
-                    merchant_id,
-                    name,
-                    price,
-                    images,
-                    description,
-                    capacity: qty,
-                    quantity,
-                    total: quantity * price,
-                });
-                setQuantity(1);
-            } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Jumlah Nomilan melebihi batas',
-                    confirmButtonText: 'OK',
-                })
-            }
-
-
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Jumlah Nomilan melebihi batas',
-                confirmButtonText: 'OK',
-            })
-        }
+        setQuantity(1);
+        addToCart({
+            id,
+            merchant_id,
+            name,
+            price,
+            images,
+            description,
+            capacity: qty,
+            quantity: 1,
+            total: price,
+        });
 
     };
 
+    const handleRemoveFromCart = () => {
+
+        setQuantity(0);
+        removeFromCart({
+            id,
+            merchant_id,
+            name,
+            price,
+            images,
+            description,
+            capacity: qty,
+            quantity,
+            total: price,
+        });
+    };
+
+    const [showDesc, setShowDesc] = useState(false);
+
+    useEffect(() => {
+        console.log(cart);
+        console.log(cart.findIndex((item) => item.id === id));
+    }, []);
+
     return (
-        <div className="w-full bg-white hover:bg-gray-200 text-black border border-black-1 rounded-lg inline-flex items-center px-4 py-2.5 mt-4">
+        <div className="w-full bg-white text-black border border-primary rounded-lg inline-flex items-center px-2 py-2.5">
             <div className="flex justify-between w-full">
-                <div className="flex">
-
-                    <img className="w-10 h-10 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600" src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${firstImageUrl}`} alt="" />
-
-                    <div className="text-left place-items-start">
-                        <div className="mb-1 capitalize">{name}</div>
-                        <div className="font-sans text-xs text-gray-500">{description}</div>
-                        <div className="flex">
-                            <p className="font-sans text-xs text-gray-500 mr-2">{`Capacity: ${qty}`}</p>
-                            {/* <div className={`font-sans text-xs text-white rounded-lg flex justify-center items-center bg-blue-600 w-24`}>
-                                <p className="">{merchant_id}</p>
-                            </div> */}
+                <div className="flex w-full">
+                    <img
+                        className="w-10 h-10 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600"
+                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${firstImageUrl}`}
+                        alt=""
+                    />
+                    <div className="text-left place-items-start w-full">
+                        <div className="mb-1 capitalize text-primary font-bold">{name}</div>
+                        {!showDesc && description.length > 60 ? (
+                            <>
+                                <div className="font-sans text-xs text-gray-500 truncate w-60">
+                                    {description}
+                                </div>
+                                <button
+                                    onClick={() => setShowDesc(!showDesc)}
+                                    className="justify-end items-center text-xs py-1 text-primary w-full flex flex-row"
+                                >
+                                    Selengkapnya{" "}
+                                    <IconChevronDown className="mt-0.5" size="15px" />
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <div className="font-sans text-xs text-gray-500 w-48">
+                                    {description}
+                                </div>
+                                {description.length > 60 && (
+                                    <button
+                                        onClick={() => setShowDesc(!showDesc)}
+                                        className="justify-end items-center text-xs py-1 text-primary w-full flex flex-row"
+                                    >
+                                        Lebih Sedikit{" "}
+                                        <IconChevronUp className="mt-0.5" size="15px" />
+                                    </button>
+                                )}
+                            </>
+                        )}
+                        <div className="flex flex-row items-end justify-between w-full">
+                            <div>
+                                <p className="font-sans text-xs text-primary mt-2 mr-2">{`Capacity: ${qty}`}</p>
+                                <p className="text-xs mt-0.5 text-primary">{`Harga: Rp ${parseInt(
+                                    price
+                                ).toLocaleString(undefined, {
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 0,
+                                })}`}</p>
+                            </div>
+                            {cart.findIndex((item) => item.id === id) < 0 ? (
+                                <button disabled={cart.length > 0}
+                                    className={` flex items-center h-4 text-white rounded px-1 pr-2 py-3 outline-none ${cart.length > 0 ? "bg-gray-400" : "bg-blue-500 hover:bg-green-300"}`}
+                                    onClick={handleAddToCart}
+                                >
+                                    <IconPlus className="pt-0.5" size="20px" /> Add
+                                </button>
+                            ) : (
+                                <button
+                                    className="bg-blue-500 flex items-center h-4 text-white rounded px-1 pr-2 py-3 hover:bg-green-300 outline-none"
+                                    onClick={handleRemoveFromCart}
+                                >
+                                    <IconTrash className="pt-0.5" size="20px" /> Remove
+                                </button>
+                            )}
                         </div>
-                        {/* <p className="text-gray-600 mt-2">{`Total: Rp${(quantity * price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
-                        {/* <p className="text-xs text-gray-600 mt-2">{`Harga: Rp${(price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
-                        <p className="text-xs text-gray-600 mt-2">{`Harga: Rp ${parseInt(price).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}</p>
-
                     </div>
                 </div>
-                <div className="grid place-items-center">
-                    <div className="flex items-center mt-2">
-                        <button
-                            className="bg-blue-500 text-white px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                            onClick={handleDecrease}
-                        >
-                            -
-                        </button>
-                        <span className="px-4">{quantity}</span>
-                        <button
-                            className="bg-blue-500 text-white px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                            onClick={handleIncrease}
-                        >
-                            +
-                        </button>
-                    </div>
-
-                    <button
-                        className="bg-blue-500 text-white px-4 py-2 mt-4 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                        onClick={handleAddToCart}
-                    >
-                        Add
-                    </button>
-                </div>
+                {/* <div className="grid place-items-center">
+          <div className="flex items-center mt-2">
+            <button
+              className="bg-blue-500 text-white px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+              onClick={handleDecrease}
+            >
+              -
+            </button>
+            <span className="px-4">{quantity}</span>
+            <button
+              className="bg-blue-500 text-white px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+              onClick={handleIncrease}
+            >
+              +
+            </button>
+          </div>
+        </div> */}
             </div>
-        </div>
+        </div >
     );
 };
 

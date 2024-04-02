@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
 import { useAppState } from "@/components/page/UserContext";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -98,7 +99,7 @@ const MetodePembayaran = () => {
         donation_type: state.donation.detail.donation_type,
       },
     };
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     axios
       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}donation/payment`, data, {
         headers: {
@@ -110,8 +111,12 @@ const MetodePembayaran = () => {
         const responeUrl = response.data.body.actions.desktop_web_checkout_url;
         router.push(`${responeUrl}`);
       })
-      .catch(() => {
+      .catch((error) => {
         setLoading(false);
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         Swal.fire({
           icon: "error",
           title: "Donasi gagal",
@@ -119,6 +124,8 @@ const MetodePembayaran = () => {
           showConfirmButton: false,
           timer: 2000,
         });
+        console.log(error);
+        Error401(error, router);
       });
   };
 

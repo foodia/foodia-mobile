@@ -47,7 +47,29 @@ function StepOne({ Menu, setMenu }) {
   };
 
   const handleImagesChange = (event) => {
-    setImages(event.target.files[0]);
+    const file = event.target.files[0];
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
+        });
+        event.target.value = "";
+      } else {
+        setImages(file);
+      }
+    }
   };
 
   const handleSubmit = (event) => {
@@ -74,8 +96,8 @@ function StepOne({ Menu, setMenu }) {
       qty,
       images,
     });
-    const token = sessionStorage.getItem("token");
-    const idMerchant = sessionStorage.getItem("id");
+    const token = localStorage.getItem("token");
+    const idMerchant = localStorage.getItem("id");
     // Check if an image file is selected
     if (images) {
       const formData = new FormData();
@@ -245,11 +267,11 @@ function StepOne({ Menu, setMenu }) {
             type="submit"
             className={
               !name ||
-              !description ||
-              !price ||
-              !qty ||
-              !images ||
-              description.length > 256
+                !description ||
+                !price ||
+                !qty ||
+                !images ||
+                description.length > 256
                 ? "bg-slate-400 text-white focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center"
                 : "text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center"
             }

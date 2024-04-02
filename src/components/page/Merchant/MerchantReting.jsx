@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useAppState } from "../UserContext";
 import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
 
 const MerchantReting = (MerchantReting) => {
   const router = useRouter();
@@ -35,8 +36,8 @@ const MerchantReting = (MerchantReting) => {
   // };
   const handleSubmit = (event) => {
     setloading(true);
-    const id_merchant = sessionStorage.getItem("id");
-    const token = sessionStorage.getItem("token");
+    const id_merchant = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
 
     // Validation checks
     if (!star || !description) {
@@ -79,6 +80,10 @@ const MerchantReting = (MerchantReting) => {
       })
       .catch((error) => {
         setloading(false);
+        if (401 === error.response.status) {
+          Error401(error, router);
+
+        }
         console.log("2Error creating reting:", error.response.status);
         if (error.response.status === 401) {
           Swal.fire({
@@ -152,9 +157,8 @@ const MerchantReting = (MerchantReting) => {
               {[1, 2, 3, 4, 5].map((index) => (
                 <svg
                   key={index}
-                  className={`w-12 h-12 cursor-pointer ${
-                    index <= star ? "text-yellow-300" : "text-gray-500"
-                  }`}
+                  className={`w-12 h-12 cursor-pointer ${index <= star ? "text-yellow-300" : "text-gray-500"
+                    }`}
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"

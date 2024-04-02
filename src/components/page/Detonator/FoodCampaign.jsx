@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Link } from "tabler-icons-react";
 import CardRepordFood from "@/components/CardRepordFood";
 import Header from "@/components/Header";
+import Error401 from "@/components/error401";
 const FoodCampaign = () => {
     const router = useRouter();
     const { id } = router.query;
@@ -17,7 +18,7 @@ const FoodCampaign = () => {
 
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const fetchData = async () => {
             try {
                 if (!id || !token) {
@@ -40,6 +41,10 @@ const FoodCampaign = () => {
                 console.log('data', response.data.body);
 
             } catch (error) {
+                if (error.response && error.response.status === 401) {
+                    Error401(error, router);
+
+                }
                 handleRequestError(error);
             }
         };
@@ -51,7 +56,7 @@ const FoodCampaign = () => {
         console.error('Error fetching data:', error);
 
         if (error.response && error.response.status === 401) {
-            sessionStorage.clear();
+            localStorage.clear();
             router.push('/login/detonator');
         }
 

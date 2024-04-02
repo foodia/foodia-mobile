@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import DetailCamp from "@/components/page/Detonator/DetailCamp";
 import Header from "@/components/Header";
+import Error401 from "@/components/error401";
 
 const Campaign = () => {
   const router = useRouter();
@@ -10,7 +11,7 @@ const Campaign = () => {
   const [campaignData, setCampaignData] = useState(null);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -23,6 +24,10 @@ const Campaign = () => {
         );
         setCampaignData(response.data.body);
       } catch (error) {
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         console.error(error);
       }
     };
@@ -35,7 +40,7 @@ const Campaign = () => {
   return (
     <main className="my-0 mx-auto min-h-full mobile-w">
       <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
-        <Header title="Informasi" />
+        <Header title="Informasi" backto={`/detonator`} />
         {campaignData && <DetailCamp data={campaignData} />}
       </div>
     </main>

@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import CardFood from "../CardFood";
+import Error401 from "../error401";
 
 const Merchant = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const Merchant = () => {
     axios
       .get(
         process.env.NEXT_PUBLIC_API_BASE_URL +
-          `merchant-product/filter?merchant_id=${id}`,
+        `merchant-product/filter?merchant_id=${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -50,14 +51,14 @@ const Merchant = () => {
 
         if (error.response && error.response.status === 401) {
           // Unauthorized error (e.g., token expired)
-          sessionStorage.clear();
+          localStorage.clear();
           router.push("/login");
         }
       });
   };
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       Swal.fire({
         icon: "error",
@@ -110,10 +111,10 @@ const Merchant = () => {
             });
           } else {
             if (cekData.merchant.status == "waiting") {
-              sessionStorage.setItem("id", cekData.merchant.merchant_id);
-              sessionStorage.setItem("role", "merchant");
-              sessionStorage.setItem("status", cekData.merchant.status);
-              sessionStorage.setItem("note", cekData.merchant.note);
+              localStorage.setItem("id", cekData.merchant.merchant_id);
+              localStorage.setItem("role", "merchant");
+              localStorage.setItem("status", cekData.merchant.status);
+              localStorage.setItem("note", cekData.merchant.note);
 
               Swal.fire({
                 icon: "warning",
@@ -130,10 +131,10 @@ const Merchant = () => {
               });
             } else if (cekData.merchant.status == "rejected") {
               setLoading(false);
-              sessionStorage.setItem("id", cekData.merchant.merchant_id);
-              sessionStorage.setItem("role", "merchant");
-              sessionStorage.setItem("status", cekData.merchant.status);
-              sessionStorage.setItem("note", cekData.merchant.note);
+              localStorage.setItem("id", cekData.merchant.merchant_id);
+              localStorage.setItem("role", "merchant");
+              localStorage.setItem("status", cekData.merchant.status);
+              localStorage.setItem("note", cekData.merchant.note);
               Swal.fire({
                 icon: "warning",
                 title: "Merchant Ditolak",
@@ -145,18 +146,17 @@ const Merchant = () => {
                 router.push("/merchant/edit");
               }, 2000);
             } else {
-              sessionStorage.setItem("id", cekData.merchant.merchant_id);
-              sessionStorage.setItem("role", "merchant");
-              sessionStorage.setItem("status", cekData.merchant.status);
-              sessionStorage.setItem("note", cekData.merchant.note);
+              localStorage.setItem("id", cekData.merchant.merchant_id);
+              localStorage.setItem("role", "merchant");
+              localStorage.setItem("status", cekData.merchant.status);
+              localStorage.setItem("note", cekData.merchant.note);
               getMenus(cekData.merchant.merchant_id, token);
             }
           }
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
-            sessionStorage.clear();
-            router.push("/login");
+            Error401(error, router);
           }
         });
     }
@@ -231,11 +231,10 @@ const Merchant = () => {
         </div>
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "approved"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "approved"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("approved")}
           >
             <span>Menu</span>
@@ -246,11 +245,10 @@ const Merchant = () => {
             ></div> */}
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "listMenu"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "listMenu"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("listMenu")}
           >
             <span>Pengajuan</span>

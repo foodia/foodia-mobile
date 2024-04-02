@@ -1,5 +1,6 @@
 // src/components/formCampaing/StepDetonator.jsx
 
+import Error401 from "@/components/error401";
 import { IconBowlFilled, IconFileDescription } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -17,7 +18,7 @@ function EditProduct() {
   const [images, setImages] = useState("");
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const ressponse = axios
       .get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant-product/fetch/${router.query.id}`,
@@ -39,7 +40,7 @@ function EditProduct() {
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
-          sessionStorage.clear();
+          localStorage.clear();
           router.push("/login");
         }
       });
@@ -117,8 +118,8 @@ function EditProduct() {
     }
 
     try {
-      const token = sessionStorage.getItem("token");
-      const idMerchant = sessionStorage.getItem("id");
+      const token = localStorage.getItem("token");
+      const idMerchant = localStorage.getItem("id");
 
       // Check if an image file is selected
       if (images) {
@@ -190,7 +191,7 @@ function EditProduct() {
         } catch (error) {
           console.error("Error creating campaign:", error);
           if (error.response && error.response.status === 401) {
-            router.push("/merchant");
+            Error401(error, router);
           } else {
             Swal.fire({
               icon: "error",
@@ -238,7 +239,7 @@ function EditProduct() {
           .catch((error) => {
             console.error("Error creating campaign:", error);
             if (error.response && error.response.status === 401) {
-              router.push("/merchant");
+              Error401(error, router);
             } else {
               Swal.fire({
                 icon: "error",

@@ -9,6 +9,7 @@ import Header from "../Header";
 import CardPesanan from "../CardPesanan";
 import moment from "moment";
 import Loading from "../Loading";
+import Error401 from "../error401";
 
 const FormReportMerchan = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const FormReportMerchan = () => {
 
   useEffect(() => {
     // Ensure the user is logged in
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
     } else {
@@ -47,8 +48,8 @@ const FormReportMerchan = () => {
       return;
     }
 
-    const token = sessionStorage.getItem("token");
-    const id_merchant = sessionStorage.getItem("id");
+    const token = localStorage.getItem("token");
+    const id_merchant = localStorage.getItem("id");
     const formData = new FormData();
     formData.append("destination", "rating");
     formData.append("file", image_url);
@@ -98,6 +99,10 @@ const FormReportMerchan = () => {
               setloading(false);
             })
             .catch((error) => {
+              setloading(false);
+              if (error.response && error.response.status === 401) {
+                Error401(error, router);
+              }
               console.error("Error creating report:", error);
               Swal.fire({
                 icon: "error",
@@ -106,7 +111,6 @@ const FormReportMerchan = () => {
                 showConfirmButton: false,
                 timer: 2000,
               });
-              setloading(false);
             });
         } else {
           // Handle kesalahan jika upload media gagal
@@ -119,6 +123,10 @@ const FormReportMerchan = () => {
       })
       .catch(() => {
         setloading(false);
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         console.log("error");
       });
   };

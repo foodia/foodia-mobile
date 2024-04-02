@@ -1,4 +1,5 @@
 import CardPesanan from "@/components/CardPesanan";
+import Error401 from "@/components/error401";
 import styles from "@/styles/Home.module.css";
 import { IconBowlFilled, IconCirclePlus } from "@tabler/icons-react";
 import axios from "axios";
@@ -21,10 +22,10 @@ const PesananMerchan = () => {
   console.log(loading);
 
   useEffect(() => {
-    const role = sessionStorage.getItem("role");
-    const token = sessionStorage.getItem("token");
-    const status = sessionStorage.getItem("status");
-    const id = sessionStorage.getItem("id");
+    const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+    const status = localStorage.getItem("status");
+    const id = localStorage.getItem("id");
 
     if (
       !role ||
@@ -34,7 +35,7 @@ const PesananMerchan = () => {
       !id
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
-      sessionStorage.clear();
+      localStorage.clear();
       router.push("/login/merchant");
     } else {
       // Role is 'detonator' and token is present
@@ -45,8 +46,8 @@ const PesananMerchan = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const id = sessionStorage.getItem("id");
-        const token = sessionStorage.getItem("token");
+        const id = localStorage.getItem("id");
+        const token = localStorage.getItem("token");
 
         if (!id || !token) {
           throw new Error("Missing required session data");
@@ -76,9 +77,7 @@ const PesananMerchan = () => {
         setLoading(false);
 
         if (error.response && error.response.status === 401) {
-          // Unauthorized error (e.g., token expired)
-          sessionStorage.clear();
-          router.push("/login/merchant");
+          Error401(error, router);
         }
       }
     };
@@ -173,31 +172,28 @@ const PesananMerchan = () => {
         </div>
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "review"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "review"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("review")}
           >
             <span>Pesanan</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "diproses"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("diproses")}
           >
             <span>Berlangsung</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "selesai"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("selesai")}
           >
             <span>History</span>
@@ -219,8 +215,8 @@ const PesananMerchan = () => {
                 {selectedStatus === "review"
                   ? "Tidak Ada Pesanan"
                   : selectedStatus === "diproses"
-                  ? "Tidak Ada Pesanan Berlangsung"
-                  : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
+                    ? "Tidak Ada Pesanan Berlangsung"
+                    : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
               </p>
             ) : (
               filteredData.map((data) => (

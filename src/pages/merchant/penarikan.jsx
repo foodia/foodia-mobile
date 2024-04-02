@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import InputForm from "@/components/Imput";
 import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
 import { IconCircleX, IconInfoCircle } from "@tabler/icons-react";
 import { IconCircleCheck } from "@tabler/icons-react";
 import axios from "axios";
@@ -31,8 +32,8 @@ const penarikan = (penarikan) => {
   }, [rekening]);
 
   useEffect(() => {
-    const id = sessionStorage.getItem("id");
-    const token = sessionStorage.getItem("token");
+    const id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
 
     axios
       .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${id}`, {
@@ -46,6 +47,10 @@ const penarikan = (penarikan) => {
       })
       .catch((error) => {
         setLoading(false);
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+
+        }
         console.error("Error fetching data:", error);
       });
   }, [balance]);
@@ -82,8 +87,8 @@ const penarikan = (penarikan) => {
     }).then((result) => {
       if (result.isConfirmed) {
         setLoading(true);
-        const merchant_id = sessionStorage.getItem("id");
-        const token = sessionStorage.getItem("token");
+        const merchant_id = localStorage.getItem("id");
+        const token = localStorage.getItem("token");
         const bankMethod = {
           merchant_id: parseInt(merchant_id),
           recipient_name: recipient_name,
@@ -127,6 +132,10 @@ const penarikan = (penarikan) => {
               })
               .catch((error) => {
                 setLoading(false);
+                if (error.response && error.response.status === 401) {
+                  Error401(error, router);
+
+                }
                 Swal.fire(
                   "Oops!",
                   "Terjadi kesalahan saat menarik saldo.",
@@ -159,6 +168,10 @@ const penarikan = (penarikan) => {
               })
               .catch((error) => {
                 setLoading(false);
+                if (error.response && error.response.status === 401) {
+                  Error401(error, router);
+
+                }
                 Swal.fire(
                   "Oops!",
                   "Terjadi kesalahan saat menarik saldo.",
