@@ -46,8 +46,7 @@ function EditProduct() {
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
-          localStorage.clear();
-          router.push("/login");
+          Error401(error, router);
         }
       });
   }, [router.query.id]);
@@ -165,8 +164,6 @@ function EditProduct() {
           }
         )
         .then((res) => {
-          console.log("API Response create Menu Merchant:", res.data.body);
-
           Swal.fire({
             position: "bottom",
             customClass: {
@@ -193,7 +190,6 @@ function EditProduct() {
           });
         })
         .catch((error) => {
-          console.error("Error creating campaign:", error);
           if (error.response && error.response.status === 401) {
             Error401(error, router);
           } else {
@@ -225,8 +221,6 @@ function EditProduct() {
           }
         )
         .then((res) => {
-          console.log("API Response create Menu Merchant:", res.data.body);
-
           Swal.fire({
             position: "bottom",
             customClass: {
@@ -253,7 +247,6 @@ function EditProduct() {
           });
         })
         .catch((error) => {
-          console.error("Error creating campaign:", error);
           if (error.response && error.response.status === 401) {
             Error401(error, router);
           } else {
