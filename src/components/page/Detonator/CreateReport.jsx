@@ -16,6 +16,7 @@ const CreateReport = (CreateReport) => {
     const [description, setDescription] = useState(newReport?.description ?? '');
     const [imgReport, setImgReport] = useState(newReport?.imgReport ?? null);
     const [dataCamp, setDataCamp] = useState();
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const resspones = axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${campaign_id}`);
@@ -39,10 +40,31 @@ const CreateReport = (CreateReport) => {
         setDescription(event.target.value);
     };
     const handleImgReportChange = (event) => {
-        setImgReport(event.target.files[0]);
+        const file = event.target.files[0];
+        if (file) {
+            const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            if (!allowedTypes.includes(file.type)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+                });
+                event.target.value = "";
+            } else if (file.size > maxSize) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Ukuran gambar melebihi 5MB!",
+                });
+                event.target.value = "";
+            } else {
+                setImgReport(file);
+            }
+        }
     };
 
-    const [error, setError] = useState('');
 
 
     // Function to handle form submission
@@ -55,7 +77,7 @@ const CreateReport = (CreateReport) => {
             return;
         }
         try {
-            const token = sessionStorage.getItem('token');
+            const token = localStorage.getItem('token');
             const formData = new FormData();
             formData.append('destination', 'report');
             formData.append('file', imgReport);
@@ -97,8 +119,8 @@ const CreateReport = (CreateReport) => {
 
                     Swal.fire({
                         icon: 'success',
-                        title: 'Campaign Created!',
-                        text: 'Campaign Berhasil dibuat Mohon Tunggu approval dari admin',
+                        title: 'Report Campaign!',
+                        text: 'Report Campaign Berhasil Di Buat',
                         showConfirmButton: false,
                         timer: 2000,
                     });
@@ -115,8 +137,8 @@ const CreateReport = (CreateReport) => {
                     console.error('Error creating campaign:', error);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Gagal Membuat Campaign',
-                        text: 'Gagal Membuat Campaign Mohon Coba Lagi',
+                        title: 'Report Campaign Gagal',
+                        text: 'Gagal Report Campaign Mohon Coba Lagi',
                         showConfirmButton: false,
                         timer: 2000,
                     });

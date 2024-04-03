@@ -22,10 +22,10 @@ const Detonator = () => {
 
   useEffect(() => {
     const authenticateUser = async () => {
-      // const role = sessionStorage.getItem('role');
-      const token = sessionStorage.getItem("token");
-      // const status = sessionStorage.getItem('status');
-      // const id = sessionStorage.getItem('id');
+      // const role = localStorage.getItem('role');
+      const token = localStorage.getItem("token");
+      // const status = localStorage.getItem('status');
+      // const id = localStorage.getItem('id');
       // console.log("token", token);
       if (!token) {
         Swal.fire({
@@ -92,10 +92,13 @@ const Detonator = () => {
             // }, 2000);
           } else {
             if (cekData.detonator.status == "waiting") {
-              sessionStorage.setItem("id", cekData.detonator.detonator_id);
-              sessionStorage.setItem("role", "detonator");
-              sessionStorage.setItem("status", cekData.detonator.status);
-              sessionStorage.setItem("note", cekData.detonator.note);
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
+              //       localStorage.setItem("id", responeData.id || " ");
+              // localStorage.setItem("status", responeData.status || " ");
+              // localStorage.setItem("note", responeData.note || " ");
 
               Swal.fire({
                 icon: "warning",
@@ -109,10 +112,10 @@ const Detonator = () => {
               }, 2000);
             } else if (cekData.detonator.status == "rejected") {
               setLoading(false);
-              sessionStorage.setItem("id", cekData.detonator.detonator_id);
-              sessionStorage.setItem("role", "detonator");
-              sessionStorage.setItem("status", cekData.detonator.status);
-              sessionStorage.setItem("note", cekData.detonator.note);
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
               Swal.fire({
                 icon: "warning",
                 title: "Detonator Ditolak",
@@ -124,17 +127,17 @@ const Detonator = () => {
                 router.push("/detonator/edit");
               }, 2000);
             } else {
-              sessionStorage.setItem("id", cekData.detonator.detonator_id);
-              sessionStorage.setItem("role", "detonator");
-              sessionStorage.setItem("status", cekData.detonator.status);
-              sessionStorage.setItem("note", cekData.detonator.note);
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
             }
           }
           console.log("data", cekData);
         } catch (error) {
           if (error.response && error.response.status === 401) {
             Error401(error, router);
-            // sessionStorage.clear();
+            // localStorage.clear();
             // localStorage.removeItem("cart");
             // localStorage.removeItem("formData");
             // router.push("/login");
@@ -150,8 +153,8 @@ const Detonator = () => {
   }, []);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    const id = sessionStorage.getItem("id");
+    const token = localStorage.getItem("token");
+    const id = localStorage.getItem("id");
     axios
       .get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${selectedStatus}`,
@@ -169,7 +172,7 @@ const Detonator = () => {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           Error401(error, router);
-          sessionStorage.clear();
+          localStorage.clear();
           localStorage.removeItem("cart");
           localStorage.removeItem("formData");
           router.push("/login");
@@ -182,8 +185,8 @@ const Detonator = () => {
 
   const handleFilterChange = (status) => {
     let filtered = [];
-    const id = sessionStorage.getItem("id");
-    const token = sessionStorage.getItem("token");
+    const id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
 
     setLoading(true);
     setSelectedStatus(status);
@@ -204,7 +207,7 @@ const Detonator = () => {
         .catch((error) => {
           if (error.response && error.response.status === 401) {
             Error401(error, router);
-            sessionStorage.clear();
+            localStorage.clear();
             localStorage.removeItem("cart");
             localStorage.removeItem("formData");
             router.push("/login");
@@ -230,7 +233,7 @@ const Detonator = () => {
         .catch((error) => {
           if (error.response && error.response.status === 401) {
             Error401(error, router);
-            sessionStorage.clear();
+            localStorage.clear();
             localStorage.removeItem("cart");
             localStorage.removeItem("formData");
             router.push("/login");
@@ -255,7 +258,7 @@ const Detonator = () => {
         .catch((error) => {
           if (error.response && error.response.status === 401) {
             Error401(error, router);
-            // sessionStorage.clear();
+            // localStorage.clear();
             // localStorage.removeItem("cart");
             // localStorage.removeItem("formData");
             // router.push("/login");
@@ -272,7 +275,7 @@ const Detonator = () => {
     console.error("Error fetching data:", error);
 
     if (error.response && error.response.status === 401) {
-      sessionStorage.clear();
+      localStorage.clear();
       router.push("/login/detonator");
     }
 

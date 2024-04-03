@@ -67,8 +67,8 @@ const CardPesanan = (props) => {
   };
   const handleReject = async () => {
     try {
-      const id = sessionStorage.getItem("id");
-      const token = sessionStorage.getItem("token");
+      const id = localStorage.getItem("id");
+      const token = localStorage.getItem("token");
 
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${idOrder}`,
@@ -112,8 +112,8 @@ const CardPesanan = (props) => {
   };
   const handleAprov = async () => {
     try {
-      const id = sessionStorage.getItem("id");
-      const token = sessionStorage.getItem("token");
+      const id = localStorage.getItem("id");
+      const token = localStorage.getItem("token");
 
       if (!id || !token) {
         throw new Error("Missing required session data");

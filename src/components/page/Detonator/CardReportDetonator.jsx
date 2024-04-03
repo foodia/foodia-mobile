@@ -13,7 +13,7 @@ const CardReportDetonator = ({ data }) => {
     };
 
     useEffect(() => {
-        const role = sessionStorage.getItem('role');
+        const role = localStorage.getItem('role');
         console.log('data res', data);
         if (data.order == null) {
             setButtonStatus(false)
@@ -30,7 +30,7 @@ const CardReportDetonator = ({ data }) => {
         }
     })
     const hendleButton = () => {
-        const role = sessionStorage.getItem('role');
+        const role = localStorage.getItem('role');
         // console.log('data res', data);
         if (data.order == null) {
             return

@@ -19,10 +19,10 @@ const saldo = (saldo) => {
   const [riwayat, setRiwayat] = useState([]);
 
   useEffect(() => {
-    const role = sessionStorage.getItem("role");
-    const token = sessionStorage.getItem("token");
-    const status = sessionStorage.getItem("status");
-    const id = sessionStorage.getItem("id");
+    const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+    const status = localStorage.getItem("status");
+    const id = localStorage.getItem("id");
 
     if (
       !role ||
@@ -32,7 +32,7 @@ const saldo = (saldo) => {
       !id
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
-      sessionStorage.clear();
+      localStorage.clear();
       router.push("/login/merchant");
     } else {
       // Role is 'detonator' and token is present
@@ -41,8 +41,8 @@ const saldo = (saldo) => {
   }, [router]);
 
   useEffect(() => {
-    const id = sessionStorage.getItem("id");
-    const token = sessionStorage.getItem("token");
+    const id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
 
     const ressponse = axios
       .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${id}`, {
@@ -61,8 +61,8 @@ const saldo = (saldo) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const id = sessionStorage.getItem("id");
-        const token = sessionStorage.getItem("token");
+        const id = localStorage.getItem("id");
+        const token = localStorage.getItem("token");
 
         if (!id || !token) {
           throw new Error("Missing required session data");
@@ -93,7 +93,7 @@ const saldo = (saldo) => {
 
         if (error.response && error.response.status === 401) {
           // Unauthorized error (e.g., token expired)
-          sessionStorage.clear();
+          localStorage.clear();
           router.push("/login/merchant");
         }
       }
@@ -115,8 +115,8 @@ const saldo = (saldo) => {
           data.order_status === "canceled" || data.order_status === "selesai"
       );
     } else if (status === "penarikan") {
-      const token = sessionStorage.getItem("token");
-      const id = sessionStorage.getItem("id");
+      const token = localStorage.getItem("token");
+      const id = localStorage.getItem("id");
       const resspone = axios
         .get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/filter?merchant_id=${id}`,
@@ -204,8 +204,8 @@ const saldo = (saldo) => {
           <div className="flex justify-between px-7 pt-4 pb-2">
             <div
               className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
-                  ? "text-primary border-b-2 border-primary"
-                  : "text-gray-500"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
                 }`}
               onClick={() => handleFilterChange("diproses")}
             >
@@ -213,8 +213,8 @@ const saldo = (saldo) => {
             </div>
             <div
               className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
-                  ? "text-primary border-b-2 border-primary"
-                  : "text-gray-500"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
                 }`}
               onClick={() => handleFilterChange("selesai")}
             >
@@ -222,8 +222,8 @@ const saldo = (saldo) => {
             </div>
             <div
               className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "penarikan"
-                  ? "text-primary border-b-2 border-primary"
-                  : "text-gray-500"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
                 }`}
               onClick={() => handleFilterChange("penarikan")}
             >
@@ -255,10 +255,10 @@ const saldo = (saldo) => {
                         <p className="font-bold uppercase">{data.bank}</p>
                         <div
                           className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${data.status === "approved"
-                              ? "bg-green-500"
-                              : data.status === "waiting"
-                                ? "bg-blue-500"
-                                : "bg-red-500"
+                            ? "bg-green-500"
+                            : data.status === "waiting"
+                              ? "bg-blue-500"
+                              : "bg-red-500"
                             }`}
                         >
                           <p className="">{data.status}</p>

@@ -804,6 +804,15 @@ function StepThree({
     console.log("data", cart);
     setLoading(true);
     const emptyFields = [];
+    const campData = JSON.parse(localStorage.getItem("formData"));
+    const detonator_id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
+
+    const products = cart.map((item) => ({
+      merchant_id: parseInt(item.merchant_id),
+      merchant_product_id: parseInt(item.id),
+      qty: parseInt(item.quantity),
+    }));
 
     // Validate data
     if (!detonator_id) emptyFields.push("Detonator ID");
@@ -814,12 +823,12 @@ function StepThree({
     if (!campData.Description) emptyFields.push("Description");
     if (!campData.province) emptyFields.push("Province");
     if (!campData.city) emptyFields.push("City");
-    if (!campData.sub_district) emptyFields.push("Sub District");
-    if (!campData.postal_code) emptyFields.push("Postal Code");
+    // if (!campData.sub_district) emptyFields.push("Sub District");
+    // if (!campData.postal_code) emptyFields.push("Postal Code");
     if (!campData.location) emptyFields.push("Address");
     if (!campData.coordinates.lat) emptyFields.push("Latitude");
     if (!campData.coordinates.lng) emptyFields.push("Longitude");
-    if (!mediaUploadResponse.data.body.file_url) emptyFields.push("Image URL");
+    // if (!mediaUploadResponse.data.body.file_url) emptyFields.push("Image URL");
     if (!products) emptyFields.push("Products");
 
     if (emptyFields.length > 0) {
@@ -844,9 +853,7 @@ function StepThree({
         (total, item) => total + item.quantity,
         0
       );
-      const campData = JSON.parse(localStorage.getItem("formData"));
-      const detonator_id = sessionStorage.getItem("id");
-      const token = sessionStorage.getItem("token");
+
 
       const formData = new FormData();
       formData.append("destination", "campaign");
@@ -868,11 +875,7 @@ function StepThree({
       );
 
       if (mediaUploadResponse.status === 200) {
-        const products = cart.map((item) => ({
-          merchant_id: parseInt(item.merchant_id),
-          merchant_product_id: parseInt(item.id),
-          qty: parseInt(item.quantity),
-        }));
+
 
         const eventData = {
           detonator_id: parseInt(detonator_id),
@@ -1161,8 +1164,8 @@ function Stepfour({
   const IdMerchan = router.query.id;
   const nameMerchant = router.query.name;
   console.log("router", router);
-  const detonator_id = sessionStorage.getItem("id");
-  const token = sessionStorage.getItem("token");
+  const detonator_id = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     // Load cart data from local storage on component mount
@@ -1332,8 +1335,8 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [location, setLocation] = useState("");
-  const detonator_id = sessionStorage.getItem("id");
-  const token = sessionStorage.getItem("token");
+  const detonator_id = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     // Check local storage for existing form data

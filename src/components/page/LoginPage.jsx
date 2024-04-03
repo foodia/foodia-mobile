@@ -40,9 +40,9 @@ const LoginPage = () => {
   })
 
   useEffect(() => {
-    const role = sessionStorage.getItem("role");
-    const token = sessionStorage.getItem("token");
-    const status = sessionStorage.getItem("status");
+    const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+    const status = localStorage.getItem("status");
 
     if (role === "detonator" && token && status === "approved") {
       router.push("/detonator");
@@ -107,14 +107,14 @@ const LoginPage = () => {
 
       if (responeData.is_active) {
         localStorage.setItem("Session", "start");
-        sessionStorage.setItem("fullname", responeData.fullname);
-        sessionStorage.setItem("phone", responeData.phone);
-        sessionStorage.setItem("email", responeData.email);
-        sessionStorage.setItem("role", responeData.role);
-        sessionStorage.setItem("token", responeData.token);
-        sessionStorage.setItem("id", responeData.id || " ");
-        sessionStorage.setItem("status", responeData.status || " ");
-        sessionStorage.setItem("note", responeData.note || " ");
+        localStorage.setItem("fullname", responeData.fullname);
+        localStorage.setItem("phone", responeData.phone);
+        localStorage.setItem("email", responeData.email);
+        localStorage.setItem("role", responeData.role);
+        localStorage.setItem("token", responeData.token);
+        localStorage.setItem("id", responeData.id || " ");
+        localStorage.setItem("status", responeData.status || " ");
+        localStorage.setItem("note", responeData.note || " ");
         Swal.fire({
           icon: "success",
           title: "Login Success",
@@ -127,7 +127,7 @@ const LoginPage = () => {
         }, 2000);
       } else {
         setRegistrasi(responeData);
-        sessionStorage.setItem("email", responeData.email);
+        localStorage.setItem("email", responeData.email);
         Swal.fire({
           icon: "warning",
           title: "Login Failed",
@@ -139,6 +139,7 @@ const LoginPage = () => {
           router.push("/otp");
         }, 2000);
       }
+
     } catch (error) {
       console.log(error);
       Swal.fire({

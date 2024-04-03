@@ -51,14 +51,14 @@ const Merchant = () => {
 
         if (error.response && error.response.status === 401) {
           // Unauthorized error (e.g., token expired)
-          sessionStorage.clear();
+          localStorage.clear();
           router.push("/login");
         }
       });
   };
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) {
       Swal.fire({
         icon: "error",
@@ -111,10 +111,10 @@ const Merchant = () => {
             });
           } else {
             if (cekData.merchant.status == "waiting") {
-              sessionStorage.setItem("id", cekData.merchant.merchant_id);
-              sessionStorage.setItem("role", "merchant");
-              sessionStorage.setItem("status", cekData.merchant.status);
-              sessionStorage.setItem("note", cekData.merchant.note);
+              localStorage.setItem("id", cekData.merchant.merchant_id);
+              localStorage.setItem("role", "merchant");
+              localStorage.setItem("status", cekData.merchant.status);
+              localStorage.setItem("note", cekData.merchant.note);
 
               Swal.fire({
                 icon: "warning",
@@ -131,10 +131,10 @@ const Merchant = () => {
               });
             } else if (cekData.merchant.status == "rejected") {
               setLoading(false);
-              sessionStorage.setItem("id", cekData.merchant.merchant_id);
-              sessionStorage.setItem("role", "merchant");
-              sessionStorage.setItem("status", cekData.merchant.status);
-              sessionStorage.setItem("note", cekData.merchant.note);
+              localStorage.setItem("id", cekData.merchant.merchant_id);
+              localStorage.setItem("role", "merchant");
+              localStorage.setItem("status", cekData.merchant.status);
+              localStorage.setItem("note", cekData.merchant.note);
               Swal.fire({
                 icon: "warning",
                 title: "Merchant Ditolak",
@@ -146,10 +146,10 @@ const Merchant = () => {
                 router.push("/merchant/edit");
               }, 2000);
             } else {
-              sessionStorage.setItem("id", cekData.merchant.merchant_id);
-              sessionStorage.setItem("role", "merchant");
-              sessionStorage.setItem("status", cekData.merchant.status);
-              sessionStorage.setItem("note", cekData.merchant.note);
+              localStorage.setItem("id", cekData.merchant.merchant_id);
+              localStorage.setItem("role", "merchant");
+              localStorage.setItem("status", cekData.merchant.status);
+              localStorage.setItem("note", cekData.merchant.note);
               getMenus(cekData.merchant.merchant_id, token);
             }
           }

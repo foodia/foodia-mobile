@@ -171,11 +171,11 @@ const Registrasi = () => {
       if (userData.is_active) {
         // router.push('/login');
         console.log("login success");
-        sessionStorage.setItem("fullname", userData.fullname);
-        sessionStorage.setItem("phone", userData.phone);
-        sessionStorage.setItem("email", userData.email);
-        sessionStorage.setItem("role", userData.role);
-        sessionStorage.setItem("token", userData.token);
+        localStorage.setItem("fullname", userData.fullname);
+        localStorage.setItem("phone", userData.phone);
+        localStorage.setItem("email", userData.email);
+        localStorage.setItem("role", userData.role);
+        localStorage.setItem("token", userData.token);
         Swal.fire({
           icon: "success",
           title: "Akun telah terdaftar",

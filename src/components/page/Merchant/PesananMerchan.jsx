@@ -22,10 +22,10 @@ const PesananMerchan = () => {
   console.log(loading);
 
   useEffect(() => {
-    const role = sessionStorage.getItem("role");
-    const token = sessionStorage.getItem("token");
-    const status = sessionStorage.getItem("status");
-    const id = sessionStorage.getItem("id");
+    const role = localStorage.getItem("role");
+    const token = localStorage.getItem("token");
+    const status = localStorage.getItem("status");
+    const id = localStorage.getItem("id");
 
     if (
       !role ||
@@ -35,7 +35,7 @@ const PesananMerchan = () => {
       !id
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
-      sessionStorage.clear();
+      localStorage.clear();
       router.push("/login/merchant");
     } else {
       // Role is 'detonator' and token is present
@@ -46,8 +46,8 @@ const PesananMerchan = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const id = sessionStorage.getItem("id");
-        const token = sessionStorage.getItem("token");
+        const id = localStorage.getItem("id");
+        const token = localStorage.getItem("token");
 
         if (!id || !token) {
           throw new Error("Missing required session data");
@@ -173,8 +173,8 @@ const PesananMerchan = () => {
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "review"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
               }`}
             onClick={() => handleFilterChange("review")}
           >
@@ -182,8 +182,8 @@ const PesananMerchan = () => {
           </div>
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
               }`}
             onClick={() => handleFilterChange("diproses")}
           >
@@ -191,8 +191,8 @@ const PesananMerchan = () => {
           </div>
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
               }`}
             onClick={() => handleFilterChange("selesai")}
           >

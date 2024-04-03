@@ -28,15 +28,15 @@ const BottomNav = () => {
   console.log(pathname);
 
   useEffect(() => {
-    const storedToken = sessionStorage.getItem("token");
-    // Fetch the token from sessionStorage when the component mounts
+    const storedToken = localStorage.getItem("token");
+    // Fetch the token from localStorage when the component mounts
     if (storedToken) {
       setToken(storedToken);
     }
   }, [token]); // Empty dependency array to run once when the component mounts
 
   // const btnLogout = () => {
-  //   sessionStorage.clear();
+  //   localStorage.clear();
   //   localStorage.removeItem('cart');
   //   localStorage.removeItem('formData');
   //   router.push('/home');

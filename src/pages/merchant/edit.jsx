@@ -57,8 +57,8 @@ const EditMerchant = () => {
     };
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token');
-        const id = sessionStorage.getItem('id');
+        const token = localStorage.getItem('token');
+        const id = localStorage.getItem('id');
         if (!token || !id) {
             router.push('/login');
         }
@@ -165,7 +165,7 @@ const EditMerchant = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const token = sessionStorage.getItem('token');
+        const token = localStorage.getItem('token');
         const formData = new FormData();
         if (fotoSelfi) {
             formData.append('self_photo', fotoSelfi);

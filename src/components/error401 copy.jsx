@@ -8,7 +8,7 @@ const Error401 = (errCode) => {
     const code = errCode?.response?.data?.code;
 
     if (code === 401) {
-        // sessionStorage.clear();
+        // localStorage.clear();
         Swal.fire({
             icon: "error",
             title: "Sesi Anda Berakhir",

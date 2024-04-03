@@ -28,7 +28,30 @@ const ReportFood = (ReportFood) => {
         setDescription(event.target.value);
     };
     const handleImgReportChange = (event) => {
-        setImgReport(event.target.files[0]);
+        // setImgReport(event.target.files[0]);
+        const file = event.target.files[0];
+        if (file) {
+            const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            if (!allowedTypes.includes(file.type)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+                });
+                event.target.value = "";
+            } else if (file.size > maxSize) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Ukuran gambar melebihi 5MB!",
+                });
+                event.target.value = "";
+            } else {
+                setImgReport(file);
+            }
+        }
     };
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevents the default form submission
@@ -39,8 +62,8 @@ const ReportFood = (ReportFood) => {
             return;
         }
         try {
-            const token = sessionStorage.getItem('token');
-            const id_detonator = sessionStorage.getItem('id');
+            const token = localStorage.getItem('token');
+            const id_detonator = localStorage.getItem('id');
             const formData = new FormData();
             formData.append('destination', 'rating');
             formData.append('file', imgReport);
@@ -78,8 +101,8 @@ const ReportFood = (ReportFood) => {
 
                     Swal.fire({
                         icon: 'success',
-                        title: 'Campaign Created!',
-                        text: 'Campaign Berhasil dibuat Mohon Tunggu approval dari admin',
+                        title: 'Konfirmasi Berhasil!',
+                        text: 'Repord Konfirmasi Order Berhasil',
                         showConfirmButton: false,
                         timer: 2000,
                     });
@@ -92,12 +115,12 @@ const ReportFood = (ReportFood) => {
                         Error401(error, router);
 
                     }
-                    console.error('Error creating campaign:', error.response.data)
-                    console.error('Error creating campaign:', error);
+                    // console.error('Error creating campaign:', error.response.data)
+                    // console.error('Error creating campaign:', error);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Gagal Membuat Report',
-                        text: 'Gagal Membuat Report Mohon Coba Lagi',
+                        title: 'Gagal Membuat Report Order',
+                        text: 'Gagal Membuat Report Order Mohon Coba Lagi',
                         showConfirmButton: false,
                         timer: 2000,
                     });
