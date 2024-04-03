@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Loading from "../Loading";
+import Error401 from "../error401";
 
 function StepOne({ Menu, setMenu }) {
   // const { stepForm } = props;
@@ -167,14 +168,16 @@ function StepOne({ Menu, setMenu }) {
                   }
                 });
                 setLoading(false);
+              })
+              .catch((error) => {
+                setLoading(false);
+                Error401(error, router);
               });
           }
         })
         .catch((error) => {
           setLoading(false);
-          if (error.response.data.code === 401) {
-            router.push("/login");
-          }
+          Error401(error, router);
         });
     } else {
       setLoading(false);
