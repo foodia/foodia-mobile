@@ -1,5 +1,6 @@
 // src/components/formCampaing/StepDetonator.jsx
 
+import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import { IconBowlFilled, IconFileDescription } from "@tabler/icons-react";
 import axios from "axios";
@@ -16,6 +17,7 @@ function EditProduct() {
   const [price, setPrice] = useState("");
   const [qty, setQty] = useState("");
   const [images, setImages] = useState("");
+  const [loading, setLoading] = useState(true);
 
   console.log(name.length);
   console.log(description.length);
@@ -35,8 +37,7 @@ function EditProduct() {
         }
       )
       .then((response) => {
-        console.log("data", response.data.body);
-
+        setLoading(false);
         setDataProduct(response.data.body);
         setName(response.data.body.name);
         setDescription(response.data.body.description);
@@ -45,6 +46,7 @@ function EditProduct() {
         // setImages(response.data.body.images);
       })
       .catch((error) => {
+        setLoading(false);
         if (error.response && error.response.status === 401) {
           Error401(error, router);
         }
@@ -85,14 +87,12 @@ function EditProduct() {
   const handleImagesChange = (event) => {
     setImages(event.target.files[0]);
   };
-
-  console.log("sfsfs", images);
   // const [error, setError] = useState("");
 
   // Function to handle form submission
   const handleSubmit = async (event) => {
     // event.preventDefault(); // Prevents the default form submission
-
+    setLoading(true);
     let parsedPrice = price;
 
     if (typeof price === `string`) {
@@ -122,7 +122,7 @@ function EditProduct() {
       return;
     }
 
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const idMerchant = sessionStorage.getItem("id");
 
     // Check if an image file is selected
@@ -131,76 +131,82 @@ function EditProduct() {
       formData.append("destination", "merchant");
       formData.append("file", images);
 
-      const mediaUploadResponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`,
-        formData,
-        {
+      axios
+        .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data", // Set content type for FormData
           },
-        }
-      );
-      const dataRequest = {
-        merchant_id: parseInt(idMerchant),
-        name: name,
-        description: description,
-        price: parsedPrice,
-        qty: parseInt(qty),
-        images: [
-          {
-            image_url: mediaUploadResponse.data.body.file_url,
-          },
-        ],
-      };
-      axios
-        .put(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant-product/update/${router.query.id}`,
-          dataRequest,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
+        })
         .then((res) => {
-          Swal.fire({
-            position: "bottom",
-            customClass: {
-              popup: "custom-swal",
-              icon: "custom-icon-swal",
-              title: "custom-title-swal",
-              confirmButton: "custom-confirm-button-swal",
-            },
-            icon: "success",
-            title: `<p class="w-auto pl-1 font-bold text-md">Berhasil Ubah Menu</p><p class="text-sm w-auto pl-1 font-light">Menu kamu sudah berubah</p>`,
-            html: `
-                  <div class="absolute px-28 ml-4 top-0 mt-4">
-                    <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-                  </div>
-                `,
-            width: "375px",
-            showConfirmButton: true,
-            confirmButtonText: "Kembali",
-            confirmButtonColor: "#3FB648",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              router.push("/merchant");
-            }
-          });
+          const dataRequest = {
+            merchant_id: parseInt(idMerchant),
+            name: name,
+            description: description,
+            price: parsedPrice,
+            qty: parseInt(qty),
+            images: [
+              {
+                image_url: res.data.body.file_url,
+              },
+            ],
+          };
+          axios
+            .put(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant-product/update/${router.query.id}`,
+              dataRequest,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            )
+            .then((res) => {
+              setLoading(false);
+              Swal.fire({
+                position: "bottom",
+                customClass: {
+                  popup: "custom-swal",
+                  icon: "custom-icon-swal",
+                  title: "custom-title-swal",
+                  confirmButton: "custom-confirm-button-swal",
+                },
+                icon: "success",
+                title: `<p class="w-auto pl-1 font-bold text-md">Berhasil Ubah Menu</p><p class="text-sm w-auto pl-1 font-light">Menu kamu sudah berubah</p>`,
+                html: `
+                    <div class="absolute px-28 ml-4 top-0 mt-4">
+                      <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                    </div>
+                  `,
+                width: "375px",
+                showConfirmButton: true,
+                confirmButtonText: "Kembali",
+                confirmButtonColor: "#3FB648",
+              }).then((result) => {
+                setLoading(false);
+                if (result.isConfirmed) {
+                  router.push("/merchant");
+                }
+              });
+            })
+            .catch((error) => {
+              setLoading(false);
+              if (error.response && error.response.status === 401) {
+                Error401(error, router);
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "Gagal update Menu",
+                  text: "Gagal update Menu Mohon Coba Lagi",
+                  showConfirmButton: false,
+                  timer: 2000,
+                });
+              }
+            });
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            Error401(error, router);
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Gagal update Menu",
-              text: "Gagal update Menu Mohon Coba Lagi",
-              showConfirmButton: false,
-              timer: 2000,
-            });
-          }
+          setLoading(false);
+          Error401(error, router);
         });
     } else {
       const dataRequest = {
@@ -221,6 +227,7 @@ function EditProduct() {
           }
         )
         .then((res) => {
+          setLoading(false);
           Swal.fire({
             position: "bottom",
             customClass: {
@@ -241,12 +248,14 @@ function EditProduct() {
             confirmButtonText: "Kembali",
             confirmButtonColor: "#3FB648",
           }).then((result) => {
+            setLoading(false);
             if (result.isConfirmed) {
               router.push("/merchant");
             }
           });
         })
         .catch((error) => {
+          setLoading(false);
           if (error.response && error.response.status === 401) {
             Error401(error, router);
           } else {
@@ -329,7 +338,7 @@ function EditProduct() {
           <div className="flex items-center justify-center w-full">
             <label
               htmlFor="images"
-              className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100 px-4"
+              className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100"
             >
               {images ? (
                 <img
@@ -379,6 +388,7 @@ function EditProduct() {
             Ubah
           </button>
         </div>
+        {loading && <Loading />}
       </div>
     </>
   );
