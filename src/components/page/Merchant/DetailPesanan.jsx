@@ -44,40 +44,30 @@ const DetailPesanan = () => {
     }
   }, [router]);
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          throw new Error("Missing required session data token");
-        }
-        if (!id_order) {
-          throw new Error("Missing required session data id");
-        }
-        // console.log('id', id_order);
-
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    const token = localStorage.getItem("token");
+    setLoading(true);
+    const ressponse = axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+      .then((response) => {
         setDataApi(response.data.body);
         setLoading(false);
-        // console.log('data', dataApi);
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (401 === error.response.status) {
           Error401(error, router);
         }
         console.error("Error fetching data:", error);
-        setLoading(false);
-      }
-    };
+      })
 
-    fetchData();
-  }, [loading, id_order]);
+
+  }, [id_order]);
   const handleRejectButtonClick = async (e) => {
     e.preventDefault();
 
@@ -231,106 +221,180 @@ const DetailPesanan = () => {
       <div className="container mx-auto pt-14 bg-white h-full">
         <Header title="Detail Pesanan" />
         <div className="place-content-center">
-          <CardPesanan
-            key={dataApi?.id}
-            to={""}
-            idOrder={dataApi?.id}
-            img={
-              dataApi?.merchant_product.images.length > 0
-                ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${dataApi?.merchant_product.images[0].image_url}`
-                : "/img/default-image.png"
-            }
-            title={dataApi?.campaign.event_name}
-            productName={dataApi?.merchant_product.name}
-            created_at={moment(dataApi?.campaign?.created_at).format(
-              "DD MMM YYYY hh:mm"
-            )}
-            date={`${moment(dataApi?.campaign?.event_date).format(
-              "DD MMM YYYY"
-            )} ${dataApi?.campaign?.event_time}`}
-            qty={dataApi?.qty}
-            price={dataApi?.merchant_product.price}
-            total_amount={dataApi?.total_amount}
-            status={dataApi?.order_status}
-            setLoading={setLoading}
-          />
-          <div className="p-2 rounded-md mt-2 px-4">
-            <h5 className="text-xs mb-1 font-bold">Rangkuman Pesanan</h5>
 
-            <div className="justify-between grid grid-cols-2 gap-2 ">
-              <p className="text-sm text-gray-400">Campaign</p>
-              <p className="text-right text-sm">
-                {dataApi?.campaign.event_name}
-              </p>
-              <p className="text-sm text-gray-400">Donation Target</p>
-              <p className="text-right text-sm text-primary">
-                Rp. {dataApi?.campaign.donation_target.toLocaleString("id-ID")}
-              </p>
-              <p className="text-sm text-gray-400">Donation Collected</p>
-              <p className="text-right text-sm text-primary">
-                Rp.{" "}
-                {dataApi?.campaign.donation_collected.toLocaleString("id-ID")}
-              </p>
-            </div>
 
-            <hr className="h-px bg-gray-200 border-0 mt-2" />
-            <div className="justify-between grid grid-cols-2 gap-2 py-4">
-              <p className="text-sm text-gray-400">PIC</p>
-              <p className="text-right text-sm">
-                {dataApi?.campaign.detonator.oauth.fullname}
-              </p>
-              <p className="text-sm text-gray-400">No Telp.</p>
-              <p className="text-right text-sm">
-                {dataApi?.campaign.detonator.oauth.phone}{" "}
-              </p>
-            </div>
-
-            <hr className="h-px bg-gray-200 border-0" />
-            <div className="justify-between grid grid-cols-2 gap-2 py-4">
-              <p className="text-sm text-gray-400">Tanggal Pelaksanaan</p>
-              <p className="text-right text-sm">
-                {`${moment(dataApi?.campaign?.event_date).format(
-                  "DD MMM YYYY"
-                )} ${dataApi?.campaign?.event_time}`}
-              </p>
-            </div>
-            <hr className="h-px bg-gray-200 border-0" />
-            <div className="justify-between grid grid-cols-2 gap-2 py-4">
-              <p className="text-sm text-gray-400">Tempat</p>
-              <div className="flex gap-4">
-                <p className="text-right text-sm">
-                  {dataApi?.campaign.address}
-                </p>
-                <Link
-                  href={`/lokasi_camp/${dataApi?.campaign_id}`}
-                  className="text-sm font-normal mb-12 text-red-500"
-                >
-                  <IconMapPin />
-                </Link>
+          {loading ?
+            <div className="border border-blue-300 shadow rounded-md p-4 max-w-sm w-80 h-28 mx-auto">
+              <div className="animate-pulse flex space-x-4">
+                <div className="rounded-md bg-slate-200 h-16 w-16"></div>
+                <div className="flex-1 space-y-6 py-1">
+                  <div className="h-2 bg-slate-200 rounded"></div>
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                      <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                    </div>
+                    <div className="h-2 bg-slate-200 rounded"></div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <hr className="h-px bg-gray-200 border-0" />
-            <div className="justify-between grid grid-cols-2 gap-2 py-4">
-              <p className="text-sm text-gray-400">Pesanan</p>
-              <p className="text-right text-sm">
-                {dataApi?.qty} x {dataApi?.merchant_product.name}
-              </p>
-            </div>
-            <hr className="h-px bg-gray-200 border-0" />
-            <div className="justify-between grid grid-cols-2 gap-2 py-4">
-              <p className="text-sm text-gray-400">Total</p>
-              <p className="text-right text-sm text-primary">
-                Rp. {dataApi?.total_amount.toLocaleString("id-ID")}
-              </p>
-            </div>
-            <hr className="h-px bg-gray-200 border-0" />
-            <div className="py-4">
-              <p className="text-sm text-gray-400">Tentang Program</p>
-              <p className={`font-normal mt-2 text-sm `}>
-                {dataApi?.campaign.description}
-              </p>
-            </div>
-          </div>
+            </div> : <CardPesanan
+              key={dataApi?.id}
+              to={""}
+              idOrder={dataApi?.id}
+              img={
+                dataApi?.merchant_product.images.length > 0
+                  ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${dataApi?.merchant_product.images[0].image_url}`
+                  : "/img/default-image.png"
+              }
+              title={dataApi?.campaign.event_name}
+              productName={dataApi?.merchant_product.name}
+              created_at={moment(dataApi?.campaign?.created_at).format(
+                "DD MMM YYYY hh:mm"
+              )}
+              date={`${moment(dataApi?.campaign?.event_date).format(
+                "DD MMM YYYY"
+              )} ${dataApi?.campaign?.event_time}`}
+              qty={dataApi?.qty}
+              price={dataApi?.merchant_product.price}
+              total_amount={dataApi?.total_amount}
+              status={dataApi?.order_status}
+              setLoading={setLoading}
+            />}
+
+          {loading ?
+            <>
+              <div class="p-2 rounded-md mt-2 px-4 animate-pulse">
+                <h5 class="text-xs mb-1 font-bold">Rangkuman Pesanan</h5>
+
+                <div class="justify-between grid grid-cols-2 gap-2 ">
+                  <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                  <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                  <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                  <div class="text-right text-sm text-primary bg-gray-300 h-4 rounded"></div>
+                  <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                  <div class="text-right text-sm text-primary bg-gray-300 h-4 rounded"></div>
+                </div>
+
+                <hr class="h-px bg-gray-200 border-0 mt-2" />
+                <div class="justify-between grid grid-cols-2 gap-2 py-4">
+                  <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                  <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                  <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                  <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                </div>
+
+                <hr class="h-px bg-gray-200 border-0" />
+                <div class="justify-between grid grid-cols-2 gap-2 py-4">
+                  <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                  <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                </div>
+                <hr class="h-px bg-gray-200 border-0" />
+                <div class="justify-between grid grid-cols-2 gap-2 py-4">
+                  <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                  <div class="flex gap-4">
+                    <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                    <a href="#" class="text-sm font-normal mb-12 text-red-500 bg-gray-300 h-4 rounded"></a>
+                  </div>
+                </div>
+                <hr class="h-px bg-gray-200 border-0" />
+                <div class="justify-between grid grid-cols-2 gap-2 py-4">
+                  <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                  <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                </div>
+                <hr class="h-px bg-gray-200 border-0" />
+                <div class="py-4">
+                  <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                  <div class="font-normal mt-2 text-sm bg-gray-300 h-6 rounded"></div>
+                </div>
+              </div>
+              <div className=" h-20 bottom-0 my-0 p-2rounded-md mt-2 mx-2 grid grid-cols-2 gap-4 place-content-center">
+                <div
+                  className={`bg-gray-200 text-white rounded-md h-10 w-full col-span-2`}
+                >
+                  --
+                </div>
+              </div>
+            </>
+            : <div className="p-2 rounded-md mt-2 px-4">
+              <h5 className="text-xs mb-1 font-bold">Rangkuman Pesanan</h5>
+
+              <div className="justify-between grid grid-cols-2 gap-2 ">
+                <p className="text-sm text-gray-400">Campaign</p>
+                <p className="text-right text-sm">
+                  {dataApi?.campaign.event_name}
+                </p>
+                <p className="text-sm text-gray-400">Donation Target</p>
+                <p className="text-right text-sm text-primary">
+                  Rp. {dataApi?.campaign.donation_target.toLocaleString("id-ID")}
+                </p>
+                <p className="text-sm text-gray-400">Donation Collected</p>
+                <p className="text-right text-sm text-primary">
+                  Rp.{" "}
+                  {dataApi?.campaign.donation_collected.toLocaleString("id-ID")}
+                </p>
+              </div>
+
+              <hr className="h-px bg-gray-200 border-0 mt-2" />
+              <div className="justify-between grid grid-cols-2 gap-2 py-4">
+                <p className="text-sm text-gray-400">PIC</p>
+                <p className="text-right text-sm">
+                  {dataApi?.campaign.detonator.oauth.fullname}
+                </p>
+                <p className="text-sm text-gray-400">No Telp.</p>
+                <p className="text-right text-sm">
+                  {dataApi?.campaign.detonator.oauth.phone}{" "}
+                </p>
+              </div>
+
+              <hr className="h-px bg-gray-200 border-0" />
+              <div className="justify-between grid grid-cols-2 gap-2 py-4">
+                <p className="text-sm text-gray-400">Tanggal Pelaksanaan</p>
+                <p className="text-right text-sm">
+                  {`${moment(dataApi?.campaign?.event_date).format(
+                    "DD MMM YYYY"
+                  )} ${dataApi?.campaign?.event_time}`}
+                </p>
+              </div>
+              <hr className="h-px bg-gray-200 border-0" />
+              <div className="justify-between grid grid-cols-2 gap-2 py-4">
+                <p className="text-sm text-gray-400">Tempat</p>
+                <div className="flex gap-4">
+                  <p className="text-right text-sm">
+                    {dataApi?.campaign.address}
+                  </p>
+                  <Link
+                    href={`/lokasi_camp/${dataApi?.campaign_id}`}
+                    className="text-sm font-normal mb-12 text-red-500"
+                  >
+                    <IconMapPin />
+                  </Link>
+                </div>
+              </div>
+              <hr className="h-px bg-gray-200 border-0" />
+              <div className="justify-between grid grid-cols-2 gap-2 py-4">
+                <p className="text-sm text-gray-400">Pesanan</p>
+                <p className="text-right text-sm">
+                  {dataApi?.qty} x {dataApi?.merchant_product.name}
+                </p>
+              </div>
+              <hr className="h-px bg-gray-200 border-0" />
+              <div className="justify-between grid grid-cols-2 gap-2 py-4">
+                <p className="text-sm text-gray-400">Total</p>
+                <p className="text-right text-sm text-primary">
+                  Rp. {dataApi?.total_amount.toLocaleString("id-ID")}
+                </p>
+              </div>
+              <hr className="h-px bg-gray-200 border-0" />
+              <div className="py-4">
+                <p className="text-sm text-gray-400">Tentang Program</p>
+                <p className={`font-normal mt-2 text-sm `}>
+                  {dataApi?.campaign.description}
+                </p>
+              </div>
+            </div>}
+
+
           <div className=" h-20 bottom-0 my-0 p-2rounded-md mt-2 mx-2 grid grid-cols-2 gap-4 place-content-center">
             {dataApi?.order_status === "review" ? (
               <>
