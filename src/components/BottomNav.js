@@ -25,8 +25,6 @@ const BottomNav = () => {
   const [nominalDonasi, setNominalDonasi] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  console.log(pathname);
-
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     // Fetch the token from localStorage when the component mounts

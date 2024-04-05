@@ -36,15 +36,15 @@ const Registrasi = () => {
 
   const Toast = Swal.mixin({
     toast: true,
-    position: 'center',
-    iconColor: 'white',
+    position: "center",
+    iconColor: "white",
     customClass: {
-      popup: 'colored-toast',
+      popup: "colored-toast",
     },
     showConfirmButton: false,
     timer: 1500,
     timerProgressBar: true,
-  })
+  });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleClickShowConfirmPassword = () =>
@@ -56,12 +56,13 @@ const Registrasi = () => {
 
   const handlePhoneChange = (event) => {
     const value = event.target.value;
-    if (value.length > 13) { // Mengubah ekspresi reguler untuk memeriksa nomor telepon yang diawali dengan '08' dan panjangnya antara 10 hingga 13 karakter
+    if (value.length > 13) {
+      // Mengubah ekspresi reguler untuk memeriksa nomor telepon yang diawali dengan '08' dan panjangnya antara 10 hingga 13 karakter
       Toast.fire({
-        icon: 'error',
-        title: 'Nomer Handphone maksimal 13 angka',
-        iconColor: 'bg-black',
-        timer: 2000
+        icon: "error",
+        title: "Nomer Handphone maksimal 13 angka",
+        iconColor: "bg-black",
+        timer: 2000,
       });
       return;
     } else {
@@ -84,34 +85,35 @@ const Registrasi = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-
     // Validation checks
     if (!fullname || !phone || !email || !password || !confirmPassword) {
       Toast.fire({
-        icon: 'error',
-        title: 'Please fill in all fields',
-        iconColor: 'bg-black',
-        timer: 2000
-      })
+        icon: "error",
+        title: "Please fill in all fields",
+        iconColor: "bg-black",
+        timer: 2000,
+      });
       return;
     }
 
     if (!/^\S+@\S+\.\S+$/.test(email)) {
       Toast.fire({
-        icon: 'error',
-        title: 'Invalid email address',
-        iconColor: 'bg-black',
-        timer: 2000
-      })
+        icon: "error",
+        title: "Invalid email address",
+        iconColor: "bg-black",
+        timer: 2000,
+      });
       return;
     }
 
-    if (!/^08\d{8,}$/.test(phone)) { // Mengubah ekspresi reguler untuk memeriksa nomor telepon yang diawali dengan '08' dan panjangnya antara 10 hingga 13 karakter
+    if (!/^08\d{8,}$/.test(phone)) {
+      // Mengubah ekspresi reguler untuk memeriksa nomor telepon yang diawali dengan '08' dan panjangnya antara 10 hingga 13 karakter
       Toast.fire({
-        icon: 'error',
-        title: 'Nomor telepon harus dimulai dengan 08 dan memiliki setidaknya 10 digit',
-        iconColor: 'bg-black',
-        timer: 2000
+        icon: "error",
+        title:
+          "Nomor telepon harus dimulai dengan 08 dan memiliki setidaknya 10 digit",
+        iconColor: "bg-black",
+        timer: 2000,
       });
       return;
     }
@@ -119,21 +121,21 @@ const Registrasi = () => {
     if (password.length < 8) {
       // window.alert("Password must be at least 8 characters");
       Toast.fire({
-        icon: 'error',
-        title: 'Password must be at least 8 characters',
-        iconColor: 'bg-black',
-        timer: 2000
-      })
+        icon: "error",
+        title: "Password must be at least 8 characters",
+        iconColor: "bg-black",
+        timer: 2000,
+      });
       return;
     }
 
     if (password !== confirmPassword) {
       Toast.fire({
-        icon: 'error',
-        title: 'Password and confirm password do not match',
-        iconColor: 'bg-black',
-        timer: 2000
-      })
+        icon: "error",
+        title: "Password and confirm password do not match",
+        iconColor: "bg-black",
+        timer: 2000,
+      });
       return;
     }
     const capitalizeEachWord = (str) => {
@@ -224,11 +226,7 @@ const Registrasi = () => {
           <h1 className="text-4xl text-primary font-bold">FOODIA</h1>
         </div>
         <div className="flex flex-col items-center w-full">
-          <div
-            className="p-2 w-full flex flex-col gap-3"
-          // onSubmit={handleSubmit}
-          >
-            {/* ... (your existing code) */}
+          <div className="p-2 w-full flex flex-col gap-3">
             <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
               <IconUser />
               <input
@@ -236,7 +234,7 @@ const Registrasi = () => {
                 onChange={handlefullnameChange}
                 type="text"
                 id="fullname"
-                className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                className="ml-2 w-full text-black p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="Nama Lengkap"
                 required
               />
@@ -248,7 +246,7 @@ const Registrasi = () => {
                 onChange={handlePhoneChange}
                 type="number"
                 id="phone"
-                className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                className="ml-2 w-full text-black p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="Nomor Hp"
                 required
               />
@@ -260,7 +258,7 @@ const Registrasi = () => {
                 onChange={handleEmailChange}
                 type="text"
                 id="email"
-                className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                className="ml-2 w-full text-black p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="Email"
                 required
               />
@@ -272,7 +270,7 @@ const Registrasi = () => {
                 onChange={handlePasswordChange}
                 type={showPassword ? "password" : "text"}
                 id="password"
-                className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                className="ml-2 w-full text-black p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="Password"
                 required
               />
@@ -287,7 +285,7 @@ const Registrasi = () => {
                 onChange={handleConfirmPasswordChange}
                 type={showConfirmPassword ? "password" : "text"}
                 id="password"
-                className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                className="ml-2 w-full text-black p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="Confirm Password"
                 required
               />
@@ -298,9 +296,14 @@ const Registrasi = () => {
 
             <div className="grid gap-4 content-center">
               <button
+                disabled={!fullname || !phone || !password || !confirmPassword}
                 onClick={handleSubmit}
                 type="submit"
-                className="text-white text-center font-bold rounded-xl bg-primary py-3"
+                className={
+                  !fullname || !phone || !password || !confirmPassword
+                    ? "text-white bg-gray-400 text-center font-bold rounded-xl py-3"
+                    : "text-white bg-primary text-center font-bold rounded-xl py-3"
+                }
               >
                 Daftar
               </button>
