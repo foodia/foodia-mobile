@@ -24,7 +24,7 @@ const Merchant = () => {
     axios
       .get(
         process.env.NEXT_PUBLIC_API_BASE_URL +
-        `merchant-product/filter?merchant_id=${id}`,
+          `merchant-product/filter?merchant_id=${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -231,10 +231,11 @@ const Merchant = () => {
         </div>
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "approved"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "approved"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("approved")}
           >
             <span>Menu</span>
@@ -245,10 +246,11 @@ const Merchant = () => {
             ></div> */}
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "listMenu"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "listMenu"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("listMenu")}
           >
             <span>Pengajuan</span>
