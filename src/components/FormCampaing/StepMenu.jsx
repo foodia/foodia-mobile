@@ -103,6 +103,7 @@ function StepOne({ Menu, setMenu }) {
       qty,
       images,
     });
+
     const token = localStorage.getItem("token");
     const idMerchant = localStorage.getItem("id");
     // Check if an image file is selected
