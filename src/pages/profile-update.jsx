@@ -4,12 +4,18 @@ import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import ProfileDetonator from "@/components/page/Profile/ProfileDetonator";
 import ProfileMerchant from "@/components/page/Profile/ProfileMerchant";
-import { IconChevronRight, IconEdit, IconUser } from "@tabler/icons-react";
+import {
+  IconChevronRight,
+  IconDeviceMobile,
+  IconEdit,
+  IconMail,
+  IconUser,
+} from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const profile = (profile) => {
+const UpdateProfile = (profile) => {
   const router = useRouter();
   const [role, setRole] = useState("");
   const [dataUser, setDataUser] = useState();
@@ -95,83 +101,70 @@ const profile = (profile) => {
     router.push("/login");
   };
 
-  const UpdateProfile = () => {
-    router.push("/profile-update");
-  };
-
   return (
     <>
-      {/* <main className="my-0 mx-auto mobile-w h-full"> */}
-      <div className="bg-white flex flex-col px-5 h-full pb-20">
-        <Header />
-        <div class="pt-12 pb-32 w-full">
-          <p className="text-center font-bold text-lg">Profile</p>
-          <div className="items-center justify-center mt-5 w-full mb-4">
-            <div className="w-full bg-white text-black rounded-lg inline-flex items-center px-1 py-2.5">
-              <div className="flex justify-between w-full">
-                <div className="flex w-full">
-                  <div className="w-14 h-12 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
-                    <IconUser />
-                  </div>
-                  <div className="text-left flex flex-row justify-between w-full">
-                    <div className="flex flex-col justify-center">
-                      <p class="text-md text-primary">{`${dataUser?.fullname}`}</p>
-                      {isDetonator && (
-                        <p class="font-normal text-xs">Verified Campaigner</p>
-                      )}
-                    </div>
-                    {!isDetonator && (
-                      <button onClick={() => UpdateProfile()}>
-                        <IconEdit />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
+      <div className="bg-white flex flex-col px-1 h-screen">
+        <Header title="Ubah Profile" />
+        <div class="pt-12 w-full h-screen flex flex-col">
+          <div className="flex flex-col items-center justify-center mt-5 w-full mb-4">
+            <div className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600">
+              <IconUser />
+            </div>
+            <button className="text-xs mt-2 text-[#1D5882] font-semibold">
+              Ganti
+            </button>
+          </div>
+          <div className="mb-4 p-3 px-2 flex flex-col gap-3">
+            <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+              <IconUser />
+              <input
+                // onChange={(e) => setEmail(e.target.value)}
+                value={`${dataUser?.fullname}`}
+                type="text"
+                id="name"
+                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                placeholder="Nama"
+                required
+              />
+            </div>
+            <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-gray-400 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+              <IconMail />
+              <input
+                // onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                id="email"
+                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                placeholder="Email"
+                disabled
+                value={`${dataUser?.email}`}
+              />
+            </div>
+            <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+              <IconDeviceMobile />
+              <input
+                // onChange={(e) => setEmail(e.target.value)}
+                value={`${dataUser?.phone}`}
+                type="text"
+                id="name"
+                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                placeholder="No. Hp"
+                required
+              />
             </div>
           </div>
-          <button className="shadow rounded-xl flex flex-row justify-between w-full text-left filter-none mb-4 p-3">
-            <p>Ubah Kata Sandi</p>
-            <IconChevronRight className="text-primary" />
-          </button>
-          <div className="shadow rounded-xl filter-none mb-4 p-3 px-5">
-            <div class="card md:flex max-w-lg">
-              <div class="flex-grow text-left md:text-left">
-                <div className="mt-2 text-left mb-3">
-                  <p class="font-bold">Email</p>
-                  <p>{`${dataUser?.email}`}</p>
-                </div>
-              </div>
-            </div>
-            <div class="card md:flex max-w-lg">
-              <div class="flex-grow text-left md:text-left">
-                <div className="mt-2 text-left mb-3">
-                  <p class="font-bold">Nomer HP</p>
-                  <p>{`${dataUser?.phone}`}</p>
-                </div>
-              </div>
-            </div>
-            {isDetonator && <ProfileDetonator id={detonatorId} />}
-          </div>
-
-          {isMerchant && (
-            <ProfileMerchant id={merchantId} merchantStatus={merchantStatus} />
-          )}
-
+        </div>
+        <div className="flex justify-end py-8 px-2">
           <button
             onClick={btnLogout}
-            className="flex items-center justify-center bg-white border-2 border-primary rounded-lg w-full h-10 text-primary font-bold text-center"
+            className="flex items-center justify-center bg-primary border-2 border-primary rounded-lg w-full h-10 text-white   font-bold text-center"
           >
-            Keluar
+            Ubah
           </button>
-          {/* </div> */}
         </div>
         {loading && <Loading />}
       </div>
-      {/* </main> */}
-      <BottomNav />
     </>
   );
 };
 
-export default profile;
+export default UpdateProfile;
