@@ -71,10 +71,10 @@ const FormCampaing = () => {
         setLoading={setLoading}
       />
     );
-    setTitle = "Tanggal Pelaksanaan";
+    setTitle = "Informasi Campaign";
   } else if (step === "2") {
-    stepComponent = <StepTwo />;
-    setTitle = "Lokasi Pelaksanaan";
+    stepComponent = <StepTwo loading={loading} setLoading={setLoading} />;
+    setTitle = "Lokasi Campaign";
   } else if (step === "3") {
     stepComponent = (
       <StepThree
@@ -86,7 +86,7 @@ const FormCampaing = () => {
         setLoading={setLoading}
       />
     );
-    setTitle = "Tambah Menu Makan";
+    setTitle = "Pilih Menu";
   } else if (step === "4") {
     stepComponent = (
       <Stepfour
@@ -99,7 +99,6 @@ const FormCampaing = () => {
         setLoading={setLoading}
       />
     );
-    setTitle = "Tambah Menu Makan";
   } else if (step === "5") {
     stepComponent = (
       <Stepfive
