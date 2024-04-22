@@ -164,15 +164,15 @@ const LoginPage = () => {
             {showPassword ? <IconEye /> : <IconEyeClosed />}
           </button>
         </div>
-        {/* <div className="flex items-start mb-4">
+        <div className="flex items-start mb-4">
           <Link
-            href=""
+            href="/forgot-password"
             htmlFor="remember"
             className="text-xs font-bold text-blue-800 hover:underline"
           >
-            Forgot password?
+            Lupa Kata Sandi?
           </Link>
-        </div> */}
+        </div>
         <div className=" grid gap-6 content-center">
           <button
             onClick={handleSubmit}
