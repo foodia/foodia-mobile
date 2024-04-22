@@ -99,6 +99,15 @@ const profile = (profile) => {
     router.push("/profile-update");
   };
 
+  const ChangePassword = () => {
+    router.push("/change-password");
+  };
+
+  const MerchantUpdateProfile = () => {
+    localStorage.setItem("Merchant_id", merchantId);
+    router.push("/merchant-profile-update");
+  };
+
   return (
     <>
       {/* <main className="my-0 mx-auto mobile-w h-full"> */}
@@ -130,7 +139,10 @@ const profile = (profile) => {
               </div>
             </div>
           </div>
-          <button className="shadow rounded-xl flex flex-row justify-between w-full text-left filter-none mb-4 p-3">
+          <button
+            onClick={() => ChangePassword()}
+            className="shadow rounded-xl flex flex-row justify-between w-full text-left filter-none mb-4 p-3"
+          >
             <p>Ubah Kata Sandi</p>
             <IconChevronRight className="text-primary" />
           </button>
@@ -155,7 +167,11 @@ const profile = (profile) => {
           </div>
 
           {isMerchant && (
-            <ProfileMerchant id={merchantId} merchantStatus={merchantStatus} />
+            <ProfileMerchant
+              id={merchantId}
+              merchantStatus={merchantStatus}
+              MerchantUpdateProfile={MerchantUpdateProfile}
+            />
           )}
 
           <button

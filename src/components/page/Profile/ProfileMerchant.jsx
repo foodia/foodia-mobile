@@ -1,3 +1,4 @@
+import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import { IconEdit } from "@tabler/icons-react";
 import axios from "axios";
@@ -5,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const ProfileMerchant = ({ id = 0, merchantStatus }) => {
+const ProfileMerchant = ({ id = 0, merchantStatus, MerchantUpdateProfile }) => {
   const router = useRouter();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
@@ -56,7 +57,7 @@ const ProfileMerchant = ({ id = 0, merchantStatus }) => {
               <p class="font-bold">Nama Toko</p>
               <p>{data?.merchant_name}</p>
             </div>
-            <button>
+            <button onClick={() => MerchantUpdateProfile()}>
               <IconEdit />
             </button>
           </div>
@@ -77,6 +78,7 @@ const ProfileMerchant = ({ id = 0, merchantStatus }) => {
             </div>
           </div>
         </div>
+        {loading && <Loading />}
       </div>
     </>
   );
