@@ -1,10 +1,22 @@
+import BottomNav from "@/components/BottomNav";
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
-import { IconDeviceMobile, IconMail, IconUser } from "@tabler/icons-react";
+import Error401 from "@/components/error401";
+import ProfileDetonator from "@/components/page/Profile/ProfileDetonator";
+import ProfileMerchant from "@/components/page/Profile/ProfileMerchant";
+import {
+  IconChevronRight,
+  IconDeviceMobile,
+  IconEdit,
+  IconHome,
+  IconMail,
+  IconUser,
+} from "@tabler/icons-react";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const UpdateProfile = (profile) => {
+const MerchantUpdateProfile = (profile) => {
   const router = useRouter();
   const [role, setRole] = useState("");
   const [dataUser, setDataUser] = useState();
@@ -17,25 +29,27 @@ const UpdateProfile = (profile) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const sesionRole = localStorage.getItem("role");
-    const userData = {
-      fullname: localStorage.getItem("fullname"),
-      phone: localStorage.getItem("phone"),
-      email: localStorage.getItem("email"),
-      role: localStorage.getItem("role"),
-      token: localStorage.getItem("token"),
-      id: localStorage.getItem("id"),
-    };
-    setDataUser(userData);
-
-    console.log("ds", userData);
-
-    if (sesionRole) {
-      setRole(sesionRole);
-    } else {
-      router.push("/login");
-    }
-  }, [role]);
+    axios
+      .get(
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
+        }merchant/fetch/${localStorage.getItem("Merchant_id")}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        setDataUser(response.data.body);
+        setLoading(false);
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+        }
+      });
+  }, []);
 
   const btnLogout = () => {
     setLoading(true);
@@ -49,7 +63,7 @@ const UpdateProfile = (profile) => {
   return (
     <>
       <div className="bg-white flex flex-col px-1 h-screen">
-        <Header title="Ubah Profile" />
+        <Header title="Ubah Profile Toko" />
         <div class="pt-12 w-full h-screen flex flex-col">
           <div className="flex flex-col items-center justify-center mt-5 w-full mb-4">
             <div className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600">
@@ -64,7 +78,7 @@ const UpdateProfile = (profile) => {
               <IconUser />
               <input
                 // onChange={(e) => setEmail(e.target.value)}
-                value={`${dataUser?.fullname}`}
+                value={`${dataUser?.merchant_name}`}
                 type="text"
                 id="name"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
@@ -72,28 +86,28 @@ const UpdateProfile = (profile) => {
                 required
               />
             </div>
-            <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-gray-400 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-              <IconMail />
-              <input
-                // onChange={(e) => setEmail(e.target.value)}
-                type="text"
-                id="email"
-                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
-                placeholder="Email"
-                disabled
-                value={`${dataUser?.email}`}
-              />
-            </div>
             <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
               <IconDeviceMobile />
               <input
                 // onChange={(e) => setEmail(e.target.value)}
-                value={`${dataUser?.phone}`}
+                value={`${dataUser?.no_link_aja}`}
                 type="text"
                 id="name"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="No. Hp"
                 required
+              />
+            </div>
+            <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg outline-none w-full focus:border-none">
+              <IconHome />
+              <textarea
+                // onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                id="address"
+                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
+                placeholder="Alamat"
+                required
+                value={`${dataUser?.address}`}
               />
             </div>
           </div>
@@ -112,4 +126,4 @@ const UpdateProfile = (profile) => {
   );
 };
 
-export default UpdateProfile;
+export default MerchantUpdateProfile;
