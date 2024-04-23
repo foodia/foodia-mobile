@@ -10,6 +10,9 @@ import {
   Icon123,
   IconCalendar,
   IconCamera,
+  IconChevronCompactDown,
+  IconChevronDown,
+  IconChevronUp,
   IconCirclePlus,
   IconClock,
   IconCurrentLocation,
@@ -21,11 +24,13 @@ import {
   IconMapPin,
   IconMapPinExclamation,
   IconMinus,
+  IconMoneybag,
   IconNotes,
   IconPhotoScan,
   IconPlus,
   IconShoppingCart,
   IconUser,
+  IconWallet,
 } from "@tabler/icons-react";
 import axios from "axios";
 import dynamic from "next/dynamic";
@@ -37,6 +42,10 @@ import AddFoodCamp from "./AddFoodCamp";
 import Error401 from "../error401";
 import Header from "../Header";
 import Loading from "../Loading";
+import LinkAja from "../../../public/icon/payment/LinkAja.png";
+import gopay from "../../../public/icon/payment/gopay.png";
+import mandiri from "../../../public/bank/mandiri.png";
+import bri from "../../../public/bank/bri.png";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
@@ -369,8 +378,38 @@ function StepOne({
           />
         </div>
 
-        <div className="mb-2 px-4">
+        <div className="mb-2 ">
           <div className="flex items-center justify-center w-full">
+            <label
+              htmlFor="images"
+              className="flex flex-col justify-center w-full h-32 border-2 border-black border-dashed rounded-lg cursor-pointer bg-gray-200 hover:bg-gray-100"
+            >
+              {uploadedFile ? (
+                <img
+                  src={URL.createObjectURL(uploadedFile)}
+                  alt="Foto KTP"
+                  className="w-full h-full rounded-lg object-cover"
+                />
+              ) : (
+                <div className="flex items-center gap-2 px-3">
+                  <div className="bg-primary text-white font-light w-20 py-5 rounded-xl flex items-center justify-center">
+                    <IconCamera size={40} />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm">Foto Campaign</p>
+                    <p className="font-light text-xs">Ambil foto Campaign</p>
+                  </div>
+                </div>
+              )}
+              <input
+                id="images"
+                type="file"
+                className="hidden"
+                onChange={handleImageCampChange}
+              />
+            </label>
+          </div>
+          {/* <div className="flex items-center justify-center w-full">
             <label
               htmlFor="uploadedFile"
               className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100"
@@ -396,7 +435,7 @@ function StepOne({
                 onChange={handleImageCampChange}
               />
             </label>
-          </div>
+          </div> */}
           <p className="text-xs text-primary font-semibold">
             *file yang diperbolehkan jpg, jpeg, png dan max 5mb
           </p>
@@ -655,7 +694,6 @@ function StepThree({
 
   useEffect(() => {
     setLoading(false);
-    console.log(campData.TypeEvent);
   }, []);
 
   const handleDecrease = (IdMerchan, itemId) => {
@@ -744,165 +782,156 @@ function StepThree({
 
   const handleSubmit = async () => {
     setLoading(true);
-    const emptyFields = [];
-    const detonator_id = localStorage.getItem("id");
-    const token = localStorage.getItem("token");
+    if (campData.TypeEvent === "single_donation") {
+      router.push("/createcampaign?step=Payment");
+    } else {
+      const emptyFields = [];
+      const detonator_id = localStorage.getItem("id");
+      const token = localStorage.getItem("token");
 
-    const products = cart.map((item) => ({
-      merchant_id: parseInt(item.merchant_id),
-      merchant_product_id: parseInt(item.id),
-      qty: parseInt(item.quantity),
-    }));
+      const products = cart.map((item) => ({
+        merchant_id: parseInt(item.merchant_id),
+        merchant_product_id: parseInt(item.id),
+        qty: parseInt(item.quantity),
+      }));
 
-    // Validate data
-    if (!detonator_id) emptyFields.push("Detonator ID");
-    if (!campData.eventName) emptyFields.push("Event Name");
-    if (!campData.TypeEvent) emptyFields.push("Event Type");
-    if (!campData.Tanggal) emptyFields.push("Event Date");
-    if (!campData.Waktu) emptyFields.push("Event Time");
-    if (!campData.Description) emptyFields.push("Description");
-    if (!campData.province) emptyFields.push("Province");
-    if (!campData.city) emptyFields.push("City");
-    // if (!campData.sub_district) emptyFields.push("Sub District");
-    // if (!campData.postal_code) emptyFields.push("Postal Code");
-    if (!campData.location) emptyFields.push("Address");
-    if (!campData.coordinates.lat) emptyFields.push("Latitude");
-    if (!campData.coordinates.lng) emptyFields.push("Longitude");
-    // if (!mediaUploadResponse.data.body.file_url) emptyFields.push("Image URL");
-    if (!products) emptyFields.push("Products");
+      // Validate data
+      if (!detonator_id) emptyFields.push("Detonator ID");
+      if (!campData.eventName) emptyFields.push("Event Name");
+      if (!campData.TypeEvent) emptyFields.push("Event Type");
+      if (!campData.Tanggal) emptyFields.push("Event Date");
+      if (!campData.Waktu) emptyFields.push("Event Time");
+      if (!campData.Description) emptyFields.push("Description");
+      if (!campData.province) emptyFields.push("Province");
+      if (!campData.city) emptyFields.push("City");
+      // if (!campData.sub_district) emptyFields.push("Sub District");
+      // if (!campData.postal_code) emptyFields.push("Postal Code");
+      if (!campData.location) emptyFields.push("Address");
+      if (!campData.coordinates.lat) emptyFields.push("Latitude");
+      if (!campData.coordinates.lng) emptyFields.push("Longitude");
+      // if (!mediaUploadResponse.data.body.file_url) emptyFields.push("Image URL");
+      if (!products) emptyFields.push("Products");
 
-    if (emptyFields.length > 0) {
-      const errorMessage = `Please fill in all required fields: ${emptyFields.join(
-        ", "
-      )}`;
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: errorMessage,
-        showConfirmButton: false,
-        timer: 2000,
-      });
+      if (emptyFields.length > 0) {
+        const errorMessage = `Please fill in all required fields: ${emptyFields.join(
+          ", "
+        )}`;
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: errorMessage,
+          showConfirmButton: false,
+          timer: 2000,
+        });
 
-      setLoading(false);
-      return;
-    }
-    try {
-      const totalCartPrice = cart.reduce(
-        (total, item) => total + item.total,
-        0
-      );
-      const totalCartQuantity = cart.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
+        setLoading(false);
+        return;
+      }
+      try {
+        const totalCartPrice = cart.reduce(
+          (total, item) => total + item.total,
+          0
+        );
+        const totalCartQuantity = cart.reduce(
+          (total, item) => total + item.quantity,
+          0
+        );
 
-      const formData = new FormData();
-      formData.append("destination", "campaign");
-      formData.append("file", uploadedFile);
+        const formData = new FormData();
+        formData.append("destination", "campaign");
+        formData.append("file", uploadedFile);
 
-      const mediaUploadResponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+        const mediaUploadResponse = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      console.log(
-        "API Response media/upload:",
-        mediaUploadResponse.data.body.file_url
-      );
+        if (mediaUploadResponse.status === 200) {
+          const eventData = {
+            detonator_id: parseInt(detonator_id),
+            event_name: campData.eventName,
+            event_type: campData.TypeEvent,
+            event_date: campData.Tanggal,
+            event_time: campData.Waktu, // Check if you intended to use it twice
+            description: campData.Description,
+            donation_target: parseFloat(totalCartPrice),
+            province: campData.province,
+            city: campData.city,
+            sub_district: campData.sub_district ?? "-",
+            postal_code: campData.postal_code ?? "-",
+            address: campData.location,
+            latitude: String(campData.coordinates.lat),
+            longitude: String(campData.coordinates.lng),
+            image_url: mediaUploadResponse.data.body.file_url, // Set to the actual file_url
+            food_required: parseInt(totalCartQuantity),
+            food_total: parseInt(totalCartQuantity),
+            products: products,
+          };
+          try {
+            const createCampaignResponse = await axios.post(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/create`,
+              eventData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            setLoading(false);
+            // router.push("/detonator");
 
-      if (mediaUploadResponse.status === 200) {
-        const eventData = {
-          detonator_id: parseInt(detonator_id),
-          event_name: campData.eventName,
-          event_type: campData.TypeEvent,
-          event_date: campData.Tanggal,
-          event_time: campData.Waktu, // Check if you intended to use it twice
-          description: campData.Description,
-          donation_target: parseFloat(totalCartPrice),
-          province: campData.province,
-          city: campData.city,
-          sub_district: campData.sub_district ?? "-",
-          postal_code: campData.postal_code ?? "-",
-          address: campData.location,
-          latitude: String(campData.coordinates.lat),
-          longitude: String(campData.coordinates.lng),
-          image_url: mediaUploadResponse.data.body.file_url, // Set to the actual file_url
-          food_required: parseInt(totalCartQuantity),
-          food_total: parseInt(totalCartQuantity),
-          products: products,
-        };
+            Swal.fire({
+              icon: "success",
+              title: "Campaign Created!",
+              text: "Campaign Berhasil dibuat Mohon Tunggu approval dari admin",
+              showConfirmButton: false,
+              timer: 2000,
+            });
 
-        console.log("cek data", eventData);
-
-        try {
-          const createCampaignResponse = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/create`,
-            eventData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+            setTimeout(() => {
+              router.push("/detonator");
+            }, 2000);
+          } catch (error) {
+            setLoading(false);
+            if (error.response && error.response.status === 401) {
+              Error401(error, router);
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Gagal Membuat Campaign",
+                text: "Gagal Membuat Campaign Mohon Coba Lagi",
+                showConfirmButton: false,
+                timer: 2000,
+              });
             }
-          );
-          console.log(
-            "API Response create campaign:",
-            createCampaignResponse.data
-          );
+          }
+        }
+      } catch (error) {
+        setLoading(false);
+        if (error.response && error.response.status === 401) {
           localStorage.removeItem("cart");
           localStorage.removeItem("formData");
-          setLoading(false);
-          // router.push("/detonator");
-
+          Error401(error, router);
+        } else {
           Swal.fire({
-            icon: "success",
-            title: "Campaign Created!",
-            text: "Campaign Berhasil dibuat Mohon Tunggu approval dari admin",
+            icon: "error",
+            title: "Image Gagal Upload",
+            text: "Gagal Upload Image Mohon Coba Lagi",
             showConfirmButton: false,
             timer: 2000,
           });
 
           setTimeout(() => {
-            router.push("/detonator");
+            router.push("/createcampaign?step=1");
           }, 2000);
-        } catch (error) {
-          setLoading(false);
-          console.error("Error creating campaign:", error);
-          if (error.response && error.response.status === 401) {
-            Error401(error, router);
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Gagal Membuat Campaign",
-              text: "Gagal Membuat Campaign Mohon Coba Lagi",
-              showConfirmButton: false,
-              timer: 2000,
-            });
-          }
         }
-      }
-    } catch (error) {
-      setLoading(false);
-      if (error.response && error.response.status === 401) {
-        localStorage.removeItem("cart");
-        localStorage.removeItem("formData");
-        Error401(error, router);
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Image Gagal Upload",
-          text: "Gagal Upload Image Mohon Coba Lagi",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-
-        setTimeout(() => {
-          router.push("/createcampaign?step=1");
-        }, 2000);
       }
     }
   };
@@ -935,7 +964,6 @@ function StepThree({
       </ol>
 
       <div className="container mx-auto">
-        {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
         <div className="items-center justify-center mt-1 w-full">
           <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
             <div
@@ -1059,7 +1087,7 @@ function StepThree({
         {Object.keys(groupedCart).length > 0 ? (
           <div className="grid gap-4 h-screencontent-center px-4 py-2">
             <button
-              onClick={handleSubmit}
+              onClick={() => handleSubmit()}
               className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center"
             >
               {campData.TypeEvent === "single_donation"
@@ -1072,6 +1100,275 @@ function StepThree({
         )}
       </div>
     </>
+  );
+}
+
+function SingleDonationPayment({ setLoading }) {
+  const [isDropdownMethodOpen, setIsDropdownMethodOpen] = useState(true);
+  const [isDropdownChannelOpen, setIsDropdownChannelOpen] = useState(false);
+  const [selectedMethod, setSelectedMethod] = useState("");
+  const [selectedChannel, setSelectedChannel] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    setLoading(false);
+    console.log(selectedMethod);
+  }, []);
+
+  const formatToRupiah = (amount) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(amount);
+  };
+
+  const handleOptionChange = (event) => {
+    setSelectedMethod(event.target.value);
+  };
+
+  const methodOptions = [
+    {
+      value: "ewallet",
+      label: "Ewallet",
+    },
+    {
+      value: "bank",
+      label: "Bank",
+    },
+  ];
+
+  const eWalletChannelOptions = [
+    {
+      logo: LinkAja,
+      value: "link_aja",
+      label: "LinkAja",
+    },
+    {
+      logo: gopay,
+      value: "gopay",
+      label: "Gopay",
+    },
+  ];
+
+  const bankChannelOptions = [
+    {
+      logo: mandiri,
+      value: "mandiri",
+      label: "Mandiri",
+    },
+    {
+      logo: bri,
+      value: "bri",
+      label: "BRI",
+    },
+  ];
+
+  return (
+    <div className="w-full">
+      <Header title="Konfirmasi Pembayaran" />
+      <div className="flex flex-col w-full px-4 gap-3">
+        <p className="text-black text-sm font-medium">
+          Pilih Metode Pembayaran
+        </p>
+        <button
+          onClick={() => {
+            setIsDropdownMethodOpen(!isDropdownMethodOpen);
+            setIsDropdownChannelOpen(false);
+          }}
+          className="flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none"
+        >
+          <p
+            className={`capitalize font-bold ${
+              selectedMethod === "" ? "text-gray-400" : "text-black"
+            }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
+          >
+            {selectedMethod === "" ? "Pilih Salah Satu..." : selectedMethod}
+          </p>
+          {isDropdownMethodOpen ? <IconChevronUp /> : <IconChevronDown />}
+        </button>
+        {isDropdownMethodOpen ? (
+          <div className="flex flex-col px-4 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none">
+            {methodOptions.map((data, index) => (
+              <>
+                <button
+                  onClick={() => {
+                    setSelectedMethod(data.value);
+                    setSelectedChannel("");
+                  }}
+                  className="flex flex-row justify-between items-center py-3 cursor-pointer "
+                >
+                  <label htmlFor="ewallet" className="font-bold text-black">
+                    {data.label}
+                  </label>
+                  <input
+                    type="radio"
+                    id={data.value}
+                    name="paymentOption"
+                    value={data.value}
+                    className="hidden"
+                  />
+                  <div
+                    className={`w-[10px] h-[10px] ${
+                      data.value === selectedMethod && "bg-primary"
+                    } rounded-full flex justify-center items-center`}
+                  >
+                    <div
+                      className={`rounded-full p-2 ${
+                        data.value === selectedMethod && "border-primary"
+                      } border-2`}
+                    />
+                  </div>
+                </button>
+                {index !== methodOptions.length - 1 ? <hr /> : ""}
+              </>
+            ))}
+          </div>
+        ) : (
+          ""
+        )}
+        {selectedMethod !== "" && (
+          <button
+            onClick={() => {
+              setIsDropdownChannelOpen(!isDropdownChannelOpen);
+              setIsDropdownMethodOpen(false);
+            }}
+            className="flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none"
+          >
+            <p
+              className={`capitalize font-bold ${
+                selectedChannel === "" ? "text-gray-400" : "text-black"
+              }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
+            >
+              {selectedChannel === ""
+                ? `Pilih ${selectedMethod}...`
+                : selectedChannel}
+            </p>
+            {isDropdownChannelOpen ? <IconChevronUp /> : <IconChevronDown />}
+          </button>
+        )}
+        {isDropdownChannelOpen ? (
+          <div className="flex flex-col px-4 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none">
+            {selectedMethod === "ewallet"
+              ? eWalletChannelOptions.map((data, index) => (
+                  <>
+                    <button
+                      onClick={() => setSelectedChannel(data.value)}
+                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Image width={30} src={data.logo} />
+                        <label
+                          htmlFor="ewallet"
+                          className="font-bold text-black"
+                        >
+                          {data.label}
+                        </label>
+                      </div>
+                      <input
+                        type="radio"
+                        id={data.value}
+                        name="paymentOption"
+                        value={data.value}
+                        className="hidden"
+                      />
+                      <div
+                        className={`w-[10px] h-[10px] ${
+                          data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                      >
+                        <div
+                          className={`rounded-full p-2 ${
+                            data.value === selectedChannel && "border-primary"
+                          } border-2`}
+                        />
+                      </div>
+                    </button>
+                    {index !== eWalletChannelOptions.length - 1 ? <hr /> : ""}
+                  </>
+                ))
+              : bankChannelOptions.map((data, index) => (
+                  <>
+                    <button
+                      onClick={() => setSelectedChannel(data.value)}
+                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Image width={30} src={data.logo} />
+                        <label
+                          htmlFor="ewallet"
+                          className="font-bold text-black"
+                        >
+                          {data.label}
+                        </label>
+                      </div>
+                      <input
+                        type="radio"
+                        id={data.value}
+                        name="paymentOption"
+                        value={data.value}
+                        className="hidden"
+                      />
+                      <div
+                        className={`w-[10px] h-[10px] ${
+                          data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                      >
+                        <div
+                          className={`rounded-full p-2 ${
+                            data.value === selectedChannel && "border-primary"
+                          } border-2`}
+                        />
+                      </div>
+                    </button>
+                    {index !== bankChannelOptions.length - 1 ? <hr /> : ""}
+                  </>
+                ))}
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
+      <div className="flex flex-col w-full px-4 gap-3 pt-8">
+        <p className="text-black text-sm font-medium">Rincian Donasi</p>
+        <div className="flex flex-col gap-3 items-center justify-center py-3 px-4 shadow-sm shadow-gray-400 text-sm rounded-xl w-full focus:border-none">
+          <p className="text-black font-bold text-lg text-center">
+            Nama Campaign
+          </p>
+          <div className="w-full">
+            <hr />
+          </div>
+          <div className="w-full flex flex-row justify-between">
+            <p className="text-gray-400">Nominal Donasi</p>
+            <p className="text-black font-medium">Rp. 450.000</p>
+          </div>
+          <div className="w-full flex flex-row justify-between">
+            <p className="text-gray-400">Biaya Transaksi</p>
+            <p className="text-black font-medium">Rp. 2.500</p>
+          </div>
+          <div className="w-full">
+            <hr />
+          </div>
+          <div className="w-full flex flex-row justify-between">
+            <p className="text-black font-medium">Total</p>
+            <p className="text-primary font-bold">Rp. 452.500</p>
+          </div>
+        </div>
+        <div className="grid gap-4 content-center pt-12 mb-2">
+          <button
+            disabled={selectedMethod === "" || selectedChannel === ""}
+            // onClick={() => handleSubmit()}
+            type="submit"
+            className={
+              selectedMethod === "" || selectedChannel === ""
+                ? "text-white bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-xl w-xl sm:w-auto px-5 py-2.5 text-center"
+                : "text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+            }
+          >
+            Lanjutkan
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1353,4 +1650,11 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
   );
 }
 
-export { StepOne, StepThree, StepTwo, Stepfive, Stepfour };
+export {
+  StepOne,
+  StepThree,
+  SingleDonationPayment,
+  StepTwo,
+  Stepfive,
+  Stepfour,
+};

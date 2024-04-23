@@ -17,6 +17,7 @@ const UpdateProfile = (profile) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(false);
     const sesionRole = localStorage.getItem("role");
     const userData = {
       fullname: localStorage.getItem("fullname"),

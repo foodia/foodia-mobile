@@ -13,6 +13,9 @@ input {
 input[type="checkbox"] {
   accent-color: #3ab74d;
 }
+input[type="radio"] {
+  accent-color: #3ab74d;
+}
 
 .custom-swal {
   height: 500px;
