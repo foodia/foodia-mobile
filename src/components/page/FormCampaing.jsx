@@ -9,6 +9,7 @@ import {
   StepThree,
   Stepfour,
   Stepfive,
+  SingleDonationPayment,
 } from "../FormCampaing/Step";
 import AddFood from "./AddFoodCamp";
 import Loading from "../Loading";
@@ -87,6 +88,17 @@ const FormCampaing = () => {
       />
     );
     setTitle = "Pilih Menu";
+  } else if (step === "Payment") {
+    stepComponent = (
+      <SingleDonationPayment
+        cart={cart}
+        updateCart={updateCart}
+        setUploadedFile={setUploadedFile}
+        uploadedFile={uploadedFile}
+        loading={loading}
+        setLoading={setLoading}
+      />
+    );
   } else if (step === "4") {
     stepComponent = (
       <Stepfour

@@ -17,6 +17,7 @@ const DetailPesanan = () => {
   const [loading, setLoading] = useState(true);
   const [showFullText, setShowFullText] = useState(false);
   const [dataApi, setDataApi] = useState();
+  const [confirmedOrder, setConfirmedOrder] = useState(0);
 
   const toggleReadMore = () => {
     setShowFullText((prevShowFullText) => !prevShowFullText);
@@ -46,14 +47,12 @@ const DetailPesanan = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     setLoading(true);
-    const ressponse = axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`,
-      {
+    const ressponse = axios
+      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
-    )
+      })
       .then((response) => {
         setDataApi(response.data.body);
         setLoading(false);
@@ -64,9 +63,7 @@ const DetailPesanan = () => {
           Error401(error, router);
         }
         console.error("Error fetching data:", error);
-      })
-
-
+      });
   }, [id_order]);
   const handleRejectButtonClick = async (e) => {
     e.preventDefault();
@@ -111,7 +108,6 @@ const DetailPesanan = () => {
       } catch (error) {
         if (error.response && error.response.status === 401) {
           Error401(error, router);
-
         }
         console.error(error);
       }
@@ -159,7 +155,6 @@ const DetailPesanan = () => {
       } catch (error) {
         if (error.response.status === 401) {
           Error401(error, router);
-
         }
         console.error(error);
       }
@@ -221,9 +216,7 @@ const DetailPesanan = () => {
       <div className="container mx-auto pt-14 bg-white h-full">
         <Header title="Detail Pesanan" />
         <div className="place-content-center">
-
-
-          {loading ?
+          {loading ? (
             <div className="border border-blue-300 shadow rounded-md p-4 max-w-sm w-80 h-28 mx-auto">
               <div className="animate-pulse flex space-x-4">
                 <div className="rounded-md bg-slate-200 h-16 w-16"></div>
@@ -238,7 +231,9 @@ const DetailPesanan = () => {
                   </div>
                 </div>
               </div>
-            </div> : <CardPesanan
+            </div>
+          ) : (
+            <CardPesanan
               key={dataApi?.id}
               to={""}
               idOrder={dataApi?.id}
@@ -260,13 +255,13 @@ const DetailPesanan = () => {
               total_amount={dataApi?.total_amount}
               status={dataApi?.order_status}
               setLoading={setLoading}
-            />}
+            />
+          )}
 
-          {loading ?
+          {loading ? (
             <>
               <div class="p-2 rounded-md mt-2 px-4 animate-pulse">
-                <h5 class="text-xs mb-1 font-bold">Rangkuman Pesanan</h5>
-
+                {/* <h5 class="text-xs mb-1 font-bold">Rangkuman Pesanan</h5> */}
                 <div class="justify-between grid grid-cols-2 gap-2 ">
                   <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
                   <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
@@ -294,7 +289,10 @@ const DetailPesanan = () => {
                   <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
                   <div class="flex gap-4">
                     <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
-                    <a href="#" class="text-sm font-normal mb-12 text-red-500 bg-gray-300 h-4 rounded"></a>
+                    <a
+                      href="#"
+                      class="text-sm font-normal mb-12 text-red-500 bg-gray-300 h-4 rounded"
+                    ></a>
                   </div>
                 </div>
                 <hr class="h-px bg-gray-200 border-0" />
@@ -316,32 +314,41 @@ const DetailPesanan = () => {
                 </div>
               </div>
             </>
-            : <div className="p-2 rounded-md mt-2 px-4">
-              <h5 className="text-xs mb-1 font-bold">Rangkuman Pesanan</h5>
-
-              <div className="justify-between grid grid-cols-2 gap-2 ">
+          ) : (
+            <div className="p-2 rounded-md mt-2 px-4">
+              {/* <h5 className="text-xs mb-1 font-bold">Rangkuman Pesanan</h5> */}
+              <div className="flex justify-between py-3">
                 <p className="text-sm text-gray-400">Campaign</p>
                 <p className="text-right text-sm">
                   {dataApi?.campaign.event_name}
                 </p>
-                <p className="text-sm text-gray-400">Donation Target</p>
+              </div>
+              <hr />
+              <div className="justify-between grid grid-cols-2 gap-2 py-3 ">
+                <p className="text-sm text-gray-400">Target Donasi</p>
                 <p className="text-right text-sm text-primary">
-                  Rp. {dataApi?.campaign.donation_target.toLocaleString("id-ID")}
+                  Rp.{" "}
+                  {dataApi?.campaign.donation_target.toLocaleString("id-ID")}
                 </p>
-                <p className="text-sm text-gray-400">Donation Collected</p>
+                <p className="text-sm text-gray-400">Donasi Terkumpul</p>
+                <p className="text-right text-sm text-primary">
+                  Rp.{" "}
+                  {dataApi?.campaign.donation_collected.toLocaleString("id-ID")}
+                </p>
+                <p className="text-sm text-gray-400">Sisa Donasi</p>
                 <p className="text-right text-sm text-primary">
                   Rp.{" "}
                   {dataApi?.campaign.donation_collected.toLocaleString("id-ID")}
                 </p>
               </div>
 
-              <hr className="h-px bg-gray-200 border-0 mt-2" />
+              <hr className="h-px bg-gray-200 border-0" />
               <div className="justify-between grid grid-cols-2 gap-2 py-4">
                 <p className="text-sm text-gray-400">PIC</p>
                 <p className="text-right text-sm">
                   {dataApi?.campaign.detonator.oauth.fullname}
                 </p>
-                <p className="text-sm text-gray-400">No Telp.</p>
+                <p className="text-sm text-gray-400"></p>
                 <p className="text-right text-sm">
                   {dataApi?.campaign.detonator.oauth.phone}{" "}
                 </p>
@@ -373,17 +380,15 @@ const DetailPesanan = () => {
               </div>
               <hr className="h-px bg-gray-200 border-0" />
               <div className="justify-between grid grid-cols-2 gap-2 py-4">
-                <p className="text-sm text-gray-400">Pesanan</p>
-                <p className="text-right text-sm">
-                  {dataApi?.qty} x {dataApi?.merchant_product.name}
+                <p className="text-sm text-primary">Pesanan Terkonfirmasi</p>
+                <p className="text-right text-sm text-primary">
+                  {confirmedOrder}
                 </p>
               </div>
               <hr className="h-px bg-gray-200 border-0" />
               <div className="justify-between grid grid-cols-2 gap-2 py-4">
-                <p className="text-sm text-gray-400">Total</p>
-                <p className="text-right text-sm text-primary">
-                  Rp. {dataApi?.total_amount.toLocaleString("id-ID")}
-                </p>
+                <p className="text-sm text-primary">Total</p>
+                <p className="text-right text-sm text-primary">Rp. 0</p>
               </div>
               <hr className="h-px bg-gray-200 border-0" />
               <div className="py-4">
@@ -392,8 +397,8 @@ const DetailPesanan = () => {
                   {dataApi?.campaign.description}
                 </p>
               </div>
-            </div>}
-
+            </div>
+          )}
 
           <div className=" h-20 bottom-0 my-0 p-2rounded-md mt-2 mx-2 grid grid-cols-2 gap-4 place-content-center">
             {dataApi?.order_status === "review" ? (
@@ -412,25 +417,51 @@ const DetailPesanan = () => {
                 </button>
               </>
             ) : dataApi?.order_status === "diproses" ? (
-              calculateRemainingTime(dataApi?.campaign?.event_date) > 0 ? (
+              calculateRemainingTime(dataApi?.campaign?.event_date) > 1 ? (
                 <div className="w-full col-span-2 flex flex-col gap-1">
                   <p className="text-xs text-red-500">
-                    Bukti pengiriman dapat dibuat saat tanggal pelaksanaan
+                    Konfirmasi pesanan dapat dibuat pada H-1 pelaksanaan
+                    campaign
                   </p>
                   <button
                     disabled
                     className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
                   >
-                    Buat Bukti Pegiriman
+                    Konfirmasi
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={handleBuktiPengiriman}
-                  className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
-                >
-                  Buat Bukti Pegiriman
-                </button>
+                calculateRemainingTime(dataApi?.campaign?.event_date) < 1 &&
+                (confirmedOrder < 1 ? (
+                  <div className="w-full col-span-2 flex flex-col gap-1">
+                    <button
+                      className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
+                    >
+                      Konfirmasi
+                    </button>
+                  </div>
+                ) : (
+                  confirmedOrder >= 1 &&
+                  (calculateRemainingTime(dataApi?.campaign?.event_date) > 0 ? (
+                    <div className="w-full col-span-2 flex flex-col gap-1">
+                      <p className="text-xs text-red-500">
+                        Bukti pengiriman dapat dibuat saat tanggal pelaksanaan
+                      </p>
+                      <button
+                        disabled
+                        className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
+                      >
+                        Buat Bukti Pegiriman
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
+                    >
+                      Buat Bukti Pegiriman
+                    </button>
+                  ))
+                ))
               )
             ) : dataApi?.order_status === "tolak" ? (
               <button className="bg-red-500 text-white rounded-md h-10 col-span-2">
