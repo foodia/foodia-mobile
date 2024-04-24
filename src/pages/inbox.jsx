@@ -1,7 +1,13 @@
 import BottomNav from "@/components/BottomNav";
 import CardInbox from "@/components/CardInbox";
+import { useState } from "react";
 
 const inbox = (inbox) => {
+    const [activeOption, setActiveOption] = useState('Donator');
+
+    const handleOptionClick = (option) => {
+        setActiveOption(option);
+    };
     return (
         <>
             <div className="container mx-auto h-screen max-w-480 bg-white flex flex-col">
@@ -11,17 +17,17 @@ const inbox = (inbox) => {
                     </div>
                 </div>
                 <div className="flex flex-row px-4 py-4 justify-between items-end">
-                    <div className="cursor-pointer text-center relative group text-lg font-semibold text-gray-500 hover:text-primary">
+                    <div className={`w-full cursor-pointer text-center relative group text-lg font-semibold ${activeOption === "Donator" ? 'text-emerald-600' : 'text-gray-500'} ${activeOption === "Donator" ? 'font-bold' : ''}`} onClick={() => handleOptionClick("Donator")}>
                         <span>Donator</span>
-                        <hr className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full border-t-2 border-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <hr className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full border-t-2 ${activeOption === "Donator" ? 'border-emerald-600' : 'border-transparent'}`} />
                     </div>
-                    <div className="cursor-pointer text-center relative group text-lg font-semibold text-gray-500 hover:text-primary">
+                    <div className={`w-full cursor-pointer text-center relative group text-lg font-semibold ${activeOption === "Detonator" ? 'text-emerald-600' : 'text-gray-500'} ${activeOption === "Detonator" ? 'font-bold' : ''}`} onClick={() => handleOptionClick("Detonator")}>
                         <span>Detonator</span>
-                        <hr className="absolute bottom-0 left-1/2 transform -translate-x-1/2  w-full border-t-2 border-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <hr className={`absolute bottom-0 left-1/2 transform -translate-x-1/2  w-full border-t-2 ${activeOption === "Detonator" ? 'border-emerald-600' : 'border-transparent'}`} />
                     </div>
-                    <div className="cursor-pointer text-center relative group text-lg font-semibold text-gray-500 hover:text-primary">
+                    <div className={`w-full cursor-pointer text-center relative group text-lg font-semibold ${activeOption === "Merchant" ? 'text-emerald-600' : 'text-gray-500'} ${activeOption === "Merchant" ? 'font-bold' : ''}`} onClick={() => handleOptionClick("Merchant")}>
                         <span>Merchant</span>
-                        <hr className="absolute bottom-0 left-1/2 transform -translate-x-1/2  w-full border-t-2 border-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        <hr className={`absolute bottom-0 left-1/2 transform -translate-x-1/2  w-full border-t-2 ${activeOption === "Merchant" ? 'border-emerald-600' : 'border-transparent'}`} />
                     </div>
                 </div>
                 {/* <CardInbox /> */}
