@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CardReport from "@/components/CardReport";
-import CardReting from "@/components/CardReting";
+import CardReting from "@/components/CardRating";
 import Error401 from "@/components/error401";
 const ReportCamp = () => {
   const router = useRouter();
@@ -50,7 +50,7 @@ const ReportCamp = () => {
         setDataApi(response.data.body.orders);
         setdataCamp(response.data.body);
         setLoading(false);
-        console.log('Data detonator id', response.data.body.detonator.id);
+        console.log("Data detonator id", response.data.body.detonator.id);
       } catch (error) {
         handleRequestError(error);
         console.log("error =", error);
@@ -116,7 +116,6 @@ const ReportCamp = () => {
       } catch (error) {
         if (error.response && error.response.status === 401) {
           Error401(error, router);
-
         }
         handleRequestError(error);
       }
@@ -149,7 +148,6 @@ const ReportCamp = () => {
       } catch (error) {
         if (error.response && error.response.status === 401) {
           Error401(error, router);
-
         }
         handleRequestError(error);
       }
@@ -230,13 +228,11 @@ const ReportCamp = () => {
               <>
                 {role === "user" ? (
                   <div className="w-full flex items-center p-2">
-
                     {buttonStatus ? (
                       <Link
                         href={`/report/${id}`}
                         className="bg-primary text-white w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
                       >
-
                         Unduh Laporan
                       </Link>
                     ) : (
@@ -274,9 +270,8 @@ const ReportCamp = () => {
             )}
           </>
         ) : (
-          ''
+          ""
         )}
-
       </div>
     </>
   );
