@@ -15,7 +15,7 @@ const Detonator = () => {
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("DRAFT");
-  const [page, setPage] = useState(1);
+  const [menu, setMenu] = useState("campaign-list");
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
   const [errorCode, setErrorCode] = useState(null);
@@ -283,90 +283,183 @@ const Detonator = () => {
     <>
       <div className="bg-white h-screen pt-10">
         <div className="flex items-center justify-center px-6 my-2">
-          <div className="bg-gray-100 rounded-xl py-2 w-full">
+          <div className="flex flex-row items-center justify-around bg-gray-100 rounded-xl py-2 w-full">
             <div className="flex justify-center gap-5 px-1 py-3">
-              <Link
-                onClick={() => setLoading(true)}
-                href={"/createcampaign?step=1"}
+              {menu === "campaign-list" ? (
+                <Link
+                  onClick={() => setLoading(true)}
+                  href={"/createcampaign?step=1"}
+                  className="grid gap-3 justify-items-center w-24"
+                >
+                  <div className={`${styles.iconMenu}`}>
+                    <Image
+                      src={"/icon/creat_camp.png"}
+                      alt="creat_camp"
+                      width={30}
+                      height={30}
+                    />
+                  </div>
+                  <p className="text-sm text-gray-600 font-normal">
+                    Buat Campaign
+                  </p>
+                </Link>
+              ) : (
+                <button
+                  onClick={() => setMenu("campaign-list")}
+                  // href={"/createcampaign?step=1"}
+                  className="grid gap-3 justify-items-center w-24"
+                >
+                  <div className={`${styles.iconMenu}`}>
+                    <Image
+                      src={"/icon/campaint.png"}
+                      alt="creat_camp"
+                      width={30}
+                      height={30}
+                    />
+                  </div>
+                  <p className="text-sm text-gray-600 font-normal">
+                    List Campaign
+                  </p>
+                </button>
+              )}
+            </div>
+            <div className="flex justify-center gap-5 px-1 py-3">
+              <button
+                onClick={() => setMenu("review-list")}
+                // href={"/createcampaign?step=1"}
                 className="grid gap-3 justify-items-center w-24"
               >
                 <div className={`${styles.iconMenu}`}>
                   <Image
-                    src={"/icon/creat_camp.png"}
-                    alt="creat_camp"
+                    src={"/icon/review.png"}
+                    alt="review"
                     width={30}
                     height={30}
                   />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Buat Campaign
-                </p>
-              </Link>
+                <p className="text-sm text-gray-600 font-normal">Ulasan</p>
+              </button>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-row px-6 py-4 justify-between items-end">
-          <div
-            className={`cursor-pointer text-center pb-2 ${
-              selectedStatus === "DRAFT"
-                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-                : "text-gray-400 font-bold"
-            }`}
-            onClick={() => handleFilterChange("DRAFT")}
-          >
-            <p>Campaign Baru</p>
-          </div>
-          <div
-            className={`cursor-pointer text-center pb-2 ${
-              selectedStatus === "OPEN,INPROGRESS"
-                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-                : "text-gray-400 font-bold"
-            }`}
-            onClick={() => handleFilterChange("OPEN,INPROGRESS")}
-          >
-            <p>Campaign Berjalan</p>
-          </div>
-          <div
-            className={`cursor-pointer text-center pb-2 ${
-              selectedStatus === "FINISHED"
-                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-                : "text-gray-400 font-bold"
-            }`}
-            onClick={() => handleFilterChange("FINISHED")}
-          >
-            <p>Campaign Selesai</p>
-          </div>
-        </div>
-
-        {loading ? (
-          <div className={`${styles.card}`}>
-            {[...Array(4)].map((_, index) => (
-              <div key={index} className={`${styles.loadingCard}`}>
-                <div className={`${styles.shimmer}`}></div>
+        {menu === "campaign-list" ? (
+          <>
+            <div className="flex flex-row px-6 py-4 justify-between items-end">
+              <div
+                className={`cursor-pointer text-center pb-2 ${
+                  selectedStatus === "DRAFT"
+                    ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                    : "text-gray-400 font-bold"
+                }`}
+                onClick={() => handleFilterChange("DRAFT")}
+              >
+                <p>Campaign Baru</p>
               </div>
-            ))}
-          </div>
+              <div
+                className={`cursor-pointer text-center pb-2 ${
+                  selectedStatus === "OPEN,INPROGRESS"
+                    ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                    : "text-gray-400 font-bold"
+                }`}
+                onClick={() => handleFilterChange("OPEN,INPROGRESS")}
+              >
+                <p>Campaign Berjalan</p>
+              </div>
+              <div
+                className={`cursor-pointer text-center pb-2 ${
+                  selectedStatus === "FINISHED"
+                    ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                    : "text-gray-400 font-bold"
+                }`}
+                onClick={() => handleFilterChange("FINISHED")}
+              >
+                <p>Campaign Selesai</p>
+              </div>
+            </div>
+            {loading ? (
+              <div className={`${styles.card}`}>
+                {[...Array(4)].map((_, index) => (
+                  <div key={index} className={`${styles.loadingCard}`}>
+                    <div className={`${styles.shimmer}`}></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={`${styles.card}`}>
+                {filteredData.map((dataFilter) => {
+                  // console.log(`Key: ${dataFilter.id}`);
+                  return (
+                    <CardCampaign
+                      key={dataFilter.id}
+                      to={`detonator/campaign/${dataFilter.id}`}
+                      img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.image_url}`}
+                      title={dataFilter.event_name}
+                      description={dataFilter.description}
+                      date={dataFilter.event_date}
+                      status={dataFilter.status}
+                      address={dataFilter.address}
+                      rating={false}
+                      donation_target={dataFilter.donation_target}
+                      donation_collected={dataFilter.donation_collected}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </>
         ) : (
-          <div className={`${styles.card}`}>
-            {filteredData.map((dataFilter) => {
-              // console.log(`Key: ${dataFilter.id}`);
-              return (
+          <>
+            <div className="flex flex-row px-6 py-4 justify-between items-end">
+              <div
+                className={`cursor-pointer text-center w-full pb-2 ${
+                  selectedStatus === "DRAFT"
+                    ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                    : "text-gray-400 font-bold"
+                }`}
+                onClick={() => handleFilterChange("DRAFT")}
+              >
+                <p>Kasih Ulasan</p>
+              </div>
+              <div
+                className={`cursor-pointer text-center w-full pb-2 ${
+                  selectedStatus === "OPEN,INPROGRESS"
+                    ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                    : "text-gray-400 font-bold"
+                }`}
+                onClick={() => handleFilterChange("OPEN,INPROGRESS")}
+              >
+                <p>Ulasan Selesai</p>
+              </div>
+            </div>
+            {loading ? (
+              <div className={`${styles.card}`}>
+                {[...Array(4)].map((_, index) => (
+                  <div key={index} className={`${styles.loadingCard}`}>
+                    <div className={`${styles.shimmer}`}></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={`${styles.card}`}>
                 <CardCampaign
-                  key={dataFilter.id}
-                  to={`detonator/campaign/${dataFilter.id}`}
-                  img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.image_url}`}
-                  title={dataFilter.event_name}
-                  description={dataFilter.description}
-                  date={dataFilter.event_date}
-                  status={dataFilter.status}
-                  address={dataFilter.address}
-                  donation_target={dataFilter.donation_target}
-                  donation_collected={dataFilter.donation_collected}
+                  // key={dataFilter.id}
+                  to={`detonator/rating`}
+                  img={`img/card/rectangle_70.png`}
+                  title={"TEBAR 1000 PAKET NASI JUMAT BERKAH"}
+                  description={"sfsfsf"}
+                  date={"sfsfs"}
+                  // status={}
+                  address={
+                    "Kav Barokah, Gg. Ceria I, Bahagia, Kec. Babelan, Kabupaten Bekasi, Jawa Barat 17121"
+                  }
+                  rating={true}
+                  // donation_target={false}
+                  // donation_collected={false}
                 />
-              );
-            })}
-          </div>
+              </div>
+            )}
+          </>
         )}
         {loading && <Loading />}
       </div>

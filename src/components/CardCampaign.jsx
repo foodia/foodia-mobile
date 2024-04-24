@@ -16,6 +16,7 @@ const CardCampaign = (props) => {
     date,
     status,
     address,
+    rating,
     donation_target,
     donation_collected = 0,
   } = props;
@@ -48,7 +49,9 @@ const CardCampaign = (props) => {
   };
   // const percentageCollected = (donation_collected / donation_target) * 100;
   let percentageCollected = 0;
-  donation_target > 0 ? (percentageCollected = (donation_collected / donation_target) * 100) : (percentageCollected = 0);
+  donation_target > 0
+    ? (percentageCollected = (donation_collected / donation_target) * 100)
+    : (percentageCollected = 0);
 
   const totalCollected = (percentageCollected) => {
     if (percentageCollected === undefined || percentageCollected === null) {
@@ -60,9 +63,8 @@ const CardCampaign = (props) => {
     }
   };
 
-
   useEffect(() => {
-    console.log('router', router.route);
+    console.log("router", router.route);
     if (donation_target > donation_collected) {
       setTerkumpul(donation_collected);
     } else {
@@ -83,7 +85,7 @@ const CardCampaign = (props) => {
             alt=""
           />
           <div className={`px-2 ${styles.text_card}`}>
-            <p className="mb-1 text-black font-sans font-bold text-xl capitalize">
+            <p className="mb-1 text-black font-extrabold text-sm capitalize">
               {title}
             </p>
             <div className="flex">
@@ -103,52 +105,72 @@ const CardCampaign = (props) => {
           </div>
         </div>
 
-        <div className="flex justify-between px-1.5 mt-1.5">
-          <p className="font-sans text-xs">
-            Target Donasi:
-            <span className="font-sans text-xs font-medium text-blue-800 ml-2">
-              {formatUang(donation_target ? donation_target : 0)}
-            </span>
-          </p>
-          <div className="flex items-center font-medium text-blue-800 font-sans text-xs">
-            <IconClock size={11} />
-            <p className="font-sans ml-1">
-              {calculateRemainingTime(date)} Hari
-            </p>
-          </div>
-        </div>
-        <div className="flex justify-between px-1.5 ">
-          <p className="font-sans text-xs">
-            Donasi Terkumpul:
-            <span className="font-sans text-xs font-medium text-blue-800 ml-2">
-              {formatUang(Terkumpul ? Terkumpul : 0)}
-            </span>
-          </p>
-          {page === "/home" ? '' : (<div className={`flex items-center justify-center  font-medium  font-sans text-xs  rounded-lg px-1 ${status == "waiting" ? "bg-blue-600" : status == "approved" ? "bg-green-500" : status == "rejected" ? "bg-red-500" : ""}`}>
+        {!rating && (
+          <>
+            <div className="flex justify-between px-1.5 mt-1.5">
+              <p className="font-sans text-xs">
+                Target Donasi:
+                <span className="font-sans text-xs font-medium text-blue-800 ml-2">
+                  {formatUang(donation_target ? donation_target : 0)}
+                </span>
+              </p>
+              <div className="flex items-center font-medium text-blue-800 font-sans text-xs">
+                <IconClock size={11} />
+                <p className="font-sans ml-1">
+                  {calculateRemainingTime(date)} Hari
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-between px-1.5 ">
+              <p className="font-sans text-xs">
+                Donasi Terkumpul:
+                <span className="font-sans text-xs font-medium text-blue-800 ml-2">
+                  {formatUang(Terkumpul ? Terkumpul : 0)}
+                </span>
+              </p>
+              {page === "/home" ? (
+                ""
+              ) : (
+                <div
+                  className={`flex items-center justify-center  font-medium  font-sans text-xs  rounded-lg px-1 ${
+                    status == "waiting"
+                      ? "bg-blue-600"
+                      : status == "approved"
+                      ? "bg-green-500"
+                      : status == "rejected"
+                      ? "bg-red-500"
+                      : ""
+                  }`}
+                >
+                  <p
+                    className={`font-sans mb-1  ${
+                      status == "approved" ? "text-white" : ""
+                    }`}
+                  >
+                    {status}
+                  </p>
+                </div>
+              )}
+            </div>
 
-            <p className={`font-sans mb-1  ${status == 'approved' ? 'text-white' : ''}`} >
-              {status}
-            </p>
-          </div>)}
-
-        </div>
-
-        <div className="flex justify-between px-1.5 items-center ">
-          <div className="w-full rounded-full h-2.5 bg-gray-200">
-            <div
-              className="bg-primary h-2.5 rounded-full w-max-"
-              style={{
-                width: `${totalCollected(percentageCollected)}%`,
-                maxWidth: "100%",
-              }}
-            ></div>
-          </div>
-          <p className="text-primary font-sans ml-1 mb-1 text-xs">
-            {totalCollected(percentageCollected).toFixed()}%
-          </p>
-        </div>
-      </Link >
-    </div >
+            <div className="flex justify-between px-1.5 items-center ">
+              <div className="w-full rounded-full h-2.5 bg-gray-200">
+                <div
+                  className="bg-primary h-2.5 rounded-full w-max-"
+                  style={{
+                    width: `${totalCollected(percentageCollected)}%`,
+                    maxWidth: "100%",
+                  }}
+                ></div>
+              </div>
+              <p className="text-primary font-sans ml-1 mb-1 text-xs">
+                {totalCollected(percentageCollected).toFixed()}%
+              </p>
+            </div>
+          </>
+        )}
+      </Link>
+    </div>
   );
 };
 
