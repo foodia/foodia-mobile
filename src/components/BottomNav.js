@@ -195,7 +195,7 @@ const BottomNav = () => {
         ${pathname === "" ? "text-primary" : "text-gray-400"}
         `}
       >
-        <Link className="items-center flex flex-col gap-1" href="">
+        <Link href="/mydonation" className="items-center flex flex-col gap-1" >
           <IconReceipt />
           <p className="text-xs">Receipt</p>
         </Link>
