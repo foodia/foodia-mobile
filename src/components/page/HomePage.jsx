@@ -128,7 +128,13 @@ const HomePage = () => {
                 className="grid gap-2 justify-items-center w-24"
               >
                 <div className={`${styles.iconMenu}`}>
-                  <IconBuildingStore />
+                  <Image
+                    sizes="100%"
+                    src={"/img/icon/store.png"}
+                    alt="Girl in a jacket"
+                    width={30}
+                    height={30}
+                  />
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">UMKM</p>
               </Link>

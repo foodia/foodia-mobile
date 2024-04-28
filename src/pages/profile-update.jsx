@@ -1,20 +1,24 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
-import { IconDeviceMobile, IconMail, IconUser } from "@tabler/icons-react";
+import {
+  IconCamera,
+  IconDeviceMobile,
+  IconMail,
+  IconUser,
+} from "@tabler/icons-react";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const UpdateProfile = (profile) => {
   const router = useRouter();
   const [role, setRole] = useState("");
   const [dataUser, setDataUser] = useState();
-  const [isMerchant, setIsMerchant] = useState(false);
-  const [merchantStatus, setMerchantStatus] = useState("");
-  const [merchantId, setMerchantId] = useState();
-  const [isDetonator, setIsDetonator] = useState(false);
-  const [detonatorStatus, setDetonatorStatus] = useState("");
-  const [detonatorId, setDetonatorId] = useState();
+  const [fullname, setFullname] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(true);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   useEffect(() => {
     setLoading(false);
@@ -27,24 +31,86 @@ const UpdateProfile = (profile) => {
       token: localStorage.getItem("token"),
       id: localStorage.getItem("id"),
     };
+    // axios
+    //   .get(`https://63f2e9beaab7d091250fb6d3.mockapi.io/api/v1/profile/fetch`, {
+    //     headers: {
+    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     setLoading(false);
+    //     // console.log(res.data[0]);
+    //     setDataUser(res.data[0].body);
+    //     setRole(res.data[0].body.role);
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     if (error.response && error.response.status === 401) {
+    //       Error401(error, router);
+    //     }
+    //   });
     setDataUser(userData);
-
-    console.log("ds", userData);
-
-    if (sesionRole) {
-      setRole(sesionRole);
-    } else {
-      router.push("/login");
-    }
+    setRole(sesionRole);
   }, [role]);
 
-  const btnLogout = () => {
-    setLoading(true);
-    localStorage.clear();
-    localStorage.clear();
-    localStorage.removeItem("cart");
-    localStorage.removeItem("formData");
-    router.push("/login");
+  const onSubmit = () => {
+    Swal.fire({
+      position: "bottom",
+      customClass: {
+        popup: "custom-swal",
+        icon: "custom-icon-swal",
+        title: "custom-title-swal",
+        confirmButton: "custom-confirm-button-swal",
+      },
+      icon: "success",
+      title: `<p class="w-auto pl-1 font-bold text-[25px]">Profile Berhasil Diubah</p><p class="w-auto pl-1 font-light text-sm">Anda telah sukses merubah data diri anda</p>`,
+      html: `
+                <div class="absolute px-28 ml-4 top-0 mt-4">
+                  <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                </div>
+              `,
+      width: "375px",
+      showConfirmButton: true,
+      confirmButtonText: "Kembali Ke Profile",
+      confirmButtonColor: "#3FB648",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        router.push("/profile");
+      }
+    });
+  };
+
+  const handleImageCampChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const allowedTypes = [
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "image/heif",
+        "image/heic",
+      ];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
+        });
+        event.target.value = "";
+      } else {
+        setUploadedFile(file);
+      }
+    }
   };
 
   return (
@@ -52,20 +118,38 @@ const UpdateProfile = (profile) => {
       <div className="bg-white flex flex-col px-1 h-screen">
         <Header title="Ubah Profile" />
         <div class="pt-12 w-full h-screen flex flex-col">
-          <div className="flex flex-col items-center justify-center mt-5 w-full mb-4">
-            <div className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600">
-              <IconUser />
-            </div>
-            <button className="text-xs mt-2 text-[#1D5882] font-semibold">
-              Ganti
-            </button>
+          <div className="flex flex-col items-center justify-center mt-5 w-full mb-8">
+            <label
+              htmlFor="images"
+              className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 cursor-pointer"
+            >
+              {uploadedFile ? (
+                <img
+                  src={URL.createObjectURL(uploadedFile)}
+                  alt="Foto KTP"
+                  className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 ">
+                  <IconUser />
+                </div>
+              )}
+              <input
+                id="images"
+                type="file"
+                className="hidden"
+                onChange={handleImageCampChange}
+              />
+              <p className="text-xs mt-2 text-[#1D5882] font-semibold">Ganti</p>
+            </label>
           </div>
           <div className="mb-4 p-3 px-2 flex flex-col gap-3">
             <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
               <IconUser />
               <input
-                // onChange={(e) => setEmail(e.target.value)}
-                value={`${dataUser?.fullname}`}
+                onChange={(e) => setFullname(e.target.value)}
+                // value={fullname}
+                defaultValue={dataUser?.fullname}
                 type="text"
                 id="name"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
@@ -82,14 +166,15 @@ const UpdateProfile = (profile) => {
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="Email"
                 disabled
-                value={`${dataUser?.email}`}
+                value={dataUser?.email}
               />
             </div>
             <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
               <IconDeviceMobile />
               <input
-                // onChange={(e) => setEmail(e.target.value)}
-                value={`${dataUser?.phone}`}
+                onChange={(e) => setPhone(e.target.value)}
+                // value={phone}
+                defaultValue={dataUser?.phone}
                 type="text"
                 id="name"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
@@ -101,7 +186,7 @@ const UpdateProfile = (profile) => {
         </div>
         <div className="flex justify-end py-8 px-2">
           <button
-            onClick={btnLogout}
+            onClick={onSubmit}
             className="flex items-center justify-center bg-primary border-2 border-primary rounded-lg w-full h-10 text-white   font-bold text-center"
           >
             Ubah

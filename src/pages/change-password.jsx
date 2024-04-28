@@ -1,65 +1,96 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
+import { useAppState } from "@/components/page/UserContext";
 import {
-  IconDeviceMobile,
   IconEye,
   IconEyeClosed,
+  IconInfoCircle,
   IconLock,
-  IconMail,
-  IconUser,
 } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
-const ChangePassword = (profile) => {
+const ChangePassword = (ChangePassword) => {
   const router = useRouter();
-  const [role, setRole] = useState("");
-  const [dataUser, setDataUser] = useState();
-  const [isMerchant, setIsMerchant] = useState(false);
-  const [merchantStatus, setMerchantStatus] = useState("");
-  const [merchantId, setMerchantId] = useState();
-  const [isDetonator, setIsDetonator] = useState(false);
-  const [detonatorStatus, setDetonatorStatus] = useState("");
-  const [detonatorId, setDetonatorId] = useState();
-  const [loading, setLoading] = useState(true);
+  const { state } = useAppState();
+  const register = state.registrasi;
+  const [inputPassword, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
-  const [showRepeatPassword, setShowRepeatPassword] = useState(true);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(true);
+  const [validconfirmPassword, setValidconfirmPassword] = useState(false);
+  const [validpassword, setValidPassword] = useState(false);
+  const [messageError, setMessageError] = useState("");
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleClickShowRepeatPassword = () =>
-    setShowRepeatPassword((show) => !show);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
+  const [loading, setLoading] = useState(false);
+
+  const Password_REGEX = /^[0-9A-Za-z]{8,}$/;
+  const confirmPassword_REGEX = /^[0-9A-Za-z]{8,}$/;
 
   useEffect(() => {
-    setLoading(false);
-    const sesionRole = localStorage.getItem("role");
+    setValidPassword(Password_REGEX.test(inputPassword));
+    setMessageError("");
+  }, [inputPassword]);
 
-    if (sesionRole) {
-      setRole(sesionRole);
-    } else {
-      router.push("/login");
+  useEffect(() => {
+    setValidconfirmPassword(confirmPassword_REGEX.test(confirmPassword));
+    setMessageError("");
+  }, [confirmPassword]);
+
+  const handleSubmit = () => {
+    if (inputPassword !== confirmPassword) {
+      setMessageError("Ulang kata sandi tidak sesuai");
+      return;
     }
-  }, [role]);
-
-  const btnLogout = () => {
-    setLoading(true);
-    localStorage.clear();
-    localStorage.clear();
-    localStorage.removeItem("cart");
-    localStorage.removeItem("formData");
-    router.push("/login");
+    if (!inputPassword || !confirmPassword) {
+      setMessageError("Kata sandi tidak boleh kosong");
+      return;
+    }
+    Swal.fire({
+      position: "bottom",
+      customClass: {
+        popup: "custom-swal",
+        icon: "custom-icon-swal",
+        title: "custom-title-swal",
+        confirmButton: "custom-confirm-button-swal",
+      },
+      icon: "success",
+      title: `<p class="w-auto pl-1 font-bold text-[25px]">Kata Sandi Berhasil Diperbaharui</p>`,
+      html: `
+                <div class="absolute px-28 ml-4 top-0 mt-4">
+                  <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                </div>
+              `,
+      width: "375px",
+      showConfirmButton: true,
+      confirmButtonText: "Masuk",
+      confirmButtonColor: "#3FB648",
+      allowOutsideClick: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        router.push("/login");
+      }
+    });
   };
-
   return (
-    <>
-      <div className="bg-white flex flex-col px-1 h-screen">
-        <Header title="Ubah Kata Sandi" />
-        <div class="pt-16 w-full h-screen flex flex-col">
-          <div className="mb-4 p-3 px-2 flex flex-col gap-3">
-            <p className="text-sm">Masukkan kata sandi baru</p>
+    <main className="my-0 mx-auto min-h-full mobile-w relative">
+      <div className="my-0 mx-auto h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
+        <div className="container mx-auto mt-12 overflow-hidden">
+          <Header title="Ubah Kata Sandi" />
+
+          <div className="p-4 flex flex-col gap-2">
+            <label htmlFor="password" className="text-sm">
+              {" "}
+              Kata Sandi Baru
+            </label>
             <div className="flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400">
               <IconLock />
               <input
-                // onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 type={showPassword ? "password" : "text"}
                 id="password"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent"
@@ -70,34 +101,74 @@ const ChangePassword = (profile) => {
                 {showPassword ? <IconEye /> : <IconEyeClosed />}
               </button>
             </div>
-            <p className="text-sm">Masukkan ulang kata sandi baru</p>
+            <p
+              className={
+                inputPassword && !validpassword
+                  ? "instructions italic text-[10px] flex items-center"
+                  : "hidden"
+              }
+            >
+              <IconInfoCircle size={15} className="mr-1 text-red-600" />
+              <span className="text-red-600">Minimal 8 karakter</span>
+            </p>
+            {messageError && (
+              <p className="instructions italic text-[10px] flex items-center">
+                <IconInfoCircle size={15} className="mr-1 text-red-600" />
+
+                <span className="text-red-600">{messageError}</span>
+              </p>
+            )}
+
+            <label htmlFor="confirmPassword" className="text-sm">
+              Masukan ulang kata sandi baru
+            </label>
             <div className="flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400">
               <IconLock />
               <input
-                // onChange={(e) => setPassword(e.target.value)}
-                type={showRepeatPassword ? "password" : "text"}
-                id="password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                type={showConfirmPassword ? "password" : "text"}
+                id="confirmPassword"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent"
-                placeholder="Ulang Kata Sandi Baru"
+                placeholder="Masukan ulang kata sandi baru"
                 required
               />
-              <button onClick={handleClickShowRepeatPassword}>
-                {showRepeatPassword ? <IconEye /> : <IconEyeClosed />}
+              <button onClick={handleClickShowConfirmPassword}>
+                {showConfirmPassword ? <IconEye /> : <IconEyeClosed />}
+              </button>
+            </div>
+            <p
+              className={
+                confirmPassword && !validconfirmPassword
+                  ? "instructions italic text-[10px] flex items-center"
+                  : "hidden"
+              }
+            >
+              <IconInfoCircle size={15} className="mr-1 text-red-600" />
+              <span className="text-red-600">Minimal 8 karakter</span>
+            </p>
+            {messageError && (
+              <p className="instructions italic text-[10px] flex items-center">
+                <IconInfoCircle size={15} className="mr-1 text-red-600" />
+
+                <span className="text-red-600">{messageError}</span>
+              </p>
+            )}
+
+            <div className="grid gap-6 content-center absolute bottom-0 left-0 w-full p-4">
+              <button
+                onClick={handleSubmit}
+                type="submit"
+                className=" text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-md w-full sm:w-auto py-4 text-center "
+              >
+                Kirim
               </button>
             </div>
           </div>
+
+          {loading && <Loading />}
         </div>
-        <div className="flex justify-end py-8 px-2">
-          <button
-            onClick={btnLogout}
-            className="flex items-center justify-center bg-primary border-2 border-primary rounded-lg w-full h-10 text-white   font-bold text-center"
-          >
-            Kirim
-          </button>
-        </div>
-        {loading && <Loading />}
       </div>
-    </>
+    </main>
   );
 };
 
