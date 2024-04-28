@@ -15,17 +15,15 @@ import {
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const MerchantUpdateProfile = (profile) => {
   const router = useRouter();
   const [role, setRole] = useState("");
   const [dataUser, setDataUser] = useState();
-  const [isMerchant, setIsMerchant] = useState(false);
-  const [merchantStatus, setMerchantStatus] = useState("");
-  const [merchantId, setMerchantId] = useState();
-  const [isDetonator, setIsDetonator] = useState(false);
-  const [detonatorStatus, setDetonatorStatus] = useState("");
-  const [detonatorId, setDetonatorId] = useState();
+  const [merchant_name, setMerchantName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,13 +49,31 @@ const MerchantUpdateProfile = (profile) => {
       });
   }, []);
 
-  const btnLogout = () => {
-    setLoading(true);
-    localStorage.clear();
-    localStorage.clear();
-    localStorage.removeItem("cart");
-    localStorage.removeItem("formData");
-    router.push("/login");
+  const onSubmit = () => {
+    Swal.fire({
+      position: "bottom",
+      customClass: {
+        popup: "custom-swal",
+        icon: "custom-icon-swal",
+        title: "custom-title-swal",
+        confirmButton: "custom-confirm-button-swal",
+      },
+      icon: "success",
+      title: `<p class="w-auto pl-1 font-bold text-[25px]">Profile Toko Berhasil Diubah</p><p class="w-auto pl-1 font-light text-sm">Anda telah sukses merubah data toko anda</p>`,
+      html: `
+                <div class="absolute px-28 ml-4 top-0 mt-4">
+                  <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                </div>
+              `,
+      width: "375px",
+      showConfirmButton: true,
+      confirmButtonText: "Kembali Ke Profile",
+      confirmButtonColor: "#3FB648",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        router.push("/profile");
+      }
+    });
   };
 
   return (
@@ -77,8 +93,9 @@ const MerchantUpdateProfile = (profile) => {
             <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
               <IconUser />
               <input
-                // onChange={(e) => setEmail(e.target.value)}
-                value={`${dataUser?.merchant_name}`}
+                onChange={(e) => setMerchantName(e.target.value)}
+                // value={merchant_name}
+                defaultValue={dataUser?.merchant_name}
                 type="text"
                 id="name"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
@@ -89,8 +106,9 @@ const MerchantUpdateProfile = (profile) => {
             <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
               <IconDeviceMobile />
               <input
-                // onChange={(e) => setEmail(e.target.value)}
-                value={`${dataUser?.no_link_aja}`}
+                onChange={(e) => setPhone(e.target.value)}
+                // value={phone}
+                defaultValue={dataUser?.no_link_aja}
                 type="text"
                 id="name"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
@@ -101,20 +119,21 @@ const MerchantUpdateProfile = (profile) => {
             <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg outline-none w-full focus:border-none">
               <IconHome />
               <textarea
-                // onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setAddress(e.target.value)}
                 type="text"
                 id="address"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
                 placeholder="Alamat"
                 required
-                value={`${dataUser?.address}`}
+                // value={address}
+                defaultValue={dataUser?.address}
               />
             </div>
           </div>
         </div>
         <div className="flex justify-end py-8 px-2">
           <button
-            onClick={btnLogout}
+            onClick={onSubmit}
             className="flex items-center justify-center bg-primary border-2 border-primary rounded-lg w-full h-10 text-white   font-bold text-center"
           >
             Ubah
