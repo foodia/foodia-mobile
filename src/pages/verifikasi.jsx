@@ -14,6 +14,7 @@ const Verifikasi = () => {
     const { state } = useAppState();
     const [showCountdown, setShowCountdown] = useState(false);
     const [countdownTime, setCountdownTime] = useState(Date.now() + 120000); // Set 120000 untuk 2 menit
+    const [errorMessage, setErrorMessage] = useState(null);
     const registrasi = state.registrasi;
 
     useEffect(() => {
@@ -29,7 +30,7 @@ const Verifikasi = () => {
                 confirmButtonColor: "#3b82f6",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    router.push("/login");
+                    router.push("/forgot-password");
                 }
             });
         }
@@ -133,9 +134,60 @@ const Verifikasi = () => {
             console.log(registrasi.kategori);
             if (otp) {
                 console.log(otp);
-                router.push("/new-password");
+                const response = await axios.post(
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/forgot-password/verify-otp`, {
+                    otp: otp.code,
+                })
+                    .then((response) => {
+                        if (response.status === 200) {
+                            setLoading(false);
+                            router.push("/new-password");
+                        } else {
+                            setLoading(false);
+                            setErrorMessage("Kode OTP Tidak Sesuai");
+                            Swal.fire({
+                                icon: "error",
+                                title: "Gagal Membuat Akun",
+                                text: "Kode OTP anda yang anda masukkan salah",
+                                width: "375px",
+                                showConfirmButton: true,
+                                confirmButtonText: "Kembali",
+                                confirmButtonColor: "#3b82f6",
+                            })
+                        }
+                    })
+                    .catch((error) => {
+                        setLoading(false);
+                        setErrorMessage("Kode OTP Tidak Sesuai");
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal Merubah Password",
+                            text: "Kode OTP anda yang anda masukkan salah",
+                            width: "375px",
+                            showConfirmButton: true,
+                            confirmButtonText: "Kembali",
+                            confirmButtonColor: "#3b82f6",
+                        })
+                    })
+
+                // router.push("/new-password");
+            } else {
+                setLoading(false);
+                setErrorMessage("Kode OTP Tidak Sesuai");
+                Swal.fire({
+                    icon: "error",
+                    title: "Gagal Merubah Password",
+                    text: "Email Tidak ditemukan silahkan cek kembali",
+                    width: "375px",
+                    showConfirmButton: true,
+                    confirmButtonText: "login",
+                    confirmButtonColor: "#3b82f6",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        router.push("/forgot-password");
+                    }
+                });
             }
-            setLoading(false);
         } else {
             try {
                 const response = await axios.post(
@@ -235,6 +287,7 @@ const Verifikasi = () => {
                             required
                         />
                     </div>
+                    {errorMessage && <p className="text-red-500 text-sm font-semibold">{errorMessage}</p>}
 
                     <div className="flex  pt-2">
                         <div

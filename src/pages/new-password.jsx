@@ -1,6 +1,9 @@
+
+import AlertError from "@/components/AlertError";
 import Header from "@/components/Header";
 import { useAppState } from "@/components/page/UserContext";
 import { IconEye, IconEyeClosed, IconInfoCircle, IconLock } from "@tabler/icons-react";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -43,30 +46,75 @@ const newPassword = (newPassword) => {
             setMessageError("Kata sandi tidak boleh kosong");
             return;
         }
-        Swal.fire({
-            position: "bottom",
-            customClass: {
-                popup: "custom-swal",
-                icon: "custom-icon-swal",
-                title: "custom-title-swal",
-                confirmButton: "custom-confirm-button-swal",
-            },
-            icon: "success",
-            title: `<p class="w-auto pl-1 font-bold text-md">Kata Sandi Berhasil Diperbaharui</p><p class="text-sm w-auto pl-1 font-light">Silahkan login kembali</p>`,
-            html: `
-                <div class="absolute px-28 ml-4 top-0 mt-4">
-                  <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-                </div>
-              `,
-            width: "375px",
-            showConfirmButton: true,
-            confirmButtonText: "Masuk",
-            confirmButtonColor: "#3FB648",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                router.push("/login");
-            }
-        });
+        const ressponse = axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/change-password`, {
+            new_password: inputPassword,
+            confirm_password: confirmPassword
+        })
+            .then(response => {
+                setLoading(false);
+                if (response.data.code === 200) {
+                    Swal.fire({
+                        position: "bottom",
+                        customClass: {
+                            popup: "custom-swal",
+                            icon: "custom-icon-swal",
+                            title: "custom-title-swal",
+                            confirmButton: "custom-confirm-button-swal",
+                        },
+                        icon: "success",
+                        title: `<p class="w-auto pl-1 font-bold text-md">Kata Sandi Berhasil Diperbaharui pppp</p><p class="text-sm w-auto pl-1 font-light">Silahkan login kembali</p>`,
+                        html: `
+                            <div class="absolute px-28 ml-4 top-0 mt-4">
+                              <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                            </div>
+                          `,
+                        width: "375px",
+                        showConfirmButton: true,
+                        confirmButtonText: "Masuk",
+                        confirmButtonColor: "#3FB648",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            router.push("/login");
+                        }
+                    })
+                } else {
+                    setLoading(false);
+                    console.log('response1', response.data);
+                    // setMessageError("Kode OTP Tidak Sesuai");
+                    AlertError(error, router);
+                }
+            })
+            .catch(error => {
+                console.log('error', error);
+                setLoading(false);
+                AlertError(error, router);
+
+            })
+
+        // Swal.fire({
+        //     position: "bottom",
+        //     customClass: {
+        //         popup: "custom-swal",
+        //         icon: "custom-icon-swal",
+        //         title: "custom-title-swal",
+        //         confirmButton: "custom-confirm-button-swal",
+        //     },
+        //     icon: "success",
+        //     title: `<p class="w-auto pl-1 font-bold text-md">Kata Sandi Berhasil Diperbaharui</p><p class="text-sm w-auto pl-1 font-light">Silahkan login kembali</p>`,
+        //     html: `
+        //         <div class="absolute px-28 ml-4 top-0 mt-4">
+        //           <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+        //         </div>
+        //       `,
+        //     width: "375px",
+        //     showConfirmButton: true,
+        //     confirmButtonText: "Masuk",
+        //     confirmButtonColor: "#3FB648",
+        // }).then((result) => {
+        //     if (result.isConfirmed) {
+        //         router.push("/login");
+        //     }
+        // });
     }
     return (
         <main className="my-0 mx-auto min-h-full mobile-w relative">
