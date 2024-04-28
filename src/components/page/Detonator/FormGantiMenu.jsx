@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { StepOne, StepTwo, StepThree, Stepfour } from "@/components/FormCampaing/StepGantiMenu";
+import { StepOne, StepTwo, StepThree } from "@/components/FormCampaing/StepGantiMenu";
 import Loading from "@/components/Loading";
 import axios from "axios";
 import Error401 from "@/components/error401";
@@ -139,30 +139,6 @@ const FormCampaing = () => {
             />
         );
         setTitle = "Tambah Menu Makan";
-    } else if (step === "4") {
-        stepComponent = (
-            <Stepfour
-                cart={cart}
-                setCart={setCart}
-                setUploadedFile={setUploadedFile}
-                uploadedFile={uploadedFile}
-                loading={loading}
-                setLoading={setLoading}
-            />
-        );
-        setTitle = "Tambah Menu Makan";
-    } else if (step === "5") {
-        stepComponent = (
-            <Stepfive
-                cart={cart}
-                setCart={setCart}
-                setUploadedFile={setUploadedFile}
-                uploadedFile={uploadedFile}
-                loading={loading}
-                setLoading={setLoading}
-            />
-        );
-        setTitle = "";
     } else {
         stepComponent = <div>Invalid step value</div>;
         setTitle = "Default Title";
