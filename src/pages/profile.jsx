@@ -21,6 +21,8 @@ const profile = (profile) => {
   const [detonatorId, setDetonatorId] = useState();
   const [loading, setLoading] = useState(true);
 
+  console.log(dataUser?.fullname);
+
   useEffect(() => {
     const sesionRole = localStorage.getItem("role");
     const userData = {
@@ -31,15 +33,26 @@ const profile = (profile) => {
       token: localStorage.getItem("token"),
       id: localStorage.getItem("id"),
     };
+    // axios
+    //   .get(`https://63f2e9beaab7d091250fb6d3.mockapi.io/api/v1/profile/fetch`, {
+    //     headers: {
+    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     setLoading(false);
+    //     // console.log(res.data[0]);
+    //     setDataUser(res.data[0].body);
+    //     setRole(res.data[0].body.role);
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     if (error.response && error.response.status === 401) {
+    //       Error401(error, router);
+    //     }
+    //   });
     setDataUser(userData);
-
-    console.log("ds", userData);
-
-    if (sesionRole) {
-      setRole(sesionRole);
-    } else {
-      router.push("/login");
-    }
+    setRole(sesionRole);
   }, [role]);
 
   useEffect(() => {
@@ -110,7 +123,6 @@ const profile = (profile) => {
 
   return (
     <>
-      {/* <main className="my-0 mx-auto mobile-w h-full"> */}
       <div className="bg-white flex flex-col px-5 h-full pb-20">
         <Header />
         <div class="pt-12 pb-32 w-full">
@@ -124,7 +136,7 @@ const profile = (profile) => {
                   </div>
                   <div className="text-left flex flex-row justify-between w-full">
                     <div className="flex flex-col justify-center">
-                      <p class="text-md text-primary">{`${dataUser?.fullname}`}</p>
+                      <p class="text-md text-primary">{dataUser?.fullname}</p>
                       {isDetonator && (
                         <p class="font-normal text-xs">Verified Campaigner</p>
                       )}
@@ -151,7 +163,7 @@ const profile = (profile) => {
               <div class="flex-grow text-left md:text-left">
                 <div className="mt-2 text-left mb-3">
                   <p class="font-bold">Email</p>
-                  <p>{`${dataUser?.email}`}</p>
+                  <p>{dataUser?.email}</p>
                 </div>
               </div>
             </div>
@@ -159,7 +171,7 @@ const profile = (profile) => {
               <div class="flex-grow text-left md:text-left">
                 <div className="mt-2 text-left mb-3">
                   <p class="font-bold">Nomer HP</p>
-                  <p>{`${dataUser?.phone}`}</p>
+                  <p>{dataUser?.phone}</p>
                 </div>
               </div>
             </div>
@@ -180,11 +192,9 @@ const profile = (profile) => {
           >
             Keluar
           </button>
-          {/* </div> */}
         </div>
         {loading && <Loading />}
       </div>
-      {/* </main> */}
       <BottomNav />
     </>
   );
