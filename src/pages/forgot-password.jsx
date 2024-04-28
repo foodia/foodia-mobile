@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import { useAppState } from "@/components/page/UserContext";
 import { IconMail } from "@tabler/icons-react";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -14,12 +15,37 @@ const ForgotPassword = () => {
 
 
     const handleSubmit = () => {
-        const formData = {
-            email,
-            kategori: 'forgot_password'
-        }
-        setRegistrasi(formData);
-        router.push("/verifikasi");
+        setLoading(true);
+
+        const ressponse = axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/forgot-password/check-email`, {
+            email: email
+        })
+            .then(response => {
+                setLoading(false);
+                if (response.data.code === 200) {
+                    const formData = {
+                        email,
+                        kategori: 'forgot_password'
+                    }
+                    setRegistrasi(formData);
+                    router.push("/verifikasi");
+
+                } else {
+                    setError('Email tidak terdaftar')
+                }
+            })
+            .catch(error => {
+                setLoading(false);
+                setError('Email tidak terdaftar')
+
+                //testing
+                const formData = {
+                    email,
+                    kategori: 'forgot_password'
+                }
+                setRegistrasi(formData);
+                router.push("/verifikasi");
+            })
         // Logika pengiriman email lupa kata sandi di sini
         // setError('Email tidak terdaftar')
     }

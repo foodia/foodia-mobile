@@ -1,12 +1,9 @@
+//new-password
+import AlertError from "@/components/AlertError";
 import Header from "@/components/Header";
-import Loading from "@/components/Loading";
 import { useAppState } from "@/components/page/UserContext";
-import {
-  IconEye,
-  IconEyeClosed,
-  IconInfoCircle,
-  IconLock,
-} from "@tabler/icons-react";
+import { IconEye, IconEyeClosed, IconInfoCircle, IconLock } from "@tabler/icons-react";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -24,8 +21,7 @@ const newPassword = (newPassword) => {
   const [messageError, setMessageError] = useState("");
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleClickShowConfirmPassword = () =>
-    setShowConfirmPassword((show) => !show);
+  const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
   const [loading, setLoading] = useState(false);
 
   const Password_REGEX = /^[0-9A-Za-z]{8,}$/;
@@ -50,31 +46,76 @@ const newPassword = (newPassword) => {
       setMessageError("Kata sandi tidak boleh kosong");
       return;
     }
-    Swal.fire({
-      position: "bottom",
-      customClass: {
-        popup: "custom-swal",
-        icon: "custom-icon-swal",
-        title: "custom-title-swal",
-        confirmButton: "custom-confirm-button-swal",
-      },
-      icon: "success",
-      title: `<p class="w-auto pl-1 font-bold text-md">Kata Sandi Berhasil Diperbaharui</p><p class="text-sm w-auto pl-1 font-light">Silahkan login kembali</p>`,
-      html: `
-                <div class="absolute px-28 ml-4 top-0 mt-4">
-                  <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-                </div>
-              `,
-      width: "375px",
-      showConfirmButton: true,
-      confirmButtonText: "Masuk",
-      confirmButtonColor: "#3FB648",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        router.push("/login");
-      }
-    });
-  };
+    const ressponse = axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/change-password`, {
+      new_password: inputPassword,
+      confirm_password: confirmPassword
+    })
+      .then(response => {
+        setLoading(false);
+        if (response.data.code === 200) {
+          Swal.fire({
+            position: "bottom",
+            customClass: {
+              popup: "custom-swal",
+              icon: "custom-icon-swal",
+              title: "custom-title-swal",
+              confirmButton: "custom-confirm-button-swal",
+            },
+            icon: "success",
+            title: `<p class="w-auto pl-1 font-bold text-md">Kata Sandi Berhasil Diperbaharui pppp</p><p class="text-sm w-auto pl-1 font-light">Silahkan login kembali</p>`,
+            html: `
+                            <div class="absolute px-28 ml-4 top-0 mt-4">
+                              <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                            </div>
+                          `,
+            width: "375px",
+            showConfirmButton: true,
+            confirmButtonText: "Masuk",
+            confirmButtonColor: "#3FB648",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              router.push("/login");
+            }
+          })
+        } else {
+          setLoading(false);
+          console.log('response1', response.data);
+          // setMessageError("Kode OTP Tidak Sesuai");
+          AlertError(error, router);
+        }
+      })
+      .catch(error => {
+        console.log('error', error);
+        setLoading(false);
+        AlertError(error, router);
+
+      })
+
+    // Swal.fire({
+    //     position: "bottom",
+    //     customClass: {
+    //         popup: "custom-swal",
+    //         icon: "custom-icon-swal",
+    //         title: "custom-title-swal",
+    //         confirmButton: "custom-confirm-button-swal",
+    //     },
+    //     icon: "success",
+    //     title: `<p class="w-auto pl-1 font-bold text-md">Kata Sandi Berhasil Diperbaharui</p><p class="text-sm w-auto pl-1 font-light">Silahkan login kembali</p>`,
+    //     html: `
+    //         <div class="absolute px-28 ml-4 top-0 mt-4">
+    //           <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+    //         </div>
+    //       `,
+    //     width: "375px",
+    //     showConfirmButton: true,
+    //     confirmButtonText: "Masuk",
+    //     confirmButtonColor: "#3FB648",
+    // }).then((result) => {
+    //     if (result.isConfirmed) {
+    //         router.push("/login");
+    //     }
+    // });
+  }
   return (
     <main className="my-0 mx-auto min-h-full mobile-w relative">
       <div className="my-0 mx-auto h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
@@ -82,10 +123,7 @@ const newPassword = (newPassword) => {
           <Header backto="/" title="Buat Ulang Kata Sandi" />
 
           <div className="p-4 flex flex-col gap-2">
-            <label htmlFor="password" className="text-sm">
-              {" "}
-              Kata Sandi Baru
-            </label>
+            <label htmlFor="password" className="text-sm"> Kata Sandi Baru</label>
             <div className="flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400">
               <IconLock />
               <input
@@ -108,19 +146,20 @@ const newPassword = (newPassword) => {
               }
             >
               <IconInfoCircle size={15} className="mr-1 text-red-600" />
-              <span className="text-red-600">Minimal 8 karakter</span>
+              <span className="text-red-600">
+                Minimal 8 karakter
+              </span>
+
             </p>
-            {messageError && (
-              <p className="instructions italic text-[10px] flex items-center">
-                <IconInfoCircle size={15} className="mr-1 text-red-600" />
+            {messageError && <p className="instructions italic text-[10px] flex items-center">
+              <IconInfoCircle size={15} className="mr-1 text-red-600" />
 
-                <span className="text-red-600">{messageError}</span>
-              </p>
-            )}
+              <span className="text-red-600">
+                {messageError}
+              </span>
+            </p>}
 
-            <label htmlFor="confirmPassword" className="text-sm">
-              Masukan ulang kata sandi baru
-            </label>
+            <label htmlFor="confirmPassword" className="text-sm">Masukan ulang kata sandi baru</label>
             <div className="flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400">
               <IconLock />
               <input
@@ -143,15 +182,17 @@ const newPassword = (newPassword) => {
               }
             >
               <IconInfoCircle size={15} className="mr-1 text-red-600" />
-              <span className="text-red-600">Minimal 8 karakter</span>
+              <span className="text-red-600">
+                Minimal 8 karakter
+              </span>
             </p>
-            {messageError && (
-              <p className="instructions italic text-[10px] flex items-center">
-                <IconInfoCircle size={15} className="mr-1 text-red-600" />
+            {messageError && <p className="instructions italic text-[10px] flex items-center">
+              <IconInfoCircle size={15} className="mr-1 text-red-600" />
 
-                <span className="text-red-600">{messageError}</span>
-              </p>
-            )}
+              <span className="text-red-600">
+                {messageError}
+              </span>
+            </p>}
 
             <div className="grid gap-6 content-center absolute bottom-0 left-0 w-full p-4">
               <button
@@ -169,6 +210,6 @@ const newPassword = (newPassword) => {
       </div>
     </main>
   );
-};
+}
 
 export default newPassword;
