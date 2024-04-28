@@ -1,6 +1,11 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
-import { IconDeviceMobile, IconMail, IconUser } from "@tabler/icons-react";
+import {
+  IconCamera,
+  IconDeviceMobile,
+  IconMail,
+  IconUser,
+} from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -13,6 +18,7 @@ const UpdateProfile = (profile) => {
   const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(true);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   useEffect(() => {
     setLoading(false);
@@ -74,18 +80,68 @@ const UpdateProfile = (profile) => {
     });
   };
 
+  const handleImageCampChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const allowedTypes = [
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "image/heif",
+        "image/heic",
+      ];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.type)) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        });
+        event.target.value = "";
+      } else if (file.size > maxSize) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Ukuran gambar melebihi 5MB!",
+        });
+        event.target.value = "";
+      } else {
+        setUploadedFile(file);
+      }
+    }
+  };
+
   return (
     <>
       <div className="bg-white flex flex-col px-1 h-screen">
         <Header title="Ubah Profile" />
         <div class="pt-12 w-full h-screen flex flex-col">
-          <div className="flex flex-col items-center justify-center mt-5 w-full mb-4">
-            <div className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600">
-              <IconUser />
-            </div>
-            <button className="text-xs mt-2 text-[#1D5882] font-semibold">
-              Ganti
-            </button>
+          <div className="flex flex-col items-center justify-center mt-5 w-full mb-8">
+            <label
+              htmlFor="images"
+              className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 cursor-pointer"
+            >
+              {uploadedFile ? (
+                <img
+                  src={URL.createObjectURL(uploadedFile)}
+                  alt="Foto KTP"
+                  className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 ">
+                  <IconUser />
+                </div>
+              )}
+              <input
+                id="images"
+                type="file"
+                className="hidden"
+                onChange={handleImageCampChange}
+              />
+              <p className="text-xs mt-2 text-[#1D5882] font-semibold">Ganti</p>
+            </label>
           </div>
           <div className="mb-4 p-3 px-2 flex flex-col gap-3">
             <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
