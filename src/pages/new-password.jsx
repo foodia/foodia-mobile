@@ -103,30 +103,7 @@ const newPassword = (newPassword) => {
 
       })
 
-    // Swal.fire({
-    //     position: "bottom",
-    //     customClass: {
-    //         popup: "custom-swal",
-    //         icon: "custom-icon-swal",
-    //         title: "custom-title-swal",
-    //         confirmButton: "custom-confirm-button-swal",
-    //     },
-    //     icon: "success",
-    //     title: `<p class="w-auto pl-1 font-bold text-md">Kata Sandi Berhasil Diperbaharui</p><p class="text-sm w-auto pl-1 font-light">Silahkan login kembali</p>`,
-    //     html: `
-    //         <div class="absolute px-28 ml-4 top-0 mt-4">
-    //           <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-    //         </div>
-    //       `,
-    //     width: "375px",
-    //     showConfirmButton: true,
-    //     confirmButtonText: "Masuk",
-    //     confirmButtonColor: "#3FB648",
-    // }).then((result) => {
-    //     if (result.isConfirmed) {
-    //         router.push("/login");
-    //     }
-    // });
+
   }
   return (
     <main className="my-0 mx-auto min-h-full mobile-w relative">
@@ -136,7 +113,7 @@ const newPassword = (newPassword) => {
 
           <div className="p-4 flex flex-col gap-2">
             <label htmlFor="password" className="text-sm"> Kata Sandi Baru</label>
-            <div className="flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400">
+            <div className={`flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400   ${inputPassword && !validpassword || messageError ? 'borde border-2 border-red-500' : ''}`}>
               <IconLock />
               <input
                 onChange={(e) => setPassword(e.target.value)}
@@ -172,7 +149,7 @@ const newPassword = (newPassword) => {
             </p>}
 
             <label htmlFor="confirmPassword" className="text-sm">Masukan ulang kata sandi baru</label>
-            <div className="flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400">
+            <div className={`flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${confirmPassword && !validconfirmPassword || messageError ? 'borde border-2 border-red-500' : ''}`}>
               <IconLock />
               <input
                 onChange={(e) => setConfirmPassword(e.target.value)}
