@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import { useAppState } from "@/components/page/UserContext";
-import { IconMail } from "@tabler/icons-react";
+import { IconInfoCircle, IconMail } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -15,6 +15,10 @@ const ForgotPassword = () => {
 
 
     const handleSubmit = () => {
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+            setError('Format email tidak valid');
+            return;
+        }
         setLoading(true);
 
         const ressponse = axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/forgot-password/check-email`, {
@@ -39,12 +43,6 @@ const ForgotPassword = () => {
                 setError('Email tidak terdaftar')
 
                 //testing
-                const formData = {
-                    email,
-                    kategori: 'forgot_password'
-                }
-                setRegistrasi(formData);
-                router.push("/verifikasi");
             })
         // Logika pengiriman email lupa kata sandi di sini
         // setError('Email tidak terdaftar')
@@ -58,7 +56,7 @@ const ForgotPassword = () => {
 
                     <div className="p-4 flex flex-col gap-2">
                         <label htmlFor="confirmPassword" className="text-sm">Masukan ulang kata sandi baru</label>
-                        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+                        <div className={`flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full borde ${error ? ' border-2 border-red-500' : 'focus:border-none'}`}>
                             <IconMail />
                             <input
                                 onChange={(e) => setEmail(e.target.value)}
@@ -69,7 +67,18 @@ const ForgotPassword = () => {
                                 required
                             />
                         </div>
-                        {error && <p className="text-red-500 text-sm font-semibold">{error}</p>}
+                        <p
+                            className={
+                                error ? "instructions italic text-[10px] flex items-center"
+                                    : "hidden"
+                            }
+                        >
+                            <IconInfoCircle size={15} className="mr-1 text-red-600" />
+                            <span className="text-red-600">
+                                {error}
+                            </span>
+                        </p>
+                        {/* {error && <p className="text-red-500 text-sm font-semibold">{error}</p>} */}
 
                         <div className="grid gap-6 content-center absolute bottom-0 left-0 w-full p-4">
                             <button

@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import { useAppState } from "@/components/page/UserContext";
+import { IconInfoCircle } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -91,7 +92,10 @@ const Verifikasi = () => {
         axios
             .post(
                 `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/resend-otp`,
-                { email: registrasi.email },
+                {
+                    email: registrasi.email,
+                    flag: 'forgot_password',
+                },
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -102,6 +106,7 @@ const Verifikasi = () => {
             .then(() => {
                 setCountdownTime(Date.now() + 120000); // Set ulang countdownTime ke 2 menit
                 setLoading(false);
+                setErrorMessage(null);
                 Swal.fire({
                     icon: "success",
                     title: "OTP Sent",
@@ -148,29 +153,29 @@ const Verifikasi = () => {
                         } else {
                             setLoading(false);
                             setErrorMessage("Kode OTP Tidak Sesuai");
-                            Swal.fire({
-                                icon: "error",
-                                title: "Gagal Membuat Akun",
-                                text: "Kode OTP anda yang anda masukkan salah",
-                                width: "375px",
-                                showConfirmButton: true,
-                                confirmButtonText: "Kembali",
-                                confirmButtonColor: "#3b82f6",
-                            })
+                            // Swal.fire({
+                            //     icon: "error",
+                            //     title: "Gagal Membuat Akun",
+                            //     text: "Kode OTP anda yang anda masukkan salah",
+                            //     width: "375px",
+                            //     showConfirmButton: true,
+                            //     confirmButtonText: "Tutup",
+                            //     confirmButtonColor: "#3b82f6",
+                            // })
                         }
                     })
                     .catch((error) => {
                         setLoading(false);
                         setErrorMessage("Kode OTP Tidak Sesuai");
-                        Swal.fire({
-                            icon: "error",
-                            title: "Gagal Merubah Password",
-                            text: "Kode OTP anda yang anda masukkan salah",
-                            width: "375px",
-                            showConfirmButton: true,
-                            confirmButtonText: "Kembali",
-                            confirmButtonColor: "#3b82f6",
-                        })
+                        // Swal.fire({
+                        //     icon: "error",
+                        //     title: "Kode OTP Tidak Sesuai",
+                        //     text: "Kode OTP anda yang anda masukkan salah",
+                        //     width: "375px",
+                        //     showConfirmButton: true,
+                        //     confirmButtonText: "Tutup",
+                        //     confirmButtonColor: "#3b82f6",
+                        // })
                     })
 
                 // router.push("/new-password");
@@ -251,6 +256,7 @@ const Verifikasi = () => {
                     });
                     setLoading(false);
                 } else {
+                    setLoading(false);
                     Swal.fire({
                         icon: "error",
                         title: "Gagal Membuat Akun",
@@ -260,7 +266,6 @@ const Verifikasi = () => {
                         confirmButtonText: "Tutup",
                         confirmButtonColor: "#ef4444",
                     });
-                    setLoading(false);
                 }
             }
         }
@@ -278,7 +283,7 @@ const Verifikasi = () => {
                         Masukan 6 kode pada email anda
                     </h5>
 
-                    <div className="mt-1 flex flex-row items-center px-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none">
+                    <div className={`my-1 flex flex-row items-center px-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full borde ${errorMessage ? ' border-2 border-red-500' : 'focus:border-none'}`}>
                         <input
                             onChange={handleChange}
                             value={codes}
@@ -290,7 +295,18 @@ const Verifikasi = () => {
                             required
                         />
                     </div>
-                    {errorMessage && <p className="text-red-500 text-sm font-semibold">{errorMessage}</p>}
+                    <p
+                        className={
+                            errorMessage ? "instructions italic text-[10px] flex items-center"
+                                : "hidden"
+                        }
+                    >
+                        <IconInfoCircle size={15} className="mr-1 text-red-600" />
+                        <span className="text-red-600">
+                            {errorMessage}
+                        </span>
+                    </p>
+                    {/* {errorMessage && <p className="text-red-500 text-sm font-semibold">{errorMessage}</p>} */}
 
                     <div className="flex  pt-2">
                         <div
