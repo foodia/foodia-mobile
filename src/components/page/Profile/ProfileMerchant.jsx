@@ -31,18 +31,18 @@ const ProfileMerchant = ({ id = 0, merchantStatus, MerchantUpdateProfile }) => {
 
   return (
     <>
-      <div className="items-center justify-center mt-1 w-full mb-4">
+      <div className="items-center justify-center mt-5 w-full mb-4">
         <div className="w-full h-16 bg-white text-black rounded-lg inline-flex items-center px-1 py-2.5 ">
           <div className="flex justify-between w-full">
-            <div className="flex">
-              <div className="w-12 h-12 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
+            <div className="flex items-center">
+              <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
                 <img
                   src="/img/icon/icon_food_order.png"
                   alt=""
-                  className="w-8 h-8"
+                  className="w-12 h-12"
                 />
               </div>
-              <div className="text-left place-items-start">
+              <div className="text-left place-items-center">
                 <div className="mb-1 text-primary">Merchant</div>
                 <div className="-mt-1 font-sans text-xs ">{merchantStatus}</div>
               </div>
