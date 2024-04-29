@@ -135,12 +135,15 @@ const Verifikasi = () => {
             if (otp) {
                 console.log(otp);
                 const response = await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/forgot-password/verify-otp`, {
-                    otp: otp.code,
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`, {
+                    email: registrasi.email,
+                    code: otp.code,
+                    flag: 'forgot_password'
                 })
                     .then((response) => {
                         if (response.status === 200) {
                             setLoading(false);
+                            localStorage.setItem("token", response.data.body.token);
                             router.push("/new-password");
                         } else {
                             setLoading(false);

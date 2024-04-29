@@ -129,84 +129,79 @@ const OTP = () => {
 
   const handleSubmit = async (otp) => {
     setLoading(true);
-    if (registrasi.kategori == 'forgot_password') {
-      console.log(registrasi.kategori);
-      if (otp) {
-        console.log(otp);
-        router.push("/new-password");
-      }
-      setLoading(false);
-    } else {
-      try {
-        const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`,
-          otp,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer YOUR_ACCESS_TOKEN",
-            },
-          }
-        );
-        const imageUrl = "/img/illustration/checklist.png";
-        setLoading(false);
-        Swal.fire({
-          position: "bottom",
-          customClass: {
-            popup: "custom-swal",
-            icon: "custom-icon-swal",
-            title: "custom-title-swal",
-            confirmButton: "custom-confirm-button-swal",
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`,
+        {
+          email: registrasi.email,
+          code: otp.code,
+          flag: "register",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer YOUR_ACCESS_TOKEN",
           },
-          icon: "success",
-          title: `<p className="w-auto pl-1 font-bold text-md">Akun Berhasil Di Buat</p><p className="text-sm w-auto pl-1 font-light">Terima kasih telah mendaftar untuk menjadi penolong sesama</p>`,
-          html: `
-            <div className="absolute px-28 ml-4 top-0 mt-4">
-              <hr className="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-            </div>
-          `,
+        }
+      );
+      const imageUrl = "/img/illustration/checklist.png";
+      setLoading(false);
+      Swal.fire({
+        position: "bottom",
+        customClass: {
+          popup: "custom-swal",
+          icon: "custom-icon-swal",
+          title: "custom-title-swal",
+          confirmButton: "custom-confirm-button-swal",
+        },
+        icon: "success",
+        title: `<p className="w-auto pl-1 font-bold text-md">Akun Berhasil Di Buat</p><p className="text-sm w-auto pl-1 font-light">Terima kasih telah mendaftar untuk menjadi penolong sesama</p>`,
+        html: `
+          <div className="absolute px-28 ml-4 top-0 mt-4">
+            <hr className="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+          </div>
+        `,
+        width: "375px",
+        showConfirmButton: true,
+        confirmButtonText: "Masuk",
+        confirmButtonColor: "#3FB648",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.setItem("fullname", registrasi.fullname);
+          localStorage.setItem("phone", registrasi.phone);
+          localStorage.setItem("email", registrasi.email);
+          localStorage.setItem("role", registrasi.role);
+          localStorage.setItem("token", registrasi.token);
+          router.push("/home");
+        }
+      });
+    } catch (error) {
+      if (error.response.data.error[0].field === "email") {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Membuat Akun",
+          text: "Email Tidak ditemukan silahkan login kembali",
           width: "375px",
           showConfirmButton: true,
-          confirmButtonText: "Masuk",
-          confirmButtonColor: "#3FB648",
+          confirmButtonText: "login",
+          confirmButtonColor: "#3b82f6",
         }).then((result) => {
           if (result.isConfirmed) {
-            localStorage.setItem("fullname", registrasi.fullname);
-            localStorage.setItem("phone", registrasi.phone);
-            localStorage.setItem("email", registrasi.email);
-            localStorage.setItem("role", registrasi.role);
-            localStorage.setItem("token", registrasi.token);
-            router.push("/home");
+            router.push("/login");
           }
         });
-      } catch (error) {
-        if (error.response.data.error[0].field === "email") {
-          Swal.fire({
-            icon: "error",
-            title: "Gagal Membuat Akun",
-            text: "Email Tidak ditemukan silahkan login kembali",
-            width: "375px",
-            showConfirmButton: true,
-            confirmButtonText: "login",
-            confirmButtonColor: "#3b82f6",
-          }).then((result) => {
-            if (result.isConfirmed) {
-              router.push("/login");
-            }
-          });
-          setLoading(false);
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Gagal Membuat Akun",
-            text: "Kode OTP Tidak Sesuai Atau Expired",
-            width: "375px",
-            showConfirmButton: true,
-            confirmButtonText: "Tutup",
-            confirmButtonColor: "#ef4444",
-          });
-          setLoading(false);
-        }
+        setLoading(false);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Membuat Akun",
+          text: "Kode OTP Tidak Sesuai Atau Expired",
+          width: "375px",
+          showConfirmButton: true,
+          confirmButtonText: "Tutup",
+          confirmButtonColor: "#ef4444",
+        });
+        setLoading(false);
       }
     }
 
