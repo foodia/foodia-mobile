@@ -20,9 +20,6 @@ const profile = (profile) => {
   const [detonatorStatus, setDetonatorStatus] = useState("");
   const [detonatorId, setDetonatorId] = useState();
   const [loading, setLoading] = useState(true);
-
-  console.log(dataUser?.fullname);
-
   useEffect(() => {
     // const sesionRole = localStorage.getItem("role");
     // const userData = {
