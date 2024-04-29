@@ -24,35 +24,32 @@ const profile = (profile) => {
   console.log(dataUser?.fullname);
 
   useEffect(() => {
-    const sesionRole = localStorage.getItem("role");
-    const userData = {
-      fullname: localStorage.getItem("fullname"),
-      phone: localStorage.getItem("phone"),
-      email: localStorage.getItem("email"),
-      role: localStorage.getItem("role"),
-      token: localStorage.getItem("token"),
-      id: localStorage.getItem("id"),
-    };
-    // axios
-    //   .get(`https://63f2e9beaab7d091250fb6d3.mockapi.io/api/v1/profile/fetch`, {
-    //     headers: {
-    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     setLoading(false);
-    //     // console.log(res.data[0]);
-    //     setDataUser(res.data[0].body);
-    //     setRole(res.data[0].body.role);
-    //   })
-    //   .catch((error) => {
-    //     setLoading(false);
-    //     if (error.response && error.response.status === 401) {
-    //       Error401(error, router);
-    //     }
-    //   });
-    setDataUser(userData);
-    setRole(sesionRole);
+    // const sesionRole = localStorage.getItem("role");
+    // const userData = {
+    //   fullname: localStorage.getItem("fullname"),
+    //   phone: localStorage.getItem("phone"),
+    //   email: localStorage.getItem("email"),
+    //   role: localStorage.getItem("role"),
+    //   token: localStorage.getItem("token"),
+    //   id: localStorage.getItem("id"),
+    // };
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/profile/fetch`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => {
+        setLoading(false);
+        setDataUser(res.data.body);
+        setRole(res.data.body.role);
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+        }
+      });
   }, [role]);
 
   useEffect(() => {
@@ -128,26 +125,34 @@ const profile = (profile) => {
         <div class="pt-12 pb-32 w-full">
           <p className="text-center font-bold text-lg">Profile</p>
           <div className="items-center justify-center mt-5 w-full mb-4">
-            <div className="w-full bg-white text-black rounded-lg inline-flex items-center px-1 py-2.5">
-              <div className="flex justify-between w-full">
-                <div className="flex w-full">
-                  <div className="w-14 h-12 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
+            <div className="flex">
+              <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
+                {dataUser?.profile_pic !== "" ? (
+                  <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataUser?.profile_pic}`}
+                      alt=""
+                      className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
                     <IconUser />
                   </div>
-                  <div className="text-left flex flex-row justify-between w-full">
-                    <div className="flex flex-col justify-center">
-                      <p class="text-md text-primary">{dataUser?.fullname}</p>
-                      {isDetonator && (
-                        <p class="font-normal text-xs">Verified Campaigner</p>
-                      )}
-                    </div>
-                    {!isDetonator && (
-                      <button onClick={() => UpdateProfile()}>
-                        <IconEdit />
-                      </button>
-                    )}
-                  </div>
+                )}
+              </div>
+              <div className="text-left flex flex-row justify-between w-full">
+                <div className="flex flex-col justify-center">
+                  <p class="text-md text-primary">{dataUser?.fullname}</p>
+                  {isDetonator && (
+                    <p class="font-normal text-xs">Verified Campaigner</p>
+                  )}
                 </div>
+                {!isDetonator && (
+                  <button onClick={() => UpdateProfile()}>
+                    <IconEdit />
+                  </button>
+                )}
               </div>
             </div>
           </div>

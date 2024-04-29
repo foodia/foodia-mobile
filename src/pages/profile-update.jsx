@@ -1,11 +1,6 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
-import {
-  IconCamera,
-  IconDeviceMobile,
-  IconMail,
-  IconUser,
-} from "@tabler/icons-react";
+import { IconDeviceMobile, IconMail, IconUser } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -17,70 +12,96 @@ const UpdateProfile = (profile) => {
   const [dataUser, setDataUser] = useState();
   const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
+  const [profile_pic, setProfilePic] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
 
+  console.log("rr", uploadedFile);
+
   useEffect(() => {
-    setLoading(false);
-    const sesionRole = localStorage.getItem("role");
-    const userData = {
-      fullname: localStorage.getItem("fullname"),
-      phone: localStorage.getItem("phone"),
-      email: localStorage.getItem("email"),
-      role: localStorage.getItem("role"),
-      token: localStorage.getItem("token"),
-      id: localStorage.getItem("id"),
-    };
-    // axios
-    //   .get(`https://63f2e9beaab7d091250fb6d3.mockapi.io/api/v1/profile/fetch`, {
-    //     headers: {
-    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     setLoading(false);
-    //     // console.log(res.data[0]);
-    //     setDataUser(res.data[0].body);
-    //     setRole(res.data[0].body.role);
-    //   })
-    //   .catch((error) => {
-    //     setLoading(false);
-    //     if (error.response && error.response.status === 401) {
-    //       Error401(error, router);
-    //     }
-    //   });
-    setDataUser(userData);
-    setRole(sesionRole);
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/profile/fetch`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => {
+        setLoading(false);
+        setFullname(res.data.body.fullname);
+        setPhone(res.data.body.phone);
+        setEmail(res.data.body.email);
+        setProfilePic(res.data.body.profile_pic);
+        setRole(res.data.body.role);
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+        }
+      });
   }, [role]);
 
   const onSubmit = () => {
-    Swal.fire({
-      position: "bottom",
-      customClass: {
-        popup: "custom-swal",
-        icon: "custom-icon-swal",
-        title: "custom-title-swal",
-        confirmButton: "custom-confirm-button-swal",
-      },
-      icon: "success",
-      title: `<p class="w-auto pl-1 font-bold text-[25px]">Profile Berhasil Diubah</p><p class="w-auto pl-1 font-light text-sm">Anda telah sukses merubah data diri anda</p>`,
-      html: `
-                <div class="absolute px-28 ml-4 top-0 mt-4">
-                  <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-                </div>
-              `,
-      width: "375px",
-      showConfirmButton: true,
-      confirmButtonText: "Kembali Ke Profile",
-      confirmButtonColor: "#3FB648",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        router.push("/profile");
-      }
-    });
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("fullname", fullname);
+    formData.append("phone", phone);
+    if (uploadedFile) {
+      formData.append("profile_pic", uploadedFile);
+    }
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/profile/update`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((response) => {
+        setLoading(false);
+        const responeData = response.data.body;
+        Swal.fire({
+          position: "bottom",
+          customClass: {
+            popup: "custom-swal",
+            icon: "custom-icon-swal",
+            title: "custom-title-swal",
+            confirmButton: "custom-confirm-button-swal",
+          },
+          icon: "success",
+          title: `<p class="w-auto pl-1 font-bold text-[25px]">Profile Berhasil Diubah</p><p class="w-auto pl-1 font-light text-sm">Anda telah sukses merubah data diri anda</p>`,
+          html: `
+                    <div class="absolute px-28 ml-4 top-0 mt-4">
+                      <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                    </div>
+                  `,
+          width: "375px",
+          showConfirmButton: true,
+          confirmButtonText: "Kembali Ke Profile",
+          confirmButtonColor: "#3FB648",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push("/profile");
+          }
+        });
+      })
+      .catch(() => {
+        setLoading(false);
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: "",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      });
   };
 
-  const handleImageCampChange = (event) => {
+  const handleProfilePhotoChange = (event) => {
     const file = event.target.files[0];
 
     if (file) {
@@ -129,6 +150,12 @@ const UpdateProfile = (profile) => {
                   alt="Foto KTP"
                   className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
                 />
+              ) : profile_pic !== "" ? (
+                <img
+                  src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${profile_pic}`}
+                  alt=""
+                  className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
+                />
               ) : (
                 <div className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 ">
                   <IconUser />
@@ -138,7 +165,7 @@ const UpdateProfile = (profile) => {
                 id="images"
                 type="file"
                 className="hidden"
-                onChange={handleImageCampChange}
+                onChange={handleProfilePhotoChange}
               />
               <p className="text-xs mt-2 text-[#1D5882] font-semibold">Ganti</p>
             </label>
@@ -148,8 +175,8 @@ const UpdateProfile = (profile) => {
               <IconUser />
               <input
                 onChange={(e) => setFullname(e.target.value)}
-                // value={fullname}
-                defaultValue={dataUser?.fullname}
+                value={fullname}
+                // defaultValue={dataUser?.fullname}
                 type="text"
                 id="name"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
@@ -166,15 +193,15 @@ const UpdateProfile = (profile) => {
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="Email"
                 disabled
-                value={dataUser?.email}
+                value={email}
               />
             </div>
             <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
               <IconDeviceMobile />
               <input
                 onChange={(e) => setPhone(e.target.value)}
-                // value={phone}
-                defaultValue={dataUser?.phone}
+                value={phone}
+                // defaultValue={dataUser?.phone}
                 type="text"
                 id="name"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
