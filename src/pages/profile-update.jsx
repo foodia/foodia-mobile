@@ -17,8 +17,6 @@ const UpdateProfile = (profile) => {
   const [profile_pic, setProfilePic] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
 
-  console.log("rr", uploadedFile);
-
   useEffect(() => {
     axios
       .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/profile/fetch`, {
