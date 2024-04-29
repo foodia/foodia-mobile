@@ -7,6 +7,7 @@ import {
   IconInfoCircle,
   IconLock,
 } from "@tabler/icons-react";
+import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -50,31 +51,58 @@ const ChangePassword = (ChangePassword) => {
       setMessageError("Kata sandi tidak boleh kosong");
       return;
     }
-    Swal.fire({
-      position: "bottom",
-      customClass: {
-        popup: "custom-swal",
-        icon: "custom-icon-swal",
-        title: "custom-title-swal",
-        confirmButton: "custom-confirm-button-swal",
-      },
-      icon: "success",
-      title: `<p class="w-auto pl-1 font-bold text-[25px]">Kata Sandi Berhasil Diperbaharui</p>`,
-      html: `
-                <div class="absolute px-28 ml-4 top-0 mt-4">
-                  <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-                </div>
-              `,
-      width: "375px",
-      showConfirmButton: true,
-      confirmButtonText: "Masuk",
-      confirmButtonColor: "#3FB648",
-      allowOutsideClick: false,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        router.push("/login");
-      }
-    });
+
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/change-password`,
+        {
+          new_password: inputPassword,
+          confirm_password: confirmPassword,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        const responeData = response.data.body;
+        Swal.fire({
+          position: "bottom",
+          customClass: {
+            popup: "custom-swal",
+            icon: "custom-icon-swal",
+            title: "custom-title-swal",
+            confirmButton: "custom-confirm-button-swal",
+          },
+          icon: "success",
+          title: `<p class="w-auto pl-1 font-bold text-[25px]">Kata Sandi Berhasil Diperbaharui</p>`,
+          html: `
+                    <div class="absolute px-28 ml-4 top-0 mt-4">
+                      <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                    </div>
+                  `,
+          width: "375px",
+          showConfirmButton: true,
+          confirmButtonText: "Masuk",
+          confirmButtonColor: "#3FB648",
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push("/login");
+          }
+        });
+      })
+      .catch(() => {
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: "Please check your email and password and try again.",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        setLoading(false);
+      });
   };
   return (
     <main className="my-0 mx-auto min-h-full mobile-w relative">
