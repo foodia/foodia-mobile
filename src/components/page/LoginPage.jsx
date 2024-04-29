@@ -56,6 +56,7 @@ const LoginPage = () => {
         title: "Please fill in all fields",
         iconColor: "bg-black",
       });
+      setLoading(false);
       return;
     }
     if (!/^\S+@\S+\.\S+$/.test(inputEmail)) {
@@ -64,6 +65,7 @@ const LoginPage = () => {
         title: "Invalid email address",
         iconColor: "bg-black",
       });
+      setLoading(false);
       return;
     }
     if (inputPassword.length < 8) {
@@ -73,6 +75,7 @@ const LoginPage = () => {
         title: "Password must be at least 8 characters",
         iconColor: "bg-black",
       });
+      setLoading(false);
       return;
     }
 
@@ -102,6 +105,7 @@ const LoginPage = () => {
             timer: 2000,
           });
           setTimeout(() => {
+            setLoading(false);
             router.push("/home");
           }, 2000);
         } else {
@@ -115,11 +119,13 @@ const LoginPage = () => {
             timer: 2000,
           });
           setTimeout(() => {
+            setLoading(false);
             router.push("/otp");
           }, 2000);
         }
       })
       .catch(() => {
+        setLoading(false);
         Swal.fire({
           icon: "error",
           title: "Login Failed",
@@ -127,7 +133,6 @@ const LoginPage = () => {
           showConfirmButton: false,
           timer: 2000,
         });
-        setLoading(false);
       });
   };
 

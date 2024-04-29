@@ -12,6 +12,7 @@ const newPassword = (newPassword) => {
   const router = useRouter();
   const { state } = useAppState();
   const register = state.registrasi;
+  const [token, setToken] = useState("");
   const [inputPassword, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
@@ -26,6 +27,12 @@ const newPassword = (newPassword) => {
 
   const Password_REGEX = /^[0-9A-Za-z]{8,}$/;
   const confirmPassword_REGEX = /^[0-9A-Za-z]{8,}$/;
+
+
+  //token
+  useEffect(() => {
+    setToken(localStorage.getItem("token"))
+  }, [register]);
 
   useEffect(() => {
     setValidPassword(Password_REGEX.test(inputPassword));
@@ -49,6 +56,10 @@ const newPassword = (newPassword) => {
     const ressponse = axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/change-password`, {
       new_password: inputPassword,
       confirm_password: confirmPassword
+    }, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
     })
       .then(response => {
         setLoading(false);
@@ -62,7 +73,7 @@ const newPassword = (newPassword) => {
               confirmButton: "custom-confirm-button-swal",
             },
             icon: "success",
-            title: `<p class="w-auto pl-1 font-bold text-md">Kata Sandi Berhasil Diperbaharui pppp</p><p class="text-sm w-auto pl-1 font-light">Silahkan login kembali</p>`,
+            title: `<p class="w-auto pl-1 font-bold text-md">Kata Sandi Berhasil Di perbaharui</p><p class="text-sm w-auto pl-1 font-light">Silahkan login kembali</p>`,
             html: `
                             <div class="absolute px-28 ml-4 top-0 mt-4">
                               <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
@@ -74,6 +85,7 @@ const newPassword = (newPassword) => {
             confirmButtonColor: "#3FB648",
           }).then((result) => {
             if (result.isConfirmed) {
+              localStorage.clear();
               router.push("/login");
             }
           })
