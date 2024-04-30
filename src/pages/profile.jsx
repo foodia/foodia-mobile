@@ -87,9 +87,9 @@ const profile = (profile) => {
       })
       .catch((error) => {
         setLoading(false);
-        // if (error.response && error.response.status === 401) {
-        //   Error401(error, router);
-        // }
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+        }
       });
   }, []);
 
