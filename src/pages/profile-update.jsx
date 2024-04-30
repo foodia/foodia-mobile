@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
 import {
   IconCircleCheck,
   IconCircleX,
@@ -97,13 +98,9 @@ const UpdateProfile = (profile) => {
       })
       .catch(() => {
         setLoading(false);
-        Swal.fire({
-          icon: "error",
-          title: "Failed",
-          text: "",
-          showConfirmButton: false,
-          timer: 2000,
-        });
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+        }
       });
   };
 
