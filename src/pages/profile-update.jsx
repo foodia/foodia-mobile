@@ -1,6 +1,13 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
-import { IconDeviceMobile, IconMail, IconUser } from "@tabler/icons-react";
+import {
+  IconCircleCheck,
+  IconCircleX,
+  IconDeviceMobile,
+  IconInfoCircle,
+  IconMail,
+  IconUser,
+} from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -16,6 +23,7 @@ const UpdateProfile = (profile) => {
   const [loading, setLoading] = useState(true);
   const [profile_pic, setProfilePic] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
+  const [validImage, setValidImage] = useState(true);
 
   useEffect(() => {
     axios
@@ -113,31 +121,44 @@ const UpdateProfile = (profile) => {
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.type)) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
-        });
+        // Swal.fire({
+        //   icon: "error",
+        //   title: "Oops...",
+        //   text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        // });
+        setValidImage(false);
         event.target.value = "";
       } else if (file.size > maxSize) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Ukuran gambar melebihi 5MB!",
-        });
+        // Swal.fire({
+        //   icon: "error",
+        //   title: "Oops...",
+        //   text: "Ukuran gambar melebihi 5MB!",
+        // });
+        setValidImage(false);
         event.target.value = "";
       } else {
+        setValidImage(true);
         setUploadedFile(file);
       }
     }
   };
+
+  const PHONE_REGEX = /^(\+62|62|0)8[1-9][0-9]{7,10}$/;
+  const [validPhone, setValidPhone] = useState(false);
+  useEffect(() => {
+    setValidPhone(PHONE_REGEX.test(phone));
+  }, [phone]);
 
   return (
     <>
       <div className="bg-white flex flex-col px-1 h-screen">
         <Header title="Ubah Profile" />
         <div class="pt-12 w-full h-screen flex flex-col">
-          <div className="flex flex-col items-center justify-center mt-5 w-full mb-8">
+          <div
+            className={`flex flex-col items-center justify-center mt-5 w-full gap-6 ${
+              uploadedFile || validImage ? "mb-6" : ""
+            }`}
+          >
             <label
               htmlFor="images"
               className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 cursor-pointer"
@@ -165,11 +186,29 @@ const UpdateProfile = (profile) => {
                 className="hidden"
                 onChange={handleProfilePhotoChange}
               />
-              <p className="text-xs mt-2 text-[#1D5882] font-semibold">Ganti</p>
+              <p className="text-[11px] mt-2 text-[#1D5882] font-semibold">
+                Ganti
+              </p>
             </label>
+            <p
+              className={
+                !validImage
+                  ? "font-semibold instructions text-[13px] flex items-center"
+                  : "hidden"
+              }
+            >
+              {/* <IconInfoCircle size={15} className="mr-1 text-red-600" /> */}
+              <span className="text-red-600">
+                Max 5 Mb dan format .jpeg, .jpg, .png, .heif
+              </span>
+            </p>
           </div>
           <div className="mb-4 p-3 px-2 flex flex-col gap-3">
-            <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+            <div
+              className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-2 ${
+                fullname ? "border-primary" : "border-red-500"
+              }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
+            >
               <IconUser />
               <input
                 onChange={(e) => setFullname(e.target.value)}
@@ -194,25 +233,54 @@ const UpdateProfile = (profile) => {
                 value={email}
               />
             </div>
-            <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-              <IconDeviceMobile />
-              <input
-                onChange={(e) => setPhone(e.target.value)}
-                value={phone}
-                // defaultValue={dataUser?.phone}
-                type="text"
-                id="name"
-                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
-                placeholder="No. Hp"
-                required
-              />
+            <div className="flex flex-col gap-1">
+              <div
+                className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-2 ${
+                  phone && validPhone ? "border-primary" : "border-red-500"
+                }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
+              >
+                <IconDeviceMobile />
+                <input
+                  onChange={(e) => setPhone(e.target.value)}
+                  value={phone}
+                  // defaultValue={dataUser?.phone}
+                  type="text"
+                  id="name"
+                  className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                  placeholder="No. Hp"
+                  required
+                />
+                {/* <IconCircleCheck
+                  className={validPhone ? "text-green-600" : "hidden"}
+                />
+                <IconCircleX
+                  className={!phone || validPhone ? "hidden" : "text-red-600"}
+                /> */}
+              </div>
+              <p
+                className={
+                  phone && !validPhone
+                    ? "font-semibold instructions text-[13px] flex items-center"
+                    : "hidden"
+                }
+              >
+                {/* <IconInfoCircle size={15} className="mr-1 text-red-600" /> */}
+                <span className="text-red-600">
+                  Diawali dengan "08" dan min 10 digit
+                </span>
+              </p>
             </div>
           </div>
         </div>
         <div className="flex justify-end py-8 px-2">
           <button
+            disabled={!phone || !email || !fullname || !validPhone}
             onClick={onSubmit}
-            className="flex items-center justify-center bg-primary border-2 border-primary rounded-lg w-full h-10 text-white   font-bold text-center"
+            className={`flex items-center justify-center ${
+              !phone || !email || !fullname || !validPhone
+                ? "bg-gray-400"
+                : "bg-primary"
+            } border-0 rounded-lg w-full h-10 text-white font-bold text-center`}
           >
             Ubah
           </button>
