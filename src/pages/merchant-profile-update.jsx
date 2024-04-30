@@ -10,6 +10,7 @@ import {
   IconEdit,
   IconHome,
   IconMail,
+  IconMapPin,
   IconUser,
 } from "@tabler/icons-react";
 import axios from "axios";
@@ -24,6 +25,12 @@ const MerchantUpdateProfile = (profile) => {
   const [merchant_name, setMerchantName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
+  const [sub_district, setSub_district] = useState("");
+  const [postal_code, setPostal_code] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
   const [loading, setLoading] = useState(true);
   const [uploadedFile, setUploadedFile] = useState(null);
 
@@ -41,6 +48,23 @@ const MerchantUpdateProfile = (profile) => {
       )
       .then((response) => {
         setDataUser(response.data.body);
+        setPhone(response.data.body.no_link_aja);
+        setMerchantName(response.data.body.merchant_name);
+        if (localStorage.getItem("updatedAddress")) {
+          const parseLocationObj = JSON.parse(
+            localStorage.getItem("updatedAddress")
+          );
+          console.log(parseLocationObj);
+          setAddress(parseLocationObj.fullAdres);
+          setLatitude(parseLocationObj.coordinates.lat);
+          setLongitude(parseLocationObj.coordinates.lng);
+          setProvince(parseLocationObj.province);
+          setPostal_code(parseLocationObj.postal_code);
+          setSub_district(parseLocationObj.sub_district);
+          setCity(parseLocationObj.city);
+        } else {
+          // setAddress(response.data.body.address);
+        }
         setLoading(false);
       })
       .catch((error) => {
@@ -51,30 +75,64 @@ const MerchantUpdateProfile = (profile) => {
   }, []);
 
   const onSubmit = () => {
-    Swal.fire({
-      position: "bottom",
-      customClass: {
-        popup: "custom-swal",
-        icon: "custom-icon-swal",
-        title: "custom-title-swal",
-        confirmButton: "custom-confirm-button-swal",
-      },
-      icon: "success",
-      title: `<p class="w-auto pl-1 font-bold text-[25px]">Profile Toko Berhasil Diubah</p><p class="w-auto pl-1 font-light text-sm">Anda telah sukses merubah data toko anda</p>`,
-      html: `
-                <div class="absolute px-28 ml-4 top-0 mt-4">
-                  <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-                </div>
-              `,
-      width: "375px",
-      showConfirmButton: true,
-      confirmButtonText: "Kembali Ke Profile",
-      confirmButtonColor: "#3FB648",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        router.push("/profile");
-      }
-    });
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("merchant_name", merchant_name);
+    formData.append("province", province);
+    formData.append("city", city);
+    formData.append("sub_district", sub_district);
+    formData.append("postal_code", postal_code);
+    formData.append("address", address);
+    formData.append("latitude", latitude);
+    formData.append("longitude", longitude);
+    formData.append("no_link_aja", phone);
+    axios
+      .put(
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
+        }merchant/update/${localStorage.getItem("Merchant_id")}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((response) => {
+        setLoading(false);
+        const responeData = response.data.body;
+        Swal.fire({
+          position: "bottom",
+          customClass: {
+            popup: "custom-swal",
+            icon: "custom-icon-swal",
+            title: "custom-title-swal",
+            confirmButton: "custom-confirm-button-swal",
+          },
+          icon: "success",
+          title: `<p class="w-auto pl-1 font-bold text-[25px]">Profile Toko Berhasil Diubah</p><p class="w-auto pl-1 font-light text-sm">Anda telah sukses merubah data toko anda</p>`,
+          html: `
+                    <div class="absolute px-28 ml-4 top-0 mt-4">
+                      <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                    </div>
+                  `,
+          width: "375px",
+          showConfirmButton: true,
+          confirmButtonText: "Kembali Ke Profile",
+          confirmButtonColor: "#3FB648",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push("/profile");
+          }
+        });
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+        }
+      });
   };
 
   const handleImageCampChange = (event) => {
@@ -110,10 +168,16 @@ const MerchantUpdateProfile = (profile) => {
     }
   };
 
+  const PHONE_REGEX = /^(\+62|62|0)8[1-9][0-9]{7,10}$/;
+  const [validPhone, setValidPhone] = useState(false);
+  useEffect(() => {
+    setValidPhone(PHONE_REGEX.test(phone));
+  }, [phone]);
+
   return (
     <>
       <div className="bg-white flex flex-col px-1 h-screen">
-        <Header title="Ubah Profile Toko" />
+        <Header title="Ubah Profile Toko" backto="/profile" />
         <div class="pt-12 w-full h-screen flex flex-col">
           <div className="flex flex-col items-center justify-center mt-5 w-full mb-8">
             <label
@@ -141,12 +205,16 @@ const MerchantUpdateProfile = (profile) => {
             </label>
           </div>
           <div className="mb-4 p-3 px-2 flex flex-col gap-3">
-            <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+            <div
+              className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-2 ${
+                merchant_name ? "border-primary" : "border-red-500"
+              }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
+            >
               <IconUser />
               <input
                 onChange={(e) => setMerchantName(e.target.value)}
-                // value={merchant_name}
-                defaultValue={dataUser?.merchant_name}
+                value={merchant_name}
+                // defaultValue={dataUser?.merchant_name}
                 type="text"
                 id="name"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
@@ -154,38 +222,77 @@ const MerchantUpdateProfile = (profile) => {
                 required
               />
             </div>
-            <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-              <IconDeviceMobile />
-              <input
-                onChange={(e) => setPhone(e.target.value)}
-                // value={phone}
-                defaultValue={dataUser?.no_link_aja}
-                type="text"
-                id="name"
-                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
-                placeholder="No. Hp"
-                required
-              />
+            <div className="flex flex-col gap-1">
+              <div
+                className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-2 ${
+                  phone && validPhone ? "border-primary" : "border-red-500"
+                }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
+              >
+                <IconDeviceMobile />
+                <input
+                  onChange={(e) => setPhone(e.target.value)}
+                  value={phone}
+                  // defaultValue={dataUser?.phone}
+                  type="text"
+                  id="name"
+                  className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                  placeholder="No. Hp"
+                  required
+                />
+                {/* <IconCircleCheck
+                  className={validPhone ? "text-green-600" : "hidden"}
+                />
+                <IconCircleX
+                  className={!phone || validPhone ? "hidden" : "text-red-600"}
+                /> */}
+              </div>
+              <p
+                className={
+                  phone && !validPhone
+                    ? "font-semibold instructions text-[13px] flex items-center"
+                    : "hidden"
+                }
+              >
+                {/* <IconInfoCircle size={15} className="mr-1 text-red-600" /> */}
+                <span className="text-red-600">
+                  Diawali dengan "08" dan min 10 digit
+                </span>
+              </p>
             </div>
-            <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg outline-none w-full focus:border-none">
+            <div className="flex flex-row items-center p-3 pr-3 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg outline-none w-full focus:border-none">
               <IconHome />
               <textarea
+                disabled
                 onChange={(e) => setAddress(e.target.value)}
                 type="text"
                 id="address"
-                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
+                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none resize-none"
                 placeholder="Alamat"
                 required
-                // value={address}
-                defaultValue={dataUser?.address}
+                value={address}
+                // defaultValue={dataUser?.address}
               />
+              <button
+                onClick={() => {
+                  router.push("/merchant-change-address");
+                }}
+                title="Pilih Map"
+                className="text-red-400"
+              >
+                <IconMapPin />
+              </button>
             </div>
           </div>
         </div>
         <div className="flex justify-end py-8 px-2">
           <button
+            disabled={!phone || !merchant_name || !address || !validPhone}
             onClick={onSubmit}
-            className="flex items-center justify-center bg-primary border-2 border-primary rounded-lg w-full h-10 text-white   font-bold text-center"
+            className={`flex items-center justify-center ${
+              !phone || !merchant_name || !address || !validPhone
+                ? "bg-gray-400"
+                : "bg-primary"
+            } border-0 rounded-lg w-full h-10 text-white font-bold text-center`}
           >
             Ubah
           </button>

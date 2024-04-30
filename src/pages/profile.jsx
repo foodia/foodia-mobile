@@ -1,6 +1,7 @@
 import BottomNav from "@/components/BottomNav";
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
+import styles from "@/styles/Home.module.css";
 import Error401 from "@/components/error401";
 import ProfileDetonator from "@/components/page/Profile/ProfileDetonator";
 import ProfileMerchant from "@/components/page/Profile/ProfileMerchant";
@@ -79,9 +80,9 @@ const profile = (profile) => {
           if (cekData.merchant.status === "approved") {
             setMerchantStatus("Verified Merchant");
           } else if (cekData.merchant.status === "waiting") {
-            setMerchantStatus("Waiting For Verification");
+            setMerchantStatus("Menunggu Verifikasi");
           } else {
-            setMerchantStatus("Rejected");
+            setMerchantStatus("Ditolak");
           }
         }
       })
@@ -118,84 +119,96 @@ const profile = (profile) => {
   return (
     <>
       <div className="bg-white flex flex-col px-5 h-full pb-20">
-        <Header />
-        <div class="pt-12 pb-32 w-full">
+        {/* <Header /> */}
+        <div class="pt-4 pb-32 w-full">
           <p className="text-center font-bold text-lg">Profile</p>
-          <div className="items-center justify-center mt-5 w-full mb-4">
-            <div className="flex">
-              <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
-                {dataUser?.profile_pic !== "" ? (
+          {loading ? (
+            <div className={`${styles.card} `}>
+              {[...Array(3)].map((_, index) => (
+                <div key={index} className={`${styles.loadingCard}`}>
+                  <div className={`${styles.shimmer}`}></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="items-center justify-center mt-5 w-full mb-4">
+                <div className="flex">
                   <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
-                    <img
-                      src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataUser?.profile_pic}`}
-                      alt=""
-                      className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
-                    />
+                    {dataUser?.profile_pic !== "" ? (
+                      <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
+                        <img
+                          src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataUser?.profile_pic}`}
+                          alt=""
+                          className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
+                        <IconUser />
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
-                    <IconUser />
+                  <div className="text-left flex flex-row justify-between w-full">
+                    <div className="flex flex-col justify-center">
+                      <p class="text-md text-primary">{dataUser?.fullname}</p>
+                      {isDetonator && (
+                        <p class="font-normal text-xs">Verified Campaigner</p>
+                      )}
+                    </div>
+                    {!isDetonator && (
+                      <button onClick={() => UpdateProfile()}>
+                        <IconEdit />
+                      </button>
+                    )}
                   </div>
-                )}
-              </div>
-              <div className="text-left flex flex-row justify-between w-full">
-                <div className="flex flex-col justify-center">
-                  <p class="text-md text-primary">{dataUser?.fullname}</p>
-                  {isDetonator && (
-                    <p class="font-normal text-xs">Verified Campaigner</p>
-                  )}
-                </div>
-                {!isDetonator && (
-                  <button onClick={() => UpdateProfile()}>
-                    <IconEdit />
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={() => ChangePassword()}
-            className="shadow rounded-xl flex flex-row justify-between w-full text-left filter-none mb-4 p-3"
-          >
-            <p>Ubah Kata Sandi</p>
-            <IconChevronRight className="text-primary" />
-          </button>
-          <div className="shadow rounded-xl filter-none mb-4 p-3 px-5">
-            <div class="card md:flex max-w-lg">
-              <div class="flex-grow text-left md:text-left">
-                <div className="mt-2 text-left mb-3">
-                  <p class="font-bold">Email</p>
-                  <p>{dataUser?.email}</p>
                 </div>
               </div>
-            </div>
-            <div class="card md:flex max-w-lg">
-              <div class="flex-grow text-left md:text-left">
-                <div className="mt-2 text-left mb-3">
-                  <p class="font-bold">Nomer HP</p>
-                  <p>{dataUser?.phone}</p>
+              <button
+                onClick={() => ChangePassword()}
+                className="shadow rounded-xl flex flex-row justify-between w-full text-left filter-none mb-4 p-3"
+              >
+                <p>Ubah Kata Sandi</p>
+                <IconChevronRight className="text-primary" />
+              </button>
+              <div className="shadow rounded-xl filter-none mb-4 p-3 px-5">
+                <div class="card md:flex max-w-lg">
+                  <div class="flex-grow text-left md:text-left">
+                    <div className="mt-2 text-left mb-3">
+                      <p class="font-bold">Email</p>
+                      <p>{dataUser?.email}</p>
+                    </div>
+                  </div>
                 </div>
+                <div class="card md:flex max-w-lg">
+                  <div class="flex-grow text-left md:text-left">
+                    <div className="mt-2 text-left mb-3">
+                      <p class="font-bold">Nomer HP</p>
+                      <p>{dataUser?.phone}</p>
+                    </div>
+                  </div>
+                </div>
+                {isDetonator && <ProfileDetonator id={detonatorId} />}
               </div>
-            </div>
-            {isDetonator && <ProfileDetonator id={detonatorId} />}
-          </div>
 
-          {isMerchant && (
-            <ProfileMerchant
-              id={merchantId}
-              merchantStatus={merchantStatus}
-              MerchantUpdateProfile={MerchantUpdateProfile}
-            />
+              {isMerchant && (
+                <ProfileMerchant
+                  id={merchantId}
+                  merchantStatus={merchantStatus}
+                  MerchantUpdateProfile={MerchantUpdateProfile}
+                />
+              )}
+
+              <button
+                onClick={btnLogout}
+                className="flex items-center justify-center bg-white border-2 border-primary rounded-lg w-full h-10 text-primary font-bold text-center"
+              >
+                Keluar
+              </button>
+            </>
           )}
-
-          <button
-            onClick={btnLogout}
-            className="flex items-center justify-center bg-white border-2 border-primary rounded-lg w-full h-10 text-primary font-bold text-center"
-          >
-            Keluar
-          </button>
         </div>
-        {loading && <Loading />}
+        {/* {loading && <Loading />} */}
       </div>
       <BottomNav />
     </>
