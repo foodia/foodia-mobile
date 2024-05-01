@@ -63,7 +63,7 @@ const MerchantUpdateProfile = (profile) => {
           setSub_district(parseLocationObj.sub_district);
           setCity(parseLocationObj.city);
         } else {
-          // setAddress(response.data.body.address);
+          setAddress(response.data.body.address);
         }
         setLoading(false);
       })
@@ -86,6 +86,9 @@ const MerchantUpdateProfile = (profile) => {
     formData.append("latitude", latitude);
     formData.append("longitude", longitude);
     formData.append("no_link_aja", phone);
+    if (uploadedFile) {
+      formData.append("merchant_photo", uploadedFile);
+    }
     axios
       .put(
         `${
@@ -266,7 +269,7 @@ const MerchantUpdateProfile = (profile) => {
                 onChange={(e) => setAddress(e.target.value)}
                 type="text"
                 id="address"
-                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none resize-none"
+                className="text-black ml-2 w-full p-0 py-4 pr-0.5 pl-1 bg-transparent focus:border-none outline-none resize-none"
                 placeholder="Alamat"
                 required
                 value={address}

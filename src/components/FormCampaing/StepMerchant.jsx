@@ -611,6 +611,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
       <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
       <div className="py-2 mt-2 w-full px-5 flex flex-row justify-between">
         <button
+          disabled={tracking}
           onClick={getCurrentLocation}
           className={
             tracking
@@ -624,6 +625,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
           </div>
         </button>
         <button
+          disabled={!tracking}
           onClick={getCurrentLocation}
           className={
             !tracking
