@@ -81,7 +81,7 @@ const Detonator = () => {
             }).then((result) => {
               if (result.isConfirmed) {
                 // console.log("clicked");
-                router.push("/registrasi/detonator?step=1");
+                router.push("/detonator/syarat");
               } else if (result.isDismissed) {
                 // console.log("denied");
                 router.push("/home");
