@@ -35,8 +35,8 @@ const ChangePassword = (ChangePassword) => {
     setShowConfirmPassword((show) => !show);
   const [loading, setLoading] = useState(false);
 
-  const Password_REGEX = /^[0-9A-Za-z]{8,}$/;
-  const confirmPassword_REGEX = /^[0-9A-Za-z]{8,}$/;
+  const Password_REGEX = /^[0-9!@#$%^&*`()_+{}\[\]:;<>,.?\/\\|-]{8,}$/;
+  const confirmPassword_REGEX = /^[0-9!@#$%^&*`()_+{}\[\]:;<>,.?\/\\|-]{8,}$/;
 
   useEffect(() => {
     setValidPassword(Password_REGEX.test(inputPassword));
@@ -53,7 +53,6 @@ const ChangePassword = (ChangePassword) => {
   }, [confirmPassword]);
 
   const handleSubmit = () => {
-    setMessageOldPwError("Kata sandi lama tidak sesuai");
     if (inputPassword !== confirmPassword) {
       setMessageConfirmError("Ulang kata sandi tidak sesuai");
       return;
@@ -62,8 +61,9 @@ const ChangePassword = (ChangePassword) => {
     setLoading(true);
     axios
       .post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/change-password`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/profile/change-password`,
         {
+          old_password: inputOldPassword,
           new_password: inputPassword,
           confirm_password: confirmPassword,
         },
@@ -104,7 +104,10 @@ const ChangePassword = (ChangePassword) => {
       })
       .catch((error) => {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
+        // console.log(error.response.data.code);
+        if (error.response.data.code == 400) {
+          setMessageOldPwError("Kata sandi lama tidak sesuai");
+        } else {
           Error401(error, router);
         }
       });
@@ -131,7 +134,7 @@ const ChangePassword = (ChangePassword) => {
                 type={showOldPassword ? "password" : "text"}
                 id="password"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent"
-                placeholder="Kata Sandi Baru"
+                placeholder="Kata Sandi Lama"
                 required
               />
               <button onClick={handleClickShowOldPassword}>

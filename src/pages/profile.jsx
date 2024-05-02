@@ -44,9 +44,7 @@ const profile = (profile) => {
       })
       .catch((error) => {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       });
   }, [role]);
 
@@ -88,9 +86,7 @@ const profile = (profile) => {
       })
       .catch((error) => {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       });
   }, []);
 
@@ -153,7 +149,7 @@ const profile = (profile) => {
                     <div className="flex flex-col justify-center">
                       <p class="text-md text-primary">{dataUser?.fullname}</p>
                       {isDetonator && (
-                        <p class="font-normal text-xs">Verified Campaigner</p>
+                        <p class="font-normal text-xs">{detonatorStatus}</p>
                       )}
                     </div>
                     {!isDetonator && (
