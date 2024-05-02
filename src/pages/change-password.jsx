@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
 import { useAppState } from "@/components/page/UserContext";
 import {
   IconEye,
@@ -17,14 +18,19 @@ const ChangePassword = (ChangePassword) => {
   const { state } = useAppState();
   const register = state.registrasi;
   const [inputPassword, setPassword] = useState("");
+  const [inputOldPassword, setOldPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showOldPassword, setShowOldPassword] = useState(true);
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
   const [validconfirmPassword, setValidconfirmPassword] = useState(false);
   const [validpassword, setValidPassword] = useState(false);
-  const [messageError, setMessageError] = useState("");
+  const [messageOldPwError, setMessageOldPwError] = useState("");
+  const [messageNewPwError, setMessageNewPwError] = useState("");
+  const [messageConfirmError, setMessageConfirmError] = useState("");
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowOldPassword = () => setShowOldPassword((show) => !show);
   const handleClickShowConfirmPassword = () =>
     setShowConfirmPassword((show) => !show);
   const [loading, setLoading] = useState(false);
@@ -34,24 +40,26 @@ const ChangePassword = (ChangePassword) => {
 
   useEffect(() => {
     setValidPassword(Password_REGEX.test(inputPassword));
-    setMessageError("");
+    setMessageOldPwError("");
+    setMessageNewPwError("");
+    setMessageConfirmError("");
   }, [inputPassword]);
 
   useEffect(() => {
     setValidconfirmPassword(confirmPassword_REGEX.test(confirmPassword));
-    setMessageError("");
+    setMessageOldPwError("");
+    setMessageNewPwError("");
+    setMessageConfirmError("");
   }, [confirmPassword]);
 
   const handleSubmit = () => {
+    // setMessageOldPwError("Kata sandi lama tidak sesuai");
     if (inputPassword !== confirmPassword) {
-      setMessageError("Ulang kata sandi tidak sesuai");
-      return;
-    }
-    if (!inputPassword || !confirmPassword) {
-      setMessageError("Kata sandi tidak boleh kosong");
+      setMessageConfirmError("Ulang kata sandi tidak sesuai");
       return;
     }
 
+    setLoading(true);
     axios
       .post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/change-password`,
@@ -66,6 +74,7 @@ const ChangePassword = (ChangePassword) => {
         }
       )
       .then((response) => {
+        setLoading(false);
         const responeData = response.data.body;
         Swal.fire({
           position: "bottom",
@@ -84,24 +93,20 @@ const ChangePassword = (ChangePassword) => {
                   `,
           width: "375px",
           showConfirmButton: true,
-          confirmButtonText: "Masuk",
+          confirmButtonText: "Kembali Ke Profile",
           confirmButtonColor: "#3FB648",
           allowOutsideClick: false,
         }).then((result) => {
           if (result.isConfirmed) {
-            router.push("/login");
+            router.push("/profile");
           }
         });
       })
       .catch(() => {
-        Swal.fire({
-          icon: "error",
-          title: "Login Failed",
-          text: "Please check your email and password and try again.",
-          showConfirmButton: false,
-          timer: 2000,
-        });
         setLoading(false);
+        if (error.response && error.response.status === 401) {
+          Error401(error, router);
+        }
       });
   };
   return (
@@ -113,7 +118,33 @@ const ChangePassword = (ChangePassword) => {
           <div className="p-4 flex flex-col gap-2">
             <label htmlFor="password" className="text-sm">
               {" "}
-              Kata Sandi Baru
+              Masukan kata sandi lama
+            </label>
+            <div className="flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400">
+              <IconLock />
+              <input
+                onChange={(e) => setOldPassword(e.target.value)}
+                type={showOldPassword ? "password" : "text"}
+                id="password"
+                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent"
+                placeholder="Kata Sandi Baru"
+                required
+              />
+              <button onClick={handleClickShowOldPassword}>
+                {showOldPassword ? <IconEye /> : <IconEyeClosed />}
+              </button>
+            </div>
+            {messageOldPwError && (
+              <p className="instructions italic text-[10px] flex items-center">
+                <IconInfoCircle size={15} className="mr-1 text-red-600" />
+
+                <span className="text-red-600">{messageOldPwError}</span>
+              </p>
+            )}
+
+            <label htmlFor="password" className="text-sm">
+              {" "}
+              Masukan kata sandi baru
             </label>
             <div className="flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400">
               <IconLock />
@@ -139,11 +170,11 @@ const ChangePassword = (ChangePassword) => {
               <IconInfoCircle size={15} className="mr-1 text-red-600" />
               <span className="text-red-600">Minimal 8 karakter</span>
             </p>
-            {messageError && (
+            {messageNewPwError && (
               <p className="instructions italic text-[10px] flex items-center">
                 <IconInfoCircle size={15} className="mr-1 text-red-600" />
 
-                <span className="text-red-600">{messageError}</span>
+                <span className="text-red-600">{messageNewPwError}</span>
               </p>
             )}
 
@@ -164,29 +195,31 @@ const ChangePassword = (ChangePassword) => {
                 {showConfirmPassword ? <IconEye /> : <IconEyeClosed />}
               </button>
             </div>
-            <p
-              className={
-                confirmPassword && !validconfirmPassword
-                  ? "instructions italic text-[10px] flex items-center"
-                  : "hidden"
-              }
-            >
-              <IconInfoCircle size={15} className="mr-1 text-red-600" />
-              <span className="text-red-600">Minimal 8 karakter</span>
-            </p>
-            {messageError && (
+            {messageConfirmError && (
               <p className="instructions italic text-[10px] flex items-center">
                 <IconInfoCircle size={15} className="mr-1 text-red-600" />
 
-                <span className="text-red-600">{messageError}</span>
+                <span className="text-red-600">{messageConfirmError}</span>
               </p>
             )}
 
-            <div className="grid gap-6 content-center absolute bottom-0 left-0 w-full p-4">
+            <div className="flex justify-end py-8 mt-20 px-2">
               <button
+                disabled={
+                  !inputOldPassword ||
+                  !inputPassword ||
+                  !confirmPassword ||
+                  !validpassword
+                }
                 onClick={handleSubmit}
-                type="submit"
-                className=" text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-md w-full sm:w-auto py-4 text-center "
+                className={`flex items-center justify-center ${
+                  !inputOldPassword ||
+                  !inputPassword ||
+                  !confirmPassword ||
+                  !validpassword
+                    ? "bg-gray-400"
+                    : "bg-primary"
+                } border-0 rounded-lg w-full h-10 text-white font-bold text-center`}
               >
                 Kirim
               </button>

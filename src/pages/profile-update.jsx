@@ -257,11 +257,11 @@ const UpdateProfile = (profile) => {
               <p
                 className={
                   phone && !validPhone
-                    ? "font-semibold instructions text-[13px] flex items-center"
+                    ? "font-semibold instructions italic text-[10px] flex items-center"
                     : "hidden"
                 }
               >
-                {/* <IconInfoCircle size={15} className="mr-1 text-red-600" /> */}
+                <IconInfoCircle size={15} className="mr-1 text-red-600" />
                 <span className="text-red-600">
                   Diawali dengan "08" dan min 10 digit
                 </span>
