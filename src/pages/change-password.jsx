@@ -53,7 +53,7 @@ const ChangePassword = (ChangePassword) => {
   }, [confirmPassword]);
 
   const handleSubmit = () => {
-    // setMessageOldPwError("Kata sandi lama tidak sesuai");
+    setMessageOldPwError("Kata sandi lama tidak sesuai");
     if (inputPassword !== confirmPassword) {
       setMessageConfirmError("Ulang kata sandi tidak sesuai");
       return;
@@ -120,7 +120,11 @@ const ChangePassword = (ChangePassword) => {
               {" "}
               Masukan kata sandi lama
             </label>
-            <div className="flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400">
+            <div
+              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
+                messageOldPwError && "border-red-500"
+              }`}
+            >
               <IconLock />
               <input
                 onChange={(e) => setOldPassword(e.target.value)}
@@ -146,7 +150,11 @@ const ChangePassword = (ChangePassword) => {
               {" "}
               Masukan kata sandi baru
             </label>
-            <div className="flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400">
+            <div
+              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
+                !validpassword && "border-red-500"
+              }`}
+            >
               <IconLock />
               <input
                 onChange={(e) => setPassword(e.target.value)}
@@ -181,7 +189,11 @@ const ChangePassword = (ChangePassword) => {
             <label htmlFor="confirmPassword" className="text-sm">
               Masukan ulang kata sandi baru
             </label>
-            <div className="flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400">
+            <div
+              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
+                messageConfirmError && "border-red-500"
+              }`}
+            >
               <IconLock />
               <input
                 onChange={(e) => setConfirmPassword(e.target.value)}
