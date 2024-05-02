@@ -1,6 +1,6 @@
 import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
-import { IconEdit } from "@tabler/icons-react";
+import { IconEdit, IconUser } from "@tabler/icons-react";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,9 +23,7 @@ const ProfileMerchant = ({ id = 0, merchantStatus, MerchantUpdateProfile }) => {
         setLoading(false);
       })
       .catch((error) => {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       });
   }, [id]);
 
@@ -36,11 +34,19 @@ const ProfileMerchant = ({ id = 0, merchantStatus, MerchantUpdateProfile }) => {
           <div className="flex justify-between w-full">
             <div className="flex items-center">
               <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
-                <img
-                  src="/img/icon/icon_food_order.png"
-                  alt=""
-                  className="w-12 h-12"
-                />
+                {data?.merchant_photo !== "" ? (
+                  <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data?.merchant_photo}`}
+                      alt=""
+                      className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
+                    <IconUser />
+                  </div>
+                )}
               </div>
               <div className="text-left place-items-center">
                 <div className="mb-1 text-primary">Merchant</div>

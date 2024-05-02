@@ -1,15 +1,11 @@
-import BottomNav from "@/components/BottomNav";
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
-import ProfileDetonator from "@/components/page/Profile/ProfileDetonator";
-import ProfileMerchant from "@/components/page/Profile/ProfileMerchant";
 import {
-  IconChevronRight,
+  IconBuildingStore,
   IconDeviceMobile,
-  IconEdit,
   IconHome,
-  IconMail,
+  IconInfoCircle,
   IconMapPin,
   IconUser,
 } from "@tabler/icons-react";
@@ -32,7 +28,9 @@ const MerchantUpdateProfile = (profile) => {
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [loading, setLoading] = useState(true);
+  const [profile_pic, setProfilePic] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
+  const [validImage, setValidImage] = useState(true);
 
   useEffect(() => {
     axios
@@ -50,6 +48,7 @@ const MerchantUpdateProfile = (profile) => {
         setDataUser(response.data.body);
         setPhone(response.data.body.no_link_aja);
         setMerchantName(response.data.body.merchant_name);
+        setProfilePic(response.data.body.merchant_photo);
         if (localStorage.getItem("updatedAddress")) {
           const parseLocationObj = JSON.parse(
             localStorage.getItem("updatedAddress")
@@ -132,13 +131,11 @@ const MerchantUpdateProfile = (profile) => {
       })
       .catch((error) => {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       });
   };
 
-  const handleImageCampChange = (event) => {
+  const handleProfilePhotoChange = (event) => {
     const file = event.target.files[0];
 
     if (file) {
@@ -152,20 +149,23 @@ const MerchantUpdateProfile = (profile) => {
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.type)) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
-        });
+        // Swal.fire({
+        //   icon: "error",
+        //   title: "Oops...",
+        //   text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+        // });
+        setValidImage(false);
         event.target.value = "";
       } else if (file.size > maxSize) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Ukuran gambar melebihi 5MB!",
-        });
+        // Swal.fire({
+        //   icon: "error",
+        //   title: "Oops...",
+        //   text: "Ukuran gambar melebihi 5MB!",
+        // });
+        setValidImage(false);
         event.target.value = "";
       } else {
+        setValidImage(true);
         setUploadedFile(file);
       }
     }
@@ -182,7 +182,11 @@ const MerchantUpdateProfile = (profile) => {
       <div className="bg-white flex flex-col px-1 h-screen">
         <Header title="Ubah Profile Toko" backto="/profile" />
         <div class="pt-12 w-full h-screen flex flex-col">
-          <div className="flex flex-col items-center justify-center mt-5 w-full mb-8">
+          <div
+            className={`flex flex-col items-center justify-center mt-5 w-full gap-6 ${
+              uploadedFile || validImage ? "mb-6" : ""
+            }`}
+          >
             <label
               htmlFor="images"
               className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 cursor-pointer"
@@ -191,6 +195,12 @@ const MerchantUpdateProfile = (profile) => {
                 <img
                   src={URL.createObjectURL(uploadedFile)}
                   alt="Foto KTP"
+                  className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
+                />
+              ) : profile_pic !== "" ? (
+                <img
+                  src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${profile_pic}`}
+                  alt=""
                   className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
                 />
               ) : (
@@ -202,18 +212,33 @@ const MerchantUpdateProfile = (profile) => {
                 id="images"
                 type="file"
                 className="hidden"
-                onChange={handleImageCampChange}
+                onChange={handleProfilePhotoChange}
               />
-              <p className="text-xs mt-2 text-[#1D5882] font-semibold">Ganti</p>
+              <p className="text-[11px] mt-2 text-[#1D5882] font-semibold">
+                Ganti
+              </p>
             </label>
+            <p
+              className={
+                !validImage
+                  ? "font-semibold instructions text-[13px] flex items-center"
+                  : "hidden"
+              }
+            >
+              <span className="text-red-600">
+                Max 5 Mb dan format .jpeg, .jpg, .png, .heif
+              </span>
+            </p>
           </div>
           <div className="mb-4 p-3 px-2 flex flex-col gap-3">
             <div
-              className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-2 ${
-                merchant_name ? "border-primary" : "border-red-500"
+              className={`flex flex-row items-center p-3 pr-2 py-0  ${
+                merchant_name ? "bg-transparent" : "bg-gray-50"
+              } border-[1px] ${
+                !merchant_name && "border-red-500"
               }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
             >
-              <IconUser />
+              <IconBuildingStore />
               <input
                 onChange={(e) => setMerchantName(e.target.value)}
                 value={merchant_name}
@@ -227,42 +252,43 @@ const MerchantUpdateProfile = (profile) => {
             </div>
             <div className="flex flex-col gap-1">
               <div
-                className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-2 ${
-                  phone && validPhone ? "border-primary" : "border-red-500"
+                className={`flex flex-row items-center p-3 pr-2 py-0 ${
+                  phone ? "bg-transparent" : "bg-gray-50"
+                } border-[1px] ${
+                  !phone || (!validPhone && "border-red-500")
                 }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
               >
                 <IconDeviceMobile />
                 <input
                   onChange={(e) => setPhone(e.target.value)}
                   value={phone}
-                  // defaultValue={dataUser?.phone}
                   type="text"
                   id="name"
                   className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
                   placeholder="No. Hp"
                   required
                 />
-                {/* <IconCircleCheck
-                  className={validPhone ? "text-green-600" : "hidden"}
-                />
-                <IconCircleX
-                  className={!phone || validPhone ? "hidden" : "text-red-600"}
-                /> */}
               </div>
               <p
                 className={
                   phone && !validPhone
-                    ? "font-semibold instructions text-[13px] flex items-center"
+                    ? "font-semibold instructions italic text-[10px] flex items-center"
                     : "hidden"
                 }
               >
-                {/* <IconInfoCircle size={15} className="mr-1 text-red-600" /> */}
+                <IconInfoCircle size={15} className="mr-1 text-red-600" />
                 <span className="text-red-600">
                   Diawali dengan "08" dan min 10 digit
                 </span>
               </p>
             </div>
-            <div className="flex flex-row items-center p-3 pr-3 py-0 bg-transparent border-2 border-primary text-gray-400 text-sm rounded-lg outline-none w-full focus:border-none">
+            <div
+              className={`flex flex-row items-center p-3 pr-2 py-0  ${
+                address ? "bg-transparent" : "bg-gray-50"
+              } border-[1px] ${
+                !address && "border-red-500"
+              }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
+            >
               <IconHome />
               <textarea
                 disabled
@@ -273,7 +299,6 @@ const MerchantUpdateProfile = (profile) => {
                 placeholder="Alamat"
                 required
                 value={address}
-                // defaultValue={dataUser?.address}
               />
               <button
                 onClick={() => {

@@ -43,9 +43,7 @@ const UpdateProfile = (profile) => {
       })
       .catch((error) => {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       });
   }, [role]);
 
@@ -194,7 +192,6 @@ const UpdateProfile = (profile) => {
                   : "hidden"
               }
             >
-              {/* <IconInfoCircle size={15} className="mr-1 text-red-600" /> */}
               <span className="text-red-600">
                 Max 5 Mb dan format .jpeg, .jpg, .png, .heif
               </span>
@@ -210,7 +207,6 @@ const UpdateProfile = (profile) => {
               <input
                 onChange={(e) => setFullname(e.target.value)}
                 value={fullname}
-                // defaultValue={dataUser?.fullname}
                 type="text"
                 id="name"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
@@ -221,7 +217,6 @@ const UpdateProfile = (profile) => {
             <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-gray-400 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
               <IconMail />
               <input
-                // onChange={(e) => setEmail(e.target.value)}
                 type="text"
                 id="email"
                 className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
@@ -240,19 +235,12 @@ const UpdateProfile = (profile) => {
                 <input
                   onChange={(e) => setPhone(e.target.value)}
                   value={phone}
-                  // defaultValue={dataUser?.phone}
                   type="text"
                   id="name"
                   className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
                   placeholder="No. Hp"
                   required
                 />
-                {/* <IconCircleCheck
-                  className={validPhone ? "text-green-600" : "hidden"}
-                />
-                <IconCircleX
-                  className={!phone || validPhone ? "hidden" : "text-red-600"}
-                /> */}
               </div>
               <p
                 className={

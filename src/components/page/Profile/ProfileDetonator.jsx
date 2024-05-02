@@ -15,9 +15,7 @@ const ProfileDetonator = ({ id }) => {
         setData(response.data.body);
       })
       .catch((error) => {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       });
   }, [id]);
   return (
@@ -29,12 +27,12 @@ const ProfileDetonator = ({ id }) => {
             <p>{data?.ktp_number}</p>
           </div>
         </div>
-        <div class="flex-grow text-center md:text-left">
+        {/* <div class="flex-grow text-center md:text-left">
           <div className="mt-2 mb-3">
             <p class="font-bold">Alamat</p>
             <p>{data?.address}</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
