@@ -102,7 +102,7 @@ const ChangePassword = (ChangePassword) => {
           }
         });
       })
-      .catch(() => {
+      .catch((error) => {
         setLoading(false);
         if (error.response && error.response.status === 401) {
           Error401(error, router);
@@ -152,7 +152,7 @@ const ChangePassword = (ChangePassword) => {
             </label>
             <div
               className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
-                !validpassword && "border-red-500"
+                !validpassword && inputPassword && "border-red-500"
               }`}
             >
               <IconLock />
