@@ -124,7 +124,9 @@ const ChangePassword = (ChangePassword) => {
               Masukan kata sandi lama
             </label>
             <div
-              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
+              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0 ${
+                !inputOldPassword && "bg-gray-100"
+              } text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
                 messageOldPwError && "border-red-500"
               }`}
             >
@@ -154,7 +156,9 @@ const ChangePassword = (ChangePassword) => {
               Masukan kata sandi baru
             </label>
             <div
-              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
+              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0  ${
+                !inputPassword && "bg-gray-100"
+              }  text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
                 !validpassword && inputPassword && "border-red-500"
               }`}
             >
@@ -193,7 +197,9 @@ const ChangePassword = (ChangePassword) => {
               Masukan ulang kata sandi baru
             </label>
             <div
-              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
+              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0  ${
+                !confirmPassword && "bg-gray-100"
+              }  text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
                 messageConfirmError && "border-red-500"
               }`}
             >
