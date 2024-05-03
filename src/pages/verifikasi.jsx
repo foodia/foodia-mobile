@@ -39,8 +39,8 @@ const Verifikasi = () => {
 
     useEffect(() => {
         const countdownInterval = setInterval(() => {
-            setCountdownTime((prevTime) => prevTime - 1000); // Kurangi 1 detik dari countdownTime setiap 1 detik
-        }, 1000);
+            setCountdownTime((prevTime) => prevTime - 199); // Kurangi 1 detik dari countdownTime setiap 1 detik
+        }, 199);
 
         return () => clearInterval(countdownInterval);
     }, []);
@@ -59,7 +59,7 @@ const Verifikasi = () => {
                     Tidak menerima kode? Kirim ulang setelah
                     <br />
                     <span className="text-blue-500 hover:underline cursor-pointer">
-                        {'<Kirim Kode>'}
+                        {'Kirim Kode'}
                     </span>
                 </div>
             );

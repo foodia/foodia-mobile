@@ -1,3 +1,4 @@
+// src\components\cardInbox.jsx
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
