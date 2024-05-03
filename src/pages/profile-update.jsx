@@ -199,8 +199,8 @@ const UpdateProfile = (profile) => {
           </div>
           <div className="mb-4 p-3 px-2 flex flex-col gap-3">
             <div
-              className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-2 ${
-                fullname ? "border-primary" : "border-red-500"
+              className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-[1px] ${
+                !fullname && "border-red-500"
               }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
             >
               <IconUser />
@@ -214,12 +214,12 @@ const UpdateProfile = (profile) => {
                 required
               />
             </div>
-            <div className="flex flex-row items-center p-3 pr-0 py-0 bg-transparent border-2 border-gray-400 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+            <div className="flex flex-row items-center p-3 pr-0 py-0 border-[1px] text-gray-400 text-sm rounded-lg w-full focus:border-none bg-gray-100">
               <IconMail />
               <input
                 type="text"
                 id="email"
-                className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+                className="text-gray-400 ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
                 placeholder="Email"
                 disabled
                 value={email}
@@ -227,8 +227,8 @@ const UpdateProfile = (profile) => {
             </div>
             <div className="flex flex-col gap-1">
               <div
-                className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-2 ${
-                  phone && validPhone ? "border-primary" : "border-red-500"
+                className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-[1px] ${
+                  !phone && !validPhone && "border-red-500"
                 }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
               >
                 <IconDeviceMobile />
