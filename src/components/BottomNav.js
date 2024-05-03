@@ -16,6 +16,7 @@ import { useAppState } from "./page/UserContext";
 import Image from "next/image";
 import bottomNav from "../../public/img/icon/BottomNavField.png";
 import { usePathname } from "next/navigation";
+import icon_agnostic from "../../public/img/icon/icon_agnostic.png";
 
 const BottomNav = () => {
   const router = useRouter();
@@ -243,7 +244,12 @@ const BottomNav = () => {
       )}
       <div className="lingkaran cursor-pointer" onClick={showSweetAlert}>
         <div className="iconQr flex items-stretch p-1">
-          <IconQrcode width={32} height={32} color="white" />
+          <Image
+            src={"/img/icon/icon_agnostic.png"}
+            alt="Girl in a jacket"
+            width={30}
+            height={30}
+          />
         </div>
       </div>
     </div>
