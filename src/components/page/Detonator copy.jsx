@@ -1,148 +1,477 @@
 import styles from "@/styles/Home.module.css";
+import axios from "axios";
 import Image from "next/image";
-import { IconCirclePlus } from '@tabler/icons-react';
-import CardCampaign from "../CardCampaign";
-import SlideCard from "../SlideCard";
-import { useEffect, useState } from "react";
-import { useRouter } from 'next/router';
 import Link from "next/link";
-
-const dummyData = [
-    { id: 1, to: '/event/1', img: '/img/card/rectangle_70.png', title: 'Event A', address: 'Address A', date: '2023-01-01', status: 'Pending' },
-    { id: 2, to: '/event/1', img: '/img/card/rectangle_70.png', title: 'Event A', address: 'Address A', date: '2023-01-01', status: 'Pending' },
-    { id: 3, to: '/event/2', img: '/img/card/rectangle_70.png', title: 'Event B', address: 'Address B', date: '2023-02-02', status: 'Approved' },
-    { id: 4, to: '/event/2', img: '/img/card/rectangle_70.png', title: 'Event B', address: 'Address B', date: '2023-02-02', status: 'Approved' },
-    { id: 5, to: '/event/3', img: '/img/card/rectangle_70.png', title: 'TEBAR 1000 PAKET NASI JUMAT BERKAH', address: 'Kav Barokah, Gg. Ceria I, Bahagia, Kec. Babelan, Kabupaten Bekasi, Jawa Barat 17121', date: '2023-03-03', status: 'Rejected' },
-    { id: 6, to: '/event/3', img: '/img/card/rectangle_70.png', title: 'TEBAR 1000 PAKET NASI JUMAT BERKAH', address: 'Kav Barokah, Gg. Ceria I, Bahagia, Kec. Babelan, Kabupaten Bekasi, Jawa Barat 17121', date: '2023-03-03', status: 'Rejected' },
-    { id: 7, to: '/event/4', img: '/img/card/rectangle_70.png', title: 'Event D', address: 'Address D', date: '2023-04-04', status: 'Pending' },
-    { id: 8, to: '/event/5', img: '/img/card/rectangle_70.png', title: 'Event E', address: 'Address E', date: '2023-05-05', status: 'Approved' },
-];
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+import Swal from "sweetalert2";
+import CardCampaign from "../CardCampaign";
+import Error401 from "../error401";
+import Loading from "../Loading";
+import MenuDetonator from "./Detonator/MenuDetonator";
 
 const Detonator = () => {
-    const router = useRouter();
-    const [loading, setLoading] = useState(true);
-    const [filteredData, setFilteredData] = useState(dummyData);
-    const [selectedStatus, setSelectedStatus] = useState(null);
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [dataApi, setDataApi] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("DRAFT");
+  const [menu, setMenu] = useState("campaign-list");
+  const [hasMore, setHasMore] = useState(true);
+  const observer = useRef();
+  const [errorCode, setErrorCode] = useState(null);
 
-    const handleFilterChange = (status) => {
-        setSelectedStatus(status);
-        const filtered = dummyData.filter((data) => data.status === status);
-        setFilteredData(filtered);
+  useEffect(() => {
+    const authenticateUser = async () => {
+      // const role = localStorage.getItem('role');
+      const token = localStorage.getItem("token");
+      // const status = localStorage.getItem('status');
+      // const id = localStorage.getItem('id');
+      // console.log("token", token);
+      if (!token) {
+        Swal.fire({
+          icon: "error",
+          title: "Akses Dibatasi",
+          text: ` Mohon untuk login kembali menggunakan akun Detonator.`,
+          showConfirmButton: true,
+          confirmButtonText: "Login",
+          confirmButtonColor: "green",
+          showCancelButton: true,
+          cancelButtonText: "Tutup",
+          cancelButtonColor: "red",
+          // timer: 2000,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // console.log("clicked");
+            setLoading(true);
+            router.push("/login");
+          } else if (result.isDismissed) {
+            // console.log("denied");
+            router.push("/home");
+          }
+        });
+        // setTimeout(() => {
+        //   router.push("/home");
+        // }, 2000);
+      } else {
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const cekData = response.data.body;
+          console.log("cekData", cekData);
+
+          if (!cekData.detonator) {
+            // console.log('/register/detonator');
+            Swal.fire({
+              icon: "warning",
+              title: "Akun Belum Terdaftar sebagai Detonator",
+              text: `Mohon untuk registrasi sebagai Detonator.`,
+              showConfirmButton: true,
+              confirmButtonColor: "green",
+              confirmButtonText: "Registrasi",
+              showCancelButton: true,
+              cancelButtonColor: "red",
+              cancelButtonText: "Tutup",
+              // timer: 2000,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // console.log("clicked");
+                router.push("/detonator/syarat");
+              } else if (result.isDismissed) {
+                // console.log("denied");
+                router.push("/home");
+              }
+            });
+            // setTimeout(() => {
+            //   router.push("/registrasi/detonator?step=1");
+            // }, 2000);
+          } else {
+            if (cekData.detonator.status == "waiting") {
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
+              //       localStorage.setItem("id", responeData.id || " ");
+              // localStorage.setItem("status", responeData.status || " ");
+              // localStorage.setItem("note", responeData.note || " ");
+
+              Swal.fire({
+                icon: "warning",
+                title: "Detonator Belum Terverifikasi",
+                text: ` Mohon tunggu konfirmasi dari admin kami.`,
+                showConfirmButton: false,
+                timer: 2000,
+              });
+              setTimeout(() => {
+                router.push("/home");
+              }, 2000);
+            } else if (cekData.detonator.status == "rejected") {
+              setLoading(false);
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
+              Swal.fire({
+                icon: "warning",
+                title: "Detonator Ditolak",
+                text: `${cekData.detonator.note}`,
+                showConfirmButton: false,
+                timer: 2000,
+              });
+              setTimeout(() => {
+                router.push("/detonator/edit");
+              }, 2000);
+            } else {
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
+            }
+          }
+          console.log("data", cekData);
+        } catch (error) {
+          if (error.response && error.response.status === 401) {
+            Error401(error, router);
+            // localStorage.clear();
+            // localStorage.removeItem("cart");
+            // localStorage.removeItem("formData");
+            // router.push("/login");
+          }
+        }
+      }
     };
 
-    useEffect(() => {
-        const role = localStorage.getItem('role');
-        const token = localStorage.getItem('token');
-        const status = localStorage.getItem('status');
-        const idDetonator = localStorage.getItem('id');
+    authenticateUser();
+  }, []);
 
-        if (!role || !token || role !== 'detonator' || status !== 'approved' || !idDetonator) {
-            // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const id = localStorage.getItem("id");
+    if (menu == "campaign-list") {
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${selectedStatus}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          setDataApi(res.data.body);
+          setFilteredData(res.data.body);
+          setLoading(false);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            Error401(error, router);
             localStorage.clear();
-            router.push('/login');
-        } else {
-            // Role is 'detonator' and token is present
-            setLoading(false); // Set loading to false once the check is complete
-        }
-    }, [router]);
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            router.push("/login");
+            router.push("/login");
+          }
+          console.log(error);
+        });
+    } else if (menu == "review-list") {
 
+      // let filtered = [];
+      axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/not-reviewed?type=detonator&id=${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((res) => {
+          // setSelectedStatus()
+          setDataApi(res.data.body);
 
+          // setFilteredData(res.data.body);
+          setLoading(false);
+          console.log("review", res.data.body);
+        }).catch((error) => {
+          Error401(error, router);
+        })
+    }
 
+  }, [selectedStatus, loading]);
 
-    return (
-        <>
-            {loading && <div>Loading...</div>}
-            <div className="container mx-auto mt-24 bg-white h-screen">
-                <div className="place-content-center">
-                    <div className={`bg-green-50 rounded-lg ${styles.listMenu}`}>
-                        <div className="flex flex-nowrap p-4">
-                            {/* <Link href="/creatcampaign?step=1" className="grid justify-items-center mr-2">
-                                <div className={`${styles.iconMenu}`}><Image src={'/icon/campaint.jpg'} alt="Girl in a jacket" width={30} height={30} /></div>
-                                <p className="text-base font-normal text-gray-500 dark:text-gray-400">Campaign</p>
-                            </Link> */}
-                            <Link href="/creatcampaign?step=1" className="grid justify-items-center">
-                                <div className={`${styles.iconMenu}`}><IconCirclePlus /></div>
-                                <p className="text-base font-normal text-gray-500 dark:text-gray-400">Campaign</p>
-                            </Link>
-                        </div>
-                    </div >
-                </div>
+  useEffect(() => {
+    let filtered = [];
+    console.log("selected status", selectedStatus);
+    if (selectedStatus == "KirimUlasan") {
+      filtered = dataApi.filter(
+        (data) => data.approval_status === "approved" && data.is_rating === false
+      )
 
-                <div className={` flex ${styles.slide_card}`}>
-                    <SlideCard to={"/campaign/1"}
-                        img="/img/card/rectangle_70.png"
-                        title="Makanan Untuk Semua"
-                        address="Bersama-sama Kita Bisa Mengakhiri Kelaparan."
-                        date="30/10/2022"
-                        status="Pending"
-                    />
-                    <SlideCard to={"/campaign/1"}
-                        img="/img/card/rectangle_70.png"
-                        title="TEBAR 1000 PAKET NASI JUMAT BERKAH"
-                        address="Kav Barokah, Gg. Ceria I, Bahagia, Kec. Babelan, Kabupaten Bekasi, Jawa Barat 17121"
-                        date="30/10/2022"
-                        status="Approved"
-                    />
-                    <SlideCard to={"/campaign/1"}
-                        img="/img/card/rectangle_70.png"
-                        title="TEBAR 1000 PAKET NASI JUMAT BERKAH"
-                        address="Kav Barokah, Gg. Ceria I, Bahagia, Kec. Babelan, Kabupaten Bekasi, Jawa Barat 17121 ppppppppppppppppppppppppppppppppppppppp"
-                        date="30/10/2022"
-                        status="Rejected"
-                    />
+      setFilteredData(filtered);
+    } else if (selectedStatus == "OPEN,INPROGRESS") {
+      setMenu("campaign-list");
 
-                    <SlideCard to={"/campaign/1"}
-                        img="/img/card/rectangle_70.png"
-                        title="TEBAR 1000 PAKET NASI JUMAT BERKAH"
-                        address="Kav Barokah, Gg. Ceria I, Bahagia, Kec. Babelan, Kabupaten Bekasi, Jawa Barat 17121"
-                        date="30/10/2022"
-                        status="Approved"
-                    />
-                </div>
-                <div className="place-content-center">
-                    <div className="flex my-5">
-                        <div
-                            className={`mr-2 grid justify-items-center ${selectedStatus === 'Approved' ? 'text-blue-500 ' : ''}`}
-                            onClick={() => handleFilterChange('Approved')}
-                        >
-                            <span>Approved</span>
-                            <div className={` w-24 h-0.5 ${selectedStatus === 'Approved' ? 'bg-blue-500 ' : 'bg-black'}`}></div>
-                        </div>
-                        <div
-                            className={`mr-2 grid justify-items-center ${selectedStatus === 'Pending' ? 'text-blue-500' : ''}`}
-                            onClick={() => handleFilterChange('Pending')}
-                        >
-                            <span>Pending</span>
-                            <div className={` w-24 h-0.5 ${selectedStatus === 'Pending' ? 'bg-blue-500 ' : 'bg-black'}`}></div>
-                        </div>
-                        <div
-                            className={`grid justify-items-center ${selectedStatus === 'Rejected' ? 'text-blue-500 ' : ''}`}
-                            onClick={() => handleFilterChange('Rejected')}
-                        >
-                            <span>Rejected</span>
-                            <div className={` w-24 h-0.5 ${selectedStatus === 'Rejected' ? 'bg-blue-500 ' : 'bg-black'}`}></div>
-                        </div>
-                    </div>
-                </div>
+    }
+  }, [dataApi, selectedStatus]);
 
-                <div className={` ${styles.card}`}>
-                    {filteredData.map((data) => (
-                        <CardCampaign
-                            key={data.id}  // Use a unique identifier (id) as the key
-                            to={data.to}
-                            img={data.img}
-                            title={data.title}
-                            address={data.address}
-                            date={data.date}
-                            status={data.status}
-                        />
-                    ))}
-                </div>
+  const handleFilterChange = (status) => {
+    let filtered = [];
+    const id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
+
+    setLoading(true);
+    setSelectedStatus(status);
+    if (status === "DRAFT") {
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          setDataApi(response.data.body);
+          setFilteredData(response.data.body);
+          setLoading(false);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            Error401(error, router);
+            localStorage.clear();
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            router.push("/login");
+            router.push("/login");
+          }
+          console.error("Error fetching data:", error);
+        });
+    } else if (status === "OPEN,INPROGRESS") {
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token + "dwwdw"}`,
+            },
+          }
+        )
+        .then((response) => {
+          setDataApi(response.data.body);
+          setFilteredData(response.data.body);
+          setLoading(false);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            Error401(error, router);
+            localStorage.clear();
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            router.push("/login");
+          }
+          console.error("Error fetching data:", error);
+        });
+    } else if (status === "FINISHED") {
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${status}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          setDataApi(response.data.body);
+          setFilteredData(response.data.body);
+          setLoading(false);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            Error401(error, router);
+          }
+          console.error("Error fetching data:", error);
+        });
+    } else if (status === "KirimUlasan") {
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/not-reviewed?type=detonator&id=${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+
+        .then((response) => {
+          filtered = response.data.body.filter((data) => data.approval_status === "approved" && data.is_rating === false)
+          setDataApi(filtered);
+          setFilteredData(filtered);
+          setLoading(false);
+          console.log('data filter', filteredData);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            Error401(error, router);
+          }
+        })
+    } else if (status === "UlasanSelesai") {
+      console.log("masuk");
+      setDataApi([]);
+      setFilteredData([]);
+      setLoading(false);
+    }
+
+    // setFilteredData(filtered);
+  };
+
+  const handleRequestError = (error) => {
+    console.error("Error fetching data:", error);
+
+    if (error.response && error.response.status === 401) {
+      localStorage.clear();
+      router.push("/login/detonator");
+    }
+
+    setLoading(false);
+    setFilteredData([]);
+  };
+
+  return (
+    <>
+      <div className="bg-white h-screen pt-10">
+        <div className="flex items-center justify-center px-6 my-2">
+          <MenuDetonator />
+        </div>
+
+        {menu === "campaign-list" ? (
+          <>
+            <div className="flex flex-row px-6 py-4 justify-between items-end">
+              <div
+                className={`cursor-pointer text-center pb-2 ${selectedStatus === "DRAFT"
+                  ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                  : "text-gray-400 font-bold"
+                  }`}
+                onClick={() => handleFilterChange("DRAFT")}
+              >
+                <p>Campaign Baru</p>
+              </div>
+              <div
+                className={`cursor-pointer text-center pb-2 ${selectedStatus === "OPEN,INPROGRESS"
+                  ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                  : "text-gray-400 font-bold"
+                  }`}
+                onClick={() => handleFilterChange("OPEN,INPROGRESS")}
+              >
+                <p>Campaign Berjalan</p>
+              </div>
+              <div
+                className={`cursor-pointer text-center pb-2 ${selectedStatus === "FINISHED"
+                  ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                  : "text-gray-400 font-bold"
+                  }`}
+                onClick={() => handleFilterChange("FINISHED")}
+              >
+                <p>Campaign Selesai</p>
+              </div>
             </div>
+            {loading ? (
+              <div className={`${styles.card}`}>
+                {[...Array(4)].map((_, index) => (
+                  <div key={index} className={`${styles.loadingCard}`}>
+                    <div className={`${styles.shimmer}`}></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={`${styles.card}`}>
+                {filteredData.map((dataFilter) => {
+                  // console.log(`Key: ${dataFilter.id}`);
+                  return (
+                    <CardCampaign
+                      key={dataFilter.id}
+                      to={`detonator/campaign/${dataFilter.id}`}
+                      img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.image_url}`}
+                      title={dataFilter.event_name}
+                      description={dataFilter.description}
+                      date={dataFilter.event_date}
+                      status={dataFilter.status}
+                      address={dataFilter.address}
+                      rating={false}
+                      donation_target={dataFilter.donation_target}
+                      donation_collected={dataFilter.donation_collected}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="flex flex-row px-6 py-4 justify-between items-end">
+              <div
+                className={`cursor-pointer text-center w-full pb-2 ${selectedStatus === "KirimUlasan"
+                  ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                  : "text-gray-400 font-bold"
+                  }`}
+                onClick={() => handleFilterChange("KirimUlasan")}
+              >
+                <p>Kasih Ulasan</p>
+              </div>
+              <div
+                className={`cursor-pointer text-center w-full pb-2 ${selectedStatus === "UlasanSelesai"
+                  ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                  : "text-gray-400 font-bold"
+                  }`}
+                onClick={() => handleFilterChange("UlasanSelesai")}
+              >
+                <p>Ulasan Selesai</p>
+              </div>
+            </div>
+            {loading ? (
+              <div className={`${styles.card}`}>
+                {[...Array(4)].map((_, index) => (
+                  <div key={index} className={`${styles.loadingCard}`}>
+                    <div className={`${styles.shimmer}`}></div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={`${styles.card}`}>
 
-        </>
+                {filteredData.map((dataFilter) => {
+                  // console.log(`Key: ${dataFilter.id}`);
+                  return (
+                    <CardCampaign
+                      // dataReview={dataFilter}
+                      // key={dataFilter.id}
+                      to={`detonator/rating`}
+                      img={`img/card/rectangle_70.png`}
+                      title={dataFilter.event_name}
+                      description={"sfsfsf"}
+                      date={"sfsfs"}
+                      // status={}
+                      address={
+                        "Kav Barokah, Gg. Ceria I, Bahagia, Kec. Babelan, Kabupaten Bekasi, Jawa Barat 17121"
+                      }
+                      rating={true}
+                    />
+                  );
+                })}
 
-    );
-}
+
+              </div>
+            )}
+          </>
+        )}
+        {loading && <Loading />}
+      </div>
+    </>
+  );
+};
 
 export default Detonator;

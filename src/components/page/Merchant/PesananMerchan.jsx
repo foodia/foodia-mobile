@@ -167,6 +167,20 @@ const PesananMerchan = () => {
                 </div>
                 <p className="text-xs font-normal text-black">Saldo</p>
               </Link>
+              <Link
+                href="/merchant/review"
+                className="grid justify-items-center gap-1 w-24 "
+              >
+                <div className={`${styles.iconMenu}`}>
+                  <Image
+                    src={"/icon/ulasan.png"}
+                    alt="Girl in a jacket"
+                    width={30}
+                    height={30}
+                  />
+                </div>
+                <p className="text-xs font-normal text-black">Ulasan</p>
+              </Link>
             </div>
           </div>
         </div>

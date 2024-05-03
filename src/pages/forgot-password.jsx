@@ -55,7 +55,7 @@ const ForgotPassword = () => {
                     <Header backto="/" title="Lupa Kata Sandi" />
 
                     <div className="p-4 flex flex-col gap-2">
-                        <label htmlFor="confirmPassword" className="text-sm">Masukan ulang kata sandi baru</label>
+                        <label htmlFor="confirmPassword" className="text-sm">Masukan email anda</label>
                         <div className={`flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full borde ${error ? ' border-2 border-red-500' : 'focus:border-none'}`}>
                             <IconMail />
                             <input

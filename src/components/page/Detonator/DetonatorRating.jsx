@@ -15,13 +15,41 @@ import j from "../../../../public/img/card/geprek.jpg";
 
 const DetonatorRating = (DetonatorRating) => {
   const router = useRouter();
-  const { id } = router.query;
+  const id_order = router.query.id;
+  const id_camp = router.query.id_camp;
+  // console.log('id_camp', router);
+  // const id_merchant = router.query.id_mrc;
   const { state, setReportMechant } = useAppState();
   const [newReport, setnewReport] = useState({});
+  const [dataOrder, setDataOrder] = useState({});
   const [star, setStar] = useState(newReport?.star || 0);
   const [description, setDescription] = useState(newReport?.description ?? "");
   const [loading, setloading] = useState(true);
   const [images, setImages] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setloading(true);
+    axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${id_camp}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+      .then((response) => {
+        console.log('data', response.data.body);
+        const orderData = response.data.body.orders.filter((order) => order.id === parseInt(id_order));
+        setDataOrder(orderData[0]);
+        setnewReport(response.data.body);
+        setloading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setloading(false);
+      })
+  }, [id_camp]);
+  console.log('newReport', newReport);
+  console.log('dataOrder', dataOrder);
 
   useEffect(() => {
     console.log(star);
@@ -37,75 +65,79 @@ const DetonatorRating = (DetonatorRating) => {
     setDescription(event.target.value);
   };
   const handleSubmit = (event) => {
+
     setloading(true);
     const id_merchant = localStorage.getItem("id");
     const token = localStorage.getItem("token");
 
     // Validation checks
-    if (!star || !description) {
+    if (!star || !description || !images) {
       window.alert("All fields are required");
       return;
     }
-
-    const eventData = {
-      relation_id: parseInt(id_merchant),
-      relation_type: "detonator",
-      order_id: parseInt(state.reportMechant?.id),
-      star,
-      photo: "reting_merchat_to_cempain",
-      note: description,
-    };
-    setnewReport(eventData);
-    console.log("cek data", eventData);
-
+    const formData = new FormData();
+    formData.append("destination", "rating");
+    formData.append("file", images);
+    // setloading(true);
     axios
-      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/create`, eventData, {
+      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data", // Set content type for FormData
         },
       })
-      .then((creatretingmerchant) => {
-        console.log("API Response create rating:", creatretingmerchant.data);
+      .then((response) => {
+        console.log("API Response media/upload:", response.data.body.file_url);
+        if (response.status === 200) {
+          const eventData = {
+            relation_id: parseInt(dataOrder?.merchant_id),
+            relation_type: "merchant",
+            order_id: parseInt(id_order),
+            star,
+            photo: response.data.body.file_url,
+            note: description,
+          }
+          setnewReport(eventData);
+          console.log("cek data", eventData);
+          axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/create`, eventData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+            .then((creatretingmerchant) => {
+              console.log("API Response create rating:", creatretingmerchant.data);
 
-        Swal.fire({
-          icon: "success",
-          title: "Review Detonator Berhasil Disimpan",
-          text: "Terima kasih telah memberi review detonator",
-          showConfirmButton: false,
-          timer: 2000,
-        });
+              Swal.fire({
+                icon: "success",
+                title: "Review Detonator Berhasil Disimpan",
+                text: "Terima kasih telah memberi review detonator",
+                showConfirmButton: false,
+                timer: 2000,
+              });
 
-        setTimeout(() => {
-          router.push("/merchant");
-        }, 2000);
-        setloading(false);
+              setTimeout(() => {
+                router.push("/merchant/review");
+              }, 2000);
+              setloading(false);
+            })
+            .catch((error) => {
+              setloading(false);
+              Error401(error, router);
+            });
+        }
       })
       .catch((error) => {
         setloading(false);
-        if (401 === error.response.status) {
-          Error401(error, router);
-        }
-        console.log("2Error creating reting:", error.response.status);
-        if (error.response.status === 401) {
-          Swal.fire({
-            icon: "error",
-            title: "Gagal memberi rating",
-            text: "Gagal memberi rating Mohon Coba Lagi",
-            showConfirmButton: false,
-            timer: 2000,
-          });
-          router.push("/login");
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Gagal memberi rating",
-            text: "Gagal memberi rating Mohon Coba Lagi",
-            showConfirmButton: false,
-            timer: 2000,
-          });
-        }
-      });
-  };
+        Swal.fire({
+          icon: "error",
+          title: "Gagal Upload Image",
+          text: "Gagal Upload Image, Mohon Coba Lagi",
+          showConfirmButton: false,
+          timer: 2000,
+        })
+      })
+
+  }
 
   const handleImagesChange = (event) => {
     const file = event.target.files[0];
@@ -153,14 +185,13 @@ const DetonatorRating = (DetonatorRating) => {
                   className="w-20 h-20"
                 />
                 <div className="ml-2">
-                  <p className="text-sm font-bold">30x Ayam Geprek</p>
-                  <p className="text-xs font-normal">Warung ABC</p>
+                  <p className="text-sm font-bold">{dataOrder?.qty}x {dataOrder?.merchant_product?.name}</p>
+                  <p className="text-xs font-normal">{dataOrder?.merchant?.merchant_name}</p>
                   <p className="text-[11px] font-normal text-gray-400">
-                    30/10/2023 15.01
+                    {`${newReport?.event_date} ${newReport?.event_time}`}
                   </p>
                   <p className="text-[11px] font-medium">
-                    “30 paket ayam geprek sudah sampai di tempat dan siap untuk
-                    dibagikan.”
+                    {dataOrder?.merchant_product?.note}
                   </p>
                 </div>
               </div>
@@ -225,9 +256,8 @@ const DetonatorRating = (DetonatorRating) => {
               {[1, 2, 3, 4, 5].map((index) => (
                 <svg
                   key={index}
-                  className={`w-12 h-12 cursor-pointer ${
-                    index <= star ? "text-yellow-300" : "text-gray-500"
-                  }`}
+                  className={`w-12 h-12 cursor-pointer ${index <= star ? "text-yellow-300" : "text-gray-500"
+                    }`}
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
@@ -243,11 +273,10 @@ const DetonatorRating = (DetonatorRating) => {
                 disabled={!star || !description || !images}
                 onClick={() => handleSubmit()}
                 type="submit"
-                className={`${
-                  !star || !description || !images
-                    ? "bg-gray-300"
-                    : "bg-primary"
-                } text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
+                className={`${!star || !description || !images
+                  ? "bg-gray-300"
+                  : "bg-primary"
+                  } text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
               >
                 Simpan
               </button>
