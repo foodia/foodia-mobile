@@ -178,9 +178,8 @@ const BottomNav = () => {
   };
 
   return (
-    <div className="mobile-w bg-transparent fixed flex justify-center h-24 bottom-0 w-full max-w-screen-sm">
+    <div className="mobile-w bg-transparent fixed flex justify-center h-24 bottom-0 w-full max-w-screen-sm ">
       <Image src={bottomNav} className="bg-transparent" layout="fill"></Image>
-      {/* <div className="kotak bg-white"> */}
       <div
         className={`menu1 icon_nav hover:text-primary 
         ${pathname === "/home" ? "text-primary" : "text-gray-400"}
@@ -196,9 +195,12 @@ const BottomNav = () => {
         ${pathname === "/mydonation" ? "text-primary" : "text-gray-400"}
         `}
       >
-        <Link href="/mydonation" className="items-center flex flex-col gap-1">
+        <Link
+          href="/mydonation"
+          className="items-center w-20 flex flex-col gap-1"
+        >
           <IconReceipt />
-          <p className="text-xs">Receipt</p>
+          <p className="text-xs">My Donation</p>
         </Link>
       </div>
       <div

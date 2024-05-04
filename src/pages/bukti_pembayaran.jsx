@@ -1,7 +1,9 @@
+import Header from "@/components/Header";
 import Error401 from "@/components/error401";
 import { useAppState } from "@/components/page/UserContext";
 import { IconCheck } from "@tabler/icons-react";
 import axios from "axios";
+import moment from "moment/moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -18,6 +20,11 @@ const BuktiPembayaran = () => {
   //     setExternal_id(router.query.external_id);
   // }, [router]);
 
+  const previousPageUrl =
+    typeof window !== "undefined"
+      ? document.referrer.replace(window.location.origin, "")
+      : "";
+
   useEffect(() => {
     const resspone = axios
       .get(
@@ -30,109 +37,125 @@ const BuktiPembayaran = () => {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           Error401(error, router);
-
         }
         console.error("Error fetching data:", error);
       });
   }, [router]);
 
   return (
-    <main className="">
-      <div className="container my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
-        <div className="container mx-auto mt-24  h-screen p-4">
-          <div className="p-4  w-full mb-4   bg-white shadow-[rgba(0,0,15,0.5)_0px_0px_10px_2px] rounded-lg">
-            <div className="flex justify-center items-center mb-4 animate-zoom">
-              <div className="h-16 w-16 rounded-full bg-primary grid justify-items-center items-center text-white">
-                <IconCheck size={30} />
-              </div>
-            </div>
-            <div className="flex justify-center items-center mb-2">
-              <p className="font-bold">Payment Total</p>
-            </div>
-            <div className="flex justify-center items-center">
-              <p className="text-3xl font-bold text-primary">
-                {pembayaran.total_amount
-                  ? pembayaran.total_amount.toLocaleString("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
-                  })
-                  : "Rp 0,00"}
-              </p>
-            </div>
-            <hr className="w-full h-1 mx-auto my-2 bg-gray-300 rounded" />
-            <div className="flex justify-between mb-2">
-              <h1 className="font-bold text-gray-400">Tanggal</h1>
-              {/* <p className="font-semibold"> {pembayaran.transaction_date}</p> */}
-              <p className="font-semibold">
-                {pembayaran.transaction_date
-                  ? new Date(pembayaran.transaction_date)
-                    .toLocaleString("en-GB", {
-                      day: "2-digit",
-                      month: "2-digit",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
-                    .replace(",", "")
-                  : "00/00/0000 00:00"}
-              </p>
-            </div>
-            <div className="flex justify-between mb-2">
-              <h1 className="font-bold text-gray-400">Detail</h1>
-              <p className="font-semibold">{pembayaran ? "Donasi" : "-"}</p>
-            </div>
-            <div className="flex justify-between mb-2">
-              <h1 className="font-bold text-gray-400">Nomer Referensi</h1>
-              <p className="font-semibold">
-                {pembayaran.id ? pembayaran.id : "-"}
-              </p>
-            </div>
-            <div className="flex justify-between mb-2">
-              <h1 className="font-bold text-gray-400">Akun</h1>
-              <p className="font-semibold">
-                {pembayaran.sender_name ? pembayaran.sender_name : "-"}
-              </p>
-            </div>
-
-            <div className="flex justify-between mb-2">
-              <h1 className="font-bold text-gray-400">Metode Pembayaran</h1>
-              <p className="font-semibold">{pembayaran ? "Mayar" : "-"}</p>
-            </div>
-            <div className="flex justify-between">
-              <h1 className="font-bold text-gray-400">Total Pembayaran</h1>
-              <p className="font-semibold">
-                {pembayaran.total_amount
-                  ? pembayaran.total_amount.toLocaleString("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
-                  })
-                  : "Rp 0,00"}
-              </p>
-            </div>
-
-            <hr className="w-full h-1 mx-auto my-2 bg-gray-300 rounded" />
-            <div className="flex justify-between">
-              <h1 className="font-bold text-gray-400">Total Pembayaran</h1>
-              <p className="font-semibold text-primary">
-                {pembayaran.total_amount
-                  ? pembayaran.total_amount.toLocaleString("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
-                  })
-                  : "Rp 0,00"}
-              </p>
+    <div className="my-0 h-screen max-w-480 bg-white flex flex-col">
+      <Header
+        title="Detail Donasi"
+        backto={previousPageUrl === "/mydonation" ? "/mydonation" : "/home"}
+      />
+      <div className="mt-10 p-4 overflow-hidden">
+        <div className="p-4 py-8 w-full mb-4 bg-white shadow-[rgba(0,0,2,0.5)_0px_0px_6px_0px] rounded-lg">
+          <div className="flex justify-center items-center mb-4 animate-zoom">
+            <div className="h-16 w-16 rounded-full bg-primary grid justify-items-center items-center text-white">
+              <IconCheck size={30} />
             </div>
           </div>
+          <div className="flex justify-center items-center">
+            <p className="font-normal text-gray-400">Payment Total</p>
+          </div>
+          <div className="flex justify-center items-center mb-4">
+            <p className="text-3xl font-bold text-primary">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(pembayaran.total_amount || 0)}
+            </p>
+          </div>
+          <hr className="w-full mx-auto my-4 bg-gray-300" />
+          <div className="flex justify-between mb-2">
+            <h1 className="font-normal text-sm text-[#A1A5C1]">
+              Tanggal Transaksi
+            </h1>
+            {/* <p className="font-semibold"> {pembayaran.transaction_date}</p> */}
+            <p className="font-semibold text-sm">
+              {moment(pembayaran?.transaction_date).format(
+                "DD MMM YYYY hh:mm:ss"
+              ) || "-"}
+            </p>
+          </div>
+          <div className="flex justify-between mb-2">
+            <h1 className="font-normal text-sm text-[#A1A5C1]">Detail</h1>
+            <p className="font-semibold text-sm">
+              {pembayaran ? "Donasi" : "-"}
+            </p>
+          </div>
+          <div className="flex justify-between mb-2">
+            <h1 className="font-normal text-sm text-[#A1A5C1]">
+              Nomer Referensi
+            </h1>
+            <p className="font-semibold text-sm">
+              {pembayaran.id ? pembayaran.id : "-"}
+            </p>
+          </div>
+          <div className="flex justify-between mb-2">
+            <h1 className="font-normal text-sm text-[#A1A5C1]">Akun</h1>
+            <p className="font-semibold text-sm">
+              {pembayaran.sender_name ? pembayaran.sender_name : "-"}
+            </p>
+          </div>
 
-          <Link
-            href="/home"
-            className="flex justify-center items-center mb-2 bg-primary p-4 rounded-lg hover:shadow-[rgba(0,0,15,0.5)_0px_0px_10px_2px]"
-          >
-            <p className="font-bold">Selesai</p>
-          </Link>
+          <hr className="w-full mx-auto my-4 bg-gray-300" />
+
+          <div className="flex justify-between mb-2">
+            <h1 className="font-normal text-sm text-[#A1A5C1]">
+              Metode Pembayaran
+            </h1>
+            <p className="font-semibold text-sm">
+              {pembayaran ? "Mayar" : "-"}
+            </p>
+          </div>
+          <div className="flex justify-between mb-2">
+            <h1 className="font-normal text-sm text-[#A1A5C1]">
+              Total Pembayaran
+            </h1>
+            <p className="font-semibold text-sm">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(pembayaran.total_amount || 0)}
+            </p>
+          </div>
+          <div className="flex justify-between">
+            <h1 className="font-normal text-sm text-[#A1A5C1]">
+              Biaya Transaksi
+            </h1>
+            <p className="font-semibold text-sm">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(pembayaran.admin_fee || 0)}
+            </p>
+          </div>
+
+          <hr className="w-full mx-auto my-4 bg-gray-300" />
+          <div className="flex justify-between">
+            <h1 className="font-bold text-sm text-black">Total</h1>
+            <p className="font-semibold text-sm text-primary">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(pembayaran.total_amount || 0)}
+            </p>
+          </div>
         </div>
+
+        <Link
+          href={previousPageUrl === "/mydonation" ? "/mydonation" : "/home"}
+          className="bg-slate-200 flex justify-center items-center bg-transparent border-2 h-10 border-primary p-3 rounded-xl outline-none"
+        >
+          <p className="font-bold text-primary">Kembali</p>
+        </Link>
       </div>
-    </main>
+    </div>
   );
 };
 
