@@ -111,7 +111,7 @@ input:checked + .slider:before {
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 0;
 }
 
 ::-webkit-scrollbar-thumb {

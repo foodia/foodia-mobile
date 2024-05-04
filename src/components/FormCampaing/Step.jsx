@@ -460,8 +460,8 @@ function StepOne({
               !Waktu ||
               !Description ||
               !uploadedFile
-                ? "text-white bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
-                : "text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+                ? "text-white bg-gray-400 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+                : "text-white bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
             }
           >
             Lanjut
@@ -979,10 +979,13 @@ function StepThree({
                     <div className="font-medium text-xs text-gray-500">
                       Total {totalCartQuantity} Pesanan
                     </div>
-                    <div className="text-primary font-bold text-lg">{`Rp ${totalCartPrice.toLocaleString(
-                      undefined,
-                      { minimumFractionDigits: 0, maximumFractionDigits: 0 }
-                    )}`}</div>
+                    <div className="text-primary font-bold text-lg">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        minimumFractionDigits: 0,
+                      }).format(totalCartPrice || 0)}
+                    </div>
                   </div>
                 ) : (
                   ""
@@ -1036,12 +1039,13 @@ function StepThree({
                             </div>
                           </div>
                           <div className="mt-2 flex flex-row gap-4 justify-between">
-                            <p className="font-bold text-primary">{`Rp ${(
-                              item.price * item.quantity
-                            ).toLocaleString(undefined, {
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 0,
-                            })}`}</p>
+                            <p className="font-bold text-primary">
+                              {new Intl.NumberFormat("id-ID", {
+                                style: "currency",
+                                currency: "IDR",
+                                minimumFractionDigits: 0,
+                              }).format(item.price * item.quantity || 0)}
+                            </p>
                             <div className="grid place-items-center">
                               <div className="flex items-center">
                                 <button
@@ -1103,12 +1107,29 @@ function StepThree({
   );
 }
 
-function SingleDonationPayment({ setLoading }) {
+function SingleDonationPayment({ setLoading, cart }) {
   const [isDropdownMethodOpen, setIsDropdownMethodOpen] = useState(true);
   const [isDropdownChannelOpen, setIsDropdownChannelOpen] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState("");
   const [selectedChannel, setSelectedChannel] = useState("");
+  const [selectedChannelLogo, setSelectedChannelLogo] = useState();
+  const [donationRequired, setDonationRequired] = useState();
+  const [formData, setFormData] = useState();
   const router = useRouter();
+
+  useEffect(() => {
+    // Check local storage for existing form data
+    const storedFormData = localStorage.getItem("formData");
+    if (storedFormData) {
+      const parsedFormData = JSON.parse(storedFormData);
+      if (parsedFormData) {
+        setFormData(parsedFormData);
+      }
+    }
+
+    setDonationRequired(cart.reduce((total, item) => total + item.total, 0));
+  }, []);
+  console.log("sd", donationRequired);
 
   useEffect(() => {
     setLoading(false);
@@ -1127,6 +1148,10 @@ function SingleDonationPayment({ setLoading }) {
   };
 
   const methodOptions = [
+    {
+      value: "tabunganku",
+      label: "Tabunganku",
+    },
     {
       value: "ewallet",
       label: "Ewallet",
@@ -1232,18 +1257,50 @@ function SingleDonationPayment({ setLoading }) {
               setIsDropdownChannelOpen(!isDropdownChannelOpen);
               setIsDropdownMethodOpen(false);
             }}
-            className="flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none"
+            className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${
+              selectedMethod === "tabunganku" ? "bg-[#1D5882]" : ""
+            }`}
           >
-            <p
-              className={`capitalize font-bold ${
-                selectedChannel === "" ? "text-gray-400" : "text-black"
-              }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
-            >
-              {selectedChannel === ""
-                ? `Pilih ${selectedMethod}...`
-                : selectedChannel}
-            </p>
-            {isDropdownChannelOpen ? <IconChevronUp /> : <IconChevronDown />}
+            {selectedMethod === "tabunganku" ? (
+              <>
+                <p
+                  className={`font-bold text-xs text-white pl-2 cursor-pointer outline-none py-4 focus:border-none`}
+                >
+                  Nilai Tabungan
+                </p>
+                <p
+                  className={`font-bold text-base text-white pl-2 cursor-pointer outline-none py-4 focus:border-none pr-2`}
+                >
+                  {new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0,
+                  }).format(1000000)}
+                </p>
+              </>
+            ) : (
+              <>
+                <p
+                  className={`capitalize font-bold ${
+                    selectedChannel === "" ? "text-gray-400" : "text-black"
+                  }  pl-2 cursor-pointer outline-none py-4  focus:border-none`}
+                >
+                  {selectedChannel === "" ? (
+                    `Pilih ${selectedMethod}...`
+                  ) : (
+                    <p className="flex flex-row items-center gap-2">
+                      <Image width={30} src={selectedChannelLogo} />
+                      {selectedChannel}
+                    </p>
+                  )}
+                </p>
+                {isDropdownChannelOpen ? (
+                  <IconChevronUp />
+                ) : (
+                  <IconChevronDown />
+                )}
+              </>
+            )}
           </button>
         )}
         {isDropdownChannelOpen ? (
@@ -1252,7 +1309,10 @@ function SingleDonationPayment({ setLoading }) {
               ? eWalletChannelOptions.map((data, index) => (
                   <>
                     <button
-                      onClick={() => setSelectedChannel(data.value)}
+                      onClick={() => {
+                        setSelectedChannel(data.value);
+                        setSelectedChannelLogo(data.logo);
+                      }}
                       className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
                     >
                       <div className="flex items-center gap-2">
@@ -1289,7 +1349,10 @@ function SingleDonationPayment({ setLoading }) {
               : bankChannelOptions.map((data, index) => (
                   <>
                     <button
-                      onClick={() => setSelectedChannel(data.value)}
+                      onClick={() => {
+                        setSelectedChannel(data.value);
+                        setSelectedChannelLogo(data.logo);
+                      }}
                       className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
                     >
                       <div className="flex items-center gap-2">
@@ -1332,36 +1395,58 @@ function SingleDonationPayment({ setLoading }) {
         <p className="text-black text-sm font-medium">Rincian Donasi</p>
         <div className="flex flex-col gap-3 items-center justify-center py-3 px-4 shadow-sm shadow-gray-400 text-sm rounded-xl w-full focus:border-none">
           <p className="text-black font-bold text-lg text-center">
-            Nama Campaign
+            {formData?.eventName}
           </p>
           <div className="w-full">
             <hr />
           </div>
           <div className="w-full flex flex-row justify-between">
             <p className="text-gray-400">Nominal Donasi</p>
-            <p className="text-black font-medium">Rp. 450.000</p>
+            <p className="text-black font-medium">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(donationRequired || 0)}
+            </p>
           </div>
           <div className="w-full flex flex-row justify-between">
             <p className="text-gray-400">Biaya Transaksi</p>
-            <p className="text-black font-medium">Rp. 2.500</p>
+            <p className="text-black font-medium">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(2500)}
+            </p>
           </div>
           <div className="w-full">
             <hr />
           </div>
           <div className="w-full flex flex-row justify-between">
             <p className="text-black font-medium">Total</p>
-            <p className="text-primary font-bold">Rp. 452.500</p>
+            <p className="text-primary font-bold">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(donationRequired + 2500)}
+            </p>
           </div>
         </div>
         <div className="grid gap-4 content-center pt-12 mb-2">
           <button
-            disabled={selectedMethod === "" || selectedChannel === ""}
+            disabled={
+              selectedMethod === "" ||
+              (selectedMethod !== "tabunganku" && selectedChannel === "")
+            }
             // onClick={() => handleSubmit()}
             type="submit"
             className={
-              selectedMethod === "" || selectedChannel === ""
-                ? "text-white bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-xl w-xl sm:w-auto px-5 py-2.5 text-center"
-                : "text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+              selectedMethod === "" ||
+              (selectedMethod !== "tabunganku" && selectedChannel === "")
+                ? "text-white bg-gray-400 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+                : "text-white bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
             }
           >
             Lanjutkan
