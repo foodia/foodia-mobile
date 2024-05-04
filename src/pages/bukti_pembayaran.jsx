@@ -72,11 +72,12 @@ const BuktiPembayaran = () => {
             <h1 className="font-normal text-sm text-[#A1A5C1]">
               Tanggal Transaksi
             </h1>
-            {/* <p className="font-semibold"> {pembayaran.transaction_date}</p> */}
             <p className="font-semibold text-sm">
-              {moment(pembayaran?.transaction_date).format(
-                "DD MMM YYYY hh:mm:ss"
-              ) || "-"}
+              {pembayaran?.transaction_date
+                ? moment(pembayaran?.transaction_date).format(
+                    "DD MMM YYYY hh:mm:ss"
+                  )
+                : "-"}
             </p>
           </div>
           <div className="flex justify-between mb-2">
@@ -119,7 +120,7 @@ const BuktiPembayaran = () => {
                 style: "currency",
                 currency: "IDR",
                 minimumFractionDigits: 0,
-              }).format(pembayaran.total_amount || 0)}
+              }).format(pembayaran.amount || 0)}
             </p>
           </div>
           <div className="flex justify-between">
