@@ -13,6 +13,8 @@ const mydonation = () => {
   const [data, setData] = useState();
   const [history, setHistory] = useState();
   const [bulanOptions, setBulanOptions] = useState([]);
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
   const [loading, setLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(true);
 
@@ -20,10 +22,10 @@ const mydonation = () => {
     setIsChecked((prevState) => !prevState);
   };
 
-  useEffect(() => {
+  const getHistory = () => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}donation/list?start=2024-05-01&end=2024-05-10`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}donation/list?start=2024-05-01&end=2024-05-30`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -38,14 +40,24 @@ const mydonation = () => {
           (a, b) => b.transaction.id - a.transaction.id
         );
 
+        // sortedData.map((e) => {
+        //   const dateString = e.date;
+        //   const monthYear =
+        //     dateString.split(" ")[1] + " " + dateString.split(" ")[2];
+        //   console.log("history ===", monthYear);
+        // });
+
         setHistory(sortedData);
       })
       .catch((error) => {
         setLoading(false);
         Error401(error, router);
       });
+  };
+
+  useEffect(() => {
+    getHistory();
   }, []);
-  console.log(data?.donation_history);
 
   // Fungsi untuk mengambil lima bulan terbaru
   const getLatestMonths = () => {
@@ -73,15 +85,21 @@ const mydonation = () => {
         month += 12;
         year -= 1;
       }
-      months.push(`${monthNames[month]} ${year}`);
+      months.push(`${monthNames[month]}`);
     }
     return months;
   };
 
   // Memperbarui state bulanOptions dengan lima bulan terbaru
-  useState(() => {
+  useEffect(() => {
+    const options = [{}];
     setBulanOptions(getLatestMonths());
   }, []);
+
+  const onChangeMonth = (e) => {
+    setMonth(e.target.value);
+    getHistory();
+  };
 
   return (
     <>
@@ -103,11 +121,14 @@ const mydonation = () => {
             <div className="flex flex-row justify-between items-center">
               <div className="flex flex-col gap-1 text-white font-semibold text-base">
                 <p>Total Donasi</p>
-                <select class="text-[12px] font-semibold text-white custom-select w-20 h-[25px] rounded-md bg-transparent border-[1px] border-white outline-none">
+                <select
+                  onChange={(e) => onChangeMonth(e)}
+                  class="text-[12px] font-semibold text-white custom-select w-20 h-[25px] rounded-md bg-transparent border-[1px] border-white outline-none"
+                >
                   {/* <option value="" className="bg-white">Mar 2024</option> */}
                   {bulanOptions.map((bulan, index) => (
                     <option key={index} value={bulan} className="text-black">
-                      {bulan}
+                      {bulan} 2024
                     </option>
                   ))}
                 </select>
@@ -159,7 +180,7 @@ const mydonation = () => {
                 </div>
               ))}
             </div>
-          ) : data.donation_history ? (
+          ) : data?.donation_history ? (
             <div className={`${styles.card} px-1 `}>
               {history.map((data) => (
                 <div className="w-full px-2 py-2 mt-2.5 rounded-lg shadow-[0px_0px_8px_0px_#00000024]">

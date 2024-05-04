@@ -152,11 +152,11 @@ const profile = (profile) => {
                         <p class="font-normal text-xs">{detonatorStatus}</p>
                       )}
                     </div>
-                    {!isDetonator && (
-                      <button onClick={() => UpdateProfile()}>
-                        <IconEdit />
-                      </button>
-                    )}
+                    {/* {!isDetonator && ( */}
+                    <button onClick={() => UpdateProfile()}>
+                      <IconEdit />
+                    </button>
+                    {/* )} */}
                   </div>
                 </div>
               </div>
