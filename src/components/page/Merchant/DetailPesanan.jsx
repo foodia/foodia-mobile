@@ -44,26 +44,26 @@ const DetailPesanan = () => {
       setLoading(false); // Set loading to false once the check is complete
     }
   }, [router]);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     setLoading(true);
-    const ressponse = axios
-      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setDataApi(response.data.body);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        if (401 === error.response.status) {
+    if (id_order) {
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setDataApi(response.data.body);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
           Error401(error, router);
-        }
-        console.error("Error fetching data:", error);
-      });
+        });
+    }
   }, [id_order]);
   const handleRejectButtonClick = async (e) => {
     e.preventDefault();
@@ -206,11 +206,6 @@ const DetailPesanan = () => {
     return remainingDays;
   };
 
-  console.log(
-    "remainingDays",
-    calculateRemainingTime(dataApi?.campaign?.event_date)
-  );
-
   return (
     <>
       <div className="container mx-auto pt-14 bg-white h-full">
@@ -253,7 +248,7 @@ const DetailPesanan = () => {
               qty={dataApi?.qty}
               price={dataApi?.merchant_product.price}
               total_amount={dataApi?.total_amount}
-              status={dataApi?.order_status}
+              status={dataApi?.approval_status}
               setLoading={setLoading}
             />
           )}
@@ -435,6 +430,11 @@ const DetailPesanan = () => {
                 (confirmedOrder < 1 ? (
                   <div className="w-full col-span-2 flex flex-col gap-1">
                     <button
+                      onClick={() =>
+                        router.push(
+                          `/merchant/order-confirmation?id=${id_order}`
+                        )
+                      }
                       className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
                     >
                       Konfirmasi

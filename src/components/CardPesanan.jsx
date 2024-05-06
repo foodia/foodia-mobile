@@ -139,7 +139,6 @@ const CardPesanan = (props) => {
     }
   };
 
-
   const Card = () => {
     return (
       <div className="flex justify-between items-center w-80">
@@ -161,37 +160,26 @@ const CardPesanan = (props) => {
 
             <div className="flex flex-col gap-1 italic">
               <div className="flex flex-row gap-1">
-                <p className="font-sans text-xs text-gray-500">
-                  Campaign Dibuat:{" "}
+                <p className="font-normal text-xs text-black">
+                  Tanggal Campaign:{" "}
                 </p>{" "}
-                <p className="font-medium text-xs text-black">{created_at}</p>
-              </div>
-              <div className="flex flex-row gap-1">
-                <p className="font-sans text-xs text-gray-500">Pelaksanaan: </p>{" "}
                 <p className="font-medium text-xs text-black">{date}</p>
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-end justify-between mt-2">
               <div className="flex flex-col">
-                <p className="text-gray-500 font-normal text-xs italic">{`${qty} x ${productName}`}</p>
-                <span className="text-primary font-medium text-md">
+                <p className="font-normal text-xs italic">{`${qty} x ${productName}`}</p>
+                <span className="text-[#6CB28E] font-bold text-xl">
                   {formatPrice(total_amount)}
                 </span>
               </div>
               <div
-                className={`flex justify-center items-center rounded-2xl w-auto h-5 px-2 py-0 ${status === "review"
-                  ? "bg-blue-600"
-                  : status === "diproses"
-                    ? "bg-green-500"
-                    : status === "canceled"
-                      ? "bg-red-500"
-                      : status === "selesai"
-                        ? "bg-blue-900"
-                        : ""
-                  }`}
+                className={`flex justify-center items-center rounded-2xl mb-1 w-auto h-5 px-2 py-0 ${
+                  status === "approved" ? "bg-[#1D5882]" : "bg-[#F6BE2D]"
+                }`}
               >
                 <p className="text-gray-100 font-medium text-[10px]">
-                  {getStatusIcon()}
+                  {status === "approved" ? "Approved" : "Confirmation"}
                 </p>
               </div>
             </div>
@@ -207,13 +195,13 @@ const CardPesanan = (props) => {
       {router.pathname === "/merchant/pesanan" ? (
         <Link
           href={to}
-          className={`bg-white flex hover:bg-gray-100 text-black rounded-2xl items-center border border-primary shadow-lg w-80 p-1`}
+          className={`bg-white flex hover:bg-gray-100 text-black rounded-2xl items-center border-[1.5px] border-primary shadow-lg w-80 p-1`}
         >
           <Card />
         </Link>
       ) : (
         <div
-          className={`bg-white flex  text-black rounded-2xl items-center border border-primary shadow-lg w-80 p-1`}
+          className={`bg-white flex  text-black rounded-2xl items-center border-[1.5px] border-primary shadow-lg w-80 p-1`}
         >
           <Card />
         </div>

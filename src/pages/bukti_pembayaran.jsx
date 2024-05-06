@@ -20,8 +20,8 @@ const BuktiPembayaran = () => {
   //     setExternal_id(router.query.external_id);
   // }, [router]);
 
-  const previousPageUrl =
-    typeof window !== "undefined" ? new URL(document.referrer).pathname : "";
+  // const previousPageUrl =
+  //   typeof window !== "undefined" ? new URL(document.referrer).pathname : "";
 
   useEffect(() => {
     const resspone = axios
@@ -42,10 +42,7 @@ const BuktiPembayaran = () => {
 
   return (
     <div className="my-0 h-screen max-w-480 bg-white flex flex-col">
-      <Header
-        title="Detail Donasi"
-        backto={previousPageUrl === "/mydonation" ? "/mydonation" : "/home"}
-      />
+      <Header title="Detail Donasi" backto={"/mydonation"} />
       <div className="mt-10 p-4 overflow-hidden">
         <div className="p-4 py-8 w-full mb-4 bg-white shadow-[rgba(0,0,2,0.5)_0px_0px_6px_0px] rounded-lg">
           <div className="flex justify-center items-center mb-4 animate-zoom">
@@ -147,7 +144,7 @@ const BuktiPembayaran = () => {
         </div>
 
         <Link
-          href={previousPageUrl === "/mydonation" ? "/mydonation" : "/home"}
+          href={"/mydonation"}
           className="bg-slate-200 flex justify-center items-center bg-transparent border-2 h-10 border-primary p-3 rounded-xl outline-none"
         >
           <p className="font-bold text-primary">Kembali</p>

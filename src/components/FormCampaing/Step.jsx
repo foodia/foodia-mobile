@@ -1107,7 +1107,7 @@ function StepThree({
   );
 }
 
-function SingleDonationPayment({ setLoading, cart }) {
+function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
   const [isDropdownMethodOpen, setIsDropdownMethodOpen] = useState(true);
   const [isDropdownChannelOpen, setIsDropdownChannelOpen] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState("");
@@ -1115,9 +1115,14 @@ function SingleDonationPayment({ setLoading, cart }) {
   const [selectedChannelLogo, setSelectedChannelLogo] = useState();
   const [donationRequired, setDonationRequired] = useState();
   const [formData, setFormData] = useState();
+  const [campData, setCampData] = useState(
+    JSON.parse(localStorage.getItem("formData"))
+  );
   const router = useRouter();
+  const admin_fee = 2500;
 
   useEffect(() => {
+    setLoading(false);
     // Check local storage for existing form data
     const storedFormData = localStorage.getItem("formData");
     if (storedFormData) {
@@ -1126,15 +1131,119 @@ function SingleDonationPayment({ setLoading, cart }) {
         setFormData(parsedFormData);
       }
     }
-
     setDonationRequired(cart.reduce((total, item) => total + item.total, 0));
   }, []);
-  console.log("sd", donationRequired);
 
-  useEffect(() => {
-    setLoading(false);
-    console.log(selectedMethod);
-  }, []);
+  const handleSubmit = () => {
+    // setLoading(true);
+    // const detonator_id = localStorage.getItem("id");
+    // const token = localStorage.getItem("token");
+    // const formData = new FormData();
+    // formData.append("destination", "campaign");
+    // formData.append("file", uploadedFile);
+    // axios
+    //   .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+    //   .then(() => {
+    //     const totalCartQuantity = cart.reduce(
+    //       (total, item) => total + item.quantity,
+    //       0
+    //     );
+    //     const products = cart.map((item) => ({
+    //       merchant_id: parseInt(item.merchant_id),
+    //       merchant_product_id: parseInt(item.id),
+    //       qty: parseInt(item.quantity),
+    //     }));
+    //     const eventData = {
+    //       detonator_id: parseInt(detonator_id),
+    //       event_name: campData.eventName,
+    //       event_type: campData.TypeEvent,
+    //       event_date: campData.Tanggal,
+    //       event_time: campData.Waktu, // Check if you intended to use it twice
+    //       description: campData.Description,
+    //       donation_target: parseFloat(donationRequired),
+    //       province: campData.province,
+    //       city: campData.city,
+    //       sub_district: campData.sub_district ?? "-",
+    //       postal_code: campData.postal_code ?? "-",
+    //       address: campData.location,
+    //       latitude: String(campData.coordinates.lat),
+    //       longitude: String(campData.coordinates.lng),
+    //       image_url: mediaUploadResponse.data.body.file_url,
+    //       food_required: parseInt(totalCartQuantity),
+    //       food_total: parseInt(totalCartQuantity),
+    //       products: products,
+    //       payment: {
+    //         amount: parseFloat(donationRequired),
+    //         admin_fee: admin_fee,
+    //         total_amount: parseFloat(donationRequired + admin_fee),
+    //         payment_channel: selectedChannel,
+    //         success_ur: "https://foodia.cmtdepok.xyz/bukti_pembayaran",
+    //       },
+    //     };
+    //     axios
+    //       .post(
+    //         `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/single-donation`,
+    //         eventData,
+    //         {
+    //           headers: {
+    //             Authorization: `Bearer ${token}`,
+    //           },
+    //         }
+    //       )
+    //       .then(() => {
+    //         setLoading(false);
+    //         localStorage.removeItem("cart");
+    //         localStorage.removeItem("formData");
+    //         Swal.fire({
+    //           icon: "success",
+    //           title: "Campaign Created!",
+    //           text: "Campaign Berhasil dibuat Mohon Tunggu approval dari admin",
+    //           showConfirmButton: false,
+    //           timer: 2000,
+    //         });
+    //         setTimeout(() => {
+    //           router.push("/detonator");
+    //         }, 2000);
+    //       })
+    //       .catch((error) => {
+    //         setLoading(false);
+    //         if (error.response && error.response.status === 401) {
+    //           Error401(error, router);
+    //         } else {
+    //           Swal.fire({
+    //             icon: "error",
+    //             title: "Gagal Membuat Campaign",
+    //             text: "Gagal Membuat Campaign Mohon Coba Lagi",
+    //             showConfirmButton: false,
+    //             timer: 2000,
+    //           });
+    //         }
+    //       });
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     if (error.response && error.response.status === 401) {
+    //       localStorage.removeItem("cart");
+    //       localStorage.removeItem("formData");
+    //       Error401(error, router);
+    //     } else {
+    //       Swal.fire({
+    //         icon: "error",
+    //         title: "Image Gagal Upload",
+    //         text: "Gagal Upload Image Mohon Coba Lagi",
+    //         showConfirmButton: false,
+    //         timer: 2000,
+    //       });
+    //       setTimeout(() => {
+    //         router.push("/createcampaign?step=1");
+    //       }, 2000);
+    //     }
+    //   });
+  };
 
   const formatToRupiah = (amount) => {
     return new Intl.NumberFormat("id-ID", {
@@ -1417,7 +1526,7 @@ function SingleDonationPayment({ setLoading, cart }) {
                 style: "currency",
                 currency: "IDR",
                 minimumFractionDigits: 0,
-              }).format(2500)}
+              }).format(admin_fee)}
             </p>
           </div>
           <div className="w-full">
@@ -1430,7 +1539,7 @@ function SingleDonationPayment({ setLoading, cart }) {
                 style: "currency",
                 currency: "IDR",
                 minimumFractionDigits: 0,
-              }).format(donationRequired + 2500)}
+              }).format(donationRequired + admin_fee)}
             </p>
           </div>
         </div>
@@ -1440,7 +1549,7 @@ function SingleDonationPayment({ setLoading, cart }) {
               selectedMethod === "" ||
               (selectedMethod !== "tabunganku" && selectedChannel === "")
             }
-            // onClick={() => handleSubmit()}
+            onClick={() => handleSubmit()}
             type="submit"
             className={
               selectedMethod === "" ||
