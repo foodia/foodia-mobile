@@ -50,10 +50,7 @@ const OTP = () => {
   const renderer = ({ minutes, seconds }) => {
     if (minutes === 0 && seconds === 0) {
       return (
-        <div
-          onClick={handleResend}
-          className="text-xs text-gray-400 "
-        >
+        <div onClick={handleResend} className="text-xs text-gray-400 ">
           Tidak menerima email? Kirim ulang OTP dalam waktu:
           <br />
           <span className="text-blue-500 hover:underline cursor-pointer">
@@ -64,8 +61,10 @@ const OTP = () => {
     } else {
       return (
         <>
-          <p className="text-xs text-gray-400">Tidak menerima email? Kirim ulang OTP dalam waktu: {minutes}:{seconds}</p>
-
+          <p className="text-xs text-gray-400">
+            Tidak menerima email? Kirim ulang OTP dalam waktu: {minutes}:
+            {seconds}
+          </p>
         </>
       );
     }
@@ -90,7 +89,7 @@ const OTP = () => {
     axios
       .post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/resend-otp`,
-        { email: registrasi.email },
+        { email: registrasi.email, flag: "register" },
         {
           headers: {
             "Content-Type": "application/json",
@@ -204,8 +203,6 @@ const OTP = () => {
         setLoading(false);
       }
     }
-
-
   };
 
   return (
