@@ -228,7 +228,8 @@ const UpdateProfile = (profile) => {
             <div className="flex flex-col gap-1">
               <div
                 className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-[1px] ${
-                  !phone && !validPhone && "border-red-500"
+                  (!phone && !validPhone && "border-red-500") ||
+                  (phone && !validPhone && "border-red-500")
                 }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
               >
                 <IconDeviceMobile />

@@ -8,30 +8,47 @@ import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import moment from "moment/moment";
+import { IconChevronDown } from "@tabler/icons-react";
 
 const mydonation = () => {
   const router = useRouter();
   const [data, setData] = useState();
   const [history, setHistory] = useState();
-  const [bulanOptions, setBulanOptions] = useState([]);
-  const [month, setMonth] = useState(`0${new Date().getMonth() + 1}`);
-  const [year, setYear] = useState(`${new Date().getFullYear()}`);
+  const [month, setMonth] = useState(moment().format("YYYY-MM"));
   const [loading, setLoading] = useState(true);
-  const [isChecked, setIsChecked] = useState(true);
+  const [isChecked, setIsChecked] = useState();
+  const [isCheckedSuccess, setIsCheckedSuccess] = useState();
+  const [isOpenedMonthOptions, setIsOpenedMonthOptions] = useState(false);
 
   const toggleSwitch = () => {
     setIsChecked((prevState) => !prevState);
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}wallet/agnostic-permission`,
+        { is_permission_manage: !isChecked },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then(() => {
+        setIsCheckedSuccess((prevState) => !prevState);
+      })
+      .catch((error) => {
+        Error401(error, router);
+      });
   };
 
-  const getHistory = (month, year, lastDay) => {
+  const getHistory = (month) => {
     setLoading(true);
     axios
       .get(
         `${
           process.env.NEXT_PUBLIC_API_BASE_URL
-        }donation/list?start=${year}-${month}-01&end=${year}-${month}-${new Date(
-          year,
-          month,
+        }donation/list?start=${month}-01&end=${month}-${new Date(
+          moment(month, "YYYY-MM").format("YYYY"),
+          moment(month, "YYYY-MM").format("MM"),
           0
         ).getDate()}`,
         {
@@ -43,6 +60,12 @@ const mydonation = () => {
       .then((response) => {
         setLoading(false);
         setData(response.data.body);
+        if (response.data.body.is_permission_manage === 1) {
+          setIsChecked(true);
+          setIsCheckedSuccess(true);
+        } else {
+          setIsCheckedSuccess(false);
+        }
 
         const sortedData = response.data.body.donation_history.sort(
           (a, b) => b.transaction.id - a.transaction.id
@@ -63,45 +86,8 @@ const mydonation = () => {
       });
   };
 
-  // Fungsi untuk mengambil lima bulan terbaru
-  const getLatestMonths = () => {
-    const today = new Date();
-    const months = [...bulanOptions];
-    const monthNames = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "Mei",
-      "Jun",
-      "Jul",
-      "Agu",
-      "Sep",
-      "Okt",
-      "Nov",
-      "Des",
-    ];
-
-    for (let i = 0; i < 5; i++) {
-      let month = today.getMonth() - i;
-      let year = today.getFullYear();
-      if (month < 0) {
-        month += 12;
-        year -= 1;
-      }
-      months.push({
-        id: i,
-        MonthLabel: monthNames[month],
-        MonthValue: `${month + 1 < 10 ? `0${month + 1}` : `${month}`}`,
-      });
-    }
-
-    setBulanOptions(months);
-  };
-
   useEffect(() => {
-    getHistory(month, year);
-    getLatestMonths();
+    getHistory(month);
   }, []);
 
   const onChangeMonth = (e) => {
@@ -115,7 +101,7 @@ const mydonation = () => {
       <div className="container mx-auto h-screen max-w-480 bg-white flex flex-col">
         <Header title="Donasi Saya" />
         <div className="bg-white h-screen px-4 pt-14">
-          <div className="bg-primary w-full px-4 py-2 flex flex-col gap-1 rounded-xl">
+          <div className="bg-primary w-full px-4 py-2 flex flex-col gap-1 min-h-[22px] rounded-xl">
             <div className="flex justify-between text-white font-semibold text-base">
               <p>Total Donasi</p>
               <p>
@@ -129,22 +115,85 @@ const mydonation = () => {
             <hr className="mt-2 h-[1px] bg-white" />
             <div className="flex flex-row justify-between items-center">
               <div className="flex flex-col gap-1 text-white font-semibold text-base">
-                <p>Total Donasi</p>
-                <select
+                <p>Donasi Bulan Ini</p>
+
+                <button
+                  onClick={() => setIsOpenedMonthOptions(!isOpenedMonthOptions)}
+                  className="flex flex-row text-[12px] font-semibold text-white custom-select w-20 h-[25px] rounded-md bg-transparent border-[1px] border-white outline-none justify-between items-center px-[3.5px]"
+                >
+                  <p>{moment(month, "YYYY-MM").format("MMM YYYY")}</p>
+                  <IconChevronDown size={"17px"} />
+                </button>
+                {isOpenedMonthOptions && (
+                  <div className="absolute overflow-auto p-1 h-28 flex flex-col top-[133px] items-start w-24 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
+                    {data?.year_filters?.map((bulan, index) => (
+                      <button
+                        onClick={() => {
+                          setIsOpenedMonthOptions(!isOpenedMonthOptions);
+                          setMonth(bulan);
+                        }}
+                        className={`${
+                          moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                          moment(month, "YYYY-MM").format("MMM YYYY")
+                            ? "text-primary"
+                            : "text-black"
+                        } text-[12px] w-full text-left font-semibold`}
+                      >
+                        {moment(bulan, "YYYY-MM").format("MMM YYYY")}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() =>
+                        setIsOpenedMonthOptions(!isOpenedMonthOptions)
+                      }
+                      className="text-black text-[12px] w-full text-left font-semibold"
+                    >
+                      Apr 2024
+                    </button>
+                    <button
+                      onClick={() =>
+                        setIsOpenedMonthOptions(!isOpenedMonthOptions)
+                      }
+                      className="text-black text-[12px] w-full text-left font-semibold"
+                    >
+                      Mar 2024
+                    </button>
+                    <button
+                      onClick={() =>
+                        setIsOpenedMonthOptions(!isOpenedMonthOptions)
+                      }
+                      className="text-black text-[12px] w-full text-left font-semibold"
+                    >
+                      Feb 2024
+                    </button>
+                    <button
+                      onClick={() =>
+                        setIsOpenedMonthOptions(!isOpenedMonthOptions)
+                      }
+                      className="text-black text-[12px] w-full text-left font-semibold"
+                    >
+                      Jan 2024
+                    </button>
+                  </div>
+                )}
+
+                {/* <select
                   onChange={(e) => onChangeMonth(e)}
                   class="text-[12px] font-semibold text-white custom-select w-20 h-[25px] rounded-md bg-transparent border-[1px] border-white outline-none"
                 >
-                  {/* <option value="" className="bg-white">Mar 2024</option> */}
-                  {bulanOptions.map((bulan, index) => (
+                  {data?.year_filters?.map((bulan, index) => (
                     <option
                       key={index}
-                      value={bulan.MonthValue}
-                      className="text-black"
+                      value={bulan}
+                      className="text-white bg-blue-500 w-96" // Add classes for customization
+                      style={{
+                        width: "100px",
+                      }}
                     >
-                      {bulan.MonthLabel} 2024
+                      {moment(bulan, "YYYY-MM").format("MMM YYYY")}
                     </option>
                   ))}
-                </select>
+                </select> */}
               </div>
               <p className="text-white font-semibold">
                 {new Intl.NumberFormat("id-ID", {
@@ -159,7 +208,6 @@ const mydonation = () => {
             <div className="flex justify-between items-center text-white font-semibold text-base">
               <div className="">
                 <p className="font-bold">Tabunganku</p>
-                {/* <p className="text-xs">Akan dikelola oleh Foodia</p> */}
               </div>
 
               <p className="">
@@ -177,7 +225,7 @@ const mydonation = () => {
               <label className="switch">
                 <input
                   type="checkbox"
-                  checked={isChecked}
+                  checked={isCheckedSuccess}
                   onChange={toggleSwitch}
                 />
                 <span className="slider round"></span>
@@ -205,7 +253,13 @@ const mydonation = () => {
                           " WIB"}
                       </p>
                     </div>
-                    <p className="text-[16px] font-bold text-[#1D5882]">
+                    <p
+                      className={`text-[16px] font-bold ${
+                        data.type_donation === "booster"
+                          ? "text-[#1D5882]"
+                          : "text-primary"
+                      }`}
+                    >
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",
                         currency: "IDR",
