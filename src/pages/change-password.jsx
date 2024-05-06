@@ -73,34 +73,59 @@ const ChangePassword = (ChangePassword) => {
           },
         }
       )
-      .then((response) => {
-        setLoading(false);
-        const responeData = response.data.body;
-        Swal.fire({
-          position: "bottom",
-          customClass: {
-            popup: "custom-swal",
-            icon: "custom-icon-swal",
-            title: "custom-title-swal",
-            confirmButton: "custom-confirm-button-swal",
-          },
-          icon: "success",
-          title: `<p class="w-auto pl-1 font-bold text-[25px]">Kata Sandi Berhasil Diperbaharui</p>`,
-          html: `
+      .then(() => {
+        if (inputOldPassword === inputPassword) {
+          axios
+            .post(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/profile/change-password`,
+              {
+                old_password: inputOldPassword,
+                new_password: inputOldPassword,
+                confirm_password: inputOldPassword,
+              },
+              {
+                headers: {
+                  authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+              }
+            )
+            .then(() => {
+              setLoading(false);
+              setMessageNewPwError(
+                "Kata sandi baru tidak boleh sama dengan kata sandi lama"
+              );
+            })
+            .catch((error) => {
+              Error401(error, router);
+            });
+        } else {
+          setLoading(false);
+          Swal.fire({
+            position: "bottom",
+            customClass: {
+              popup: "custom-swal",
+              icon: "custom-icon-swal",
+              title: "custom-title-swal",
+              confirmButton: "custom-confirm-button-swal",
+            },
+            icon: "success",
+            title: `<p class="w-auto pl-1 font-bold text-[25px]">Kata Sandi Berhasil Diperbaharui</p>`,
+            html: `
                     <div class="absolute px-28 ml-4 top-0 mt-4">
                       <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
                     </div>
                   `,
-          width: "375px",
-          showConfirmButton: true,
-          confirmButtonText: "Kembali Ke Profile",
-          confirmButtonColor: "#3FB648",
-          allowOutsideClick: false,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            router.push("/profile");
-          }
-        });
+            width: "375px",
+            showConfirmButton: true,
+            confirmButtonText: "Kembali Ke Profile",
+            confirmButtonColor: "#3FB648",
+            allowOutsideClick: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              router.push("/profile");
+            }
+          });
+        }
       })
       .catch((error) => {
         setLoading(false);
