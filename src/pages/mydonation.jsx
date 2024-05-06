@@ -7,14 +7,15 @@ import Link from "next/link";
 import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import moment from "moment/moment";
 
 const mydonation = () => {
   const router = useRouter();
   const [data, setData] = useState();
   const [history, setHistory] = useState();
   const [bulanOptions, setBulanOptions] = useState([]);
-  const [month, setMonth] = useState("");
-  const [year, setYear] = useState("");
+  const [month, setMonth] = useState(`0${new Date().getMonth() + 1}`);
+  const [year, setYear] = useState(`${new Date().getFullYear()}`);
   const [loading, setLoading] = useState(true);
   const [isChecked, setIsChecked] = useState(true);
 
@@ -22,10 +23,17 @@ const mydonation = () => {
     setIsChecked((prevState) => !prevState);
   };
 
-  const getHistory = () => {
+  const getHistory = (month, year, lastDay) => {
+    setLoading(true);
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}donation/list?start=2024-05-01&end=2024-05-30`,
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
+        }donation/list?start=${year}-${month}-01&end=${year}-${month}-${new Date(
+          year,
+          month,
+          0
+        ).getDate()}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -55,14 +63,10 @@ const mydonation = () => {
       });
   };
 
-  useEffect(() => {
-    getHistory();
-  }, []);
-
   // Fungsi untuk mengambil lima bulan terbaru
   const getLatestMonths = () => {
     const today = new Date();
-    const months = [];
+    const months = [...bulanOptions];
     const monthNames = [
       "Jan",
       "Feb",
@@ -85,20 +89,25 @@ const mydonation = () => {
         month += 12;
         year -= 1;
       }
-      months.push(`${monthNames[month]}`);
+      months.push({
+        id: i,
+        MonthLabel: monthNames[month],
+        MonthValue: `${month + 1 < 10 ? `0${month + 1}` : `${month}`}`,
+      });
     }
-    return months;
+
+    setBulanOptions(months);
   };
 
-  // Memperbarui state bulanOptions dengan lima bulan terbaru
   useEffect(() => {
-    const options = [{}];
-    setBulanOptions(getLatestMonths());
+    getHistory(month, year);
+    getLatestMonths();
   }, []);
 
   const onChangeMonth = (e) => {
-    setMonth(e.target.value);
-    getHistory();
+    const monthVal = e.target.value;
+    setMonth(monthVal);
+    getHistory(monthVal, year);
   };
 
   return (
@@ -127,8 +136,12 @@ const mydonation = () => {
                 >
                   {/* <option value="" className="bg-white">Mar 2024</option> */}
                   {bulanOptions.map((bulan, index) => (
-                    <option key={index} value={bulan} className="text-black">
-                      {bulan} 2024
+                    <option
+                      key={index}
+                      value={bulan.MonthValue}
+                      className="text-black"
+                    >
+                      {bulan.MonthLabel} 2024
                     </option>
                   ))}
                 </select>
@@ -187,7 +200,10 @@ const mydonation = () => {
                   <div className="flex justify-between items-center font-semibold text-[10px]">
                     <div className="">
                       <p className="font-bold">Tanggal Donasi</p>
-                      <p className="italic">{data?.date}</p>
+                      <p className="italic">
+                        {moment(data?.date).format("DD MMM YYYY HH:mm") +
+                          " WIB"}
+                      </p>
                     </div>
                     <p className="text-[16px] font-bold text-[#1D5882]">
                       {new Intl.NumberFormat("id-ID", {

@@ -255,7 +255,7 @@ const MerchantUpdateProfile = (profile) => {
                 className={`flex flex-row items-center p-3 pr-2 py-0 ${
                   phone ? "bg-transparent" : "bg-gray-50"
                 } border-[1px] ${
-                  !phone || (!validPhone && "border-red-500")
+                  phone || (phone && !validPhone && "border-red-500")
                 }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
               >
                 <IconDeviceMobile />
