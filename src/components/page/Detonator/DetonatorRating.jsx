@@ -46,6 +46,7 @@ const DetonatorRating = (DetonatorRating) => {
       .catch((error) => {
         console.log(error);
         setloading(false);
+        Error401(error, router);
       })
   }, [id_camp]);
   console.log('newReport', newReport);
@@ -116,7 +117,7 @@ const DetonatorRating = (DetonatorRating) => {
               });
 
               setTimeout(() => {
-                router.push("/merchant/review");
+                router.push("/detonator/review");
               }, 2000);
               setloading(false);
             })
@@ -128,6 +129,9 @@ const DetonatorRating = (DetonatorRating) => {
       })
       .catch((error) => {
         setloading(false);
+        if (condition === 401) {
+          Error401(error, router);
+        }
         Swal.fire({
           icon: "error",
           title: "Gagal Upload Image",

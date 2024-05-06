@@ -160,6 +160,7 @@ export default function PageMerchant() {
             })
             .catch((error) => {
                 setLoading(false);
+                Error401(error, router);
                 console.error("Error fetching data:", error);
 
                 if (error.response && error.response.status === 401) {
