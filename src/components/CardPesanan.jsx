@@ -141,7 +141,7 @@ const CardPesanan = (props) => {
 
   const Card = () => {
     return (
-      <div className="flex justify-between items-center w-80">
+      <div className="flex justify-between items-center w-full">
         <div className="flex items-center w-full p-1">
           <img
             src={img}
@@ -158,13 +158,11 @@ const CardPesanan = (props) => {
                   </div> */}
             </div>
 
-            <div className="flex flex-col gap-1 italic">
-              <div className="flex flex-row gap-1">
-                <p className="font-normal text-xs text-black">
-                  Tanggal Campaign:{" "}
-                </p>{" "}
-                <p className="font-medium text-xs text-black">{date}</p>
-              </div>
+            <div className="flex flex-row w-full items-center justify-center">
+              <p className="font-normal text-xs text-black">
+                Tanggal Campaign:{" "}
+              </p>{" "}
+              <p className="font-medium text-xs text-black">{date}</p>
             </div>
             <div className="flex items-end justify-between mt-2">
               <div className="flex flex-col">

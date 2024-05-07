@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { IconMapPin } from "@tabler/icons-react";
+import { IconInfoCircle, IconMapPin } from "@tabler/icons-react";
 import CardPesanan from "@/components/CardPesanan";
 import Header from "@/components/Header";
 import moment from "moment/moment";
@@ -38,7 +38,7 @@ const DetailPesanan = () => {
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
       localStorage.clear();
-      router.push("/login/merchant");
+      router.push("/login");
     } else {
       // Role is 'detonator' and token is present
       setLoading(false); // Set loading to false once the check is complete
@@ -113,11 +113,8 @@ const DetailPesanan = () => {
       }
     }
   };
-  const handleAprovButtonClick = async (e) => {
-    e.preventDefault();
-
-    // Show SweetAlert confirmation dialog
-    const result = await Swal.fire({
+  const handleAprovButtonClick = () => {
+    Swal.fire({
       title: "Apakah Anda Yakin?",
       text: "Anda akan menyetujui pesanan. Tindakan ini tidak dapat dibatalkan.",
       icon: "question",
@@ -126,12 +123,9 @@ const DetailPesanan = () => {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Ya, Setujui Pesanan!",
       cancelButtonText: "Batal",
-    });
-
-    // If the user confirms, call the handleReject function
-    if (result.isConfirmed) {
-      setLoading(false);
-      try {
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setLoading(true);
         const id = localStorage.getItem("id");
         const token = localStorage.getItem("token");
 
@@ -139,28 +133,54 @@ const DetailPesanan = () => {
           throw new Error("Missing required session data");
         }
 
-        const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
-          {
-            order_status: "diproses",
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
+        axios
+          .put(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
+            {
+              order_status: "terima",
             },
-          }
-        );
-        setLoading(true);
-        console.log(response.data);
-      } catch (error) {
-        if (error.response.status === 401) {
-          Error401(error, router);
-        }
-        console.error(error);
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then(() => {
+            setLoading(false);
+            Swal.fire({
+              position: "bottom",
+              customClass: {
+                popup: "custom-swal",
+                icon: "custom-icon-swal",
+                title: "custom-title-swal",
+                confirmButton: "custom-confirm-button-swal",
+              },
+              icon: "success",
+              title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menerima Pesanan</p><p class="w-auto pl-1 font-bold text-[25px]">Terima kasih telah membantu campaign kami</p>`,
+              html: `
+                  <div class="absolute px-28 ml-4 top-0 mt-4">
+                    <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                  </div>
+                `,
+              width: "375px",
+              showConfirmButton: true,
+              confirmButtonText: "Kembali",
+              confirmButtonColor: "#3FB648",
+              allowOutsideClick: false,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                router.push(`/merchant/detailpesanan/${id_order}`);
+              }
+            });
+          })
+          .catch((error) => {
+            setLoading(false);
+            Error401(error, router);
+          });
       }
-      // await handleAprov();
-    }
+    });
   };
+
   const handleBuktiPengiriman = async (e) => {
     setLoading(true);
     // setReportMechant(dataApi);
@@ -178,6 +198,7 @@ const DetailPesanan = () => {
       }
     }
   };
+
   const getStatusIcon = () => {
     switch (dataApi?.order_status) {
       case "review":
@@ -411,12 +432,17 @@ const DetailPesanan = () => {
                   Terima
                 </button>
               </>
-            ) : dataApi?.order_status === "diproses" ? (
+            ) : dataApi?.order_status === "terima" ? (
               calculateRemainingTime(dataApi?.campaign?.event_date) > 1 ? (
                 <div className="w-full col-span-2 flex flex-col gap-1">
-                  <p className="text-xs text-red-500">
-                    Konfirmasi pesanan dapat dibuat pada H-1 pelaksanaan
-                    campaign
+                  <p className="instructions italic text-[10px] flex items-center">
+                    <IconInfoCircle size={15} className="mr-1 text-red-600" />
+
+                    <span className="text-red-600">
+                      {" "}
+                      Konfirmasi pesanan dapat dibuat pada H-1 pelaksanaan
+                      campaign
+                    </span>
                   </p>
                   <button
                     disabled
@@ -426,8 +452,7 @@ const DetailPesanan = () => {
                   </button>
                 </div>
               ) : (
-                calculateRemainingTime(dataApi?.campaign?.event_date) < 1 &&
-                (confirmedOrder < 1 ? (
+                calculateRemainingTime(dataApi?.campaign?.event_date) <= 1 && (
                   <div className="w-full col-span-2 flex flex-col gap-1">
                     <button
                       onClick={() =>
@@ -440,28 +465,32 @@ const DetailPesanan = () => {
                       Konfirmasi
                     </button>
                   </div>
-                ) : (
-                  confirmedOrder >= 1 &&
-                  (calculateRemainingTime(dataApi?.campaign?.event_date) > 0 ? (
-                    <div className="w-full col-span-2 flex flex-col gap-1">
-                      <p className="text-xs text-red-500">
-                        Bukti pengiriman dapat dibuat saat tanggal pelaksanaan
-                      </p>
-                      <button
-                        disabled
-                        className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
-                      >
-                        Buat Bukti Pegiriman
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
-                    >
-                      Buat Bukti Pegiriman
-                    </button>
-                  ))
-                ))
+                )
+              )
+            ) : dataApi?.order_status === "diproses" ? (
+              calculateRemainingTime(dataApi?.campaign?.event_date) > 0 ? (
+                <div className="w-full col-span-2 flex flex-col gap-1">
+                  <p className="instructions italic text-[10px] flex items-center">
+                    <IconInfoCircle size={15} className="mr-1 text-red-600" />
+
+                    <span className="text-red-600">
+                      {" "}
+                      Bukti pengiriman dapat dibuat saat tanggal pelaksanaan
+                    </span>
+                  </p>
+                  <button
+                    disabled
+                    className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
+                  >
+                    Buat Bukti Pegiriman
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
+                >
+                  Buat Bukti Pegiriman
+                </button>
               )
             ) : dataApi?.order_status === "tolak" ? (
               <button className="bg-red-500 text-white rounded-md h-10 col-span-2">

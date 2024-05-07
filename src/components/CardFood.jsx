@@ -60,7 +60,7 @@ const CardFood = (props) => {
         axios
           .delete(
             process.env.NEXT_PUBLIC_API_BASE_URL +
-            `merchant-product/delete/${idProduct}`,
+              `merchant-product/delete/${idProduct}`,
             {
               headers: {
                 authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -96,19 +96,19 @@ const CardFood = (props) => {
         className={`bg-white flex text-black rounded-2xl items-center border border-primary shadow-lg w-80 p-1`}
       >
         <div className="flex justify-between items-center w-80">
-          <div className="flex items-center p-1">
+          <div className="flex items-center w-full p-1">
             <img
               src={img}
               className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
               alt=""
             />
-            <div className={`text-left ml-2 w-56`}>
-              <div className="flex justify-between pr-2">
-                <p className="text-primary font-bold text-md capitalize">
-                  {title}
-                </p>
-              </div>
-              {!showDesc ? (
+            <div
+              className={`text-left ml-2 flex flex-col justify-between min-h-[100px] w-full`}
+            >
+              <p className="text-primary font-bold text-md capitalize">
+                {title}
+              </p>
+              {/* {!showDesc ? (
                 <>
                   <p
                     className={`font-medium text-[10px] italic text-black mr-2 truncate`}
@@ -126,48 +126,43 @@ const CardFood = (props) => {
                   )}
                 </>
               ) : (
-                <>
-                  <p className="font-medium text-[10px] italic text-black mr-2">
-                    {description}
-                  </p>
-                  <button
+                <> */}
+              <p className="font-medium text-[10px] italic text-black mr-2">
+                {description}
+              </p>
+              {/* <button
                     onClick={() => setShowDesc(!showDesc)}
                     className="justify-end items-center text-xs py-1 text-primary w-full flex flex-row"
                   >
                     Lebih Sedikit{" "}
                     <IconChevronUp className="mt-0.5" size="15px" />
-                  </button>
-                </>
-              )}
-              <div className="flex py-3 pr-2 justify-between w-full">
-                <p className="text-primary font-sans font-semibold text-sm">
+                  </button> */}
+              {/* </>
+              )} */}
+              <div className="flex pr-2 justify-between w-full">
+                <p className="text-[#6CB28E] font-bold text-xl">
                   {formatPrice(price)}
                 </p>
                 {status == "approved" ? (
-                  <div className="flex pr-2 gap-1">
+                  <div className="flex gap-1">
                     <Link
                       href={`merchant/product/edit/${idProduct}`}
                       className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-medium py-3 p-2 text-sm h-2 rounded"
                     >
                       <IconEdit size={15} />
                     </Link>
-                    {/* <button
-                      onClick={() => onDeleteMenu()}
-                      className="flex items-center bg-red-500 hover:bg-red-700 text-white font-medium py-3 p-2 text-sm h-2 rounded"
-                    >
-                      <IconTrash size={15} />
-                    </button> */}
                   </div>
                 ) : (
                   <div
-                    className={`flex justify-center items-center rounded-full h-5 ${status === "waiting"
-                      ? "bg-blue-600"
-                      : status === "approved"
+                    className={`flex justify-center items-center rounded-full h-5 ${
+                      status === "waiting"
+                        ? "bg-blue-600"
+                        : status === "approved"
                         ? "bg-green-500"
                         : status === "rejected"
-                          ? "bg-red-500"
-                          : ""
-                      }`}
+                        ? "bg-red-500"
+                        : ""
+                    }`}
                   >
                     <p className="text-white font-medium text-[10px] px-2">
                       {getStatusIcon()}

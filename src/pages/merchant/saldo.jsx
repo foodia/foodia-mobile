@@ -33,7 +33,7 @@ const saldo = (saldo) => {
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
       localStorage.clear();
-      router.push("/login/merchant");
+      router.push("/login");
     } else {
       // Role is 'detonator' and token is present
       setLoading(false); // Set loading to false once the check is complete
@@ -94,7 +94,7 @@ const saldo = (saldo) => {
         if (error.response && error.response.status === 401) {
           // Unauthorized error (e.g., token expired)
           localStorage.clear();
-          router.push("/login/merchant");
+          router.push("/login");
         }
       }
     };
@@ -134,7 +134,6 @@ const saldo = (saldo) => {
         .catch((error) => {
           if (error.response && error.response.status === 401) {
             Error401(error, router);
-
           }
           console.error("Error fetching data:", error);
         });
@@ -203,28 +202,31 @@ const saldo = (saldo) => {
 
           <div className="flex justify-between px-7 pt-4 pb-2">
             <div
-              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-                }`}
+              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+                selectedStatus === "diproses"
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-gray-500"
+              }`}
               onClick={() => handleFilterChange("diproses")}
             >
               <span>Berlangsung</span>
             </div>
             <div
-              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-                }`}
+              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+                selectedStatus === "selesai"
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-gray-500"
+              }`}
               onClick={() => handleFilterChange("selesai")}
             >
               <span>Selesai</span>
             </div>
             <div
-              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "penarikan"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-                }`}
+              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+                selectedStatus === "penarikan"
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-gray-500"
+              }`}
               onClick={() => handleFilterChange("penarikan")}
             >
               <span>Penarikan</span>
@@ -254,12 +256,13 @@ const saldo = (saldo) => {
                       <div className="flex justify-between">
                         <p className="font-bold uppercase">{data.bank}</p>
                         <div
-                          className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${data.status === "approved"
-                            ? "bg-green-500"
-                            : data.status === "waiting"
+                          className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${
+                            data.status === "approved"
+                              ? "bg-green-500"
+                              : data.status === "waiting"
                               ? "bg-blue-500"
                               : "bg-red-500"
-                            }`}
+                          }`}
                         >
                           <p className="">{data.status}</p>
                         </div>
@@ -283,8 +286,8 @@ const saldo = (saldo) => {
                   {selectedStatus === "diproses"
                     ? "Tidak Ada Partisipasi Berjalan"
                     : selectedStatus === "selesai"
-                      ? "Tidak Ada Partisipasi Selesai"
-                      : selectedStatus === "penarikan" && "Tidak Ada Penarikan"}
+                    ? "Tidak Ada Partisipasi Selesai"
+                    : selectedStatus === "penarikan" && "Tidak Ada Penarikan"}
                 </p>
               ) : (
                 filteredData.map((data) => (

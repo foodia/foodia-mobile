@@ -28,7 +28,7 @@ const FormMenu = () => {
       localStorage.clear();
       localStorage.removeItem("cart");
       localStorage.removeItem("formData");
-      router.push("/login/merchant");
+      router.push("/login");
     }
   }, [router]);
 

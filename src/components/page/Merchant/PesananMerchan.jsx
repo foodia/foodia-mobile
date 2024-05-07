@@ -1,4 +1,5 @@
 import CardPesanan from "@/components/CardPesanan";
+import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import styles from "@/styles/Home.module.css";
 import { IconBowlFilled, IconCirclePlus } from "@tabler/icons-react";
@@ -19,8 +20,6 @@ const PesananMerchan = () => {
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
 
-  console.log(loading);
-
   useEffect(() => {
     const role = localStorage.getItem("role");
     const token = localStorage.getItem("token");
@@ -36,7 +35,7 @@ const PesananMerchan = () => {
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
       localStorage.clear();
-      router.push("/login/merchant");
+      router.push("/login");
     } else {
       // Role is 'detonator' and token is present
       setLoading(false); // Set loading to false once the check is complete
@@ -67,7 +66,6 @@ const PesananMerchan = () => {
         setDataApi(approvedPesanan);
         setFilteredData(approvedPesanan);
         setLoading(false);
-        console.log("data page merchan", approvedPesanan);
 
         if (approvedPesanan.length === 0) {
           setHasMore(false);
@@ -88,10 +86,12 @@ const PesananMerchan = () => {
   const handleFilterChange = (status = "review") => {
     let filtered = [];
 
+    setLoading(true);
+
     if (status === "review") {
       filtered = dataApi.filter((data) => data.order_status === "review");
-    } else if (status === "diproses") {
-      filtered = dataApi.filter((data) => data.order_status === "diproses");
+    } else if (status === "terima") {
+      filtered = dataApi.filter((data) => data.order_status === "terima");
     } else if (status === "selesai") {
       filtered = dataApi.filter(
         (data) =>
@@ -101,13 +101,7 @@ const PesananMerchan = () => {
 
     setSelectedStatus(status);
   };
-  const formatDate = (inputDate) => {
-    const date = new Date(inputDate);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
+
   return (
     <>
       <div className="container mx-auto h-screen">
@@ -197,11 +191,11 @@ const PesananMerchan = () => {
           </div>
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "diproses"
+              selectedStatus === "terima"
                 ? "text-primary border-b-2 border-primary"
                 : "text-gray-500"
             }`}
-            onClick={() => handleFilterChange("diproses")}
+            onClick={() => handleFilterChange("terima")}
           >
             <span>Berlangsung</span>
           </div>
@@ -265,10 +259,7 @@ const PesananMerchan = () => {
           </div>
         )}
       </div>
-      {/* <div
-        id="infinite-scroll-trigger"
-        className={`${styles.loadingCard}`}
-      ></div> */}
+      {loading && <Loading />}
     </>
   );
 };
