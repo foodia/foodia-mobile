@@ -31,161 +31,64 @@ const CardPesanan = (props) => {
 
     return formatter.format(price);
   };
-  const getStatusIcon = () => {
-    switch (status) {
-      case "review":
-        return "Review";
-      case "diproses":
-        return "Diproses";
-      case "canceled":
-        return "Canceled";
-      case "selesai":
-        return "Selesai";
-      default:
-        return null;
-    }
-  };
-  const handleRejectButtonClick = async (e) => {
-    e.preventDefault();
-
-    // Show SweetAlert confirmation dialog
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You are about to reject the order. This action cannot be undone.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, reject it!",
-    });
-
-    // If the user confirms, call the handleReject function
-    if (result.isConfirmed) {
-      setLoading(false);
-      await handleReject();
-    }
-  };
-  const handleReject = async () => {
-    try {
-      const id = localStorage.getItem("id");
-      const token = localStorage.getItem("token");
-
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${idOrder}`,
-        {
-          order_status: "canceled", // Add the data object here
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setLoading(true);
-
-      console.log(response.data);
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        Error401(error, router);
-      }
-    }
-  };
-  const handleAprovButtonClick = async (e) => {
-    e.preventDefault();
-
-    // Show SweetAlert confirmation dialog
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "You are about to approve the order. This action cannot be undone.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3FB648",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, approve it!",
-    });
-
-    // If the user confirms, call the handleReject function
-    if (result.isConfirmed) {
-      setLoading(false);
-      await handleAprov();
-    }
-  };
-  const handleAprov = async () => {
-    try {
-      const id = localStorage.getItem("id");
-      const token = localStorage.getItem("token");
-
-      if (!id || !token) {
-        throw new Error("Missing required session data");
-      }
-
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${idOrder}`,
-        {
-          order_status: "diproses", // Add the data object here
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setLoading(true);
-      console.log(response.data);
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        Error401(error, router);
-      }
-    }
-  };
 
   const Card = () => {
     return (
       <div className="flex justify-between items-center w-80">
-        <div className="flex items-center w-full p-1">
-          <img
-            src={img}
-            className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
-            alt=""
-          />
-          <div className="text-left ml-2 w-full">
-            <div className="flex justify-between">
-              <p className="text-primary font-bold text-md capitalize">
-                {title}
-              </p>
-              {/* <div className={`flex justify-center items-center rounded-full ${status === 'review' ? 'text-blue-600' : status === 'diproses' ? 'text-green-500' : status === 'canceled' ? 'text-red-500' : ''}`}>
-                    <p className="">{getStatusIcon()}</p>
-                  </div> */}
-            </div>
-
-            <div className="flex flex-col gap-1 italic">
-              <div className="flex flex-row gap-1">
-                <p className="font-normal text-xs text-black">
-                  Tanggal Campaign:{" "}
-                </p>{" "}
-                <p className="font-medium text-xs text-black">{date}</p>
-              </div>
-            </div>
-            <div className="flex items-end justify-between mt-2">
-              <div className="flex flex-col">
-                <p className="font-normal text-xs italic">{`${qty} x ${productName}`}</p>
-                <span className="text-[#6CB28E] font-bold text-xl">
-                  {formatPrice(total_amount)}
-                </span>
-              </div>
-              <div
-                className={`flex justify-center items-center rounded-2xl mb-1 w-auto h-5 px-2 py-0 ${
-                  status === "approved" ? "bg-[#1D5882]" : "bg-[#F6BE2D]"
-                }`}
-              >
-                <p className="text-gray-100 font-medium text-[10px]">
-                  {status === "approved" ? "Approved" : "Confirmation"}
-                </p>
+        {!title ? (
+          <div className="animate-pulse flex space-x-4">
+            <div className="rounded-md bg-slate-200 h-16 w-16"></div>
+            <div className="flex-1 space-y-6 py-1">
+              <div className="h-2 bg-slate-200 rounded"></div>
+              <div className="space-y-3">
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="h-2 bg-slate-200 rounded col-span-2"></div>
+                  <div className="h-2 bg-slate-200 rounded col-span-1"></div>
+                </div>
+                <div className="h-2 bg-slate-200 rounded"></div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="grid place-items-center"></div>
+        ) : (
+          <div className="flex items-start w-full p-1">
+            <img
+              src={img}
+              className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
+              alt=""
+            />
+            <div className="text-left ml-2 w-full">
+              <p className="text-primary font-bold text-md capitalize">
+                {title}
+              </p>
+
+              <div className="flex flex-col gap-1 italic">
+                <div className="flex flex-row gap-1">
+                  <p className="font-normal text-[11px] text-black">
+                    Tanggal Campaign:{" "}
+                  </p>{" "}
+                  <p className="font-medium text-[11px] text-black">{date}</p>
+                </div>
+              </div>
+              <div className="flex items-end justify-between mt-2">
+                <div className="flex flex-col">
+                  <p className="font-normal text-xs italic">{`${qty} x ${productName}`}</p>
+                  <span className="text-[#6CB28E] font-bold text-xl">
+                    {formatPrice(total_amount)}
+                  </span>
+                </div>
+                <div
+                  className={`flex justify-center items-center rounded-2xl mb-1 w-auto h-5 px-2 py-0 ${
+                    status === "approved" ? "bg-[#1D5882]" : "bg-[#F6BE2D]"
+                  }`}
+                >
+                  <p className="text-gray-100 font-medium text-[10px]">
+                    {status === "approved" ? "Approved" : "Confirmation"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };

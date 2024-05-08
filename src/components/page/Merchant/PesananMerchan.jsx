@@ -19,8 +19,6 @@ const PesananMerchan = () => {
   const [hasMore, setHasMore] = useState(true);
   const observer = useRef();
 
-  console.log(loading);
-
   useEffect(() => {
     const role = localStorage.getItem("role");
     const token = localStorage.getItem("token");
@@ -36,7 +34,7 @@ const PesananMerchan = () => {
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
       localStorage.clear();
-      router.push("/login/merchant");
+      router.push("/login");
     } else {
       // Role is 'detonator' and token is present
       setLoading(false); // Set loading to false once the check is complete
@@ -67,18 +65,13 @@ const PesananMerchan = () => {
         setDataApi(approvedPesanan);
         setFilteredData(approvedPesanan);
         setLoading(false);
-        console.log("data page merchan", approvedPesanan);
 
         if (approvedPesanan.length === 0) {
           setHasMore(false);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
         setLoading(false);
-
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       }
     };
 
@@ -86,6 +79,7 @@ const PesananMerchan = () => {
   }, [loading, selectedStatus]);
 
   const handleFilterChange = (status = "review") => {
+    setLoading(true);
     let filtered = [];
 
     if (status === "review") {
@@ -100,13 +94,6 @@ const PesananMerchan = () => {
     }
 
     setSelectedStatus(status);
-  };
-  const formatDate = (inputDate) => {
-    const date = new Date(inputDate);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
   };
   return (
     <>

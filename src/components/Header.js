@@ -74,7 +74,7 @@ const Header = ({ title = "", backto = "" }) => {
           </div>
         )} */}
 
-        {/* {router.asPath === "/login/detonator" || router.asPath === "/login/merchant" ? null : (
+        {/* {router.asPath === "/login/detonator" || router.asPath === "/login" ? null : (
           
         )} */}
       </div>
