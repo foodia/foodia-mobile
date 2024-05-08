@@ -53,6 +53,8 @@ const DetailPesanan = () => {
         .then((response) => {
           setDataApi(response.data.body);
           setLoading(false);
+
+          setConfirmedOrder(response.data.body.qty);
         })
         .catch((error) => {
           setLoading(false);
@@ -217,7 +219,7 @@ const DetailPesanan = () => {
   return (
     <>
       <div className="container mx-auto pt-14 bg-white h-full">
-        <Header title="Detail Pesanan" />
+        <Header title="Detail Pesanan" backto="/merchant/pesanan" />
         <div className="place-content-center">
           {loading ? (
             <div className="border border-blue-300 shadow rounded-md p-4 max-w-sm w-80 h-28 mx-auto">
@@ -391,7 +393,13 @@ const DetailPesanan = () => {
               <hr className="h-px bg-gray-200 border-0" />
               <div className="justify-between grid grid-cols-2 gap-2 py-4">
                 <p className="text-sm text-primary">Total</p>
-                <p className="text-right text-sm text-primary">Rp. 0</p>
+                <p className="text-right text-sm text-primary">
+                  {new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0,
+                  }).format(dataApi?.total_amount)}
+                </p>
               </div>
               <hr className="h-px bg-gray-200 border-0" />
               <div className="py-4">
@@ -434,7 +442,7 @@ const DetailPesanan = () => {
                     disabled
                     className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
                   >
-                    Konfirmasi
+                    Konfirmasi Pesanan
                   </button>
                 </div>
               ) : (
@@ -466,7 +474,7 @@ const DetailPesanan = () => {
                           : "bg-primary"
                       } text-white rounded-md h-10 w-full col-span-2`}
                     >
-                      Konfirmasi
+                      Konfirmasi Pesanan
                     </button>
                   </div>
                 )
