@@ -1,25 +1,20 @@
 import Header from "@/components/Header";
+import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
 import styles from "@/styles/Home.module.css";
 import { IconMinus, IconPlus } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useAppState } from "../UserContext";
-import Error401 from "@/components/error401";
+import Swal from "sweetalert2";
 
 const OrderConfirmation = () => {
   const router = useRouter();
-  const { state, setReportMechant } = useAppState();
   const id_order = router.query.id;
   const [loading, setLoading] = useState(true);
-  const [showFullText, setShowFullText] = useState(false);
   const [dataApi, setDataApi] = useState();
   const [maxOrder, setMaxOrder] = useState(0);
   const [qty, setQty] = useState(0);
-
-  const toggleReadMore = () => {
-    setShowFullText((prevShowFullText) => !prevShowFullText);
-  };
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -36,7 +31,7 @@ const OrderConfirmation = () => {
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
       localStorage.clear();
-      router.push("/login/merchant");
+      router.push("/login");
     } else {
       // Role is 'detonator' and token is present
       setLoading(false); // Set loading to false once the check is complete
@@ -45,7 +40,6 @@ const OrderConfirmation = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setLoading(true);
     if (id_order) {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`, {
@@ -58,10 +52,20 @@ const OrderConfirmation = () => {
           setDataApi(response.data.body);
           setLoading(false);
 
-          setMaxOrder(
-            response.data.body.campaign.donation_collected /
+          const affordablePcs = Math.floor(
+            response.data.body.campaign.donation_remaining /
               response.data.body.merchant_product.price
           );
+
+          console.log(response.data.body.qty);
+
+          if (affordablePcs > response.data.body.qty) {
+            setMaxOrder(response.data.body.qty);
+          } else if (affordablePcs < response.data.body.qty) {
+            setMaxOrder(affordablePcs);
+          } else {
+            setMaxOrder(response.data.body.qty);
+          }
         })
         .catch((error) => {
           setLoading(false);
@@ -69,6 +73,52 @@ const OrderConfirmation = () => {
         });
     }
   }, [id_order]);
+
+  const onSubmit = () => {
+    setLoading(true);
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}order/confirmation`,
+        { order_id: parseInt(id_order), qty },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        setLoading(false);
+        Swal.fire({
+          position: "bottom",
+          customClass: {
+            popup: "custom-swal",
+            icon: "custom-icon-swal",
+            title: "custom-title-swal",
+            confirmButton: "custom-confirm-button-swal",
+          },
+          icon: "success",
+          title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Mengkonfirmasi Pesanan</p><p class="w-auto pl-1 font-normal text-[15px]">Terima kasih telah membantu campaign kami</p>`,
+          html: `
+              <div class="absolute px-28 ml-4 top-0 mt-4">
+                <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+              </div>
+            `,
+          width: "375px",
+          showConfirmButton: true,
+          confirmButtonText: "Kembali",
+          confirmButtonColor: "#3FB648",
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push(`/merchant/detailpesanan/${id_order}`);
+          }
+        });
+      })
+      .catch((error) => {
+        setLoading(false);
+        Error401(error, router);
+      });
+  };
 
   return (
     <>
@@ -142,7 +192,7 @@ const OrderConfirmation = () => {
                         {dataApi?.merchant_product?.name}
                       </div>
                       <div className="mb-1 font-sans text-[11px]">
-                        Max Kuota: {dataApi?.merchant_product?.qty}
+                        Max Kuota: {dataApi?.qty}
                       </div>
                       <div className="mb-1 font-sans text-[11px]">
                         {dataApi?.merchant_product?.description}
@@ -159,6 +209,7 @@ const OrderConfirmation = () => {
                       <div className="grid place-items-center">
                         <div className="flex items-center">
                           <button
+                            disabled={qty === 0}
                             className=" text-black px-1 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
                             onClick={() => setQty(qty - 1)}
                           >
@@ -168,6 +219,7 @@ const OrderConfirmation = () => {
                             {qty}
                           </span>
                           <button
+                            disabled={qty === dataApi?.qty}
                             className=" text-black px-1 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
                             onClick={() => setQty(qty + 1)}
                           >
@@ -183,12 +235,14 @@ const OrderConfirmation = () => {
           </div>
           <div className="w-full p-2 rounded-md items-end flex pb-10">
             <button
+              onClick={() => onSubmit()}
               className={`bg-primary text-white font-bold rounded-xl h-10 w-full `}
             >
               Konfirmasi
             </button>
           </div>
         </div>
+        {loading && <Loading />}
       </div>
     </>
   );

@@ -1,37 +1,52 @@
+import { IconCamera, IconFileDescription } from "@tabler/icons-react";
+import axios from "axios";
+import moment from "moment";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { IconCamera, IconFileDescription, IconUser } from "@tabler/icons-react";
-import InputForm from "../Imput";
-import { useAppState } from "./UserContext";
 import Swal from "sweetalert2";
-import axios from "axios";
-import Header from "../Header";
 import CardPesanan from "../CardPesanan";
-import moment from "moment";
+import Header from "../Header";
 import Loading from "../Loading";
 import Error401 from "../error401";
+import { useAppState } from "./UserContext";
 
-const FormReportMerchan = () => {
+const FormReportMerchant = () => {
   const router = useRouter();
   const { state, setReportMechant } = useAppState();
   const [image_url, setimage_url] = useState(null);
+  const id_order = router.query.id;
+  const [dataApi, setDataApi] = useState();
   const [description, setdescription] = useState("");
-  const [loading, setloading] = useState(true);
-
-  // the bug is here
-  //   useEffect(() => {
-  //     console.log("state p", state.reportMechant);
-  //   }, [state]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Ensure the user is logged in
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
     } else {
-      setloading(false);
+      setLoading(false);
     }
   }, [router]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (id_order) {
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setDataApi(response.data.body);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          Error401(error, router);
+        });
+    }
+  }, [id_order]);
 
   const handleimage_urlChange = (event) => {
     setimage_url(event.target.files[0]);
@@ -41,15 +56,14 @@ const FormReportMerchan = () => {
     setdescription(event.target.value);
   };
 
-  const handleStepTwoSubmit = async (event) => {
-    setloading(true);
+  const handleStepTwoSubmit = () => {
+    setLoading(true);
     if (!image_url || !description) {
       alert("Please fill in all fields.");
       return;
     }
 
     const token = localStorage.getItem("token");
-    const id_merchant = localStorage.getItem("id");
     const formData = new FormData();
     formData.append("destination", "rating");
     formData.append("file", image_url);
@@ -58,17 +72,17 @@ const FormReportMerchan = () => {
       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data", // Tambahkan header Content-Type untuk FormData
+          "Content-Type": "multipart/form-data",
         },
       })
       .then((mediaUploadResponse) => {
         if (mediaUploadResponse.status === 200) {
           const reqData = {
-            campaign_id: state.reportMechant?.campaign_id,
-            title: `Peanan ${state.reportMechant?.merchant.merchant_name}`,
+            campaign_id: dataApi?.campaign_id,
+            title: `Makanan Di terima`,
             description,
             type: "merchant",
-            order_id: state.reportMechant?.id,
+            order_id: parseInt(id_order),
             images: [
               {
                 image_url: mediaUploadResponse.data.body.file_url,
@@ -96,14 +110,11 @@ const FormReportMerchan = () => {
               setTimeout(() => {
                 router.push("/merchant/rating");
               }, 2000);
-              setloading(false);
+              setLoading(false);
             })
             .catch((error) => {
-              setloading(false);
-              if (error.response && error.response.status === 401) {
-                Error401(error, router);
-              }
-              console.error("Error creating report:", error);
+              setLoading(false);
+              Error401(error, router);
               Swal.fire({
                 icon: "error",
                 title: "Gagal Membuat Report",
@@ -113,21 +124,12 @@ const FormReportMerchan = () => {
               });
             });
         } else {
-          // Handle kesalahan jika upload media gagal
-          console.error(
-            "Error uploading media:",
-            mediaUploadResponse.data.error
-          );
-          setloading(false);
+          setLoading(false);
         }
       })
       .catch(() => {
-        setloading(false);
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-
-        }
-        console.log("error");
+        setLoading(false);
+        Error401(error, router);
       });
   };
 
@@ -138,27 +140,27 @@ const FormReportMerchan = () => {
         <div className="place-content-center">
           <div className="grid justify-items-center w-full">
             <CardPesanan
-              key={state.reportMechant?.id}
-              to={``}
-              idOrder={state.reportMechant?.id}
+              key={dataApi?.id}
+              to={""}
+              idOrder={dataApi?.id}
               img={
-                state.reportMechant.merchant_product?.images.length > 0
-                  ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${state.reportMechant?.merchant_product.images[0].image_url}`
+                dataApi?.merchant_product.images.length > 0
+                  ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${dataApi?.merchant_product.images[0].image_url}`
                   : "/img/default-image.png"
               }
-              title={state.reportMechant.campaign?.event_name}
-              productName={state.reportMechant.merchant_product?.name}
-              created_at={moment(
-                state.reportMechant.campaign?.created_at
-              ).format("DD MMM YYYY hh:mm")}
-              date={`${moment(state.reportMechant.campaign?.event_date).format(
+              title={dataApi?.campaign.event_name}
+              productName={dataApi?.merchant_product.name}
+              created_at={moment(dataApi?.campaign?.created_at).format(
+                "DD MMM YYYY hh:mm"
+              )}
+              date={`${moment(dataApi?.campaign?.event_date).format(
                 "DD MMM YYYY"
-              )} ${state.reportMechant.campaign?.event_time}`}
-              qty={state.reportMechant?.qty}
-              price={state.reportMechant?.merchant_product?.price}
-              total_amount={state.reportMechant?.total_amount}
-              status={state.reportMechant?.order_status}
-              setLoading={true}
+              )} ${dataApi?.campaign?.event_time}`}
+              qty={dataApi?.qty}
+              price={dataApi?.merchant_product.price}
+              total_amount={dataApi?.total_amount}
+              status={dataApi?.approval_status}
+              setLoading={setLoading}
             />
             <div className="px-6 mt-2 w-full">
               <div className="mb-2">
@@ -203,7 +205,7 @@ const FormReportMerchan = () => {
                   <IconFileDescription className="mt-3.5" />
                   <textarea
                     // maxLength={256}
-                    onChange={handledescriptionChange}
+                    onChange={(e) => handledescriptionChange(e)}
                     value={description}
                     type="text"
                     className="ml-2 w-full min-h-[135px] p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
@@ -238,4 +240,4 @@ const FormReportMerchan = () => {
   );
 };
 
-export default FormReportMerchan;
+export default FormReportMerchant;

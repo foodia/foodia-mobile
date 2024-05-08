@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { IconMapPin } from "@tabler/icons-react";
+import { IconInfoCircle, IconMapPin } from "@tabler/icons-react";
 import CardPesanan from "@/components/CardPesanan";
 import Header from "@/components/Header";
 import moment from "moment/moment";
@@ -9,19 +9,14 @@ import Link from "next/link";
 import Swal from "sweetalert2";
 import { useAppState } from "../UserContext";
 import Error401 from "@/components/error401";
+import Loading from "@/components/Loading";
 
 const DetailPesanan = () => {
   const router = useRouter();
-  const { state, setReportMechant } = useAppState();
   const id_order = router.query.id;
   const [loading, setLoading] = useState(true);
-  const [showFullText, setShowFullText] = useState(false);
   const [dataApi, setDataApi] = useState();
   const [confirmedOrder, setConfirmedOrder] = useState(0);
-
-  const toggleReadMore = () => {
-    setShowFullText((prevShowFullText) => !prevShowFullText);
-  };
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -38,7 +33,7 @@ const DetailPesanan = () => {
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
       localStorage.clear();
-      router.push("/login/merchant");
+      router.push("/login");
     } else {
       // Role is 'detonator' and token is present
       setLoading(false); // Set loading to false once the check is complete
@@ -47,7 +42,6 @@ const DetailPesanan = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setLoading(true);
     if (id_order) {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`, {
@@ -159,35 +153,6 @@ const DetailPesanan = () => {
         console.error(error);
       }
       // await handleAprov();
-    }
-  };
-  const handleBuktiPengiriman = async (e) => {
-    setLoading(true);
-    // setReportMechant(dataApi);
-    try {
-      // Menggunakan setReportMechant untuk menyimpan data
-      setReportMechant(dataApi);
-
-      // Arahkan pengguna ke '/merchant/report'
-      router.push("/merchant/report");
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      if (error.response && error.response.status === 401) {
-        Error401(error, router);
-      }
-    }
-  };
-  const getStatusIcon = () => {
-    switch (dataApi?.order_status) {
-      case "review":
-        return "Review";
-      case "diproses":
-        return "Diproses";
-      case "tolak":
-        return "DiTolak";
-      default:
-        return null;
     }
   };
 
@@ -333,7 +298,7 @@ const DetailPesanan = () => {
                 <p className="text-sm text-gray-400">Sisa Donasi</p>
                 <p className="text-right text-sm text-primary">
                   Rp.{" "}
-                  {dataApi?.campaign.donation_collected.toLocaleString("id-ID")}
+                  {dataApi?.campaign.donation_remaining.toLocaleString("id-ID")}
                 </p>
               </div>
 
@@ -411,12 +376,16 @@ const DetailPesanan = () => {
                   Terima
                 </button>
               </>
-            ) : dataApi?.order_status === "diproses" ? (
+            ) : dataApi?.order_status === "terima" ? (
               calculateRemainingTime(dataApi?.campaign?.event_date) > 1 ? (
                 <div className="w-full col-span-2 flex flex-col gap-1">
-                  <p className="text-xs text-red-500">
-                    Konfirmasi pesanan dapat dibuat pada H-1 pelaksanaan
-                    campaign
+                  <p className="instructions italic text-[10px] flex items-center">
+                    <IconInfoCircle size={15} className="mr-1 text-red-600" />
+
+                    <span className="text-red-600">
+                      Konfirmasi pesanan dapat dibuat pada H-1 pelaksanaan
+                      campaign
+                    </span>
                   </p>
                   <button
                     disabled
@@ -426,42 +395,66 @@ const DetailPesanan = () => {
                   </button>
                 </div>
               ) : (
-                calculateRemainingTime(dataApi?.campaign?.event_date) < 1 &&
-                (confirmedOrder < 1 ? (
+                calculateRemainingTime(dataApi?.campaign?.event_date) <= 1 && (
                   <div className="w-full col-span-2 flex flex-col gap-1">
+                    {dataApi?.campaign.donation_remaining <= 0 && (
+                      <p className="instructions italic text-[10px] flex items-center">
+                        <IconInfoCircle
+                          size={15}
+                          className="mr-1 text-red-600"
+                        />
+
+                        <span className="text-red-600">
+                          Tidak ada sisa donasi yang tersisa
+                        </span>
+                      </p>
+                    )}
                     <button
-                      onClick={() =>
+                      disabled={dataApi?.campaign.donation_remaining <= 0}
+                      onClick={() => {
+                        setLoading(true);
                         router.push(
                           `/merchant/order-confirmation?id=${id_order}`
-                        )
-                      }
-                      className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
+                        );
+                      }}
+                      className={`${
+                        dataApi?.campaign.donation_remaining <= 0
+                          ? "bg-gray-400"
+                          : "bg-primary"
+                      } text-white rounded-md h-10 w-full col-span-2`}
                     >
                       Konfirmasi
                     </button>
                   </div>
-                ) : (
-                  confirmedOrder >= 1 &&
-                  (calculateRemainingTime(dataApi?.campaign?.event_date) > 0 ? (
-                    <div className="w-full col-span-2 flex flex-col gap-1">
-                      <p className="text-xs text-red-500">
-                        Bukti pengiriman dapat dibuat saat tanggal pelaksanaan
-                      </p>
-                      <button
-                        disabled
-                        className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
-                      >
-                        Buat Bukti Pegiriman
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
-                    >
-                      Buat Bukti Pegiriman
-                    </button>
-                  ))
-                ))
+                )
+              )
+            ) : dataApi?.order_status === "diproses" ? (
+              calculateRemainingTime(dataApi?.campaign?.event_date) > 0 ? (
+                <div className="w-full col-span-2 flex flex-col gap-1">
+                  <p className="instructions italic text-[10px] flex items-center">
+                    <IconInfoCircle size={15} className="mr-1 text-red-600" />
+
+                    <span className="text-red-600">
+                      Bukti pengiriman dapat dibuat saat tanggal pelaksanaan
+                    </span>
+                  </p>
+                  <button
+                    disabled
+                    className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
+                  >
+                    Buat Bukti Pegiriman
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setLoading(true);
+                    router.push(`/merchant/report?id=${id_order}`);
+                  }}
+                  className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
+                >
+                  Buat Bukti Pegiriman
+                </button>
               )
             ) : dataApi?.order_status === "tolak" ? (
               <button className="bg-red-500 text-white rounded-md h-10 col-span-2">
@@ -471,7 +464,7 @@ const DetailPesanan = () => {
               dataApi?.order_status === "selesai" && (
                 <button
                   disabled
-                  className="bg-blue-400 text-white rounded-md h-10 col-span-2"
+                  className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
                 >
                   Pesanan Selesai
                 </button>
@@ -479,6 +472,7 @@ const DetailPesanan = () => {
             )}
           </div>
         </div>
+        {loading && <Loading />}
       </div>
     </>
   );
