@@ -1,26 +1,11 @@
 import styles from "@/styles/Home.module.css";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Swal from "sweetalert2";
-import Error401 from "./error401";
 
 const CardPesanan = (props) => {
   const router = useRouter();
-  const {
-    to,
-    img,
-    title,
-    productName,
-    total_amount,
-    created_at,
-    date,
-    status,
-    price,
-    qty,
-    idOrder,
-    setLoading,
-  } = props;
+  const { to, img, title, productName, total_amount, date, status, qty } =
+    props;
 
   const formatPrice = (price) => {
     const formatter = new Intl.NumberFormat("id-ID", {
@@ -56,7 +41,7 @@ const CardPesanan = (props) => {
               className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
               alt=""
             />
-            <div className="text-left ml-2 w-full">
+            <div className="text-left ml-2 w-full flex flex-col justify-between min-h-[105px]">
               <p className="text-primary font-bold text-md capitalize">
                 {title}
               </p>

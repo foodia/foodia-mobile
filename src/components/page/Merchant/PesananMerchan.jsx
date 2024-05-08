@@ -15,9 +15,6 @@ const PesananMerchan = () => {
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("review");
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const observer = useRef();
 
   useEffect(() => {
     const role = localStorage.getItem("role");
