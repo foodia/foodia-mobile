@@ -23,18 +23,20 @@ const BuktiPembayaran = () => {
   //   typeof window !== "undefined" ? new URL(document.referrer).pathname : "";
 
   useEffect(() => {
-    axios
-      .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}donation/transaction/${external_id}`
-      )
-      .then((response) => {
-        setPembayaran(response.data.body);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        Error401(error, router);
-      });
+    if (external_id) {
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}donation/transaction/${external_id}`
+        )
+        .then((response) => {
+          setPembayaran(response.data.body);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          Error401(error, router);
+        });
+    }
   }, [router]);
 
   return (
