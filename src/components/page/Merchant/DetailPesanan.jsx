@@ -42,6 +42,7 @@ const DetailPesanan = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    setLoading(true);
     if (id_order) {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`, {
@@ -63,7 +64,7 @@ const DetailPesanan = () => {
     e.preventDefault();
 
     // Show SweetAlert confirmation dialog
-    const result = await Swal.fire({
+    Swal.fire({
       title: "Apakah Anda Yakin?",
       text: "Anda akan menolak pesanan. Tindakan ini tidak dapat dibatalkan.",
       icon: "question",
@@ -72,12 +73,8 @@ const DetailPesanan = () => {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Ya, Tolak Pesanan",
       cancelButtonText: "Batal",
-    });
-
-    // If the user confirms, call the handleReject function
-    if (result.isConfirmed) {
-      setLoading(false);
-      try {
+    }).then((result) => {
+      if (result.isConfirmed) {
         const id = localStorage.getItem("id");
         const token = localStorage.getItem("token");
 
@@ -85,33 +82,57 @@ const DetailPesanan = () => {
           throw new Error("Missing required session data");
         }
 
-        const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
-          {
-            order_status: "tolak",
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
+        axios
+          .put(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
+            {
+              order_status: "tolak",
             },
-          }
-        );
-        setLoading(true);
-
-        console.log(response.data);
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
-        console.error(error);
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then(() => {
+            setLoading(false);
+            Swal.fire({
+              position: "bottom",
+              customClass: {
+                popup: "custom-swal",
+                icon: "custom-icon-swal",
+                title: "custom-title-swal",
+                confirmButton: "custom-confirm-button-swal",
+              },
+              icon: "success",
+              title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menolak Pesanan</p>`,
+              html: `
+                  <div class="absolute px-28 ml-4 top-0 mt-4">
+                    <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                  </div>
+                `,
+              width: "375px",
+              showConfirmButton: true,
+              confirmButtonText: "Kembali",
+              confirmButtonColor: "#3FB648",
+              allowOutsideClick: false,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                router.reload();
+              }
+            });
+          })
+          .catch((error) => {
+            setLoading(false);
+            Error401(error, router);
+          });
       }
-    }
-  };
-  const handleAprovButtonClick = async (e) => {
-    e.preventDefault();
+    });
 
-    // Show SweetAlert confirmation dialog
-    const result = await Swal.fire({
+    // If the user confirms, call the handleReject function
+  };
+  const handleAprovButtonClick = () => {
+    Swal.fire({
       title: "Apakah Anda Yakin?",
       text: "Anda akan menyetujui pesanan. Tindakan ini tidak dapat dibatalkan.",
       icon: "question",
@@ -120,12 +141,9 @@ const DetailPesanan = () => {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Ya, Setujui Pesanan!",
       cancelButtonText: "Batal",
-    });
-
-    // If the user confirms, call the handleReject function
-    if (result.isConfirmed) {
-      setLoading(false);
-      try {
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setLoading(true);
         const id = localStorage.getItem("id");
         const token = localStorage.getItem("token");
 
@@ -133,27 +151,52 @@ const DetailPesanan = () => {
           throw new Error("Missing required session data");
         }
 
-        const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
-          {
-            order_status: "diproses",
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
+        axios
+          .put(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
+            {
+              order_status: "terima",
             },
-          }
-        );
-        setLoading(true);
-        console.log(response.data);
-      } catch (error) {
-        if (error.response.status === 401) {
-          Error401(error, router);
-        }
-        console.error(error);
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then(() => {
+            setLoading(false);
+            Swal.fire({
+              position: "bottom",
+              customClass: {
+                popup: "custom-swal",
+                icon: "custom-icon-swal",
+                title: "custom-title-swal",
+                confirmButton: "custom-confirm-button-swal",
+              },
+              icon: "success",
+              title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menerima Pesanan</p><p class="w-auto pl-1 font-bold text-[25px]">Terima kasih telah membantu campaign kami</p>`,
+              html: `
+                  <div class="absolute px-28 ml-4 top-0 mt-4">
+                    <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                  </div>
+                `,
+              width: "375px",
+              showConfirmButton: true,
+              confirmButtonText: "Kembali",
+              confirmButtonColor: "#3FB648",
+              allowOutsideClick: false,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                router.reload();
+              }
+            });
+          })
+          .catch((error) => {
+            setLoading(false);
+            Error401(error, router);
+          });
       }
-      // await handleAprov();
-    }
+    });
   };
 
   const calculateRemainingTime = (eventDate) => {
@@ -457,7 +500,10 @@ const DetailPesanan = () => {
                 </button>
               )
             ) : dataApi?.order_status === "tolak" ? (
-              <button className="bg-red-500 text-white rounded-md h-10 col-span-2">
+              <button
+                disabled
+                className="bg-red-500 text-white rounded-md h-10 col-span-2"
+              >
                 Pesanan Ditolak
               </button>
             ) : (
