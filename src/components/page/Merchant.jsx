@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import CardFood from "../CardFood";
 import Error401 from "../error401";
+import MenuBarMechant from "./Merchant/MenuBarMechant";
 
 const Merchant = () => {
   const router = useRouter();
@@ -186,7 +187,7 @@ const Merchant = () => {
   return (
     <>
       <div className="container mx-auto h-screen">
-        <div className="flex items-center justify-center px-6 pt-16">
+        {/* <div className="flex items-center justify-center px-6 pt-16">
           <div className={`bg-gray-100 rounded-2xl w-full p-3`}>
             <div className="flex justify-between items-center">
               <Link
@@ -242,12 +243,13 @@ const Merchant = () => {
               </Link>
             </div>
           </div>
-        </div>
+        </div> */}
+        <MenuBarMechant />
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "approved"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
               }`}
             onClick={() => handleFilterChange("approved")}
           >
@@ -260,8 +262,8 @@ const Merchant = () => {
           </div>
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "listMenu"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
               }`}
             onClick={() => handleFilterChange("listMenu")}
           >

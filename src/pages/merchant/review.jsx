@@ -11,8 +11,9 @@ import Image from "next/image";
 import axios from "axios";
 import Error401 from "@/components/error401";
 import Swal from "sweetalert2";
-import CardReview from "@/components/CardReview";
 import CardCampaign from "@/components/CardCampaign";
+import CardReview from "@/components/CardReview";
+import MenuBarMechant from "@/components/page/Merchant/MenuBarMechant";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function PageMerchant() {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const observer = useRef();
+    const [jumlah, setJumlah] = useState(0);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -144,6 +146,7 @@ export default function PageMerchant() {
                 }
             )
             .then((response) => {
+                setJumlah(response.data.body.length);
                 setDataApi(response.data.body);
                 console.log("respone data menu", response.data.body);
                 // const filtered = response.data.body.filter(
@@ -182,6 +185,7 @@ export default function PageMerchant() {
             // Show items with 'waiting' or 'rejected' status
             filtered = dataApi
             setFilteredData(filtered);
+            setLoading(false);
             console.log("filtered data approved", filtered);
 
         } else if (status === "UlasanSelesai") {
@@ -194,13 +198,13 @@ export default function PageMerchant() {
             })
                 .then((res) => {
                     setFilteredData(res.data.body);
+                    setLoading(false);
                     console.log("review ulasan", res.data.body);
                 }).catch((error) => {
                     Error401(error, router);
                 })
         }
 
-        setLoading(false);
         setSelectedStatus(status);
 
         console.log('data filter', filteredData);
@@ -213,66 +217,7 @@ export default function PageMerchant() {
             <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
                 {/* <Hero /> */}
                 <div className="container mx-auto h-screen">
-                    <div className="flex items-center justify-center px-6 pt-16">
-                        <div className={`bg-gray-100 rounded-2xl w-full p-3`}>
-                            <div className="flex justify-between items-center">
-
-                                <Link
-                                    href="/merchant"
-                                    className="grid justify-items-center gap-1 w-24"
-                                >
-                                    <div className={`${styles.iconMenu}`}>
-                                        <IconBowlFilled />
-                                    </div>
-                                    <p className="text-xs font-normal text-black">
-                                        Daftar Menu
-                                    </p>
-                                </Link>
-                                <Link
-                                    href="/merchant/pesanan"
-                                    className="grid justify-items-center gap-1 w-24 "
-                                >
-                                    <div className={`${styles.iconMenu}`}>
-                                        <Image
-                                            src={"/icon/pesanan.png"}
-                                            alt="Girl in a jacket"
-                                            width={30}
-                                            height={30}
-                                        />
-                                    </div>
-                                    <p className="text-xs font-normal text-black">Pesanan</p>
-                                </Link>
-                                <Link
-                                    href="/merchant/saldo"
-                                    className="grid justify-items-center gap-1 w-24 "
-                                >
-                                    <div className={`${styles.iconMenu}`}>
-                                        <Image
-                                            src={"/icon/saldo.png"}
-                                            alt="Girl in a jacket"
-                                            width={30}
-                                            height={30}
-                                        />
-                                    </div>
-                                    <p className="text-xs font-normal text-black">Saldo</p>
-                                </Link>
-                                <Link
-                                    href="/merchant/review"
-                                    className="grid justify-items-center gap-1 w-24 "
-                                >
-                                    <div className={`${styles.iconMenu}`}>
-                                        <Image
-                                            src={"/icon/ulasan.png"}
-                                            alt="Girl in a jacket"
-                                            width={30}
-                                            height={30}
-                                        />
-                                    </div>
-                                    <p className="text-xs font-normal text-black">Ulasan</p>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
+                    <MenuBarMechant />
                     <div className="flex justify-between px-7 pt-4 pb-2 text-[14px] font-semibold">
                         <div
                             className={`w-full cursor-pointer grid pb-2 justify-items-center ${selectedStatus === "KirimUlasan"
@@ -284,7 +229,7 @@ export default function PageMerchant() {
                             <div className="flex justify-between ">
                                 <span>Kasih Ulasan</span>
                                 <div className="h-[16px] w-[16px] bg-red-500 rounded-full flex justify-center items-center text-[8px] font-bold text-white">
-                                    <span>1</span>
+                                    <span>{jumlah}</span>
                                 </div>
                             </div>
 
@@ -319,39 +264,46 @@ export default function PageMerchant() {
                                 </p>
                             ) : (
                                 <>
-                                    {/* {filteredData.map((data) => (
-                                        // <div className="w-full">
-                                        //     .
-                                        // </div>
-                                        <CardReview key={data.id} dataReview={data} kategori={selectedStatus} />
-                                    ))} */}
+
                                     {selectedStatus === "KirimUlasan" ? (
                                         <>
                                             {filteredData.map((dataFilter) => (
-                                                <CardCampaign
+                                                <CardReview
                                                     key={dataFilter.id}
                                                     to={`/merchant/review/${dataFilter.order_id}?id_camp=${dataFilter.campaign_id}`}
-                                                    img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter?.event_image}`}
-                                                    title={dataFilter.event_name}
+                                                    img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.event_image}`}
+                                                    title={dataFilter?.event_name}
                                                     description={"sfsfsf"}
-                                                    date={"sfsfs"}
-                                                    address={`${dataFilter.event_address}`}
+                                                    date={dataFilter?.event_date}
+                                                    time={dataFilter?.event_time}
+                                                    address={`${dataFilter.order?.campaign?.address}`}
                                                     rating={true}
+                                                    qty={dataFilter.qty}
+                                                    harga={dataFilter.order?.merchant_product?.price}
+                                                    // status={'Completed'}
+                                                    TotalHarga={dataFilter?.total_amount}
+                                                    nameProduct={dataFilter?.product_name}
                                                 />
                                             ))}
                                         </>
                                     ) : selectedStatus === "UlasanSelesai" && filteredData.length > 0 ? (
                                         <>
                                             {filteredData.map((dataFilter) => (
-                                                <CardCampaign
+                                                <CardReview
                                                     key={dataFilter.id}
                                                     to={``}
                                                     img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.order?.campaign?.image_url}`}
-                                                    title={dataFilter.order?.campaign?.event_name}
+                                                    title={dataFilter?.order?.campaign?.event_name}
                                                     description={"sfsfsf"}
-                                                    date={"sfsfs"}
+                                                    date={dataFilter.order?.campaign.event_date}
+                                                    time={dataFilter.order?.campaign.event_time}
                                                     address={`${dataFilter.order?.campaign?.address}`}
                                                     rating={true}
+                                                    qty={dataFilter.order?.qty}
+                                                    harga={dataFilter.order?.merchant_product?.price}
+                                                    status={'Completed'}
+                                                    TotalHarga={dataFilter.order?.total_amount}
+                                                    nameProduct={dataFilter.order?.merchant_product?.name}
                                                 />
                                             ))}
                                         </>

@@ -1,5 +1,6 @@
 import BottomNav from "@/components/BottomNav";
 import CardCampaign from "@/components/CardCampaign";
+import CardReview from "@/components/CardReview";
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
@@ -18,6 +19,7 @@ const review = (review) => {
     const [filteredData, setFilteredData] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState("KirimUlasan");
     const [menu, setMenu] = useState("review-list");
+    const [jumlah, setJumlah] = useState();
 
     useEffect(() => {
         const authenticateUser = async () => {
@@ -158,6 +160,7 @@ const review = (review) => {
             .then((res) => {
                 // setSelectedStatus()
                 setDataApi(res.data.body);
+                setJumlah(res.data.body.length);
                 // setFilteredData(res.data.body);
                 setLoading(false);
                 console.log("review", res.data.body);
@@ -171,11 +174,14 @@ const review = (review) => {
         const id = localStorage.getItem("id");
         console.log("selected status", selectedStatus);
         if (selectedStatus == "KirimUlasan") {
+            setLoading(false)
             setFilteredData(dataApi);
+            setJumlah(dataApi.length);
 
 
 
         } else if (selectedStatus == "UlasanSelesai") {
+            setLoading(true);
             axios.get(
                 `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/filter?relation_id=${id}`, {
                 headers: {
@@ -183,9 +189,12 @@ const review = (review) => {
                 },
             })
                 .then((res) => {
+
                     setFilteredData(res.data.body);
+                    setLoading(false);
                     console.log("review ulasan", res.data.body);
                 }).catch((error) => {
+                    setLoading(false);
                     Error401(error, router);
                 })
         }
@@ -199,10 +208,10 @@ const review = (review) => {
         setSelectedStatus(status);
         if (status === "KirimUlasan") {
             console.log(status);
-            setLoading(false);
+            // setLoading(false);
         } else if (status === "UlasanSelesai") {
             console.log(status);
-            setLoading(false);
+            // setLoading(false);
         }
 
         // setFilteredData(filtered);
@@ -213,7 +222,7 @@ const review = (review) => {
     return (
         <>
             <div className="container mx-auto h-screen max-w-480 bg-white flex flex-col">
-                <Header title="Detonator" backto="/home" />
+                <Header title="Volunteer" backto="/home" />
                 <div className="bg-white h-screen pt-10">
                     <div className="flex items-center justify-center px-6 my-2">
                         <MenuDetonator />
@@ -227,8 +236,15 @@ const review = (review) => {
                                 }`}
                             onClick={() => handleFilterChange("KirimUlasan")}
                         >
-                            <p>Kasih Ulasan</p>
+                            <div className="flex items-center justify-center">
+
+                                <p>Kasih Ulasan</p>
+                                <div className="h-[16px] w-[16px] bg-red-500 rounded-full flex justify-center items-center text-[8px] font-bold text-white">
+                                    <span>{loading ? '...' : jumlah}</span>
+                                </div>
+                            </div>
                         </div>
+
                         <div
                             className={`cursor-pointer text-center w-full pb-2 ${selectedStatus === "UlasanSelesai"
                                 ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
@@ -253,14 +269,14 @@ const review = (review) => {
                             {selectedStatus === "KirimUlasan" ? (
                                 <>
                                     {filteredData.map((dataFilter) => (
-                                        <CardCampaign
+                                        <CardReview
                                             key={dataFilter.id}
-                                            to={`/detonator/rating/${dataFilter.order_id}?id_mrc=${dataFilter.merchant_id}&id_camp=${dataFilter.campaign_id}`}
+                                            to={`/detonator/rating/${dataFilter?.order_id}?id_mrc=${dataFilter.merchant_id}&id_camp=${dataFilter.campaign_id}`}
                                             img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter?.event_image}`}
-                                            title={dataFilter.event_name}
+                                            title={dataFilter?.event_name}
                                             description={"sfsfsf"}
                                             date={"sfsfs"}
-                                            address={`${dataFilter.event_address}`}
+                                            address={`${dataFilter?.event_address}`}
                                             rating={true}
                                         />
                                     ))}
@@ -268,24 +284,25 @@ const review = (review) => {
                             ) : selectedStatus === "UlasanSelesai" && filteredData.length > 0 ? (
                                 <>
                                     {filteredData.map((dataFilter) => (
-                                        <CardCampaign
+                                        <CardReview
                                             key={dataFilter.id}
-                                            to={`/detonator/rating/${dataFilter.order_id}?id_mrc=${dataFilter.merchant_id}&id_camp=${dataFilter.campaign_id}`}
+                                            to={``}
                                             img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.order?.campaign?.image_url}`}
-                                            title={dataFilter.order?.campaign?.event_name}
+                                            title={dataFilter?.order?.campaign?.event_name}
                                             description={"sfsfsf"}
-                                            date={"sfsfs"}
+                                            date={dataFilter.order?.campaign.event_date}
+                                            time={dataFilter.order?.campaign.event_time}
                                             address={`${dataFilter.order?.campaign?.address}`}
                                             rating={true}
+                                            qty={dataFilter.order?.qty}
+                                            harga={dataFilter.order?.merchant_product?.price}
+                                            status={'Completed'}
+                                            TotalHarga={dataFilter.order?.total_amount}
+                                            nameProduct={dataFilter.order?.merchant_product?.name}
                                         />
                                     ))}
                                 </>
                             ) : null}
-
-
-
-
-
 
                         </div>
                     )}
