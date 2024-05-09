@@ -1,26 +1,20 @@
 import Header from "@/components/Header";
+import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
 import styles from "@/styles/Home.module.css";
 import { IconMinus, IconPlus } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useAppState } from "../UserContext";
-import Error401 from "@/components/error401";
 import Swal from "sweetalert2";
 
 const OrderConfirmation = () => {
   const router = useRouter();
-  const { state, setReportMechant } = useAppState();
   const id_order = router.query.id;
   const [loading, setLoading] = useState(true);
-  const [showFullText, setShowFullText] = useState(false);
   const [dataApi, setDataApi] = useState();
   const [maxOrder, setMaxOrder] = useState(0);
   const [qty, setQty] = useState(0);
-
-  const toggleReadMore = () => {
-    setShowFullText((prevShowFullText) => !prevShowFullText);
-  };
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -37,7 +31,7 @@ const OrderConfirmation = () => {
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
       localStorage.clear();
-      router.push("/login/merchant");
+      router.push("/login");
     } else {
       // Role is 'detonator' and token is present
       setLoading(false); // Set loading to false once the check is complete
@@ -46,7 +40,6 @@ const OrderConfirmation = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setLoading(true);
     if (id_order) {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`, {
@@ -247,6 +240,7 @@ const OrderConfirmation = () => {
             </button>
           </div>
         </div>
+        {loading && <Loading />}
       </div>
     </>
   );

@@ -16,9 +16,6 @@ const PesananMerchan = () => {
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("review");
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const observer = useRef();
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -71,12 +68,8 @@ const PesananMerchan = () => {
           setHasMore(false);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
         setLoading(false);
-
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       }
     };
 
@@ -84,6 +77,7 @@ const PesananMerchan = () => {
   }, [loading, selectedStatus]);
 
   const handleFilterChange = (status = "review") => {
+    setLoading(true);
     let filtered = [];
 
     setLoading(true);
@@ -101,7 +95,6 @@ const PesananMerchan = () => {
 
     setSelectedStatus(status);
   };
-
   return (
     <>
       <div className="container mx-auto h-screen">

@@ -12,9 +12,6 @@ const saldo = (saldo) => {
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("diproses");
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const observer = useRef();
   const [balance, setBalance] = useState(0);
   const [riwayat, setRiwayat] = useState([]);
 
@@ -44,65 +41,57 @@ const saldo = (saldo) => {
     const id = localStorage.getItem("id");
     const token = localStorage.getItem("token");
 
-    const ressponse = axios
+    axios
       .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((response) => {
+        setLoading(false);
         setBalance(response.data.body.wallet.balance);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        setLoading(false);
+        Error401(error, router);
       });
   }, [balance]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const id = localStorage.getItem("id");
-        const token = localStorage.getItem("token");
+    try {
+      const id = localStorage.getItem("id");
+      const token = localStorage.getItem("token");
 
-        if (!id || !token) {
-          throw new Error("Missing required session data");
-        }
-
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}order/filter?merchant_id=${id}&order_status=${selectedStatus}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const approvedPesanan = response.data.body.filter(
-          (pesanan) => pesanan.campaign.status === "approved"
-        );
-        setDataApi(approvedPesanan);
-        setFilteredData(approvedPesanan);
-        setLoading(false);
-        console.log("data page merchan", approvedPesanan);
-
-        if (approvedPesanan.length === 0) {
-          setHasMore(false);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-
-        if (error.response && error.response.status === 401) {
-          // Unauthorized error (e.g., token expired)
-          localStorage.clear();
-          router.push("/login");
-        }
+      if (!id || !token) {
+        throw new Error("Missing required session data");
       }
-    };
 
-    fetchData();
+      const response = axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}order/filter?merchant_id=${id}&order_status=${selectedStatus}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const approvedPesanan = response.data.body.filter(
+        (pesanan) => pesanan.campaign.status === "approved"
+      );
+      setDataApi(approvedPesanan);
+      setFilteredData(approvedPesanan);
+      setLoading(false);
+
+      if (approvedPesanan.length === 0) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      Error401(error, router);
+    }
   }, [loading, selectedStatus]);
 
   const handleFilterChange = (status = "review") => {
+    setLoading(true);
     let filtered = [];
 
     if (status === "review") {
@@ -117,7 +106,7 @@ const saldo = (saldo) => {
     } else if (status === "penarikan") {
       const token = localStorage.getItem("token");
       const id = localStorage.getItem("id");
-      const resspone = axios
+      axios
         .get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/filter?merchant_id=${id}`,
           {
@@ -129,13 +118,9 @@ const saldo = (saldo) => {
         .then((response) => {
           filtered = response.data.body;
           setRiwayat(filtered);
-          console.log("response", response.data.body);
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            Error401(error, router);
-          }
-          console.error("Error fetching data:", error);
+          Error401(error, router);
         });
     }
 
@@ -154,14 +139,6 @@ const saldo = (saldo) => {
         router.push("/merchant/penarikan");
       }
     });
-  };
-
-  const formatDate = (inputDate) => {
-    const date = new Date(inputDate);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
   };
 
   const formatPrice = (price) => {
