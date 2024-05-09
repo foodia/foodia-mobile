@@ -53,6 +53,12 @@ const BottomNav = () => {
         icon: "custom-icon-swal",
         confirmButton: "custom-confirm-button-swal", // Custom class for styling
       },
+      willOpen: () => {
+        Swal.getPopup().classList.add("swal2-show-swipeup");
+      },
+      willClose: () => {
+        Swal.getPopup().classList.add("swal2-show-swipedown");
+      },
       didRender: () => {
         let nominal;
         let radios;

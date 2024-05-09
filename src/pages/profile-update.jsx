@@ -2,8 +2,6 @@ import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import {
-  IconCircleCheck,
-  IconCircleX,
   IconDeviceMobile,
   IconInfoCircle,
   IconMail,
@@ -66,9 +64,8 @@ const UpdateProfile = (profile) => {
           },
         }
       )
-      .then((response) => {
+      .then(() => {
         setLoading(false);
-        const responeData = response.data.body;
         Swal.fire({
           position: "bottom",
           customClass: {
@@ -77,12 +74,18 @@ const UpdateProfile = (profile) => {
             title: "custom-title-swal",
             confirmButton: "custom-confirm-button-swal",
           },
+          willOpen: () => {
+            Swal.getPopup().classList.add("swal2-show-swipeup");
+          },
+          willClose: () => {
+            Swal.getPopup().classList.add("swal2-show-swipedown");
+          },
           icon: "success",
           title: `<p class="w-auto pl-1 font-bold text-[25px]">Profile Berhasil Diubah</p><p class="w-auto pl-1 font-light text-sm">Anda telah sukses merubah data diri anda</p>`,
           html: `
-                    <div class="absolute px-28 ml-4 top-0 mt-4">
-                      <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-                    </div>
+                  <div class="absolute px-24 ml-10 top-0 mt-4">
+                    <hr class="border border-gray-400 w-10 h-1 bg-gray-400 rounded-lg "/>
+                  </div>
                   `,
           width: "375px",
           showConfirmButton: true,

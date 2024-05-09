@@ -199,7 +199,7 @@ const review = (review) => {
                 })
         }
 
-        console.log('filter data', filteredData);
+        console.log("filter data", filteredData);
         setLoading(false);
     }, [dataApi, selectedStatus]);
 

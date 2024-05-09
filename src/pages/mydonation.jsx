@@ -279,20 +279,22 @@ const mydonation = () => {
                   <hr className="mt-2 h-[1px] bg-gray-100" />
                   <div class="flex justify-between items-center font-semibold text-xs mt-1 text-primary">
                     <button
-                      onClick={() =>
+                      onClick={() => {
+                        localStorage.setItem("prevPath", "/mydonation");
                         router.push(
                           `/bukti_pembayaran?external_id=${data?.transaction?.external_id}`
-                        )
-                      }
+                        );
+                      }}
                       class="text-xs font-semibold w-full focus:outline-none"
                     >
                       Detail Donasi
                     </button>
                     <hr class="w-1 h-5 bg-gray-100 mx-2" />
                     <button
-                      onClick={() =>
-                        router.push(`/campaign/${data?.campaign?.id}`)
-                      }
+                      onClick={() => {
+                        localStorage.setItem("prevPath", "/mydonation");
+                        router.push(`/campaign/${data?.campaign?.id}`);
+                      }}
                       class="text-xs font-semibold w-full focus:outline-none"
                     >
                       Campaign

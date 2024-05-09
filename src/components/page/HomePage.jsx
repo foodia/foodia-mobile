@@ -195,63 +195,32 @@ const HomePage = () => {
             className={`cursor-pointer px-0 pb-3 w-36 ${
               selectedStatus === "OPEN"
                 ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "text-gray-500"
+                : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
             }`}
             onClick={() => handleFilterChange("OPEN")}
           >
             <span>Yuk Berdonasi</span>
-            {/* <div
-                className={`w-12 h-0.5 ${
-                  selectedStatus === "OPEN"
-                    ? "bg-blue-500 bg-blue-500 w-32 "
-                    : "bg-black"
-                }`}
-              ></div> */}
           </div>
           <div
             className={`cursor-pointer text-center${
               selectedStatus === "INPROGRESS"
                 ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "cursor-pointer text-center text-gray-500"
+                : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
             }`}
             onClick={() => handleFilterChange("INPROGRESS")}
           >
             <span>Campaign Berjalan</span>
-            {/* <div
-                className={`w-32 h-0.5 ${
-                  selectedStatus === "INPROGRESS"
-                    ? "bg-blue-500 bg-blue-500 w-32 "
-                    : "bg-black"
-                }`}
-              ></div> */}
           </div>
           <div
             className={`cursor-pointer text-center ${
               selectedStatus === "FINISHED"
                 ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "cursor-pointer text-center text-gray-500"
+                : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
             }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
             <span>Campaign Selesai</span>
-            {/* <div
-                className={`w-32 h-0.5 ${
-                  selectedStatus === "FINISHED"
-                    ? "bg-blue-500 bg-blue-500 w-32 "
-                    : "bg-black"
-                }`}
-              ></div> */}
           </div>
-
-          {/* <div className="mr-2 grid justify-items-center"><span className="text-blue-500">Yuk Berdonasi</span>
-                            <div className="bg-blue-500 w-32 h-0.5 mt-2"></div>
-                        </div>
-                        <div className="mr-2 grid justify-items-center"><span className="e25_212">Campaign Berjalan </span>
-                            <div className="bg-black w-32 h-0.5 mt-2"></div>
-                        </div>
-                        <div className="mr-2 grid justify-items-center"><span className="e25_212">Campaign Selesai </span>
-                            <div className="bg-black w-32 h-0.5 mt-2"></div>
-                        </div> */}
         </div>
 
         {loading ? (

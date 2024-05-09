@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import { useAppState } from "@/components/page/UserContext";
 import { IconCheck } from "@tabler/icons-react";
@@ -10,39 +11,41 @@ import { useEffect, useState } from "react";
 
 const BuktiPembayaran = () => {
   const router = useRouter();
-  console.log("router", router.query.external_id);
   const external_id = router.query.external_id;
-  const { state, setDonation } = useAppState();
-  // const [external_id, setExternal_id] = useState(router.query.external_id);
   const [pembayaran, setPembayaran] = useState("");
-
-  // useEffect(() => {
-  //     setExternal_id(router.query.external_id);
-  // }, [router]);
-
-  // const previousPageUrl =
-  //   typeof window !== "undefined" ? new URL(document.referrer).pathname : "";
+  const [loading, setLoading] = useState(true);
+  const [prevPath, setPrevPath] = useState("/home");
 
   useEffect(() => {
-    const resspone = axios
-      .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}donation/transaction/${external_id}`
-      )
-      .then((response) => {
-        setPembayaran(response.data.body);
-        console.log("pembayaran", response.data.body);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 401) {
+    const prevPath = localStorage.getItem("prevPath");
+    if (prevPath) {
+      setPrevPath(prevPath);
+    }
+
+    if (external_id) {
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}donation/transaction/${external_id}`
+        )
+        .then((response) => {
+          setPembayaran(response.data.body);
+          if (!prevPath) {
+            setPrevPath(
+              `/campaign/${response.data.body.campaign_donation.campaign_id}`
+            );
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
           Error401(error, router);
-        }
-        console.error("Error fetching data:", error);
-      });
+        });
+    }
   }, [router]);
 
   return (
     <div className="my-0 h-screen max-w-480 bg-white flex flex-col">
-      <Header title="Detail Donasi" backto={"/mydonation"} />
+      <Header title="Detail Donasi" backto={prevPath} />
       <div className="mt-10 p-4 overflow-hidden">
         <div className="p-4 py-8 w-full mb-4 bg-white shadow-[rgba(0,0,2,0.5)_0px_0px_6px_0px] rounded-lg">
           <div className="flex justify-center items-center mb-4 animate-zoom">
@@ -69,9 +72,11 @@ const BuktiPembayaran = () => {
             </h1>
             {/* <p className="font-semibold"> {pembayaran.transaction_date}</p> */}
             <p className="font-semibold text-sm">
-              {moment(pembayaran?.transaction_date).format(
-                "DD MMM YYYY hh:mm:ss"
-              ) || "-"}
+              {pembayaran?.transaction_date
+                ? moment(pembayaran?.transaction_date).format(
+                    "DD MMM YYYY hh:mm:ss"
+                  )
+                : "-"}
             </p>
           </div>
           <div className="flex justify-between mb-2">
@@ -144,12 +149,14 @@ const BuktiPembayaran = () => {
         </div>
 
         <Link
-          href={"/mydonation"}
+          href={prevPath}
+          onClick={() => localStorage.removeItem("prevPath")}
           className="bg-slate-200 flex justify-center items-center bg-transparent border-2 h-10 border-primary p-3 rounded-xl outline-none"
         >
           <p className="font-bold text-primary">Kembali</p>
         </Link>
       </div>
+      {loading && <Loading />}
     </div>
   );
 };

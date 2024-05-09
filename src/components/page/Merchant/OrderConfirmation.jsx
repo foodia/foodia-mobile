@@ -57,8 +57,6 @@ const OrderConfirmation = () => {
               response.data.body.merchant_product.price
           );
 
-          console.log(response.data.body.qty);
-
           if (affordablePcs > response.data.body.qty) {
             setMaxOrder(response.data.body.qty);
           } else if (affordablePcs < response.data.body.qty) {
@@ -96,11 +94,17 @@ const OrderConfirmation = () => {
             title: "custom-title-swal",
             confirmButton: "custom-confirm-button-swal",
           },
+          willOpen: () => {
+            Swal.getPopup().classList.add("swal2-show-swipeup");
+          },
+          willClose: () => {
+            Swal.getPopup().classList.add("swal2-show-swipedown");
+          },
           icon: "success",
           title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Mengkonfirmasi Pesanan</p><p class="w-auto pl-1 font-normal text-[15px]">Terima kasih telah membantu campaign kami</p>`,
           html: `
-              <div class="absolute px-28 ml-4 top-0 mt-4">
-                <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+              <div class="absolute px-24 ml-10 top-0 mt-4">
+                <hr class="border border-gray-400 w-10 h-1 bg-gray-400 rounded-lg "/>
               </div>
             `,
           width: "375px",
