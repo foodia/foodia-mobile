@@ -12,8 +12,14 @@ const Campaign = () => {
   const { id } = router.query;
   const [loading, setLoading] = useState(true);
   const [campaignData, setCampaignData] = useState(null);
+  const [prevPath, setPrevPath] = useState("/home");
 
   useEffect(() => {
+    const prevPath = localStorage.getItem("prevPath");
+    if (prevPath) {
+      setPrevPath(prevPath);
+    }
+
     const token = localStorage.getItem("token");
     const fetchData = async () => {
       try {
@@ -40,7 +46,7 @@ const Campaign = () => {
 
   return (
     <div className="h-full max-w-480 bg-white flex flex-col">
-      <Header title="Informasi" />
+      <Header title="Informasi" backto={prevPath} />
       {loading ? (
         <div className={`${styles.card}`}>
           {[...Array(4)].map((_, index) => (
