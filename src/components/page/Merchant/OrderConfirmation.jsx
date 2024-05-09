@@ -57,8 +57,6 @@ const OrderConfirmation = () => {
               response.data.body.merchant_product.price
           );
 
-          console.log(response.data.body.qty);
-
           if (affordablePcs > response.data.body.qty) {
             setMaxOrder(response.data.body.qty);
           } else if (affordablePcs < response.data.body.qty) {
