@@ -506,21 +506,19 @@ const DetailCamp = ({ data }) => {
             {data.description}
           </p>
           <hr className="w-full h-0.5 mx-auto mt-2 bg-gray-100 border-0 rounded" />
-          <div className="bg-white grid place-content-center rounded-sm text-primary text-xs mt-2">
-            {showFullText && data.description >= 40 ? (
-              <button className="flex" onClick={toggleReadMore}>
-                Lebih Sedikit <IconChevronUp size={20} />
-              </button>
-            ) : (
-              showFullText &&
-              data.description >=
-                40(
-                  <button className="flex" onClick={toggleReadMore}>
-                    Selengkapnya <IconChevronDown size={20} />
-                  </button>
-                )
-            )}
-          </div>
+          {data.description.length >= 30 && (
+            <div className="bg-white grid place-content-center rounded-sm text-primary text-xs mt-2">
+              {showFullText ? (
+                <button className="flex" onClick={toggleReadMore}>
+                  Lebih Sedikit <IconChevronUp size={20} />
+                </button>
+              ) : (
+                <button className="flex" onClick={toggleReadMore}>
+                  Selengkapnya <IconChevronDown size={20} />
+                </button>
+              )}
+            </div>
+          )}
         </div>
         <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0" />
         <div className="w-full rounded-lg items-center px-4 py-2.5 mt-4">
