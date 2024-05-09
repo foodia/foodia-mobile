@@ -99,7 +99,7 @@ const FormReportMerchant = () => {
                 },
               }
             )
-            .then(() => {
+            .then((res) => {
               Swal.fire({
                 icon: "success",
                 title: "Report Berhasil",
@@ -108,7 +108,9 @@ const FormReportMerchant = () => {
                 timer: 2000,
               });
               setTimeout(() => {
-                router.push("/merchant/rating");
+                router.push(
+                  `/merchant/review/${res.data.body.order_id}?id_camp=${res.data.body.campaign_id}`
+                );
               }, 2000);
               setLoading(false);
             })

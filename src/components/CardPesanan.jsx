@@ -42,16 +42,15 @@ const CardPesanan = (props) => {
               alt=""
             />
             <div className="text-left ml-2 w-full flex flex-col justify-between min-h-[105px]">
-              <p className="text-primary font-bold text-md capitalize">
-                {title}
-              </p>
-
-              <div className="flex flex-col gap-1 italic">
+              <div className="flex flex-col italic">
+                <p className="text-primary font-bold text-md capitalize">
+                  {title}
+                </p>
                 <div className="flex flex-row gap-1">
-                  <p className="font-normal text-[11px] text-black">
+                  <p className="font-normal text-[9px] text-black">
                     Tanggal Campaign:{" "}
                   </p>{" "}
-                  <p className="font-medium text-[11px] text-black">{date}</p>
+                  <p className="font-medium text-[9px] text-black">{date}</p>
                 </div>
               </div>
               <div className="flex items-end justify-between mt-2">
