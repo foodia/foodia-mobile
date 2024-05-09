@@ -5,6 +5,7 @@ import DetailCamp from "@/components/page/DetailPage";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import styles from "@/styles/Home.module.css";
 
 const Campaign = () => {
   const router = useRouter();
@@ -28,9 +29,7 @@ const Campaign = () => {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       }
     };
 
@@ -42,8 +41,19 @@ const Campaign = () => {
   return (
     <div className="h-full max-w-480 bg-white flex flex-col">
       <Header title="Informasi" />
-      {campaignData && <DetailCamp data={campaignData} />}
-      {/* <BottomNav /> */}
+      {loading ? (
+        <div className={`${styles.card}`}>
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className={`${styles.loadingCard}`}>
+              <div className={`${styles.shimmer}`}></div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          <DetailCamp data={campaignData} />
+        </>
+      )}
       {loading && <Loading />}
     </div>
   );
