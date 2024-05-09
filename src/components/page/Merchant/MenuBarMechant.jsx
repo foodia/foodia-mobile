@@ -26,14 +26,12 @@ const MenuBarMechant = () => {
         })
             .then((res) => {
                 setLoading(false);
-                console.log("review", res.data.body);
                 setJumlah(res.data.body.length);
             }).catch((error) => {
                 setLoading(false);
                 Error401(error, router);
             })
     }, [pathname])
-    console.log('router.pathname', router.pathname);
     return <div className="flex items-center justify-center px-6 pt-16">
         <div className={`bg-gray-100 rounded-2xl w-full p-3`}>
             <div className="flex justify-between items-center">
