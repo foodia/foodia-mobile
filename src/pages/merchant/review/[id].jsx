@@ -35,6 +35,7 @@ const ReviewCamp = () => {
                 // setnewReport(response.data.body);
                 setloading(false);
             }).catch((error) => {
+                Error401(error, router);
                 console.log(error);
             })
     }, [id_camp]);
@@ -94,15 +95,15 @@ const ReviewCamp = () => {
 
     return (
         <div className="container mx-auto pt-14 bg-white h-screen">
-            <Header title="Review Merchant" />
+            <Header title="Review Volunteer" />
             <div className="place-content-center">
                 <div className=" w-full p-2">
-                    <div className="flex justify-between items-center w-full p-2 border border-gray-200 rounded-lg">
+                    <div className="flex justify-between items-center w-full p-2 border border-gray-200 ">
                         <div className="flex items-center">
                             <img
                                 src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${newReport?.detonator?.self_photo}`}
                                 alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${newReport?.detonator?.self_photo}`}
-                                className="w-20 h-20 object-cover"
+                                className="w-20 h-20 object-cover rounded-full"
                             />
                             <div className="ml-2">
                                 <p className="text-[14px] text-primary font-medium">{newReport?.detonator?.oauth?.fullname}</p>

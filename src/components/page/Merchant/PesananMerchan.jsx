@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import MenuBarMechant from "./MenuBarMechant";
 
 const PesananMerchan = () => {
   const router = useRouter();
@@ -98,106 +99,31 @@ const PesananMerchan = () => {
   return (
     <>
       <div className="container mx-auto h-screen">
-        <div className="flex items-center justify-center px-6 pt-16">
-          <div className={`bg-gray-100 rounded-2xl w-full p-3`}>
-            <div className="flex justify-between items-center">
-              {router.pathname === "/merchant" ? (
-                <Link
-                  href="/createmenu?step=1"
-                  className="grid justify-items-center gap-1 w-24"
-                >
-                  <div className={`${styles.iconMenu}`}>
-                    <IconCirclePlus />
-                  </div>
-                  <p className="text-xs font-normal text-black">Tambah Menu</p>
-                </Link>
-              ) : (
-                router.pathname === "/merchant/pesanan" && (
-                  <Link
-                    href="/merchant"
-                    className="grid justify-items-center gap-1 w-24"
-                  >
-                    <div className={`${styles.iconMenu}`}>
-                      <IconBowlFilled />
-                    </div>
-                    <p className="text-xs font-normal text-black">
-                      Daftar Menu
-                    </p>
-                  </Link>
-                )
-              )}
-              <Link
-                href="/merchant/pesanan"
-                className="grid justify-items-center gap-1 w-24 "
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <Image
-                    src={"/icon/pesanan.png"}
-                    alt="Girl in a jacket"
-                    width={30}
-                    height={30}
-                  />
-                </div>
-                <p className="text-xs font-normal text-black">Pesanan</p>
-              </Link>
-              <Link
-                href="/merchant/saldo"
-                className="grid justify-items-center gap-1 w-24 "
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <Image
-                    src={"/icon/saldo.png"}
-                    alt="Girl in a jacket"
-                    width={30}
-                    height={30}
-                  />
-                </div>
-                <p className="text-xs font-normal text-black">Saldo</p>
-              </Link>
-              <Link
-                href="/merchant/review"
-                className="grid justify-items-center gap-1 w-24 "
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <Image
-                    src={"/icon/ulasan.png"}
-                    alt="Girl in a jacket"
-                    width={30}
-                    height={30}
-                  />
-                </div>
-                <p className="text-xs font-normal text-black">Ulasan</p>
-              </Link>
-            </div>
-          </div>
-        </div>
+        <MenuBarMechant />
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "review"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "review"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("review")}
           >
             <span>Pesanan</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "terima"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
-            onClick={() => handleFilterChange("terima")}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
+            onClick={() => handleFilterChange("diproses")}
           >
             <span>Berlangsung</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "selesai"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-            }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
+              }`}
             onClick={() => handleFilterChange("selesai")}
           >
             <span>History</span>
@@ -219,8 +145,8 @@ const PesananMerchan = () => {
                 {selectedStatus === "review"
                   ? "Tidak Ada Pesanan"
                   : selectedStatus === "diproses"
-                  ? "Tidak Ada Pesanan Berlangsung"
-                  : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
+                    ? "Tidak Ada Pesanan Berlangsung"
+                    : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
               </p>
             ) : (
               filteredData.map((data) => (
