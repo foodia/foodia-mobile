@@ -110,6 +110,36 @@ input:checked + .slider:before {
   /* Adjust border radius as needed */
 }
 
+.swal2-popup.swal2-show-swipeup {
+  animation: swipeup 0.5s ease forwards;
+}
+
+.swal2-popup.swal2-show-swipedown {
+  animation: swipedown 0.5s ease forwards;
+}
+
+@keyframes swipeup {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+@keyframes swipedown {
+  from {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
 ::-webkit-scrollbar {
   width: 0;
 }
