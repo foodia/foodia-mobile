@@ -256,7 +256,7 @@ export default function PageMerchant() {
                         </div>
                     ) : (
                         <div className={`${styles.card}`}>
-                            {filteredData.length == 0 ? (
+                            {!filteredData || filteredData.length === 0 ? (
                                 <p className="text-gray-400">
                                     {selectedStatus === "approved"
                                         ? "Belum Ada Menu"

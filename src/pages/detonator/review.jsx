@@ -19,7 +19,7 @@ const review = (review) => {
     const [filteredData, setFilteredData] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState("KirimUlasan");
     const [menu, setMenu] = useState("review-list");
-    const [jumlah, setJumlah] = useState();
+    const [jumlah, setJumlah] = useState(0);
 
     useEffect(() => {
         const authenticateUser = async () => {
@@ -160,7 +160,7 @@ const review = (review) => {
             .then((res) => {
                 // setSelectedStatus()
                 setDataApi(res.data.body);
-                setJumlah(res.data.body.length);
+                setJumlah(res?.data?.body?.length);
                 // setFilteredData(res.data.body);
                 setLoading(false);
                 console.log("review", res.data.body);
@@ -176,7 +176,7 @@ const review = (review) => {
         if (selectedStatus == "KirimUlasan") {
             setLoading(false)
             setFilteredData(dataApi);
-            setJumlah(dataApi.length);
+            setJumlah(dataApi?.length);
 
 
 
@@ -265,47 +265,53 @@ const review = (review) => {
                         </div>
                     ) : (
                         <div className={`${styles.card}`}>
-
-                            {selectedStatus === "KirimUlasan" ? (
+                            {!filteredData || filteredData.length === 0 ? (
+                                <p className="text-gray-400"> Tidak Ada Pengajuan</p>
+                            ) : (
                                 <>
-                                    {filteredData.map((dataFilter) => (
-                                        <CardReview
-                                            key={dataFilter.id}
-                                            to={`/detonator/rating/${dataFilter?.order_id}?id_mrc=${dataFilter.merchant_id}&id_camp=${dataFilter.campaign_id}`}
-                                            img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter?.event_image}`}
-                                            title={dataFilter?.event_name}
-                                            description={"sfsfsf"}
-                                            date={"sfsfs"}
-                                            address={`${dataFilter?.event_address}`}
-                                            rating={true}
-                                        />
-                                    ))}
+                                    {selectedStatus === "KirimUlasan" && (
+                                        <>
+                                            {filteredData.map((dataFilter) => (
+                                                <CardReview
+                                                    key={dataFilter.id}
+                                                    to={`/detonator/rating/${dataFilter?.order_id}?id_mrc=${dataFilter.merchant_id}&id_camp=${dataFilter.campaign_id}`}
+                                                    img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter?.event_image}`}
+                                                    title={dataFilter?.event_name}
+                                                    description={"sfsfsf"}
+                                                    date={"sfsfs"}
+                                                    address={`${dataFilter?.event_address}`}
+                                                    rating={true}
+                                                />
+                                            ))}
+                                        </>
+                                    )}
+                                    {selectedStatus === "UlasanSelesai" && filteredData.length > 0 && (
+                                        <>
+                                            {filteredData.map((dataFilter) => (
+                                                <CardReview
+                                                    key={dataFilter.id}
+                                                    to={``}
+                                                    img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.order?.campaign?.image_url}`}
+                                                    title={dataFilter?.order?.campaign?.event_name}
+                                                    description={"sfsfsf"}
+                                                    date={dataFilter.order?.campaign.event_date}
+                                                    time={dataFilter.order?.campaign.event_time}
+                                                    address={`${dataFilter.order?.campaign?.address}`}
+                                                    rating={true}
+                                                    qty={dataFilter.order?.qty}
+                                                    harga={dataFilter.order?.merchant_product?.price}
+                                                    status={'Completed'}
+                                                    TotalHarga={dataFilter.order?.total_amount}
+                                                    nameProduct={dataFilter.order?.merchant_product?.name}
+                                                />
+                                            ))}
+                                        </>
+                                    )}
                                 </>
-                            ) : selectedStatus === "UlasanSelesai" && filteredData.length > 0 ? (
-                                <>
-                                    {filteredData.map((dataFilter) => (
-                                        <CardReview
-                                            key={dataFilter.id}
-                                            to={``}
-                                            img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.order?.campaign?.image_url}`}
-                                            title={dataFilter?.order?.campaign?.event_name}
-                                            description={"sfsfsf"}
-                                            date={dataFilter.order?.campaign.event_date}
-                                            time={dataFilter.order?.campaign.event_time}
-                                            address={`${dataFilter.order?.campaign?.address}`}
-                                            rating={true}
-                                            qty={dataFilter.order?.qty}
-                                            harga={dataFilter.order?.merchant_product?.price}
-                                            status={'Completed'}
-                                            TotalHarga={dataFilter.order?.total_amount}
-                                            nameProduct={dataFilter.order?.merchant_product?.name}
-                                        />
-                                    ))}
-                                </>
-                            ) : null}
-
+                            )}
                         </div>
                     )}
+
                     {loading && <Loading />}
                 </div>
             </div>
