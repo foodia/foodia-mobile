@@ -48,8 +48,8 @@ const saldo = (saldo) => {
         },
       })
       .then((response) => {
-        setLoading(false);
         setBalance(response.data.body.wallet.balance);
+        setLoading(false);
       })
       .catch((error) => {
         setLoading(false);
@@ -153,7 +153,7 @@ const saldo = (saldo) => {
 
   return (
     <>
-      <div className="container mx-auto h-screen">
+      <div className="container mx-auto h-screen overflow-hidden">
         <Header title="Saldo" backto="/merchant" />
         <div className="container mx-auto pt-14 bg-white h-screen">
           <div className="mx-4 p-3 rounded-lg border-solid border-2 border-gray-300">
@@ -219,52 +219,60 @@ const saldo = (saldo) => {
               ))}
             </div>
           ) : (
-            <div className={`${styles.card}`}>
+            <div
+              className={`flex flex-col justify-start items-center overflow-auto h-screen px-1 pb-[400px]`}
+            >
               {selectedStatus === "penarikan" ? (
-                riwayat
-                  .sort(
-                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
-                  )
-                  .map((data) => (
-                    <div
-                      className="mx-4 mt-2 w-80 bg-white shadow-md p-4 rounded-lg"
-                      key={data.id}
-                    >
-                      <div className="flex justify-between">
-                        <p className="font-bold uppercase">{data.bank}</p>
-                        <div
-                          className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${
-                            data.status === "approved"
-                              ? "bg-green-500"
-                              : data.status === "waiting"
-                              ? "bg-blue-500"
-                              : "bg-red-500"
-                          }`}
-                        >
-                          <p className="">{data.status}</p>
+                riwayat.length == 0 ? (
+                  <p className="text-gray-400 text-center">
+                    {selectedStatus === "penarikan" &&
+                      "Tidak Ada Riwayat Penarikan"}
+                  </p>
+                ) : (
+                  riwayat
+                    .sort(
+                      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                    )
+                    .map((data) => (
+                      <div
+                        className="mx-4 mt-2 w-80 bg-white shadow-md p-4 rounded-lg"
+                        key={data.id}
+                      >
+                        <div className="flex justify-between">
+                          <p className="font-bold uppercase">{data.bank}</p>
+                          <div
+                            className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${
+                              data.status === "approved"
+                                ? "bg-primary"
+                                : data.status === "waiting"
+                                ? "bg-blue-500"
+                                : "bg-red-500"
+                            }`}
+                          >
+                            <p className="">{data.status}</p>
+                          </div>
                         </div>
+                        <p>{formatPrice(data.amount)}</p>
+                        <p className="text-sm">{`${data.rekening}`}</p>
+                        <p className="text-gray-500 text-xs">
+                          {new Intl.DateTimeFormat("en-ID", {
+                            year: "numeric",
+                            month: "short",
+                            day: "2-digit",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false,
+                          }).format(new Date(data.created_at))}
+                        </p>
                       </div>
-                      <p>{formatPrice(data.amount)}</p>
-                      <p className="text-sm">{`${data.rekening}`}</p>
-                      <p className="text-gray-500 text-xs">
-                        {new Intl.DateTimeFormat("en-ID", {
-                          year: "numeric",
-                          month: "short",
-                          day: "2-digit",
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: false,
-                        }).format(new Date(data.created_at))}
-                      </p>
-                    </div>
-                  ))
+                    ))
+                )
               ) : filteredData.length == 0 ? (
                 <p className="text-gray-400 text-center">
                   {selectedStatus === "diproses"
                     ? "Tidak Ada Partisipasi Berjalan"
-                    : selectedStatus === "selesai"
-                    ? "Tidak Ada Partisipasi Selesai"
-                    : selectedStatus === "penarikan" && "Tidak Ada Penarikan"}
+                    : selectedStatus === "selesai" &&
+                      "Tidak Ada Partisipasi Selesai"}
                 </p>
               ) : (
                 filteredData.map((data) => (

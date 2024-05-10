@@ -25,7 +25,7 @@ const Merchant = () => {
     axios
       .get(
         process.env.NEXT_PUBLIC_API_BASE_URL +
-        `merchant-product/filter?merchant_id=${id}`,
+          `merchant-product/filter?merchant_id=${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -186,23 +186,25 @@ const Merchant = () => {
 
   return (
     <>
-      <div className="container mx-auto h-screen">
+      <div className="container mx-auto h-screen overflow-hidden">
         <MenuBarMechant />
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "approved"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "approved"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("approved")}
           >
             <span>Menu</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "listMenu"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "listMenu"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("listMenu")}
           >
             <span>Pengajuan</span>
@@ -218,9 +220,9 @@ const Merchant = () => {
             ))}
           </div>
         ) : (
-          <div className={`${styles.card}`}>
+          <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
             {filteredData.length == 0 ? (
-              <p className="text-gray-400">
+              <p className="text-gray-400 flex justify-center items-center">
                 {selectedStatus === "approved"
                   ? "Belum Ada Menu"
                   : "Tidak Ada Pengajuan"}

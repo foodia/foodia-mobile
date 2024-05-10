@@ -290,7 +290,7 @@ const MerchantUpdateProfile = (profile) => {
               </p>
             </div>
             <div
-              className={`flex flex-row items-center p-3 pr-2 py-0  ${
+              className={`flex flex-row items-start h-24 p-3 pr-2  ${
                 address ? "bg-transparent" : "bg-gray-50"
               } border-[1px] ${
                 !address && "border-red-500"
@@ -302,7 +302,7 @@ const MerchantUpdateProfile = (profile) => {
                 onChange={(e) => setAddress(e.target.value)}
                 type="text"
                 id="address"
-                className="text-black ml-2 w-full p-0 py-4 pr-0.5 pl-1 bg-transparent focus:border-none outline-none resize-none"
+                className="text-black ml-2 w-full h-full p-0 pr-0.5 pl-1 bg-transparent focus:border-none outline-none resize-none"
                 placeholder="Alamat"
                 required
                 value={address}
@@ -312,7 +312,7 @@ const MerchantUpdateProfile = (profile) => {
                   router.push("/merchant-change-address");
                 }}
                 title="Pilih Map"
-                className="text-red-400"
+                className="text-red-400 h-full flex text-center justify-center items-center"
               >
                 <IconMapPin />
               </button>
