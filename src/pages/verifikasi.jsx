@@ -14,7 +14,7 @@ const Verifikasi = () => {
     const [codes, setCodes] = useState("");
     const { state } = useAppState();
     const [showCountdown, setShowCountdown] = useState(false);
-    const [countdownTime, setCountdownTime] = useState(Date.now() + 120000); // Set 120000 untuk 2 menit
+    const [countdownTime, setCountdownTime] = useState(Date.now() + 60000); // Set 60000 untuk 2 menit
     const [errorMessage, setErrorMessage] = useState(null);
     const registrasi = state.registrasi;
 
@@ -39,8 +39,8 @@ const Verifikasi = () => {
 
     useEffect(() => {
         const countdownInterval = setInterval(() => {
-            setCountdownTime((prevTime) => prevTime - 199); // Kurangi 1 detik dari countdownTime setiap 1 detik
-        }, 199);
+            setCountdownTime((prevTime) => prevTime - 900); // Kurangi 1 detik dari countdownTime setiap 1 detik
+        }, 900);
 
         return () => clearInterval(countdownInterval);
     }, []);
@@ -104,7 +104,7 @@ const Verifikasi = () => {
                 }
             )
             .then(() => {
-                setCountdownTime(Date.now() + 120000); // Set ulang countdownTime ke 2 menit
+                setCountdownTime(Date.now() + 60000); // Set ulang countdownTime ke 2 menit
                 setLoading(false);
                 setErrorMessage(null);
                 Swal.fire({
