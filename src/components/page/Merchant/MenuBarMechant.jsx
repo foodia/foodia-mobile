@@ -17,31 +17,48 @@ const MenuBarMechant = () => {
     const [jumlah, setJumlah] = useState(0);
     const [loading, setLoading] = useState(true);
     const [id, setId] = useState(0);
+    const [role, setRole] = useState();
 
     useEffect(() => {
         setId(localStorage.getItem("id"));
-        const fetchData = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/not-reviewed?type=merchant&id=${id}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-                setJumlah(response.data.body.length);
-                setLoading(false);
-            } catch (error) {
-                setLoading(false);
-                Error401(error, router);
-            }
+        const token = localStorage.getItem("token");
+        const role = localStorage.getItem("role");
+        console.log("role", role);
+
+        const fetchData = () => {
+            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/not-reviewed?type=merchant&id=${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((res) => {
+                    setLoading(false);
+                    console.log("review", res.data.body);
+                    setJumlah(res.data.body.length);
+                }).catch((error) => {
+                    setLoading(false);
+                    Error401(error, router);
+                });
         };
 
-        fetchData();
+        if (role === "merchant") {
+            setRole(role);
+            setId(localStorage.getItem("id"));
+            fetchData();
+        } else {
+            const interval = setInterval(() => {
+                const updatedRole = localStorage.getItem("role");
+                if (updatedRole === "merchant") {
+                    clearInterval(interval);
+                    setRole(updatedRole);
+                    setId(localStorage.getItem("id"));
+                    fetchData();
+                }
+            }, 1000);
+        }
 
     }, [id, pathname]);
+
     return (
         <div className="flex items-center justify-center px-6 pt-16">
             <div className={`bg-gray-100 rounded-2xl w-full p-3`}>
