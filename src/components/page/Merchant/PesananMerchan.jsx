@@ -2,13 +2,10 @@ import CardPesanan from "@/components/CardPesanan";
 import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import styles from "@/styles/Home.module.css";
-import { IconBowlFilled, IconCirclePlus } from "@tabler/icons-react";
 import axios from "axios";
 import moment from "moment/moment";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import MenuBarMechant from "./MenuBarMechant";
 
 const PesananMerchan = () => {
@@ -98,32 +95,35 @@ const PesananMerchan = () => {
   };
   return (
     <>
-      <div className="container mx-auto h-screen">
+      <div className="container mx-auto overflow-hidden h-screen">
         <MenuBarMechant />
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "review"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "review"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("review")}
           >
             <span>Pesanan</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "diproses"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("diproses")}
           >
             <span>Berlangsung</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "selesai"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("selesai")}
           >
             <span>History</span>
@@ -139,14 +139,14 @@ const PesananMerchan = () => {
             ))}
           </div>
         ) : (
-          <div className={`${styles.card} `}>
+          <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
             {filteredData.length == 0 ? (
-              <p className="text-gray-400">
+              <p className="text-gray-400  flex justify-center items-center">
                 {selectedStatus === "review"
                   ? "Tidak Ada Pesanan"
                   : selectedStatus === "diproses"
-                    ? "Tidak Ada Pesanan Berlangsung"
-                    : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
+                  ? "Tidak Ada Pesanan Berlangsung"
+                  : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
               </p>
             ) : (
               filteredData.map((data) => (
