@@ -88,7 +88,7 @@ const CardReview = (props) => {
                 <div className="flex px-1.5 pt-1.5">
                     <img
                         src={img}
-                        className={`grid grid-cols-3 gap-4 place-items-end bg-gray-200 rounded-lg object-cover ${styles.img_card}`}
+                        className={`grid grid-cols-3 gap-4 place-items-end bg-gray-200 rounded-lg object-cover w-[75px] h-[75px]`}
                         alt=""
                     />
                     {role == "merchant" ? (
@@ -113,55 +113,54 @@ const CardReview = (props) => {
                                         </div>
                                     </>
                                 ) : null}
-
-
                             </div>
-
-
-
-
-
                         </div>
-                    )
-                        : (
-                            <div className={`px-2 ${styles.text_card}`}>
-                                <p className="mb-1 text-black font-bold text-sm capitalize">
+                    ) : (
+                        <div className={`px-2 ${styles.text_card}`}>
+                            <div className="flex justify-between">
+
+                                <p className="mb-1 text-black font-bold text-[14px] capitalize">
                                     {title}
                                 </p>
-                                {status == "Completed" ? (
-                                    <>
-                                        <div className="flex mb-2">
-                                            <p className="font-sans text-[8px] text-gray-500 mr-1">Tanggal Campaign :</p>
-                                            <p className="font-bold text-[8px] text-black">{date} {time}</p>
-                                        </div>
-                                        <p className=" font-sans text-[10px]">{qty} X {nameProduct}</p>
-                                        <div className="flex justify-between  items-center ">
-
-                                            <p className="text-green font-sans mb-1 text-[18px] font-bold">
-                                                Rp. {TotalHarga?.toLocaleString('id-ID')}
-                                            </p>
-                                            <div
-                                                className={`font-sans text-xs text-white rounded-lg p-1 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'Completed' ? 'bg-primary' : status == 'rejected' ? 'bg-red-500' : ''
-                                                    }`}
-                                            >
-                                                <p className="">{status}</p>
-                                            </div>
-                                        </div>
-                                    </>
-                                ) : <p
-                                    className={`font-sans text-xs font-normal mr-2 ${styles.cutTextCard}`}
-                                >
-                                    {address}
-                                </p>}
-
-
+                                {status == "Completed" && role == "detonator" ? (
+                                    <div
+                                        className={`h-[16px] font-sans text-xs text-white rounded-lg p-1 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'Completed' ? 'bg-primary' : status == 'rejected' ? 'bg-red-500' : ''
+                                            }`}
+                                    >
+                                        <p className="">{status}</p>
+                                    </div>
+                                ) : null}
 
                             </div>
-                        )
+                            {status == "Completed" && role == "merchant" ? (
+                                <>
+                                    <div className="flex mb-2">
+                                        <p className="font-sans text-[8px] text-gray-500 mr-1">Tanggal Campaign :</p>
+                                        <p className="font-bold text-[8px] text-black">{date} {time}</p>
+                                    </div>
+                                    <p className=" font-sans text-[10px]">{qty} X {nameProduct}</p>
+                                    <div className="flex justify-between  items-center ">
+
+                                        <p className="text-green font-sans mb-1 text-[18px] font-bold">
+                                            Rp. {TotalHarga?.toLocaleString('id-ID')}
+                                        </p>
+                                        <div
+                                            className={`font-sans text-xs text-white rounded-lg p-1 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'Completed' ? 'bg-primary' : status == 'rejected' ? 'bg-red-500' : ''
+                                                }`}
+                                        >
+                                            <p className="">{status}</p>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : <p
+                                className={`font-sans text-[10px] font-normal mr-2 ${styles.cutTextCard}`}
+                            >
+                                {address}
+                            </p>}
+                        </div>
+                    )
                     }
-
                 </div>
-
             </Link>
         </div>
     );
