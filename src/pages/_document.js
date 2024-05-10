@@ -5,7 +5,7 @@ export default function Document() {
     <Html lang="en">
       <title>Foodia</title>
       <Head />
-      <body className="bg-white lg:bg-gray-200">
+      <body className="bg-gray-200">
         <Main />
         <NextScript />
       </body>

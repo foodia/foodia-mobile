@@ -102,7 +102,7 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="bg-white h-screen">
+      <div className="bg-white overflow-hidden">
         {/* <SearchBar /> */}
         <div className="flex items-center justify-center px-6 my-2">
           <div className="bg-gray-100 rounded-xl py-2">
@@ -232,7 +232,7 @@ const HomePage = () => {
             ))}
           </div>
         ) : (
-          <div className={`pb-28 ${styles.card}`}>
+          <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
             {DataCamp.map((campData) => {
               // console.log(`Key: ${dataFilter.id}`);
               return (

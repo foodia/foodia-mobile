@@ -114,9 +114,9 @@ const profile = (profile) => {
 
   return (
     <>
-      <div className="bg-white flex flex-col px-5 h-full pb-20">
+      <div className="bg-white flex flex-col px-5 h-screen pb-20">
         {/* <Header /> */}
-        <div class="pt-4 pb-32 w-full">
+        <div class="pt-4 h-screen overflow-auto pb-32 w-full">
           <p className="text-center font-bold text-lg">Profile</p>
           {loading ? (
             <div className={`${styles.card} `}>

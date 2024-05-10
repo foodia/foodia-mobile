@@ -42,7 +42,7 @@
   align-items: center;
   /* justify-content: center; */
   overflow: auto;
-  max-height: 60%;
+  /* max-height: 60%; */
   padding-bottom: 150px;
   /* padding-top: 70px; */
 }
