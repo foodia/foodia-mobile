@@ -168,16 +168,16 @@ const profile = (profile) => {
                 <IconChevronRight className="text-primary" />
               </button>
               <div className="shadow rounded-xl filter-none mb-4 p-3 px-5">
-                <div class="card md:flex max-w-lg">
-                  <div class="flex-grow text-left md:text-left">
+                <div class="card flex max-w-lg">
+                  <div class="flex-grow text-left">
                     <div className="mt-2 text-left mb-3">
                       <p class="font-bold">Email</p>
                       <p>{dataUser?.email}</p>
                     </div>
                   </div>
                 </div>
-                <div class="card md:flex max-w-lg">
-                  <div class="flex-grow text-left md:text-left">
+                <div class="card flex max-w-lg">
+                  <div class="flex-grow text-left">
                     <div className="mt-2 text-left mb-3">
                       <p class="font-bold">Nomer HP</p>
                       <p>{dataUser?.phone}</p>

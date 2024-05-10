@@ -99,7 +99,7 @@ const CardFood = (props) => {
           <div className="flex items-start p-1 w-full">
             <img
               src={img}
-              className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
+              className={`grid min-w-[35%] grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
               alt=""
             />
             <div
