@@ -269,34 +269,11 @@ input:checked + .slider:before {
   background-color: #3490dc;
 }
 
-/* ----------------------------------------------------------- */
-.your-custom-container-class {
-  /* width: 375px; */
-
-  /* CSS untuk kontainer SweetAlert */
-}
-
 .your-custom-popup-class {
   width: 372px;
   position: absolute;
   bottom: 10px;
   margin: auto;
-}
-
-.your-custom-title-class {
-  /* CSS untuk judul SweetAlert */
-}
-
-.your-custom-content-class {
-  /* CSS untuk konten SweetAlert */
-}
-
-.your-custom-confirm-button-class {
-  /* CSS untuk tombol konfirmasi SweetAlert */
-}
-
-.your-custom-cancel-button-class {
-  /* CSS untuk tombol pembatalan SweetAlert */
 }
 
 /* ----------------------------------------------------- animation */

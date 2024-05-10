@@ -98,9 +98,10 @@ const mydonation = () => {
 
   return (
     <>
-      <div className="container mx-auto h-screen max-w-480 bg-white flex flex-col">
-        <Header title="Donasi Saya" />
-        <div className="bg-white h-screen px-4 pt-14">
+      <div className="overflow-hidden max-w-480 bg-white flex flex-col">
+        {/* <Header title="Donasi Saya" backto="/home" /> */}
+        <div className="bg-white h-screen px-4">
+          <p className="text-center font-bold text-lg py-4">Donasi Saya</p>
           <div className="bg-primary w-full px-4 py-2 flex flex-col gap-1 min-h-[22px] rounded-xl">
             <div className="flex justify-between text-white font-semibold text-base">
               <p>Total Donasi</p>
@@ -242,7 +243,7 @@ const mydonation = () => {
               ))}
             </div>
           ) : data?.donation_history ? (
-            <div className={`${styles.card} px-1 `}>
+            <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
               {history.map((data) => (
                 <div className="w-full px-2 py-2 mt-2.5 rounded-lg shadow-[0px_0px_8px_0px_#00000024]">
                   <div className="flex justify-between items-center font-semibold text-[10px]">

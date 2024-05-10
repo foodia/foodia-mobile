@@ -103,14 +103,12 @@ const FormReportMerchant = () => {
               Swal.fire({
                 icon: "success",
                 title: "Report Berhasil",
-                text: `Report Berhasil, silahkan lakukan penilaian campaign.`,
+                text: ``,
                 showConfirmButton: false,
                 timer: 2000,
               });
               setTimeout(() => {
-                router.push(
-                  `/merchant/review/${res.data.body.order_id}?id_camp=${res.data.body.campaign_id}`
-                );
+                router.push(`/merchant/review`);
               }, 2000);
               setLoading(false);
             })

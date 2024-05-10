@@ -218,7 +218,7 @@ const DetailPesanan = () => {
 
   return (
     <>
-      <div className="container mx-auto pt-14 bg-white h-full">
+      <div className="container mx-auto pt-14 bg-white h-screen">
         <Header title="Detail Pesanan" backto="/merchant/pesanan" />
         <div className="place-content-center">
           {loading ? (
