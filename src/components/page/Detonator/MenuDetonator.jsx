@@ -12,24 +12,48 @@ const MenuDetonator = (MenuDetonator) => {
     const pathname = router.pathname;
     const [jumlah, setJumlah] = useState(0);
     const [loading, setLoading] = useState(true);
-    // console.log("router", router.pathname);
+    const [id, setId] = useState(0);
+    const [role, setRole] = useState();
+
     useEffect(() => {
-        const id = localStorage.getItem("id");
+        setId(localStorage.getItem("id"));
         const token = localStorage.getItem("token");
-        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/not-reviewed?type=detonator&id=${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-            .then((res) => {
-                setLoading(false);
-                console.log("review", res.data.body);
-                setJumlah(res.data.body.length);
-            }).catch((error) => {
-                setLoading(false);
-                Error401(error, router);
+        const role = localStorage.getItem("role");
+        console.log("role", role);
+
+        const fetchData = () => {
+            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/not-reviewed?type=detonator&id=${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             })
-    }, [pathname])
+                .then((res) => {
+                    setLoading(false);
+                    console.log("review", res.data.body);
+                    setJumlah(res.data.body.length);
+                }).catch((error) => {
+                    setLoading(false);
+                    Error401(error, router);
+                });
+        };
+
+        if (role === "detonator") {
+            setRole(role);
+            setId(localStorage.getItem("id"));
+            fetchData();
+        } else {
+            const interval = setInterval(() => {
+                const updatedRole = localStorage.getItem("role");
+                if (updatedRole === "detonator") {
+                    clearInterval(interval);
+                    setRole(updatedRole);
+                    setId(localStorage.getItem("id"));
+                    fetchData();
+                }
+            }, 1000);
+        }
+
+    }, [id, pathname]);
 
     const [menu, setMenu] = useState("campaign-list");
     // const [loading, setLoading] = useState(true);
