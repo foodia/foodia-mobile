@@ -32,9 +32,6 @@ const OrderConfirmation = () => {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
       localStorage.clear();
       router.push("/login");
-    } else {
-      // Role is 'detonator' and token is present
-      setLoading(false); // Set loading to false once the check is complete
     }
   }, [router]);
 
@@ -114,7 +111,9 @@ const OrderConfirmation = () => {
           allowOutsideClick: false,
         }).then((result) => {
           if (result.isConfirmed) {
-            router.push(`/merchant/detailpesanan/${id_order}`);
+            router.push(
+              `/merchant/review/${id_order}?id_camp=${dataApi?.campaign_id}`
+            );
           }
         });
       })
@@ -183,11 +182,7 @@ const OrderConfirmation = () => {
                 <div className="flex h-30 w-full gap-2">
                   <img
                     className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 rounded-lg object-cover ${styles.img_card}`}
-                    src={
-                      dataApi?.merchant_product?.images.length > 0
-                        ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${dataApi?.merchant_product?.images[0].image_url}`
-                        : "/img/default-image.png"
-                    }
+                    src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataApi?.merchant_product?.images[0].image_url}`}
                     alt=""
                   />
                   <div className="flex flex-col justify-between w-full">
@@ -223,7 +218,7 @@ const OrderConfirmation = () => {
                             {qty}
                           </span>
                           <button
-                            disabled={qty === dataApi?.qty}
+                            disabled={qty === maxOrder}
                             className=" text-black px-1 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
                             onClick={() => setQty(qty + 1)}
                           >
