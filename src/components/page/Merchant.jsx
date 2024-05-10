@@ -187,63 +187,6 @@ const Merchant = () => {
   return (
     <>
       <div className="container mx-auto h-screen">
-        {/* <div className="flex items-center justify-center px-6 pt-16">
-          <div className={`bg-gray-100 rounded-2xl w-full p-3`}>
-            <div className="flex justify-between items-center">
-              <Link
-                href="/createmenu?step=1"
-                className="grid justify-items-center gap-1 w-24"
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <IconCirclePlus />
-                </div>
-                <p className="text-xs font-normal text-black">Tambah Menu</p>
-              </Link>
-              <Link
-                href="/merchant/pesanan"
-                className="grid justify-items-center gap-1 w-24 "
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <Image
-                    src={"/icon/pesanan.png"}
-                    alt="Girl in a jacket"
-                    width={30}
-                    height={30}
-                  />
-                </div>
-                <p className="text-xs font-normal text-black">Pesanan</p>
-              </Link>
-              <Link
-                href="/merchant/saldo"
-                className="grid justify-items-center gap-1 w-24 "
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <Image
-                    src={"/icon/saldo.png"}
-                    alt="Girl in a jacket"
-                    width={30}
-                    height={30}
-                  />
-                </div>
-                <p className="text-xs font-normal text-black">Saldo</p>
-              </Link>
-              <Link
-                href="/merchant/review"
-                className="grid justify-items-center gap-1 w-24 "
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <Image
-                    src={"/icon/ulasan.png"}
-                    alt="Girl in a jacket"
-                    width={30}
-                    height={30}
-                  />
-                </div>
-                <p className="text-xs font-normal text-black">Ulasan</p>
-              </Link>
-            </div>
-          </div>
-        </div> */}
         <MenuBarMechant />
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
@@ -254,11 +197,6 @@ const Merchant = () => {
             onClick={() => handleFilterChange("approved")}
           >
             <span>Menu</span>
-            {/* <div
-              className={`w-32 h-0.5 ${
-                selectedStatus === "approved" ? "bg-blue-500 w-32 " : "bg-black"
-              }`}
-            ></div> */}
           </div>
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "listMenu"
@@ -268,11 +206,6 @@ const Merchant = () => {
             onClick={() => handleFilterChange("listMenu")}
           >
             <span>Pengajuan</span>
-            {/* <div
-              className={`w-32 h-0.5 ${
-                selectedStatus === "listMenu" ? "bg-blue-500 w-32 " : "bg-black"
-              }`}
-            ></div> */}
           </div>
         </div>
 
@@ -318,10 +251,6 @@ const Merchant = () => {
           </div>
         )}
       </div>
-      {/* <div
-        id="infinite-scroll-trigger"
-        className={`${styles.loadingCard}`}
-      ></div> */}
     </>
   );
 };

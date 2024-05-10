@@ -20,8 +20,8 @@ const ProfileDetonator = ({ id }) => {
   }, [id]);
   return (
     <>
-      <div class="card md:flex flex-col max-w-lg">
-        <div class="flex-grow text-center md:text-left">
+      <div class="card flex flex-col max-w-lg justify-start items-start">
+        <div class="flex-grow">
           <div className="mt-2 mb-3">
             <p class="font-bold">KTP</p>
             <p>{data?.ktp_number}</p>

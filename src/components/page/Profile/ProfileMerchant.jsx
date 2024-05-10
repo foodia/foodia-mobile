@@ -2,7 +2,6 @@ import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import { IconEdit, IconUser } from "@tabler/icons-react";
 import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -29,8 +28,8 @@ const ProfileMerchant = ({ id = 0, merchantStatus, MerchantUpdateProfile }) => {
 
   return (
     <>
-      <div className="items-center justify-center mt-5 w-full mb-4">
-        <div className="w-full h-16 bg-white text-black rounded-lg inline-flex items-center px-1 py-2.5 ">
+      <div className="items-center justify-center mt-5 w-full mb-2">
+        <div className="w-full h-16 bg-white text-black rounded-lg inline-flex items-center px-1">
           <div className="flex justify-between w-full">
             <div className="flex items-center">
               <div className="w-20 h-20 rounded-full bg-blue-100 grid place-items-center mr-2 text-blue-600">
