@@ -137,7 +137,7 @@ const OrderConfirmation = () => {
                     style: "currency",
                     currency: "IDR",
                     minimumFractionDigits: 0,
-                  }).format(dataApi?.campaign?.donation_collected || 0)}
+                  }).format(dataApi?.campaign?.donation_remaining || 0)}
                 </p>
               </div>
               <hr className="border-gray-300 border-[1px] h-2px" />
