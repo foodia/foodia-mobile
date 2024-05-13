@@ -21,7 +21,6 @@ const Header = (props) => {
   useEffect(() => {
     const checkScroll = () => {
       setTest(window.scrollY === 0);
-      // console.log(window.scrollY);
     };
     window.addEventListener("scroll", checkScroll);
   }, [test]);
@@ -51,7 +50,7 @@ const Header = (props) => {
         </div>
 
         {router.asPath === "/login/detonator" ||
-        router.asPath === "/login" ? null : (
+          router.asPath === "/login" ? null : (
           <>
             <div className="flex relative " style={{ width: `65%` }}>
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -81,9 +80,8 @@ const Header = (props) => {
             </div>
             <div className="flex relative">
               <button
-                className={`p-4 text-sm rounded-full  text-gray-600 ${
-                  test ? "bg-gray-200" : ""
-                }`}
+                className={`p-4 text-sm rounded-full  text-gray-600 ${test ? "bg-gray-200" : ""
+                  }`}
                 onClick={handleBackButtonClick}
               >
                 <IconBell />

@@ -8,7 +8,6 @@ const CardReview = (props) => {
     const router = useRouter();
     const [role, setRole] = useState(localStorage.getItem("role"));
     const page = router.route;
-    console.log("role", role);
     const {
         idKey,
         to,
@@ -40,7 +39,6 @@ const CardReview = (props) => {
             remainingDays = 0;
         }
 
-        // console.log("remainingDays", remainingDays);
 
         return remainingDays;
     };
@@ -71,7 +69,6 @@ const CardReview = (props) => {
     };
 
     useEffect(() => {
-        console.log("router", router.route);
         if (donation_target > donation_collected) {
             setTerkumpul(donation_collected);
         } else {

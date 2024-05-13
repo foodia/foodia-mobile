@@ -64,10 +64,6 @@ function StepOne({ cart, setCart, updateCart, setUploadedFile, uploadedFile, loa
             (item) => item.merchant_id === parseInt(IdMerchan) && item.id === itemId
         );
 
-        // console.log("IdMerchan:", IdMerchan);
-        // console.log("itemId:", itemId);
-        // console.log("Data updatedCart:", updatedCart);
-        // console.log("itemIndex:", itemIndex);
 
         if (itemIndex !== -1) {
             const updatedItem = { ...updatedCart[itemIndex] };
@@ -87,7 +83,6 @@ function StepOne({ cart, setCart, updateCart, setUploadedFile, uploadedFile, loa
                     0
                 );
 
-                console.log("updatedCart after decrease:", updatedCart);
 
                 updateCart(updatedCart, totalCartPrice, totalCartQuantity);
             } else {
@@ -142,8 +137,6 @@ function StepOne({ cart, setCart, updateCart, setUploadedFile, uploadedFile, loa
     };
 
     const handleSubmit = () => {
-        // console.log('total Rejected', totalRejected);
-        console.log("data", cart);
         setLoading(true);
         const detonator_id = localStorage.getItem("id");
         const token = localStorage.getItem("token");
@@ -165,7 +158,6 @@ function StepOne({ cart, setCart, updateCart, setUploadedFile, uploadedFile, loa
                     qty: 2
                 },
             };
-            console.log("eventData", eventData);
             const response = axios.post(
                 `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/change-menu`, eventData, {
                 headers: {
@@ -173,7 +165,6 @@ function StepOne({ cart, setCart, updateCart, setUploadedFile, uploadedFile, loa
                 },
             })
                 .then((response) => {
-                    console.log("API Response:", response.data);
                     setLoading(false);
                     Swal.fire({
                         icon: "success",
@@ -238,14 +229,12 @@ function StepOne({ cart, setCart, updateCart, setUploadedFile, uploadedFile, loa
 
     const handleLink = () => {
         router.push(`/detonator/ganti-menu?ord=${order_id}&cmp=${dataCamopaign.id}&step=2`);
-        console.log("data card", cart);
     };
     const handleRemoveAll = () => {
         localStorage.removeItem("cart");
         setCart([]);
     }
 
-    console.log('groupedCart add', groupedCart);
 
     // localStorage.removeItem('formData');
     // localStorage.removeItem('cart');
@@ -393,20 +382,6 @@ function StepTwo({ cart, setCart, setUploadedFile, uploadedFile, loading, dataCa
     const detonator_id = localStorage.getItem("id");
     const token = localStorage.getItem("token");
 
-    // useEffect(() => {
-    //     console.log('id order', id_order);
-    //     console.log('data campaign stp2', dataCamopaign);
-    //     // Check local storage for existing form data
-    //     const storedFormData = localStorage.getItem("formData");
-    //     if (storedFormData) {
-    //         const parsedFormData = JSON.parse(storedFormData);
-    //         if (parsedFormData) {
-    //             // Merge the existing data with the new data
-    //             setLocation(parsedFormData.location || "");
-    //         }
-    //     }
-    // }, []);
-
 
 
 
@@ -424,7 +399,6 @@ function StepTwo({ cart, setCart, setUploadedFile, uploadedFile, loading, dataCa
                         return merchant.status === "approved" && merchant.products.some(product => product.status === "approved");
                     }
                 );
-                console.log("page creat camp data", approvedMerchants);
                 setDataApi(approvedMerchants);
                 setFilteredData(approvedMerchants);
             })
@@ -486,7 +460,6 @@ function StepThree({ cart, setCart, setUploadedFile, uploadedFile, dataCamopaign
     const router = useRouter();
     const IdMerchan = router.query.id;
     const nameMerchant = router.query.name;
-    console.log("router", router);
     const [HargaTotal, setHargaTotal] = useState(0);
     const detonator_id = localStorage.getItem("id");
     const token = localStorage.getItem("token");
@@ -496,8 +469,6 @@ function StepThree({ cart, setCart, setUploadedFile, uploadedFile, dataCamopaign
 
     // const id_order = localStorage.getItem("id_order");
     useEffect(() => {
-        console.log('data campaign stp3', dataCamopaign);
-        console.log("id order", order_id);
         setHargaTotal(cart.reduce((acc, item) => acc + item.total, 0));
     }, [cart]);
 
@@ -539,7 +510,6 @@ function StepThree({ cart, setCart, setUploadedFile, uploadedFile, dataCamopaign
                 if (error.response && error.response.status === 401) {
                     Error401(error, router);
                 }
-                console.log(error);
             });
     }, [setCart]);
 
@@ -598,7 +568,6 @@ function StepThree({ cart, setCart, setUploadedFile, uploadedFile, dataCamopaign
         }).format(amount);
     };
 
-    // console.log('groupedFoods', groupedFoods);
     // Calculate total price and total quantity
 
 

@@ -2,7 +2,6 @@ import Swal from "sweetalert2";
 
 const Error401 = (errCode, router) => {
   const code = errCode?.response?.data?.code;
-  console.log("fewf");
 
   if (code === 401) {
     localStorage.clear();

@@ -40,7 +40,6 @@ const CardRepordFood = (props) => {
         const role = localStorage.getItem("role");
         setIdDetonator(localStorage.getItem("id"));
         setRole(role);
-        console.log("role", role);
     }, []);
 
     const totalPrice = qty * price;
@@ -88,7 +87,6 @@ const CardRepordFood = (props) => {
                     }).then((result) => {
                         if (result.isConfirmed) {
                             router.push(`/detonator/ganti-menu?ord=${id_order}&cmp=${id}&step=1`);
-                            // console.log("ganti menu");
                         } else if (result.isDismissed) {
 
                         } else if (result.isDenied) {
@@ -109,7 +107,6 @@ const CardRepordFood = (props) => {
                                         confirmButtonColor: "green",
                                     });
                                     setLoading(false);
-                                    console.log("response", response);
                                     // router.push(`/detonator/campaign/${id}`);
                                 })
                                 .catch((error) => {
@@ -118,16 +115,12 @@ const CardRepordFood = (props) => {
                                         Error401(error, router);
                                     }
                                 });
-                            // console.log("Tidak ada tindakan yang diambil");
                         } else {
-                            // console.log("lanjutkan");
                             return;
                         }
                     });
 
 
-                    // console.log("to", to);
-                    // console.log("cek iddetonator", detonator_id);
 
                 } else {
                 }

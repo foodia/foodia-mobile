@@ -18,11 +18,9 @@ const CardListMerchan = ({ data }) => {
   const address = `${data.address}, ${data.city}, ${data.province}`;
 
   const handleLink = (IdMerchan) => {
-    // console.log('IdMerchan', IdMerchan);
     router.push(
       `createcampaign?step=4&id=${IdMerchan}&name=${data.merchant_name}`
     );
-    console.log("data card", data.products);
   };
   const products = data.products;
 
@@ -34,9 +32,7 @@ const CardListMerchan = ({ data }) => {
   // Count the number of approved products
   const numberOfApprovedProducts = approvedProducts.length;
 
-  console.log("Number of approved products:", numberOfApprovedProducts);
 
-  // console.log('data', data.products.length);
   return (
     <div className="flex justify-center mt-1 w-full mb-2 ">
       <div
@@ -62,9 +58,8 @@ const CardListMerchan = ({ data }) => {
               <div className="flex ">
                 {/* <p className="font-sans text-xs text-gray-500 mr-2">{`${data.address}, ${data.city}, ${data.province}`}</p> */}
                 <p
-                  className={`font-sans text-xs text-gray-500   ${
-                    showFullText ? "" : styles.cutTextCard
-                  }`}
+                  className={`font-sans text-xs text-gray-500   ${showFullText ? "" : styles.cutTextCard
+                    }`}
                 >
                   {address}
                 </p>

@@ -16,10 +16,6 @@ const ReportFood = (ReportFood) => {
     const [imgReport, setImgReport] = useState(newReport?.imgReport ?? null);
 
 
-    useEffect(() => {
-        console.log(star);
-    }, [star]);
-
     const handleStarChange = (index) => {
         setStar(index);
     };
@@ -68,13 +64,11 @@ const ReportFood = (ReportFood) => {
             formData.append('destination', 'rating');
             formData.append('file', imgReport);
 
-            console.log('form', formData);
             const mediaUploadResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            console.log('API Response media/upload:', mediaUploadResponse.data.body.file_url);
             const Image = mediaUploadResponse.data.body.file_url;
 
             if (mediaUploadResponse.status === 200) {
@@ -87,8 +81,6 @@ const ReportFood = (ReportFood) => {
                     photo: Image,
                 };
                 setnewReport(eventData);
-                console.log('cek data', eventData);
-                console.log('gambar', Image);
 
                 try {
                     const creatReportCamp = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/create`, eventData, {
@@ -96,7 +88,6 @@ const ReportFood = (ReportFood) => {
                             'Authorization': `Bearer ${token}`,
                         },
                     });
-                    console.log('API Response create creatReportCamp:', creatReportCamp.data);
 
 
                     Swal.fire({
@@ -127,7 +118,6 @@ const ReportFood = (ReportFood) => {
                 }
 
             } else {
-                console.log(mediaUploadResponse.data.data);
                 console.error('Gagal Upload:', error);
                 Swal.fire({
                     icon: 'error',
@@ -139,7 +129,6 @@ const ReportFood = (ReportFood) => {
             }
 
         } catch (error) {
-            console.log(error);
             if (error.response && error.response.status === 401) {
                 Error401(error, router);
 

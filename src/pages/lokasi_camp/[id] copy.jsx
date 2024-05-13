@@ -66,7 +66,6 @@ const LokasiCamp = () => {
 
         if (value) {
             setNominalDonasi(parseInt(value));
-            console.log('Selected Value:', nominalDonasi);
         }
     };
 

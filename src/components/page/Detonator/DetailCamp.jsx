@@ -37,11 +37,6 @@ const DetailCamp = ({ data }) => {
     return formatter.format(nominal);
   };
 
-  useEffect(() => {
-    console.log("data", data);
-    console.log("donatur data", data?.campaign_donation);
-  }, [data]);
-
   const cart = data?.campaign_donation || [];
   const [showAll, setShowAll] = useState(false);
 

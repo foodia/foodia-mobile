@@ -91,13 +91,11 @@ const newPassword = (newPassword) => {
           })
         } else {
           setLoading(false);
-          console.log('response1', response.data);
           // setMessageError("Kode OTP Tidak Sesuai");
           AlertError(error, router);
         }
       })
       .catch(error => {
-        console.log('error', error);
         setLoading(false);
         AlertError(error, router);
 

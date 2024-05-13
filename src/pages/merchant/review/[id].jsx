@@ -19,7 +19,6 @@ const ReviewCamp = () => {
   const [description, setDescription] = useState(newReport?.description ?? "");
   const [loading, setloading] = useState(true);
 
-  // console.log(router.query.id);
   useEffect(() => {
     const token = localStorage.getItem("token");
     setloading(true);
@@ -30,7 +29,6 @@ const ReviewCamp = () => {
         },
       })
       .then((response) => {
-        console.log("data", response.data.body);
         setnewReport(response.data.body);
 
         // setnewReport(response.data.body);
@@ -38,14 +36,10 @@ const ReviewCamp = () => {
       })
       .catch((error) => {
         Error401(error, router);
-        console.log(error);
       });
   }, [id_camp]);
-  console.log("newReport", newReport);
 
   useEffect(() => {
-    console.log(star);
-    console.log("dara state", state.reportMechant);
     setloading(false);
   }, [star]);
 
@@ -145,9 +139,8 @@ const ReviewCamp = () => {
             {[1, 2, 3, 4, 5].map((index) => (
               <svg
                 key={index}
-                className={`w-12 h-12 cursor-pointer ${
-                  index <= star ? "text-yellow-300" : "text-gray-500"
-                }`}
+                className={`w-12 h-12 cursor-pointer ${index <= star ? "text-yellow-300" : "text-gray-500"
+                  }`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"

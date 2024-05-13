@@ -167,12 +167,9 @@ const Registrasi = () => {
       const userData = response.data.body;
 
       // Save user data to global state
-      console.log(userData);
-      console.log("status", userData.is_active);
       setRegistrasi(userData);
       if (userData.is_active) {
         // router.push('/login');
-        console.log("login success");
         localStorage.setItem("fullname", userData.fullname);
         localStorage.setItem("phone", userData.phone);
         localStorage.setItem("email", userData.email);
@@ -204,7 +201,6 @@ const Registrasi = () => {
     } catch (error) {
       // console.error('Registration failed:', error.response);
       const ResError = error.response.data.error;
-      console.log("ResError", ResError);
 
       Swal.fire({
         icon: "error",

@@ -21,7 +21,6 @@ const Header = ({ title = "", backto = "" }) => {
   useEffect(() => {
     const checkScroll = () => {
       setTest(window.scrollY === 0);
-      // console.log(window.scrollY);
     };
     window.addEventListener("scroll", checkScroll);
   }, [test]);

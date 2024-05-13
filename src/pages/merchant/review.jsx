@@ -135,7 +135,6 @@ export default function PageMerchant() {
     }, []);
 
     const getReviwe = (id, token) => {
-        console.log('id', id);
         axios
             .get(
                 process.env.NEXT_PUBLIC_API_BASE_URL + `rating/not-reviewed?type=merchant&id=${id}`,
@@ -148,13 +147,11 @@ export default function PageMerchant() {
             .then((response) => {
                 setJumlah(response.data.body.length);
                 setDataApi(response.data.body);
-                console.log("respone data menu", response.data.body);
                 // const filtered = response.data.body.filter(
                 //     (data) => data.is_rating === false && data.approval_status === "approved"
                 // )
                 // setFilteredData(filtered);
                 setFilteredData(response.data.body);
-                console.log("filtered data", filtered);
                 setLoading(false);
 
                 if (response.data.body.length === 0) {
@@ -186,7 +183,6 @@ export default function PageMerchant() {
             filtered = dataApi
             setFilteredData(filtered);
             setLoading(false);
-            console.log("filtered data approved", filtered);
 
         } else if (status === "UlasanSelesai") {
 
@@ -199,7 +195,6 @@ export default function PageMerchant() {
                 .then((res) => {
                     setFilteredData(res.data.body);
                     setLoading(false);
-                    console.log("review ulasan", res.data.body);
                 }).catch((error) => {
                     Error401(error, router);
                 })
@@ -207,9 +202,7 @@ export default function PageMerchant() {
 
         setSelectedStatus(status);
 
-        console.log('data filter', filteredData);
     };
-    console.log('filtered data', filteredData);
 
     return (
         <main className="">

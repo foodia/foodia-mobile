@@ -78,7 +78,6 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
         };
 
 
-        // console.log('Form Data (Step 1):', formData);
         // Save the form data to the registrasiDetonator state
         setRegistrasiDetonator(formData);
 
@@ -98,7 +97,6 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator }) {
         router.push('/registrasi/detonator?step=2');
     };
     useEffect(() => {
-        console.log('Step1:', registrasiDetonator);
     }, [registrasiDetonator]);
 
     return (
@@ -183,10 +181,8 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
 
     useEffect(() => {
         if (registrasiDetonator && registrasiDetonator.fotoSelfi) {
-            console.log('Step2 - Foto Selfi:', registrasiDetonator.fotoSelfi);
         }
         if (registrasiDetonator && registrasiDetonator.fotoKTP) {
-            console.log('Step2 - Foto KTP:', registrasiDetonator.fotoKTP);
         }
     }, [registrasiDetonator]);
 

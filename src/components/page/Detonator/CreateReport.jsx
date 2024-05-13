@@ -22,7 +22,6 @@ const CreateReport = (CreateReport) => {
         const resspones = axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${campaign_id}`);
         resspones.then((response) => {
             setDataCamp(response.data.body);
-            console.log('respones', response.data.body);
         })
             .catch((error) => {
                 if (error.response && error.response.status === 401) {
@@ -82,13 +81,11 @@ const CreateReport = (CreateReport) => {
             formData.append('destination', 'report');
             formData.append('file', imgReport);
 
-            console.log('form', formData);
             const mediaUploadResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            console.log('API Response media/upload:', mediaUploadResponse.data.body.file_url);
             const Image = mediaUploadResponse.data.body.file_url;
 
             if (mediaUploadResponse.status === 200) {
@@ -105,8 +102,6 @@ const CreateReport = (CreateReport) => {
                     ]
                 };
                 setnewReport(eventData);
-                console.log('cek data', eventData);
-                console.log('gambar', Image);
 
                 try {
                     const creatReportCamp = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign-report/create`, eventData, {
@@ -114,7 +109,6 @@ const CreateReport = (CreateReport) => {
                             'Authorization': `Bearer ${token}`,
                         },
                     });
-                    console.log('API Response create creatReportCamp:', creatReportCamp.data);
                     router.push(`/detonator/report/${campaign_id}`);
 
                     Swal.fire({
@@ -145,7 +139,6 @@ const CreateReport = (CreateReport) => {
                 }
 
             } else {
-                console.log(mediaUploadResponse.data.data);
                 console.error('Gagal Upload:', error);
                 Swal.fire({
                     icon: 'error',
@@ -161,7 +154,6 @@ const CreateReport = (CreateReport) => {
                 Error401(error, router);
 
             }
-            console.log(error);
             let errorMessage = 'Gagal membuat kampanye. Mohon coba lagi.';
             if (error.response && error.response.data && error.response.data.message) {
                 errorMessage = error.response.data.message;
@@ -180,7 +172,6 @@ const CreateReport = (CreateReport) => {
 
 
     useEffect(() => {
-        console.log('Data Nee Report:', newReport);
     }, [newReport]);
 
     return (

@@ -39,7 +39,6 @@ const CardCampaign = (props) => {
       remainingDays = 0;
     }
 
-    // console.log("remainingDays", remainingDays);
 
     return remainingDays;
   };
@@ -70,7 +69,6 @@ const CardCampaign = (props) => {
   };
 
   useEffect(() => {
-    console.log("router", router.route);
     if (donation_target > donation_collected) {
       setTerkumpul(donation_collected);
     } else {

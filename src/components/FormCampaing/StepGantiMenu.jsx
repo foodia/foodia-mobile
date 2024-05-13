@@ -64,10 +64,6 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
             (item) => item.merchant_id === parseInt(IdMerchan) && item.id === itemId
         );
 
-        // console.log("IdMerchan:", IdMerchan);
-        // console.log("itemId:", itemId);
-        // console.log("Data updatedCart:", updatedCart);
-        // console.log("itemIndex:", itemIndex);
 
         if (itemIndex !== -1) {
             const updatedItem = { ...updatedCart[itemIndex] };
@@ -87,7 +83,6 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
                     0
                 );
 
-                console.log("updatedCart after decrease:", updatedCart);
 
                 updateCart(updatedCart, totalCartPrice, totalCartQuantity);
             } else {
@@ -99,8 +94,6 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
     };
 
     const handleIncrease = (IdMerchan, itemId, capacity) => {
-        console.log("capacity:", capacity);
-        console.log("RejectedQty:", RejectedQty);
         const updatedCart = [...cart];
         const itemIndex = updatedCart.findIndex(
             (item) => item.merchant_id === parseInt(IdMerchan) && item.id === itemId
@@ -144,8 +137,6 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
     };
 
     const handleSubmit = () => {
-        // console.log('total Rejected', totalRejected);
-        console.log("data", cart);
         setLoading(true);
         const detonator_id = localStorage.getItem("id");
         const token = localStorage.getItem("token");
@@ -157,8 +148,6 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
             (total, item) => total + item.quantity,
             0
         );
-        console.log("totalCartQuantity:", totalCartQuantity);
-        console.log("RejectedQty:", RejectedQty);
 
         if (totalCartQuantity < RejectedQty || totalCartQuantity === RejectedQty) {
             const eventData = {
@@ -169,7 +158,6 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
                     qty: 2
                 },
             };
-            console.log("eventData", eventData);
             const response = axios.post(
                 `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/change-menu`, eventData, {
                 headers: {
@@ -177,7 +165,6 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
                 },
             })
                 .then((response) => {
-                    console.log("API Response:", response.data);
                     setLoading(false);
                     Swal.fire({
                         icon: "success",
@@ -251,14 +238,11 @@ function StepOne({ cart, setCart, updateCart, loading, setLoading, dataCamopaign
 
     const handleLink = () => {
         router.push(`/detonator/ganti-menu?ord=${order_id}&cmp=${dataCamopaign.id}&step=2`);
-        console.log("data card", cart);
     };
     const handleRemoveAll = () => {
         localStorage.removeItem("cart");
         setCart([]);
     }
-
-    console.log('groupedCart add', groupedCart);
 
     // localStorage.removeItem('formData');
     // localStorage.removeItem('cart');
@@ -434,19 +418,7 @@ function StepTwo({ cart, setCart, setUploadedFile, uploadedFile, loading, dataCa
     const detonator_id = localStorage.getItem("id");
     const token = localStorage.getItem("token");
 
-    // useEffect(() => {
-    //     console.log('id order', id_order);
-    //     console.log('data campaign stp2', dataCamopaign);
-    //     // Check local storage for existing form data
-    //     const storedFormData = localStorage.getItem("formData");
-    //     if (storedFormData) {
-    //         const parsedFormData = JSON.parse(storedFormData);
-    //         if (parsedFormData) {
-    //             // Merge the existing data with the new data
-    //             setLocation(parsedFormData.location || "");
-    //         }
-    //     }
-    // }, []);
+
 
 
 
@@ -465,7 +437,6 @@ function StepTwo({ cart, setCart, setUploadedFile, uploadedFile, loading, dataCa
                         return merchant.status === "approved" && merchant.products.some(product => product.status === "approved");
                     }
                 );
-                console.log("page creat camp data", approvedMerchants);
                 setDataApi(approvedMerchants);
                 setFilteredData(approvedMerchants);
             })
@@ -527,7 +498,6 @@ function StepThree({ cart, setCart, updateCart, uploadedFile, dataCamopaign, ord
     const router = useRouter();
     const IdMerchan = router.query.id;
     const nameMerchant = router.query.name;
-    console.log("router", router);
     const [HargaTotal, setHargaTotal] = useState(0);
     const detonator_id = localStorage.getItem("id");
     const token = localStorage.getItem("token");
@@ -537,8 +507,6 @@ function StepThree({ cart, setCart, updateCart, uploadedFile, dataCamopaign, ord
 
     // const id_order = localStorage.getItem("id_order");
     useEffect(() => {
-        console.log('data campaign stp3', dataCamopaign);
-        console.log("id order", order_id);
         setHargaTotal(cart.reduce((acc, item) => acc + item.total, 0));
     }, [cart]);
 
@@ -580,7 +548,6 @@ function StepThree({ cart, setCart, updateCart, uploadedFile, dataCamopaign, ord
                 if (error.response && error.response.status === 401) {
                     Error401(error, router);
                 }
-                console.log(error);
             });
     }, [setCart]);
 
@@ -654,7 +621,6 @@ function StepThree({ cart, setCart, updateCart, uploadedFile, dataCamopaign, ord
         }).format(amount);
     };
 
-    // console.log('groupedFoods', groupedFoods);
     // Calculate total price and total quantity
 
 

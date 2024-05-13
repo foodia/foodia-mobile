@@ -9,7 +9,6 @@ import CardRepordFood from "@/components/CardRepordFood";
 const FoodCampaign = () => {
     const router = useRouter();
     const { id } = router.query;
-    // console.log('rout', id);
     const [foodOrder, setFoodOrder] = useState([]);
     const [DataAPI, setDataApi] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -33,8 +32,6 @@ const FoodCampaign = () => {
                 setDataApi(response.data.body);
                 setDetonatorId(response.data.body.detonator_id);
                 setLoading(false);
-                console.log('order', response.data.body.orders);
-                console.log('data', response.data.body);
 
             } catch (error) {
                 handleRequestError(error);
@@ -42,7 +39,6 @@ const FoodCampaign = () => {
         };
 
         fetchData();
-        console.log('detonator_id', detonator_id);
     }, [id, detonator_id]);
 
     const handleRequestError = (error) => {
