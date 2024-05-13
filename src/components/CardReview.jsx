@@ -93,7 +93,7 @@ const CardReview = (props) => {
                     />
                     {role == "merchant" ? (
                         <div className={`px-2 ${styles.text_card}`}>
-                            <p className=" text-black font-bold text-[14px] capitalize text-primary">
+                            <p className="  font-bold text-[14px] capitalize text-primary">
                                 {title}
                             </p>
                             <div className="flex mb-2 italic">
@@ -108,7 +108,7 @@ const CardReview = (props) => {
                                 </p>
                                 {status == "Completed" ? (
                                     <>
-                                        <div className={`font-sans text-xs text-white rounded-lg p-1 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'Completed' ? 'bg-primary' : status == 'rejected' ? 'bg-red-500' : ''}`}>
+                                        <div className={`font-sans text-[8px] mb-2 text-white rounded-xl p-1 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'Completed' ? 'bg-primary' : status == 'rejected' ? 'bg-red-500' : ''}`}>
                                             <p className="">{status}</p>
                                         </div>
                                     </>
@@ -124,7 +124,7 @@ const CardReview = (props) => {
                                 </p>
                                 {status == "Completed" && role == "detonator" ? (
                                     <div
-                                        className={`h-[16px] font-sans text-xs text-white rounded-lg p-1 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'Completed' ? 'bg-primary' : status == 'rejected' ? 'bg-red-500' : ''
+                                        className={`h-[16px] font-sans text-[8px] text-white rounded-lg p-1 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'Completed' ? 'bg-primary' : status == 'rejected' ? 'bg-red-500' : ''
                                             }`}
                                     >
                                         <p className="">{status}</p>
@@ -145,7 +145,7 @@ const CardReview = (props) => {
                                             Rp. {TotalHarga?.toLocaleString('id-ID')}
                                         </p>
                                         <div
-                                            className={`font-sans text-xs text-white rounded-lg p-1 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'Completed' ? 'bg-primary' : status == 'rejected' ? 'bg-red-500' : ''
+                                            className={`font-sans text-[8px] text-white rounded-lg p-1 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'Completed' ? 'bg-primary' : status == 'rejected' ? 'bg-red-500' : ''
                                                 }`}
                                         >
                                             <p className="">{status}</p>
