@@ -106,13 +106,13 @@ const MetodePembayaran = () => {
       .then((response) => {
         // setLoading(true);
         const responeUrl = response.data.body.actions.desktop_web_checkout_url;
+        localStorage.setItem("external_id", response.data.body.external_id);
         router.push(`${responeUrl}`);
       })
       .catch((error) => {
         setLoading(false);
         if (error.response && error.response.status === 401) {
           Error401(error, router);
-
         }
         Swal.fire({
           icon: "error",
