@@ -11,15 +11,21 @@ import { useEffect, useState } from "react";
 
 const BuktiPembayaran = () => {
   const router = useRouter();
-  const external_id = router.query.external_id;
   const [pembayaran, setPembayaran] = useState("");
   const [loading, setLoading] = useState(true);
-  const [prevPath, setPrevPath] = useState("/home");
+  const [prevPath, setPrevPath] = useState("");
 
   useEffect(() => {
     const prevPath = localStorage.getItem("prevPath");
     if (prevPath) {
       setPrevPath(prevPath);
+    }
+    let external_id;
+
+    if (router.query.external_id) {
+      external_id = router.query.external_id;
+    } else {
+      external_id = localStorage.getItem("external_id");
     }
 
     if (external_id) {
@@ -29,11 +35,16 @@ const BuktiPembayaran = () => {
         )
         .then((response) => {
           setPembayaran(response.data.body);
-          if (!prevPath) {
+          if (!prevPath && response.data.body.donation_type !== "agnostic") {
             setPrevPath(
               `/campaign/${response.data.body.campaign_donation.campaign_id}`
             );
           }
+
+          if (!prevPath && response.data.body.donation_type === "agnostic") {
+            setPrevPath("/mydonation");
+          }
+
           setLoading(false);
         })
         .catch((error) => {
@@ -150,7 +161,10 @@ const BuktiPembayaran = () => {
 
         <Link
           href={prevPath}
-          onClick={() => localStorage.removeItem("prevPath")}
+          onClick={() => {
+            localStorage.removeItem("external_id");
+            localStorage.removeItem("prevPath");
+          }}
           className="bg-slate-200 flex justify-center items-center bg-transparent border-2 h-10 border-primary p-3 rounded-xl outline-none"
         >
           <p className="font-bold text-primary">Kembali</p>
