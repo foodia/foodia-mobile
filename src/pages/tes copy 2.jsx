@@ -1,7 +1,5 @@
-// Tes.jsx
-import compressImage from "@/components/CompressImage";
+import Compressor from "compressorjs";
 import { useEffect, useState } from "react";
-
 
 const Tes = () => {
     const [foto, setFoto] = useState(null);
@@ -13,16 +11,19 @@ const Tes = () => {
             setFoto(file);
             setUkuran((file.size / (1024 * 1024)).toFixed(2));
         } else {
-            compressImage(file)
-                .then((compressedFile) => {
-                    setFoto(compressedFile);
-                    setUkuran((compressedFile.size / (1024 * 1024)).toFixed(2));
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            new Compressor(file, {
+                quality: 0.6,
+                maxWidth: 1024,
+                success(result) {
+                    setFoto(result);
+                    setUkuran((result.size / (1024 * 1024)).toFixed(2));
+                },
+                error(err) {
+                    console.log(err.message);
+                }
+            });
         }
-    };
+    }
 
     useEffect(() => {
         console.log(foto);
@@ -45,6 +46,6 @@ const Tes = () => {
             </div>
         </div>
     );
-};
+}
 
 export default Tes;
