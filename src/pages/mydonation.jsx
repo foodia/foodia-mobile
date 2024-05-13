@@ -126,7 +126,7 @@ const mydonation = () => {
                   <IconChevronDown size={"17px"} />
                 </button>
                 {isOpenedMonthOptions && (
-                  <div className="absolute overflow-auto p-1 h-28 flex flex-col top-[133px] items-start w-24 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
+                  <div className="absolute overflow-auto p-1 flex flex-col top-[133px] items-start w-24 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
                     {data?.year_filters?.map((bulan, index) => (
                       <button
                         onClick={() => {
@@ -143,38 +143,6 @@ const mydonation = () => {
                         {moment(bulan, "YYYY-MM").format("MMM YYYY")}
                       </button>
                     ))}
-                    <button
-                      onClick={() =>
-                        setIsOpenedMonthOptions(!isOpenedMonthOptions)
-                      }
-                      className="text-black text-[12px] w-full text-left font-semibold"
-                    >
-                      Apr 2024
-                    </button>
-                    <button
-                      onClick={() =>
-                        setIsOpenedMonthOptions(!isOpenedMonthOptions)
-                      }
-                      className="text-black text-[12px] w-full text-left font-semibold"
-                    >
-                      Mar 2024
-                    </button>
-                    <button
-                      onClick={() =>
-                        setIsOpenedMonthOptions(!isOpenedMonthOptions)
-                      }
-                      className="text-black text-[12px] w-full text-left font-semibold"
-                    >
-                      Feb 2024
-                    </button>
-                    <button
-                      onClick={() =>
-                        setIsOpenedMonthOptions(!isOpenedMonthOptions)
-                      }
-                      className="text-black text-[12px] w-full text-left font-semibold"
-                    >
-                      Jan 2024
-                    </button>
                   </div>
                 )}
 
