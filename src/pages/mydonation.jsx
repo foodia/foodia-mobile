@@ -90,10 +90,10 @@ const mydonation = () => {
     getHistory(month);
   }, []);
 
-  const onChangeMonth = (e) => {
-    const monthVal = e.target.value;
-    setMonth(monthVal);
-    getHistory(monthVal, year);
+  const onChangeMonth = (bulan) => {
+    setMonth(bulan);
+    getHistory(bulan);
+    setIsOpenedMonthOptions(!isOpenedMonthOptions);
   };
 
   return (
@@ -130,8 +130,7 @@ const mydonation = () => {
                     {data?.year_filters?.map((bulan, index) => (
                       <button
                         onClick={() => {
-                          setIsOpenedMonthOptions(!isOpenedMonthOptions);
-                          setMonth(bulan);
+                          onChangeMonth(bulan);
                         }}
                         className={`${
                           moment(bulan, "YYYY-MM").format("MMM YYYY") ===
