@@ -60,9 +60,9 @@ const MenuBarMechant = () => {
     }, [id, pathname]);
 
     return (
-        <div className="flex items-center justify-center px-6 pt-16">
+        <div className="flex items-center justify-center px-6 pt-16 ">
             <div className={`bg-gray-100 rounded-2xl w-full p-3`}>
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center text-[12px] font-lato">
                     {pathname !== "/merchant" ? (
                         <Link
                             href="/merchant"
@@ -71,7 +71,7 @@ const MenuBarMechant = () => {
                             <div className={`${styles.iconMenu}`}>
                                 <IconBowlFilled />
                             </div>
-                            <p className="text-xs font-normal text-black">Daftar Menu</p>
+                            <p className=" font-normal text-black">Daftar Menu</p>
                         </Link>
                     ) : (
                         <Link
@@ -81,7 +81,7 @@ const MenuBarMechant = () => {
                             <div className={`${styles.iconMenu}`}>
                                 <IconCirclePlus />
                             </div>
-                            <p className="text-xs font-normal text-black">Tambah Menu</p>
+                            <p className=" font-normal text-black">Tambah Menu</p>
                         </Link>
                     )}
 
@@ -97,7 +97,7 @@ const MenuBarMechant = () => {
                                 height={30}
                             />
                         </div>
-                        <p className="text-xs font-normal text-black">Pesanan</p>
+                        <p className=" font-normal text-black">Pesanan</p>
                     </Link>
                     <Link
                         href="/merchant/saldo"
@@ -111,7 +111,7 @@ const MenuBarMechant = () => {
                                 height={30}
                             />
                         </div>
-                        <p className="text-xs font-normal text-black">Saldo</p>
+                        <p className=" font-normal text-black">Saldo</p>
                     </Link>
                     {/* .iconMenu {
   width: 48px;
@@ -126,7 +126,7 @@ const MenuBarMechant = () => {
                         className="flex flex-col items-center justify-center gap-1 w-24"
                     >
                         <div className="relative w-[48px] h-[48px] rounded-md bg-menu text-green flex items-center justify-center">
-                            <div className="absolute top-0 right-0 h-[13px] w-[13px] bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                            <div className="absolute top-0 right-0 h-[13px] w-[13px] bg-red-500 text-white rounded-full flex items-center justify-center text-[8px] font-bold">
                                 <span>{loading ? "..." : jumlah}</span>
                             </div>
                             <Image

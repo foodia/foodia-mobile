@@ -285,27 +285,27 @@ const Detonator = () => {
         </div>
         <div className="flex flex-row px-6 py-4 justify-between items-end">
           <div
-            className={`cursor-pointer text-center pb-2 ${selectedStatus === "DRAFT"
+            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "DRAFT"
               ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-              : "text-gray-400 font-bold"
+              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
               }`}
             onClick={() => handleFilterChange("DRAFT")}
           >
             <p>Campaign Baru</p>
           </div>
           <div
-            className={`cursor-pointer text-center pb-2 ${selectedStatus === "OPEN,INPROGRESS"
+            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "OPEN,INPROGRESS"
               ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-              : "text-gray-400 font-bold"
+              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
               }`}
             onClick={() => handleFilterChange("OPEN,INPROGRESS")}
           >
             <p>Campaign Berjalan</p>
           </div>
           <div
-            className={`cursor-pointer text-center pb-2 ${selectedStatus === "FINISHED"
+            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "FINISHED"
               ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-              : "text-gray-400 font-bold"
+              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
               }`}
             onClick={() => handleFilterChange("FINISHED")}
           >

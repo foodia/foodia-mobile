@@ -57,8 +57,8 @@ const MenuDetonator = (MenuDetonator) => {
 
     const [menu, setMenu] = useState("campaign-list");
     // const [loading, setLoading] = useState(true);
-    return <div className="flex flex-row items-center justify-around bg-gray-100 rounded-xl py-2 w-full">
-        <div className="flex justify-center gap-5 px-1 py-3">
+    return <div className="flex flex-row items-center justify-around bg-gray-100 rounded-xl py-2 w-full text-[12px] font-lato">
+        <div className="flex justify-center gap-5 px-1 py-3 ">
             {router.pathname === "/detonator" ? (
                 <Link
                     // onClick={() => setLoading(true)}
@@ -73,7 +73,7 @@ const MenuDetonator = (MenuDetonator) => {
                             height={30}
                         />
                     </div>
-                    <p className="text-sm text-gray-600 font-normal">
+                    <p className=" text-gray-600 font-normal">
                         Buat Campaign
                     </p>
                 </Link>
@@ -91,32 +91,30 @@ const MenuDetonator = (MenuDetonator) => {
                             height={30}
                         />
                     </div>
-                    <p className="text-sm text-gray-600 font-normal">
+                    <p className=" text-gray-600 font-normal">
                         List Campaign
                     </p>
                 </Link>
             )}
         </div>
-        <div className="flex justify-center gap-5 px-1 py-3">
-            <Link
-                href="/detonator/review"
-                className="flex flex-col items-center justify-center gap-1 w-24"
-            >
-                <div className="relative w-[48px] h-[48px] rounded-md bg-menu text-green flex items-center justify-center">
-                    <div className="absolute top-0 right-0 h-[13px] w-[13px] bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                        <span>{loading ? '...' : jumlah}</span>
-                    </div>
-                    <Image
-                        src={"/icon/ulasan.png"}
-                        alt="Ulasan"
-                        width={30}
-                        height={30}
-                    />
-
+        <Link
+            href="/detonator/review"
+            className="grid gap-3 justify-items-center w-24"
+        >
+            <div className="relative w-[48px] h-[48px] rounded-md bg-menu text-green flex items-center justify-center">
+                <div className="absolute top-0 right-0 h-[13px] w-[13px] bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                    <span>{loading ? '...' : jumlah}</span>
                 </div>
-                <p className="text-xs font-normal text-black">Ulasan</p>
-            </Link>
-        </div>
+                <Image
+                    src={"/icon/ulasan.png"}
+                    alt="Ulasan"
+                    width={30}
+                    height={30}
+                />
+
+            </div>
+            <p className="text-gray-600 font-normal">Ulasan</p>
+        </Link>
     </div>;
 }
 

@@ -18,6 +18,14 @@ module.exports = {
         menu: '#d6f0cb',
 
       },
+      fontWeight: {
+        // fontc: ['Briem Hand', 'cursive'],
+        // curtom: ['Noto Sans KR', 'sans-serif'],
+      },
+      fontFamily: {
+        'sans': ['Poppins', 'sans-serif'],
+        lato: ['Lato', 'sans-serif'],
+      }
     },
   },
   plugins: [],

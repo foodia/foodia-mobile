@@ -230,9 +230,9 @@ const review = (review) => {
 
                     <div className="flex flex-row px-6 py-4 justify-between items-end">
                         <div
-                            className={`cursor-pointer text-center w-full pb-2 ${selectedStatus === "KirimUlasan"
-                                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-                                : "text-gray-400 font-bold"
+                            className={`cursor-pointer text-center w-full pb-2 font-bold ${selectedStatus === "KirimUlasan"
+                                ? "text-[#6CB28E] border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                                : "text-gray-400 border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
                                 }`}
                             onClick={() => handleFilterChange("KirimUlasan")}
                         >
@@ -246,9 +246,9 @@ const review = (review) => {
                         </div>
 
                         <div
-                            className={`cursor-pointer text-center w-full pb-2 ${selectedStatus === "UlasanSelesai"
-                                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-                                : "text-gray-400 font-bold"
+                            className={`cursor-pointer text-center w-full pb-2 font-bold ${selectedStatus === "UlasanSelesai"
+                                ? "text-[#6CB28E] border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                                : "text-gray-400 border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
                                 }`}
                             onClick={() => handleFilterChange("UlasanSelesai")}
                         >

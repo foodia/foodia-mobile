@@ -106,7 +106,7 @@ const HomePage = () => {
         {/* <SearchBar /> */}
         <div className="flex items-center justify-center px-6 my-2">
           <div className="bg-gray-100 rounded-xl py-2">
-            <div className="flex justify-between gap-5 px-1 py-3">
+            <div className="flex justify-between gap-5 px-1 py-3 text-[12px] font-lato">
               <Link
                 href={"/detonator"}
                 className="grid gap-2 justify-items-center w-24"
@@ -119,7 +119,7 @@ const HomePage = () => {
                     height={30}
                   />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className=" text-gray-500 dark:text-gray-400">
                   Relawan
                 </p>
               </Link>
@@ -136,7 +136,7 @@ const HomePage = () => {
                     height={30}
                   />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">UMKM</p>
+                <p className=" text-gray-500 dark:text-gray-400">UMKM</p>
               </Link>
               <Link href={""} className="grid gap-2 justify-items-center w-24">
                 <div className={`${styles.iconMenu}`}>
@@ -147,7 +147,7 @@ const HomePage = () => {
                     height={30}
                   />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className=" text-gray-500 dark:text-gray-400">
                   Terdekat
                 </p>
               </Link>
@@ -192,31 +192,28 @@ const HomePage = () => {
         </div> */}
         <div className="flex flex-row px-6 py-4 justify-between items-end">
           <div
-            className={`cursor-pointer px-0 pb-3 w-36 ${
-              selectedStatus === "OPEN"
+            className={`cursor-pointer px-0 pb-3 w-36 ${selectedStatus === "OPEN"
                 ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
                 : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
-            }`}
+              }`}
             onClick={() => handleFilterChange("OPEN")}
           >
             <span>Yuk Berdonasi</span>
           </div>
           <div
-            className={`cursor-pointer text-center${
-              selectedStatus === "INPROGRESS"
+            className={`cursor-pointer text-center${selectedStatus === "INPROGRESS"
                 ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
                 : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
-            }`}
+              }`}
             onClick={() => handleFilterChange("INPROGRESS")}
           >
             <span>Campaign Berjalan</span>
           </div>
           <div
-            className={`cursor-pointer text-center ${
-              selectedStatus === "FINISHED"
+            className={`cursor-pointer text-center ${selectedStatus === "FINISHED"
                 ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
                 : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
-            }`}
+              }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
             <span>Campaign Selesai</span>
