@@ -93,7 +93,7 @@ const CardReview = (props) => {
                     />
                     {role == "merchant" ? (
                         <div className={`px-2 ${styles.text_card}`}>
-                            <p className="  font-bold text-[14px] capitalize text-primary">
+                            <p className="  font-bold text-[14px] capitalize text-primary ">
                                 {title}
                             </p>
                             <div className="flex mb-2 italic">
