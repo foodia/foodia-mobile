@@ -37,7 +37,6 @@ const FormMenu = () => {
   }, [router.query.step]);
 
   // useEffect(() => {
-  //     console.log(':', Menu);
   // }, [Menu]);
 
   let stepComponent;

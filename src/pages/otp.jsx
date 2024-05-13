@@ -17,7 +17,6 @@ const OTP = () => {
   const registrasi = state.registrasi;
 
   useEffect(() => {
-    console.log(registrasi);
     if (!registrasi || !registrasi.email) {
       Swal.fire({
         icon: "error",

@@ -17,7 +17,6 @@ const DetonatorRating = (DetonatorRating) => {
   const router = useRouter();
   const id_order = router.query.id;
   const id_camp = router.query.id_camp;
-  // console.log('id_camp', router);
   // const id_merchant = router.query.id_mrc;
   const { state, setReportMechant } = useAppState();
   const [newReport, setnewReport] = useState({});
@@ -37,24 +36,18 @@ const DetonatorRating = (DetonatorRating) => {
       }
     })
       .then((response) => {
-        console.log('data', response.data.body);
         const orderData = response.data.body.orders.filter((order) => order.id === parseInt(id_order));
         setDataOrder(orderData[0]);
         setnewReport(response.data.body);
         setloading(false);
       })
       .catch((error) => {
-        console.log(error);
         setloading(false);
         Error401(error, router);
       })
   }, [id_camp]);
-  console.log('newReport', newReport);
-  console.log('dataOrder', dataOrder);
 
   useEffect(() => {
-    console.log(star);
-    console.log("dara state", state.reportMechant);
     setloading(false);
   }, [star]);
 
@@ -88,7 +81,6 @@ const DetonatorRating = (DetonatorRating) => {
         },
       })
       .then((response) => {
-        console.log("API Response media/upload:", response.data.body.file_url);
         if (response.status === 200) {
           const eventData = {
             relation_id: parseInt(dataOrder?.merchant_id),
@@ -99,14 +91,12 @@ const DetonatorRating = (DetonatorRating) => {
             note: description,
           }
           setnewReport(eventData);
-          console.log("cek data", eventData);
           axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/create`, eventData, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           })
             .then((creatretingmerchant) => {
-              console.log("API Response create rating:", creatretingmerchant.data);
 
               Swal.fire({
                 icon: "success",

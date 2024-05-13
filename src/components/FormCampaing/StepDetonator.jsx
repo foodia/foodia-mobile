@@ -27,15 +27,6 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
   const [fotoKTP, setFotoKTP] = useState(registrasiDetonator?.fotoKTP || null);
   const [noKTP, setNoKTP] = useState(registrasiDetonator?.noKTP || "");
 
-  useEffect(() => {
-    // Debug
-    if (registrasiDetonator && registrasiDetonator.fotoSelfi) {
-      console.log("Step2 - Foto Selfi:", registrasiDetonator.fotoSelfi);
-    }
-    if (registrasiDetonator && registrasiDetonator.fotoKTP) {
-      console.log("Step2 - Foto KTP:", registrasiDetonator.fotoKTP);
-    }
-  }, [registrasiDetonator]);
 
   useEffect(() => {
     // Ensure the user is logged in
@@ -157,9 +148,6 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
           },
         }
       );
-
-      console.log("token:", token);
-      console.log("API Response:", response.data);
       setLoading(false);
       Swal.fire({
         icon: "success",
@@ -340,15 +328,6 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
   const [fotoKTP, setFotoKTP] = useState(registrasiDetonator?.fotoKTP ?? null);
   const [noKTP, setNoKTP] = useState(registrasiDetonator?.noKTP ?? "");
 
-  // Debug
-  useEffect(() => {
-    if (registrasiDetonator && registrasiDetonator.fotoSelfi) {
-      console.log("Step2 - Foto Selfi:", registrasiDetonator.fotoSelfi);
-    }
-    if (registrasiDetonator && registrasiDetonator.fotoKTP) {
-      console.log("Step2 - Foto KTP:", registrasiDetonator.fotoKTP);
-    }
-  }, [registrasiDetonator]);
 
   useEffect(() => {
     if (!registrasiDetonator || Object.keys(registrasiDetonator).length === 0) {
@@ -463,8 +442,6 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
         }
       );
 
-      // Log the API response
-      console.log("API Response:", response.data);
 
       // Redirect to the next step after successful registration
       router.push("/registrasi/detonator?step=3");
@@ -642,7 +619,6 @@ function StepThree({ registrasiDetonator, setRegistrasiDetonator }) {
 
     if (newCodes.join("").length === 6) {
       // Perform any action you want when the OTP is complete
-      console.log("OTP is complete! Handling submit...");
 
       // Example: Handle submit here
       handleSubmit(otp);
@@ -650,7 +626,6 @@ function StepThree({ registrasiDetonator, setRegistrasiDetonator }) {
   };
 
   const handleSubmit = async (otp) => {
-    console.log("OTP:", otp);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`,
@@ -662,7 +637,6 @@ function StepThree({ registrasiDetonator, setRegistrasiDetonator }) {
           },
         }
       );
-      console.log("API Response:", response.data);
       const imageUrl = "/img/illustration/checklist.png";
       SweetAlert({
         title: "",

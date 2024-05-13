@@ -12,11 +12,9 @@ const CardChangeMerchant = ({ data, order_id, id_camp }) => {
   };
 
   const handleLink = (IdMerchan) => {
-    // console.log('IdMerchan', IdMerchan);
     router.push(
       `/detonator/ganti-menu?id=${IdMerchan}&name=${data.merchant_name}&ord=${order_id}&cmp=${id_camp}&step=3`
     );
-    console.log("data card", data.products);
   };
   const products = data.products;
 
@@ -26,9 +24,7 @@ const CardChangeMerchant = ({ data, order_id, id_camp }) => {
   // Count the number of approved products
   const numberOfApprovedProducts = approvedProducts.length;
 
-  console.log("Number of approved products:", numberOfApprovedProducts);
 
-  // console.log('data', data.products.length);
   return (
     <div className="flex justify-center mt-1 w-full mb-2 ">
       <div

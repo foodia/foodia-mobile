@@ -23,7 +23,6 @@ const MenuBarMechant = () => {
         setId(localStorage.getItem("id"));
         const token = localStorage.getItem("token");
         const role = localStorage.getItem("role");
-        console.log("role", role);
 
         const fetchData = () => {
             axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/not-reviewed?type=merchant&id=${id}`, {
@@ -33,7 +32,6 @@ const MenuBarMechant = () => {
             })
                 .then((res) => {
                     setLoading(false);
-                    console.log("review", res.data.body);
                     setJumlah(res.data.body.length);
                 }).catch((error) => {
                     setLoading(false);

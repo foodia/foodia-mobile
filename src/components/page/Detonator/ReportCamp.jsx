@@ -10,7 +10,6 @@ import Error401 from "@/components/error401";
 const ReportCamp = () => {
   const router = useRouter();
   const { id } = router.query;
-  console.log("rout", id);
   const [dataApi, setDataApi] = useState([]);
   const [dataCamp, setdataCamp] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,20 +45,16 @@ const ReportCamp = () => {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${id}`
         );
 
-        console.log("data report campaign", response.data.body.orders);
         setDataApi(response.data.body.orders);
         setdataCamp(response.data.body);
         setLoading(false);
-        console.log("Data detonator id", response.data.body.detonator.id);
       } catch (error) {
         handleRequestError(error);
-        console.log("error =", error);
       }
     };
 
     fetchData();
   }, [id]);
-  // console.log('data api', dataCamp);
 
   //get data rating
   useEffect(() => {
@@ -79,7 +74,6 @@ const ReportCamp = () => {
           // }
         );
 
-        console.log("data Rating", response.data.body);
         setDataReting(response.data.body);
         setLoading(false);
       } catch (error) {
@@ -89,7 +83,6 @@ const ReportCamp = () => {
 
     fetchData();
   }, [id]);
-  // console.log('data reting', dataReting);
 
   //get data report
   useEffect(() => {
@@ -109,7 +102,6 @@ const ReportCamp = () => {
           // }
         );
 
-        console.log("data Report food", response.data.body);
         setDataReport(response.data.body);
         // setReportDetonator(response.data.body);
         setLoading(false);
@@ -142,7 +134,6 @@ const ReportCamp = () => {
           // }
         );
 
-        console.log("data Report", response.data.body);
         setReportDetonator(response.data.body);
         setLoading(false);
       } catch (error) {
@@ -168,18 +159,6 @@ const ReportCamp = () => {
     } else {
       setButtonStatus(false);
     }
-
-    console.log(
-      "jum",
-      dataApi.length,
-      "true",
-      dataApi.filter((data) => data.is_rating === true).length,
-      `jumlah order`,
-      jumlahOrder,
-      "button",
-      buttonStatus
-    );
-    console.log("data", dataApi);
   }, [dataApi]);
   const handleRequestError = (error) => {
     console.error("Error fetching data:", error);

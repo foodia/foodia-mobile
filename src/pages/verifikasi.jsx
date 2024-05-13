@@ -19,7 +19,6 @@ const Verifikasi = () => {
     const registrasi = state.registrasi;
 
     useEffect(() => {
-        console.log(registrasi);
         if (!registrasi || !registrasi.email) {
             Swal.fire({
                 icon: "error",
@@ -136,9 +135,7 @@ const Verifikasi = () => {
     const handleSubmit = async (otp) => {
         setLoading(true);
         if (registrasi.kategori == 'forgot_password') {
-            console.log(registrasi.kategori);
             if (otp) {
-                console.log(otp);
                 const response = await axios.post(
                     `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`, {
                     email: registrasi.email,

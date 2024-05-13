@@ -26,7 +26,6 @@ const inbox = (inbox) => {
             },
           }
         );
-        console.log("page inbox data", response.data.body);
         setSelectedStatus("donator");
         setDataApi(response.data.body);
         setDataInbox(response.data.body);
@@ -106,31 +105,28 @@ const inbox = (inbox) => {
                         </div> */}
 
             <div
-              className={`cursor-pointer text-center font-semibold text-lg ${
-                selectedStatus === "donator"
+              className={`cursor-pointer text-center font-semibold text-lg ${selectedStatus === "donator"
                   ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
                   : "cursor-pointer text-center text-gray-500"
-              }`}
+                }`}
               onClick={() => handleFilterChange("donator")}
             >
               <span>Donator</span>
             </div>
             <div
-              className={`cursor-pointer text-center font-semibold text-lg ${
-                selectedStatus === "detonator"
+              className={`cursor-pointer text-center font-semibold text-lg ${selectedStatus === "detonator"
                   ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
                   : "cursor-pointer text-center text-gray-500"
-              }`}
+                }`}
               onClick={() => handleFilterChange("detonator")}
             >
               <span>Detonator</span>
             </div>
             <div
-              className={`cursor-pointer text-center font-semibold text-lg ${
-                selectedStatus === "merchant"
+              className={`cursor-pointer text-center font-semibold text-lg ${selectedStatus === "merchant"
                   ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
                   : "cursor-pointer text-center text-gray-500"
-              }`}
+                }`}
               onClick={() => handleFilterChange("merchant")}
             >
               <span>Merchant</span>
@@ -148,7 +144,6 @@ const inbox = (inbox) => {
           ) : (
             <div className={`pb-28 `}>
               {DataInbox.map((inboxData) => {
-                // console.log(`Key: ${dataFilter.id}`);
                 return <CardInbox DataInbox={inboxData} key={inboxData.id} />;
               })}
             </div>

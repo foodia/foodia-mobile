@@ -27,7 +27,6 @@ const Detonator = () => {
       const token = localStorage.getItem("token");
       // const status = localStorage.getItem('status');
       // const id = localStorage.getItem('id');
-      // console.log("token", token);
       if (!token) {
         Swal.fire({
           icon: "error",
@@ -42,11 +41,9 @@ const Detonator = () => {
           // timer: 2000,
         }).then((result) => {
           if (result.isConfirmed) {
-            // console.log("clicked");
             setLoading(true);
             router.push("/login");
           } else if (result.isDismissed) {
-            // console.log("denied");
             router.push("/home");
           }
         });
@@ -64,10 +61,8 @@ const Detonator = () => {
             }
           );
           const cekData = response.data.body;
-          console.log("cekData", cekData);
 
           if (!cekData.detonator) {
-            // console.log('/register/detonator');
             Swal.fire({
               icon: "warning",
               title: "Akun Belum Terdaftar sebagai Detonator",
@@ -81,10 +76,8 @@ const Detonator = () => {
               // timer: 2000,
             }).then((result) => {
               if (result.isConfirmed) {
-                // console.log("clicked");
                 router.push("/detonator/syarat");
               } else if (result.isDismissed) {
-                // console.log("denied");
                 router.push("/home");
               }
             });
@@ -134,7 +127,6 @@ const Detonator = () => {
               localStorage.setItem("note", cekData.detonator.note);
             }
           }
-          console.log("data", cekData);
         } catch (error) {
           if (error.response && error.response.status === 401) {
             Error401(error, router);
@@ -177,7 +169,6 @@ const Detonator = () => {
             router.push("/login");
             router.push("/login");
           }
-          console.log(error);
         });
     } else if (menu == "review-list") {
 
@@ -194,7 +185,6 @@ const Detonator = () => {
 
           // setFilteredData(res.data.body);
           setLoading(false);
-          console.log("review", res.data.body);
         }).catch((error) => {
           Error401(error, router);
         })
@@ -204,7 +194,6 @@ const Detonator = () => {
 
   useEffect(() => {
     let filtered = [];
-    console.log("selected status", selectedStatus);
     if (selectedStatus == "KirimUlasan") {
       filtered = dataApi.filter(
         (data) => data.approval_status === "approved" && data.is_rating === false
@@ -312,7 +301,6 @@ const Detonator = () => {
           setDataApi(filtered);
           setFilteredData(filtered);
           setLoading(false);
-          console.log('data filter', filteredData);
         })
         .catch((error) => {
           if (error.response && error.response.status === 401) {
@@ -320,7 +308,6 @@ const Detonator = () => {
           }
         })
     } else if (status === "UlasanSelesai") {
-      console.log("masuk");
       setDataApi([]);
       setFilteredData([]);
       setLoading(false);
@@ -390,7 +377,6 @@ const Detonator = () => {
             ) : (
               <div className={`${styles.card}`}>
                 {filteredData.map((dataFilter) => {
-                  // console.log(`Key: ${dataFilter.id}`);
                   return (
                     <CardCampaign
                       key={dataFilter.id}
@@ -444,7 +430,6 @@ const Detonator = () => {
               <div className={`${styles.card}`}>
 
                 {filteredData.map((dataFilter) => {
-                  // console.log(`Key: ${dataFilter.id}`);
                   return (
                     <CardCampaign
                       // dataReview={dataFilter}

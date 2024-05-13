@@ -27,7 +27,6 @@ const AddFoodCamp = ({
     if (quantity < qty) {
       setQuantity(quantity + 1);
     }
-    console.log(images);
   };
 
   const handleDecrease = () => {
@@ -70,10 +69,6 @@ const AddFoodCamp = ({
 
   const [showDesc, setShowDesc] = useState(false);
 
-  useEffect(() => {
-    console.log(cart);
-    console.log(cart.findIndex((item) => item.id === id));
-  }, []);
 
   return (
     <div className="w-full bg-white text-black border border-primary rounded-lg inline-flex items-center px-2 py-2.5">

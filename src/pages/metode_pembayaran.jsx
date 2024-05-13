@@ -38,14 +38,12 @@ const MetodePembayaran = () => {
     setNominalDonasi(state.donation.amount);
     setPajak(pajakAmount);
     setTotal(totalBayar);
-    console.log(totalBayar);
   }, [state.donation]);
 
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
   //       if (!state.donation.amount) {
-  //         console.log("No data");
 
   //         // Use SweetAlert to show a warning
   //         Swal.fire({
@@ -64,7 +62,6 @@ const MetodePembayaran = () => {
   //         const totalBayar = state.donation.amount + pajakAmount;
   //         setPajak(pajakAmount);
   //         setTotal(totalBayar);
-  //         console.log("data", state.donation);
   //       }
   //     } catch (error) {
   //       console.error("Error fetching data:", error);
@@ -124,7 +121,6 @@ const MetodePembayaran = () => {
           showConfirmButton: false,
           timer: 2000,
         });
-        console.log(error);
         Error401(error, router);
       });
   };

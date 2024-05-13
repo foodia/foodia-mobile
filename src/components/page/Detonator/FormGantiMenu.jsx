@@ -52,12 +52,8 @@ const FormCampaing = () => {
                 const DataOrder = response.data.body.orders;
                 const rejectedOrders = DataOrder.filter((order) => order.id === parseInt(ord));
                 const totalRejectedAmount = rejectedOrders.reduce((total, item) => total + item.total_amount, 0);
-                // console.log('Total jumlah total_amount dari order yang ditolak:', totalRejectedAmount);
                 setTotalRejected(totalRejectedAmount);
                 setRejectedQty(rejectedOrders[0].qty);
-                console.log('jumlah qty rejected', RejectedQty);
-                console.log('data Camp', response.data.body);
-                console.log('data order rejected', rejectedOrders);
             })
             .catch((error) => {
                 if (error.response && error.response.status === 401) {
@@ -69,13 +65,10 @@ const FormCampaing = () => {
     useEffect(() => {
         const storedFormData = localStorage.getItem("formData");
         if (storedFormData) {
-            console.log(JSON.parse(storedFormData));
         }
     }, []);
 
     useEffect(() => {
-        console.log('router.query', router);
-        console.log('id_camp', id_camp);
         // Membaca nilai dari localStorage setelah rendering pada sisi klien
         const cartData = JSON.parse(localStorage.getItem("cart")) || [];
         setCart(cartData);

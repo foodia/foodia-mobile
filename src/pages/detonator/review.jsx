@@ -27,7 +27,6 @@ const review = (review) => {
             const token = localStorage.getItem("token");
             // const status = localStorage.getItem('status');
             // const id = localStorage.getItem('id');
-            // console.log("token", token);
             if (!token) {
                 Swal.fire({
                     icon: "error",
@@ -42,11 +41,9 @@ const review = (review) => {
                     // timer: 2000,
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // console.log("clicked");
                         setLoading(true);
                         router.push("/login");
                     } else if (result.isDismissed) {
-                        // console.log("denied");
                         router.push("/home");
                     }
                 });
@@ -61,10 +58,8 @@ const review = (review) => {
                         }
                     );
                     const cekData = response.data.body;
-                    console.log("cekData", cekData);
 
                     if (!cekData.detonator) {
-                        // console.log('/register/detonator');
                         Swal.fire({
                             icon: "warning",
                             title: "Akun Belum Terdaftar sebagai Detonator",
@@ -78,10 +73,8 @@ const review = (review) => {
                             // timer: 2000,
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                // console.log("clicked");
                                 router.push("/detonator/syarat");
                             } else if (result.isDismissed) {
-                                // console.log("denied");
                                 router.push("/home");
                             }
                         });
@@ -131,7 +124,6 @@ const review = (review) => {
                             localStorage.setItem("note", cekData.detonator.note);
                         }
                     }
-                    console.log("data", cekData);
                 } catch (error) {
                     if (error.response && error.response.status === 401) {
                         Error401(error, router);
@@ -163,7 +155,6 @@ const review = (review) => {
                 setJumlah(res?.data?.body?.length);
                 // setFilteredData(res.data.body);
                 setLoading(false);
-                console.log("review", res.data.body);
             }).catch((error) => {
                 Error401(error, router);
             })
@@ -172,7 +163,6 @@ const review = (review) => {
     useEffect(() => {
         const token = localStorage.getItem("token");
         const id = localStorage.getItem("id");
-        console.log("selected status", selectedStatus);
         if (selectedStatus == "KirimUlasan") {
             setLoading(false)
             setFilteredData(dataApi);
@@ -192,14 +182,12 @@ const review = (review) => {
 
                     setFilteredData(res.data.body);
                     setLoading(false);
-                    console.log("review ulasan", res.data.body);
                 }).catch((error) => {
                     setLoading(false);
                     Error401(error, router);
                 })
         }
 
-        console.log("filter data", filteredData);
         setLoading(false);
     }, [dataApi, selectedStatus]);
 
@@ -207,17 +195,13 @@ const review = (review) => {
         setLoading(true);
         setSelectedStatus(status);
         if (status === "KirimUlasan") {
-            console.log(status);
             // setLoading(false);
         } else if (status === "UlasanSelesai") {
-            console.log(status);
             // setLoading(false);
         }
 
         // setFilteredData(filtered);
     };
-    // console.log('filtered', filteredData);
-    // console.log('id_campaign', dataFilter.campaign_id);
 
     return (
         <>

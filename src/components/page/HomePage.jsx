@@ -34,7 +34,6 @@ const HomePage = () => {
         const approvedCampaigns = response.data.body.filter(
           (campaign) => campaign.status === "approved"
         );
-        console.log("page home data", approvedCampaigns);
         setSelectedStatus("OPEN");
         setDataApi(approvedCampaigns);
         setDataCamp(approvedCampaigns);
@@ -193,8 +192,8 @@ const HomePage = () => {
         <div className="flex flex-row px-6 py-4 justify-between items-end">
           <div
             className={`cursor-pointer px-0 pb-3 w-36 ${selectedStatus === "OPEN"
-                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
+              ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
+              : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
               }`}
             onClick={() => handleFilterChange("OPEN")}
           >
@@ -202,8 +201,8 @@ const HomePage = () => {
           </div>
           <div
             className={`cursor-pointer text-center${selectedStatus === "INPROGRESS"
-                ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
+              ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
+              : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
               }`}
             onClick={() => handleFilterChange("INPROGRESS")}
           >
@@ -211,8 +210,8 @@ const HomePage = () => {
           </div>
           <div
             className={`cursor-pointer text-center ${selectedStatus === "FINISHED"
-                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
+              ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
+              : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
               }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
@@ -231,7 +230,6 @@ const HomePage = () => {
         ) : (
           <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
             {DataCamp.map((campData) => {
-              // console.log(`Key: ${dataFilter.id}`);
               return (
                 <CardCampaign
                   to={`/campaign/${campData.id}`}
