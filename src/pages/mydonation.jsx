@@ -44,7 +44,8 @@ const mydonation = () => {
     setLoading(true);
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
         }donation/list?start=${month}-01&end=${month}-${new Date(
           moment(month, "YYYY-MM").format("YYYY"),
           moment(month, "YYYY-MM").format("MM"),
@@ -69,12 +70,6 @@ const mydonation = () => {
         const sortedData = response.data.body.donation_history.sort(
           (a, b) => b.transaction.id - a.transaction.id
         );
-
-        // sortedData.map((e) => {
-        //   const dateString = e.date;
-        //   const monthYear =
-        //     dateString.split(" ")[1] + " " + dateString.split(" ")[2];
-        // });
 
         setHistory(sortedData);
       })
@@ -130,35 +125,18 @@ const mydonation = () => {
                         onClick={() => {
                           onChangeMonth(bulan);
                         }}
-                        className={`${moment(bulan, "YYYY-MM").format("MMM YYYY") ===
-                            moment(month, "YYYY-MM").format("MMM YYYY")
+                        className={`${
+                          moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                          moment(month, "YYYY-MM").format("MMM YYYY")
                             ? "text-primary"
                             : "text-black"
-                          } text-[12px] w-full text-left font-semibold`}
+                        } text-[12px] w-full text-left font-semibold`}
                       >
                         {moment(bulan, "YYYY-MM").format("MMM YYYY")}
                       </button>
                     ))}
                   </div>
                 )}
-
-                {/* <select
-                  onChange={(e) => onChangeMonth(e)}
-                  class="text-[12px] font-semibold text-white custom-select w-20 h-[25px] rounded-md bg-transparent border-[1px] border-white outline-none"
-                >
-                  {data?.year_filters?.map((bulan, index) => (
-                    <option
-                      key={index}
-                      value={bulan}
-                      className="text-white bg-blue-500 w-96" // Add classes for customization
-                      style={{
-                        width: "100px",
-                      }}
-                    >
-                      {moment(bulan, "YYYY-MM").format("MMM YYYY")}
-                    </option>
-                  ))}
-                </select> */}
               </div>
               <p className="text-white font-semibold">
                 {new Intl.NumberFormat("id-ID", {
@@ -219,10 +197,11 @@ const mydonation = () => {
                       </p>
                     </div>
                     <p
-                      className={`text-[16px] font-bold ${data.type_donation === "booster"
+                      className={`text-[16px] font-bold ${
+                        data.type_donation === "booster"
                           ? "text-[#1D5882]"
                           : "text-primary"
-                        }`}
+                      }`}
                     >
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",
