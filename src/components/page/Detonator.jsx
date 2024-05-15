@@ -169,7 +169,6 @@ const Detonator = () => {
           router.push("/login");
         }
       });
-
   }, [selectedStatus, loading]);
 
   const handleFilterChange = (status) => {
@@ -276,28 +275,31 @@ const Detonator = () => {
         </div>
         <div className="flex flex-row px-6 py-4 justify-between items-end">
           <div
-            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "DRAFT"
-              ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-              }`}
+            className={`cursor-pointer text-center pb-2 text-[16px] ${
+              selectedStatus === "DRAFT"
+                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
+            }`}
             onClick={() => handleFilterChange("DRAFT")}
           >
             <p>Campaign Baru</p>
           </div>
           <div
-            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "OPEN,INPROGRESS"
-              ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-              }`}
+            className={`cursor-pointer text-center pb-2 text-[16px] ${
+              selectedStatus === "OPEN,INPROGRESS"
+                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
+            }`}
             onClick={() => handleFilterChange("OPEN,INPROGRESS")}
           >
             <p>Campaign Berjalan</p>
           </div>
           <div
-            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "FINISHED"
-              ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-              }`}
+            className={`cursor-pointer text-center pb-2 text-[16px] ${
+              selectedStatus === "FINISHED"
+                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
+            }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
             <p>Campaign Selesai</p>
@@ -316,8 +318,9 @@ const Detonator = () => {
             {filteredData.map((dataFilter) => {
               return (
                 <CardCampaign
+                  from={"detonator"}
                   key={dataFilter.id}
-                  to={`detonator/campaign/${dataFilter.id}`}
+                  to={`campaign/${dataFilter.id}`}
                   img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.image_url}`}
                   title={dataFilter.event_name}
                   description={dataFilter.description}

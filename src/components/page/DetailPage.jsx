@@ -297,6 +297,7 @@ const DetailCamp = ({ data }) => {
       currency: "IDR",
     }).format(amount);
   };
+
   let percentageCollected = 0;
   data.donation_target > 0
     ? (percentageCollected =
@@ -551,7 +552,7 @@ const DetailCamp = ({ data }) => {
                       <div className="font-sans text-xs text-gray-500">
                         Berdonasi Sebesar{" "}
                         <span className="font-bold">
-                          {formatToRupiah(item.amount)}
+                          {formatUang(item.amount ? item.amount : 0)}
                         </span>
                       </div>
                       <div className="flex mt-1 font-sans text-xs items-center gap-1 text-gray-500">

@@ -330,7 +330,7 @@ function StepOne({
         />
       </ol>
       <div className="p-2 mt-2 w-full px-5 space-y-3">
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none">
+        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none">
           <IconUser />
           <input
             onChange={handleEventNameChange}
@@ -388,12 +388,12 @@ function StepOne({
           />
         </div>
 
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none outline-none">
           <IconFileDescription />
           <textarea
             onChange={handleDescriptionChange}
             value={Description}
-            className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+            className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
             placeholder="Description"
             required
             name="Description"
@@ -631,7 +631,7 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
           )}
         </button>
 
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconMap />
           <textarea
             onChange={(e) => setLocation(e.target.value)}
@@ -642,7 +642,7 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
             required
           />
         </div>
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconHome2 />
           <input
             onChange={handleJalanChange}
@@ -654,7 +654,7 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
           />
         </div>
 
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none ">
+        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none ">
           <IconNotes />
           <input
             onChange={handleDetaiAlamatChange}
@@ -1133,6 +1133,8 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
   const router = useRouter();
   const admin_fee = 2500;
   const month = moment().format("YYYY-MM");
+  console.log(selectedChannel);
+  console.log(selectedMethod);
   useEffect(() => {
     axios
       .get(
@@ -1258,7 +1260,6 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             if (selectedMethod !== "agnostic") {
               setTimeout(() => {
                 router.push(`${responeUrl}`);
-                router.push("/bukti_pembayaran");
               }, 2000);
             } else {
               Swal.fire({
@@ -1268,9 +1269,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                 showConfirmButton: false,
                 timer: 2000,
               });
-              setTimeout(() => {
-                router.push("/bukti_pembayaran");
-              }, 2000);
+              // setTimeout(() => {
+              //   router.push("/bukti_pembayaran");
+              // }, 2000);
             }
           });
         // .catch((error) => {
