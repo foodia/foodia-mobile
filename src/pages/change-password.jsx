@@ -35,8 +35,9 @@ const ChangePassword = (ChangePassword) => {
     setShowConfirmPassword((show) => !show);
   const [loading, setLoading] = useState(false);
 
-  const Password_REGEX = /^[0-9!@#$%^&*`()_+{}\[\]:;<>,.?\/\\|-]{8,}$/;
-  const confirmPassword_REGEX = /^[0-9!@#$%^&*`()_+{}\[\]:;<>,.?\/\\|-]{8,}$/;
+  const Password_REGEX = /^[0-9A-Z!@#$%^&*`()_+{}\[\]:;<>,.?\/\\|-]{8,}$/;
+  const confirmPassword_REGEX =
+    /^[0-9A-Z!@#$%^&*`()_+{}\[\]:;<>,.?\/\\|-]{8,}$/;
 
   useEffect(() => {
     setValidPassword(Password_REGEX.test(inputPassword));
@@ -154,9 +155,11 @@ const ChangePassword = (ChangePassword) => {
               Masukan kata sandi lama
             </label>
             <div
-              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0 ${!inputOldPassword && "bg-gray-100"
-                } text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${messageOldPwError && "border-red-500"
-                }`}
+              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0 ${
+                !inputOldPassword && "bg-gray-100"
+              } text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
+                messageOldPwError && "border-red-500"
+              }`}
             >
               <IconLock />
               <input
@@ -184,9 +187,11 @@ const ChangePassword = (ChangePassword) => {
               Masukan kata sandi baru
             </label>
             <div
-              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0  ${!inputPassword && "bg-gray-100"
-                }  text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${!validpassword && inputPassword && "border-red-500"
-                }`}
+              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0  ${
+                !inputPassword && "bg-gray-100"
+              }  text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
+                !validpassword && inputPassword && "border-red-500"
+              }`}
             >
               <IconLock />
               <input
@@ -223,9 +228,11 @@ const ChangePassword = (ChangePassword) => {
               Masukan ulang kata sandi baru
             </label>
             <div
-              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0  ${!confirmPassword && "bg-gray-100"
-                }  text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${messageConfirmError && "border-red-500"
-                }`}
+              className={`flex flex-row items-center border-[1px] p-4 pr-2 py-0  ${
+                !confirmPassword && "bg-gray-100"
+              }  text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
+                messageConfirmError && "border-red-500"
+              }`}
             >
               <IconLock />
               <input
@@ -257,13 +264,14 @@ const ChangePassword = (ChangePassword) => {
                   !validpassword
                 }
                 onClick={handleSubmit}
-                className={`flex items-center justify-center ${!inputOldPassword ||
-                    !inputPassword ||
-                    !confirmPassword ||
-                    !validpassword
+                className={`flex items-center justify-center ${
+                  !inputOldPassword ||
+                  !inputPassword ||
+                  !confirmPassword ||
+                  !validpassword
                     ? "bg-gray-400"
                     : "bg-primary"
-                  } border-0 rounded-lg w-full h-10 text-white font-bold text-center`}
+                } border-0 rounded-lg w-full h-10 text-white font-bold text-center`}
               >
                 Kirim
               </button>

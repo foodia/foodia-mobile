@@ -204,7 +204,7 @@ const profile = (profile) => {
             </>
           )}
         </div>
-        {/* {loading && <Loading />} */}
+        {loading && <Loading />}
       </div>
       <BottomNav />
     </>
