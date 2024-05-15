@@ -1,5 +1,6 @@
 import BottomNav from "@/components/BottomNav";
 import CardInbox from "@/components/CardInbox";
+import Error401 from "@/components/error401";
 import styles from "@/styles/Home.module.css";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -11,18 +12,41 @@ const inbox = (inbox) => {
   const [dataApi, setDataApi] = useState([]);
   const [DataInbox, setDataInbox] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(null);
-  // const [page, setPage] = useState(1);
-  // const [hasMore, setHasMore] = useState(true);
-  // const observer = useRef();
+  const [donaturActive, setDonaturActive] = useState(false);
+  const [detonatorActive, setDetonatorActive] = useState(false);
+  const [merchantActive, setMerchantActive] = useState(false);
 
   useEffect(() => {
+    const id = localStorage.getItem("id");
+    const detonator_id = localStorage.getItem("id_detonator");
+    const merchant_id = localStorage.getItem("id_merchant");
+    // console.log(id, detonator_id, merchant_id);
+
+    if (id) {
+      setDonaturActive(true);
+      if (detonator_id !== 'undefined') {
+        setDetonatorActive(true);
+      }
+      if (merchant_id !== 'undefined') {
+        setMerchantActive(true);
+      }
+    }
+  }, [selectedStatus]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    // if (!token) {
+    //   router.push("/login");
+    // } else {
+    //   fetchData();
+    // }
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://mocki.io/v1/8bfe8bfc-b804-4e91-9538-56085900648e`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=donator`,
           {
             headers: {
-              Authorization: `Bearer`,
+              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -31,7 +55,7 @@ const inbox = (inbox) => {
         setDataInbox(response.data.body);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        Error401(error, router);
       }
     };
 
@@ -39,51 +63,40 @@ const inbox = (inbox) => {
   }, []);
 
   const handleFilterChange = (status) => {
-    let filtered = [];
+    const token = localStorage.getItem("token");
 
     setLoading(true);
+    let url = '';
+
     if (status === "donator") {
-      axios
-        .get(`https://mocki.io/v1/8bfe8bfc-b804-4e91-9538-56085900648e`)
-        .then((response) => {
-          setDataApi(response.data.body);
-          setDataInbox(response.data.body);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
+      url = `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=donator`;
     } else if (status === "detonator") {
-      axios
-        .get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}`
-        )
-        .then((response) => {
-          setDataApi(response.data.body);
-          setDataInbox(response.data.body);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
+      url = `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=detonator`;
     } else if (status === "merchant") {
-      axios
-        .get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}`
-        )
+      url = `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=merchant`;
+    }
+
+    if (url) {
+      axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
         .then((response) => {
           setDataApi(response.data.body);
           setDataInbox(response.data.body);
           setLoading(false);
         })
         .catch((error) => {
-          console.error("Error fetching data:", error);
+          // console.error("Error fetching data:", error);
+          Error401(error, router);
+          setLoading(false);
         });
     }
 
     setSelectedStatus(status);
-    // setFilteredData(filtered);
   };
+
   return (
     <>
       <div className="container mx-auto h-screen max-w-480 bg-white flex flex-col">
@@ -94,47 +107,54 @@ const inbox = (inbox) => {
           </div>
 
           <div className="flex flex-row px-6 py-4 justify-between items-end">
-            {/* <div
-                            className={`cursor-pointer px-0 pb-3 w-36 ${selectedStatus === "donator"
-                                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                                : "text-gray-500"
-                                }`}
-                            onClick={() => handleFilterChange("donator")}
-                        >
-                            <span>Donator</span>
-                        </div> */}
 
-            <div
-              className={`cursor-pointer text-center font-semibold text-lg ${selectedStatus === "donator"
-                  ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                  : "cursor-pointer text-center text-gray-500"
-                }`}
-              onClick={() => handleFilterChange("donator")}
-            >
-              <span>Donator</span>
-            </div>
-            <div
-              className={`cursor-pointer text-center font-semibold text-lg ${selectedStatus === "detonator"
-                  ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                  : "cursor-pointer text-center text-gray-500"
-                }`}
-              onClick={() => handleFilterChange("detonator")}
-            >
-              <span>Detonator</span>
-            </div>
-            <div
-              className={`cursor-pointer text-center font-semibold text-lg ${selectedStatus === "merchant"
-                  ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                  : "cursor-pointer text-center text-gray-500"
-                }`}
-              onClick={() => handleFilterChange("merchant")}
-            >
-              <span>Merchant</span>
-            </div>
+            {donaturActive ? (
+              <div className="px-2 w-full">
+                <div
+                  className={` cursor-pointer text-center font-semibold text-lg ${selectedStatus === "donator"
+                    ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                    : "cursor-pointer text-center text-gray-500"
+                    }`}
+                  onClick={() => handleFilterChange("donator")}
+                >
+                  <span>Donator</span>
+                </div>
+              </div>
+            ) : null}
+
+            {detonatorActive ? (
+              <div className="px-2 w-full">
+                <div
+                  className={`cursor-pointer text-center font-semibold text-lg ${selectedStatus === "detonator"
+                    ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                    : "cursor-pointer text-center text-gray-500"
+                    }`}
+                  onClick={() => handleFilterChange("detonator")}
+                >
+                  <span>Detonator</span>
+                </div>
+              </div>
+            ) : null}
+
+            {merchantActive ? (
+              <div className="px-2 w-full">
+                <div
+                  className={`cursor-pointer text-center font-semibold text-lg ${selectedStatus === "merchant"
+                    ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                    : "cursor-pointer text-center text-gray-500"
+                    }`}
+                  onClick={() => handleFilterChange("merchant")}
+                >
+                  <span>Merchant</span>
+                </div>
+              </div>
+            ) : null}
+
+
           </div>
 
           {loading ? (
-            <div className={`${styles.card} `}>
+            <div className={`${styles.card}`}>
               {[...Array(4)].map((_, index) => (
                 <div key={index} className={`${styles.loadingCard}`}>
                   <div className={`${styles.shimmer}`}></div>
@@ -142,10 +162,15 @@ const inbox = (inbox) => {
               ))}
             </div>
           ) : (
-            <div className={`pb-28 `}>
-              {DataInbox.map((inboxData) => {
-                return <CardInbox DataInbox={inboxData} key={inboxData.id} />;
-              })}
+            <div className={`pb-28`}>
+              {DataInbox.length > 0 ? (
+                DataInbox.map((inboxData) => (
+                  <CardInbox DataInbox={inboxData} key={inboxData.id} />
+
+                ))
+              ) : (
+                <div className="flex justify-center items-center h-[326px] text-center font-semibold text-[#D9D9D9] text-[16px]">No Data</div>
+              )}
             </div>
           )}
         </div>
