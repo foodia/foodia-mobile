@@ -88,26 +88,48 @@ const LoginPage = () => {
         const responeData = response.data.body;
 
         if (responeData.is_active) {
-          localStorage.setItem("Session", "start");
-          localStorage.setItem("fullname", responeData.fullname);
-          localStorage.setItem("phone", responeData.phone);
-          localStorage.setItem("email", responeData.email);
-          localStorage.setItem("role", responeData.role);
-          localStorage.setItem("token", responeData.token);
-          localStorage.setItem("id", responeData.id || " ");
-          localStorage.setItem("status", responeData.status || " ");
-          localStorage.setItem("note", responeData.note || " ");
-          Swal.fire({
-            icon: "success",
-            title: "Login Success",
-            text: `Welcome ${responeData.fullname}`,
-            showConfirmButton: false,
-            timer: 2000,
-          });
-          setTimeout(() => {
-            setLoading(false);
-            router.push("/home");
-          }, 2000);
+          axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`, {
+            headers: {
+              Authorization: `Bearer ${responeData.token}`,
+            },
+          })
+            .then((res) => {
+              localStorage.setItem("id_merchant", res.data.body.merchant?.merchant_id);
+              localStorage.setItem("id_detonator", res.data.body.detonator?.detonator_id);
+              localStorage.setItem("Session", "start");
+              localStorage.setItem("fullname", responeData.fullname);
+              localStorage.setItem("phone", responeData.phone);
+              localStorage.setItem("email", responeData.email);
+              localStorage.setItem("role", responeData.role);
+              localStorage.setItem("token", responeData.token);
+              localStorage.setItem("id", responeData.user_id || " ");
+              localStorage.setItem("status", responeData.status || " ");
+              localStorage.setItem("note", responeData.note || " ");
+              setLoading(false);
+              Swal.fire({
+                icon: "success",
+                title: "Login Success",
+                text: `Welcome ${responeData.fullname}`,
+                showConfirmButton: false,
+                timer: 2000,
+              });
+              setTimeout(() => {
+                setLoading(false);
+                router.push("/home");
+              }, 2000);
+
+            })
+            .catch(() => {
+              setLoading(false);
+              Swal.fire({
+                icon: "error",
+                title: "Login Failed",
+                text: "Please check your email and password and try again.",
+                showConfirmButton: false,
+                timer: 2000,
+              });
+            })
+
         } else {
           setRegistrasi(responeData);
           localStorage.setItem("email", responeData.email);

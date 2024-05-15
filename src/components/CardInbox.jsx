@@ -18,7 +18,7 @@ const CardInbox = ({ DataInbox }) => {
     }, [DataInbox]);
     return (
         <div className="flex items-center justify-center pb-2">
-            <Link href={url} className="flex flex-col w-full max-w-[320px] leading-1.5 p-2 border-primary border-2 bg-white rounded-lg shadow-[0px_0px_8px_0px_#00000024]">
+            <Link href={url} className="flex flex-col w-full max-w-[320px] leading-1.5 p-2 border-black hover:border-primary border-2 bg-white rounded-lg shadow-[0px_0px_8px_0px_#00000024]">
                 <div className="flex items-center space-x-2 rtl:space-x-reverse">
                     <span className="text-sm font-semibold text-black">{DataInbox.title}</span>
                 </div>
