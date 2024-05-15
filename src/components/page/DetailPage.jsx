@@ -393,10 +393,12 @@ const DetailCamp = ({ data }) => {
               </p>
             </div> */}
             <button
-              disabled={data.campaign_status === "FINISHED"}
+              disabled={
+                data.campaign_status === "FINISHED" || remainingDays < 1
+              }
               onClick={showSweetAlert}
               className={`w-full h-14 mt-4 text-white rounded-2xl inline-flex items-center justify-center px-2.5 py-2.5 ${
-                data.campaign_status === "FINISHED"
+                data.campaign_status === "FINISHED" || remainingDays < 1
                   ? "bg-gray-400"
                   : "bg-primary"
               } font-bold text-lg`}
@@ -506,7 +508,7 @@ const DetailCamp = ({ data }) => {
             {data.description}
           </p>
           <hr className="w-full h-0.5 mx-auto mt-2 bg-gray-100 border-0 rounded" />
-          {data.description.length >= 30 && (
+          {data.description.length > 49 && (
             <div className="bg-white grid place-content-center rounded-sm text-primary text-xs mt-2">
               {showFullText ? (
                 <button className="flex" onClick={toggleReadMore}>
