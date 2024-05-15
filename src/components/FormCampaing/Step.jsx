@@ -1229,8 +1229,10 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             amount: parseFloat(donationRequired),
             admin_fee: admin_fee,
             total_amount: parseFloat(donationRequired),
-            payment_channel: "",
-            success_url: "https://foodia.cmtdepok.xyz/bukti_pembayaran",
+            payment_channel: `${
+              selectedMethod !== "agnostic" && selectedChannel
+            }`,
+            success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
           },
         };
         axios
@@ -1243,57 +1245,70 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
               },
             }
           )
-          .then(() => {
+          .then((response) => {
+            const responeUrl =
+              response.data.body.payment.actions.desktop_web_checkout_url;
+            localStorage.setItem(
+              "external_id",
+              response.data.body.payment.external_id
+            );
             localStorage.removeItem("cart");
             localStorage.removeItem("formData");
             setLoading(false);
-            Swal.fire({
-              icon: "success",
-              title: "Campaign Created!",
-              text: "Campaign Berhasil dibuat Mohon Tunggu approval dari admin",
-              showConfirmButton: false,
-              timer: 2000,
-            });
-            setTimeout(() => {
-              router.push("/detonator");
-            }, 2000);
-          })
-          .catch((error) => {
-            if (error.response && error.response.status === 401) {
-              localStorage.removeItem("cart");
-              localStorage.removeItem("formData");
-              Error401(error, router);
+            if (selectedMethod !== "agnostic") {
+              setTimeout(() => {
+                router.push(`${responeUrl}`);
+                router.push("/bukti_pembayaran");
+              }, 2000);
             } else {
               Swal.fire({
-                icon: "error",
-                title: "Gagal Membuat Campaign",
-                text: "Gagal Membuat Campaign Mohon Coba Lagi",
+                icon: "success",
+                title: "Campaign Created!",
+                text: "Campaign Berhasil dibuat Mohon Tunggu approval dari admin",
                 showConfirmButton: false,
                 timer: 2000,
               });
+              setTimeout(() => {
+                router.push("/bukti_pembayaran");
+              }, 2000);
             }
           });
-      })
-      .catch((error) => {
-        setLoading(false);
-        if (error.response && error.response.status === 401) {
-          localStorage.removeItem("cart");
-          localStorage.removeItem("formData");
-          Error401(error, router);
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Image Gagal Upload",
-            text: "Gagal Upload Image Mohon Coba Lagi",
-            showConfirmButton: false,
-            timer: 2000,
-          });
-
-          setTimeout(() => {
-            router.push("/createcampaign?step=1");
-          }, 2000);
-        }
+        // .catch((error) => {
+        //   if (error.response && error.response.status === 401) {
+        //     localStorage.removeItem("cart");
+        //     localStorage.removeItem("formData");
+        //     Error401(error, router);
+        //   } else {
+        //     Swal.fire({
+        //       icon: "error",
+        //       title: "Gagal Membuat Campaign",
+        //       text: "Gagal Membuat Campaign Mohon Coba Lagi",
+        //       showConfirmButton: false,
+        //       timer: 2000,
+        //     });
+        //   }
+        // });
       });
+    // .catch((error) => {
+    //   setLoading(false);
+    //   if (error.response && error.response.status === 401) {
+    //     localStorage.removeItem("cart");
+    //     localStorage.removeItem("formData");
+    //     Error401(error, router);
+    //   } else {
+    //     Swal.fire({
+    //       icon: "error",
+    //       title: "Image Gagal Upload",
+    //       text: "Gagal Upload Image Mohon Coba Lagi",
+    //       showConfirmButton: false,
+    //       timer: 2000,
+    //     });
+
+    //     setTimeout(() => {
+    //       router.push("/createcampaign?step=1");
+    //     }, 2000);
+    //   }
+    // });
   };
 
   const methodOptions = [
