@@ -20,6 +20,7 @@ const CardRepordFood = (props) => {
   const {
     id_order = "#",
     detonator_id,
+    campaign_id,
     img,
     title,
     date,
@@ -49,11 +50,11 @@ const CardRepordFood = (props) => {
       case "incoming":
         return <IconHourglassEmpty size={22} />;
       case "terima":
-        return <IconPackageExport size={22} />;
+        return <IconHourglassEmpty size={22} />;
       case "selesai":
-        return <IconCheck size={22} />;
-      case "tolak":
-        return <IconPlaystationX size={22} />;
+        return <IconPackageExport size={22} />;
+      // case "tolak":
+      //   return <IconPlaystationX size={22} />;
       default:
         return null;
     }
@@ -81,9 +82,11 @@ const CardRepordFood = (props) => {
             // timer: 2000,
           }).then((result) => {
             if (result.isConfirmed) {
-              router.push(
-                `/detonator/ganti-menu?ord=${id_order}&cmp=${id}&step=1`
-              );
+              localStorage.setItem("order_id", id_order);
+              localStorage.setItem("totalAmount", price);
+              localStorage.setItem("qty", qty);
+              localStorage.setItem("campaign_id", campaign_id);
+              router.push(`/detonator/ganti-menu?step=1`);
             } else if (result.isDismissed) {
             } else if (result.isDenied) {
               /// Lanjutkan Campaign
@@ -146,12 +149,12 @@ const CardRepordFood = (props) => {
               <p className="mb-1 font-sans font-bold text-xs truncate">
                 {nameMerchant}
               </p>
-              <div className="flex">
+              <div className="flex items-end">
                 <p className="font-bold text-xs mr-2">{`Jumlah :${qty}`}</p>
                 <div
-                  className={`font-sans text-xs capitalize text-white rounded-lg w-16 flex justify-center items-center px-2 ${
+                  className={`font-sans text-[10px] capitalize text-white rounded-xl w-16 flex justify-center items-center py-0.5 px-2 ${
                     approval_status === "waiting"
-                      ? "bg-blue-600"
+                      ? "bg-[#6B4EFF]"
                       : approval_status == "approved"
                       ? "bg-primary"
                       : approval_status == "rejected"
@@ -159,7 +162,11 @@ const CardRepordFood = (props) => {
                       : approval_status == "canceled" && "bg-orange-500"
                   }`}
                 >
-                  <p>{approval_status}</p>
+                  <p>
+                    {approval_status === "waiting"
+                      ? "reviewed"
+                      : approval_status}
+                  </p>
                 </div>
               </div>
             </div>
@@ -180,20 +187,20 @@ const CardRepordFood = (props) => {
                   <div
                     className={`flex justify-center items-center rounded-full ${
                       order_status === "review"
-                        ? "text-blue-600"
+                        ? "text-[#6B4EFF]"
                         : order_status === "incoming"
-                        ? "text-blue-600"
+                        ? "text-[#6B4EFF]"
                         : order_status === "terima"
-                        ? "text-orange-500"
+                        ? "text-[#1D5882]"
                         : order_status === "tolak"
-                        ? "text-primary border border-primary"
+                        ? "text-primary border border-primary px-4 py-1 hover:bg-slate-200"
                         : order_status === "selesai"
                         ? "text-primary"
                         : ""
                     }`}
                   >
-                    <p className="mr-1">{getorder_status()}</p>
-                    <p className="w-16 break-words text-xs font-bold">{`${
+                    <p>{getorder_status()}</p>
+                    <p className=" text-xs font-bold">{`${
                       order_status === "review"
                         ? "Review Merchant"
                         : order_status === "incoming"
@@ -212,11 +219,11 @@ const CardRepordFood = (props) => {
                 <div
                   className={`flex justify-center items-center rounded-full ${
                     order_status === "review"
-                      ? "text-blue-600"
+                      ? "text-[#6B4EFF]"
                       : order_status === "incoming"
-                      ? "text-blue-600"
+                      ? "text-[#6B4EFF]"
                       : order_status === "terima"
-                      ? "text-orange-500"
+                      ? "text-[#1D5882]"
                       : order_status === "selesai"
                       ? "text-primary"
                       : ""

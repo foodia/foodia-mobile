@@ -1,8 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import styles from "@/styles/Home.module.css";
+import Loading from "@/components/Loading";
 
 const ProfileDetonator = ({ id }) => {
   const [data, setData] = useState();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -12,9 +15,11 @@ const ProfileDetonator = ({ id }) => {
         },
       })
       .then((response) => {
+        setLoading(false);
         setData(response.data.body);
       })
       .catch((error) => {
+        setLoading(false);
         Error401(error, router);
       });
   }, [id]);
@@ -27,12 +32,7 @@ const ProfileDetonator = ({ id }) => {
             <p>{data?.ktp_number}</p>
           </div>
         </div>
-        {/* <div class="flex-grow text-center md:text-left">
-          <div className="mt-2 mb-3">
-            <p class="font-bold">Alamat</p>
-            <p>{data?.address}</p>
-          </div>
-        </div> */}
+        {loading && <Loading />}
       </div>
     </>
   );

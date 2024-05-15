@@ -7,6 +7,7 @@ import { Link } from "tabler-icons-react";
 import Header from "@/components/Header";
 import CardRepordFood from "@/components/CardRepordFood";
 import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
 const FoodCampaign = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -32,24 +33,13 @@ const FoodCampaign = () => {
         setDetonatorId(response.data.body.detonator_id);
         setLoading(false);
       } catch (error) {
-        handleRequestError(error);
+        Error401(error);
       }
     };
 
     fetchData();
   }, [id, detonator_id]);
 
-  const handleRequestError = (error) => {
-    console.error("Error fetching data:", error);
-
-    if (error.response && error.response.status === 401) {
-      localStorage.clear();
-      router.push("/login/detonator");
-    }
-
-    setLoading(false);
-    setDataApi([]);
-  };
   const jumlahPesananDiproses = foodOrder.reduce((total, item) => {
     if (item.approval_status === "approved") {
       total = total + 1;
@@ -77,6 +67,7 @@ const FoodCampaign = () => {
                 <CardRepordFood
                   key={item.id}
                   detonator_id={detonator_id}
+                  campaign_id={item.campaign_id}
                   id_order={item.id}
                   img={
                     item.merchant_product.images.length > 0
@@ -84,7 +75,7 @@ const FoodCampaign = () => {
                       : "/img/default-image.png"
                   }
                   title={item.merchant_product.name}
-                  price={item.merchant_product.price}
+                  price={item.total_amount}
                   nameMerchant={item.merchant.merchant_name}
                   qty={item.qty}
                   approval_status={item.approval_status}
