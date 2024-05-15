@@ -173,7 +173,7 @@ const DetailPesanan = () => {
                 confirmButton: "custom-confirm-button-swal",
               },
               icon: "success",
-              title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menerima Pesanan</p><p class="w-auto pl-1 font-bold text-[25px]">Terima kasih telah membantu campaign kami</p>`,
+              title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menerima Pesanan</p><p class="w-auto pl-1 font-bold text-[15px] text-gray-400">Terima kasih telah membantu campaign kami</p>`,
               html: `
                   <div class="absolute px-28 ml-4 top-0 mt-4">
                     <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
@@ -384,7 +384,7 @@ const DetailPesanan = () => {
               <div className="justify-between grid grid-cols-2 gap-2 py-4">
                 <p className="text-sm text-primary">Pesanan Terkonfirmasi</p>
                 <p className="text-right text-sm text-primary">
-                  {confirmedOrder}
+                  {dataApi?.order_status === "diproses" ? confirmedOrder : 0}
                 </p>
               </div>
               <hr className="h-px bg-gray-200 border-0" />
@@ -395,7 +395,11 @@ const DetailPesanan = () => {
                     style: "currency",
                     currency: "IDR",
                     minimumFractionDigits: 0,
-                  }).format(dataApi?.total_amount)}
+                  }).format(
+                    dataApi?.order_status === "diproses"
+                      ? dataApi?.total_amount
+                      : 0
+                  )}
                 </p>
               </div>
               <hr className="h-px bg-gray-200 border-0" />

@@ -118,9 +118,7 @@ const HomePage = () => {
                     height={30}
                   />
                 </div>
-                <p className=" text-gray-500 dark:text-gray-400">
-                  Relawan
-                </p>
+                <p className=" text-gray-500 dark:text-gray-400">Relawan</p>
               </Link>
               <Link
                 href={"/merchant"}
@@ -146,9 +144,7 @@ const HomePage = () => {
                     height={30}
                   />
                 </div>
-                <p className=" text-gray-500 dark:text-gray-400">
-                  Terdekat
-                </p>
+                <p className=" text-gray-500 dark:text-gray-400">Terdekat</p>
               </Link>
             </div>
           </div>
@@ -191,28 +187,31 @@ const HomePage = () => {
         </div> */}
         <div className="flex flex-row px-6 py-4 justify-between items-end">
           <div
-            className={`cursor-pointer px-0 pb-3 w-36 ${selectedStatus === "OPEN"
-              ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-              : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
-              }`}
+            className={`cursor-pointer px-0 pb-3 w-36 ${
+              selectedStatus === "OPEN"
+                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
+            }`}
             onClick={() => handleFilterChange("OPEN")}
           >
             <span>Yuk Berdonasi</span>
           </div>
           <div
-            className={`cursor-pointer text-center${selectedStatus === "INPROGRESS"
-              ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-              : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
-              }`}
+            className={`cursor-pointer text-center${
+              selectedStatus === "INPROGRESS"
+                ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
+            }`}
             onClick={() => handleFilterChange("INPROGRESS")}
           >
             <span>Campaign Berjalan</span>
           </div>
           <div
-            className={`cursor-pointer text-center ${selectedStatus === "FINISHED"
-              ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-              : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
-              }`}
+            className={`cursor-pointer text-center ${
+              selectedStatus === "FINISHED"
+                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
+            }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
             <span>Campaign Selesai</span>
@@ -232,6 +231,7 @@ const HomePage = () => {
             {DataCamp.map((campData) => {
               return (
                 <CardCampaign
+                  from={"home"}
                   to={`/campaign/${campData.id}`}
                   img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${campData.image_url}`}
                   title={campData.event_name}

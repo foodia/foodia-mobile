@@ -23,7 +23,7 @@ const CardCampaign = (props) => {
     TotalHarga,
     nameProduct,
     time,
-
+    from,
     donation_collected = 0,
   } = props;
   const [Terkumpul, setTerkumpul] = useState(0);
@@ -38,7 +38,6 @@ const CardCampaign = (props) => {
     if (remainingDays < 0) {
       remainingDays = 0;
     }
-
 
     return remainingDays;
   };
@@ -82,48 +81,88 @@ const CardCampaign = (props) => {
         href={to}
         className={`bg-white hover:bg-gray-100 text-black rounded-lg shadow-lg w-full p-1`}
       >
-        <div className="flex px-1.5 pt-1.5">
-          <img
-            src={img}
-            className={`grid grid-cols-3 gap-4 place-items-end bg-gray-200 rounded-lg object-cover ${styles.img_card}`}
-            alt=""
-          />
-          <div className={`px-2 ${styles.text_card}`}>
-            <p className="mb-1 text-black font-bold text-sm capitalize">
-              {title}
-            </p>
-            {status == "Completed" ? (
-              <>
-                <div className="flex mb-2">
-                  <p className="font-sans text-[8px] text-gray-500 mr-1">Tanggal Campaign :</p>
-                  <p className="font-bold text-[8px] text-black">{date} {time}</p>
-                </div>
-                <p className=" font-sans text-[10px]">{qty} X {nameProduct}</p>
-                <div className="flex justify-between  items-center ">
-
-                  <p className="text-green font-sans mb-1 text-[18px] font-bold">
-                    Rp. {TotalHarga?.toLocaleString('id-ID')}
-                  </p>
-                  <div
-                    className={`font-sans text-xs text-white rounded-lg p-1 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'Completed' ? 'bg-primary' : status == 'rejected' ? 'bg-red-500' : ''
-                      }`}
-                  >
-                    <p className="">{status}</p>
+        {from === "home" ? (
+          <div className="flex px-1.5 pt-1.5">
+            <img
+              src={img}
+              className={`grid grid-cols-3 gap-4 place-items-end bg-gray-200 rounded-lg object-cover ${styles.img_card}`}
+              alt=""
+            />
+            <div className={`px-2 ${styles.text_card}`}>
+              <p className="mb-1 text-black font-bold text-sm capitalize">
+                {title}
+              </p>
+              {status == "Completed" ? (
+                <>
+                  <div className="flex mb-2">
+                    <p className="font-sans text-[8px] text-gray-500 mr-1">
+                      Tanggal Campaign :
+                    </p>
+                    <p className="font-bold text-[8px] text-black">
+                      {date} {time}
+                    </p>
                   </div>
-                </div>
-              </>
-            ) : <p
-              className={`font-sans text-xs font-normal mr-2 ${styles.cutTextCard}`}
-            >
-              {address}
-            </p>}
-
-
-
+                  <p className=" font-sans text-[10px]">
+                    {qty} X {nameProduct}
+                  </p>
+                  <div className="flex justify-between  items-center ">
+                    <p className="text-green font-sans mb-1 text-[18px] font-bold">
+                      Rp. {TotalHarga?.toLocaleString("id-ID")}
+                    </p>
+                    <div
+                      className={`font-sans text-xs text-white rounded-lg p-1 flex justify-center items-center ${
+                        status == "waiting"
+                          ? "bg-blue-600"
+                          : status == "Completed"
+                          ? "bg-primary"
+                          : status == "rejected"
+                          ? "bg-red-500"
+                          : ""
+                      }`}
+                    >
+                      <p className="">{status}</p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <p
+                  className={`font-sans text-xs font-normal mr-2 ${styles.cutTextCard}`}
+                >
+                  {address}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex p-2 justify-between">
+            <img
+              src={img}
+              className={`grid grid-cols-3 gap-4 place-items-end bg-gray-200 rounded-lg object-cover w-20 h-20`}
+              alt=""
+            />
+            <div className={`px-2`}>
+              <p className="mb-1 text-black font-bold text-sm capitalize">
+                {title}
+              </p>
+              <p className={`font-sans text-xs font-normal`}>{address}</p>
+            </div>
+            <div
+              className={`font-sans h-5 capitalize px-2 text-xs text-white rounded-xl p-1 flex justify-center items-center ${
+                status == "waiting"
+                  ? "bg-blue-600"
+                  : status == "approved"
+                  ? "bg-primary"
+                  : status == "rejected"
+                  ? "bg-red-500"
+                  : ""
+              }`}
+            >
+              <p className="">{status}</p>
+            </div>
+          </div>
+        )}
 
-        {!rating && (
+        {!rating && from === "home" && (
           <>
             <div className="flex justify-between px-1.5 mt-1.5">
               <p className="font-sans text-xs">
@@ -150,18 +189,26 @@ const CardCampaign = (props) => {
                 ""
               ) : (
                 <div
-                  className={`flex items-center justify-center  font-medium  font-sans text-xs  rounded-lg px-1 ${status == "waiting"
-                    ? "bg-blue-600"
-                    : status == "approved"
+                  className={`flex items-center justify-center  font-medium  font-sans text-xs  rounded-lg px-1 ${
+                    status == "waiting"
+                      ? "bg-blue-600"
+                      : status == "approved"
                       ? "bg-green-500"
                       : status == "rejected"
-                        ? "bg-red-500"
-                        : status == 'Completed' ? 'bg-primary' : ""
-                    }`}
+                      ? "bg-red-500"
+                      : status == "Completed"
+                      ? "bg-primary"
+                      : ""
+                  }`}
                 >
                   <p
-                    className={`font-sans mb-1  ${status == "approved" ? "text-white" : status == "Completed" ? "text-white" : "text-white"
-                      }`}
+                    className={`font-sans mb-1  ${
+                      status == "approved"
+                        ? "text-white"
+                        : status == "Completed"
+                        ? "text-white"
+                        : "text-white"
+                    }`}
                   >
                     {status}
                   </p>
