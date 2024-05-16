@@ -73,79 +73,93 @@ const DetonatorRating = (DetonatorRating) => {
     setDescription(event.target.value);
   };
   const handleSubmit = (event) => {
-
+    // event.preventDefault();
     setloading(true);
     const id_merchant = localStorage.getItem("id");
     const token = localStorage.getItem("token");
 
     // Validation checks
-    if (!star || !description || !images) {
+    if (!star || !description) {
       window.alert("All fields are required");
+      setloading(false);
       return;
     }
+
     const formData = new FormData();
     formData.append("destination", "rating");
-    formData.append("file", images);
-    // setloading(true);
-    axios
-      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
+    if (images) {
+      formData.append("file", images);
+    }
+
+    const submitRating = (photoUrl) => {
+      const eventData = {
+        relation_id: parseInt(dataOrder?.merchant_id),
+        relation_type: "merchant",
+        order_id: parseInt(id_order),
+        star,
+        photo: photoUrl,
+        note: description,
+      };
+
+      axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/create`, eventData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data", // Set content type for FormData
         },
       })
-      .then((response) => {
-        if (response.status === 200) {
-          const eventData = {
-            relation_id: parseInt(dataOrder?.merchant_id),
-            relation_type: "merchant",
-            order_id: parseInt(id_order),
-            star,
-            photo: response.data.body.file_url,
-            note: description,
-          }
-          setnewReport(eventData);
-          axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/create`, eventData, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-            .then((creatretingmerchant) => {
+        .then((createRatingResponse) => {
+          Swal.fire({
+            icon: "success",
+            title: "Review Detonator Berhasil Disimpan",
+            text: "Terima kasih telah memberi review detonator",
+            showConfirmButton: false,
+            timer: 2000,
+          });
 
-              Swal.fire({
-                icon: "success",
-                title: "Review Detonator Berhasil Disimpan",
-                text: "Terima kasih telah memberi review detonator",
-                showConfirmButton: false,
-                timer: 2000,
-              });
-
-              setTimeout(() => {
-                router.push("/detonator/review");
-              }, 2000);
-              setloading(false);
-            })
-            .catch((error) => {
-              setloading(false);
-              Error401(error, router);
-            });
-        }
-      })
-      .catch((error) => {
-        setloading(false);
-        if (condition === 401) {
-          Error401(error, router);
-        }
-        Swal.fire({
-          icon: "error",
-          title: "Gagal Upload Image",
-          text: "Gagal Upload Image, Mohon Coba Lagi",
-          showConfirmButton: false,
-          timer: 2000,
+          setTimeout(() => {
+            router.push("/detonator/review");
+          }, 2000);
+          setloading(false);
         })
-      })
+        .catch((error) => {
+          setloading(false);
+          Error401(error, router);
+        });
+    };
 
-  }
+    if (images) {
+      axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            submitRating(response.data.body.file_url);
+          } else {
+            submitRating('-');
+          }
+        })
+        .catch((error) => {
+          setloading(false);
+          if (error.response && error.response.status === 401) {
+            Error401(error, router);
+          } else {
+            submitRating('-');
+          }
+        });
+    } else {
+      submitRating('-');
+    }
+  };
+
+  // Swal.fire({
+  //   icon: "error",
+  //   title: "Gagal Upload Image",
+  //   text: "Gagal Upload Image, Mohon Coba Lagi",
+  //   showConfirmButton: false,
+  //   timer: 2000,
+  // })
 
   const handleImagesChange = (event) => {
     const file = event.target.files[0];
@@ -312,10 +326,10 @@ const DetonatorRating = (DetonatorRating) => {
             </div>
             <div className="grid gap-4 mt-10 content-center">
               <button
-                disabled={!star || !description || !images}
+                disabled={!star || !description}
                 onClick={() => handleSubmit()}
                 type="submit"
-                className={`${!star || !description || !images
+                className={`${!star || !description
                   ? "bg-gray-300"
                   : "bg-primary"
                   } text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}

@@ -161,17 +161,18 @@ const review = (review) => {
     }, [selectedStatus, loading]);
 
     useEffect(() => {
+        setLoading(true);
         const token = localStorage.getItem("token");
         const id = localStorage.getItem("id");
         if (selectedStatus == "KirimUlasan") {
-            setLoading(false)
             setFilteredData(dataApi);
             setJumlah(dataApi?.length);
+            setLoading(false)
 
 
 
         } else if (selectedStatus == "UlasanSelesai") {
-            setLoading(true);
+
             axios.get(
                 `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/filter?relation_id=${id}`, {
                 headers: {
@@ -188,7 +189,6 @@ const review = (review) => {
                 })
         }
 
-        setLoading(false);
     }, [dataApi, selectedStatus]);
 
     const handleFilterChange = (status) => {
@@ -224,7 +224,7 @@ const review = (review) => {
 
                                 <p>Kasih Ulasan</p>
                                 <div className="h-[16px] w-[16px] bg-red-500 rounded-full flex justify-center items-center text-[8px] font-bold text-white">
-                                    <span>{loading ? '...' : jumlah}</span>
+                                    <span>{loading ? '...' : (jumlah || 0)}</span>
                                 </div>
                             </div>
                         </div>
