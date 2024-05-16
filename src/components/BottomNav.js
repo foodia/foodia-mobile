@@ -90,7 +90,7 @@ const BottomNav = () => {
             radio.checked = false;
           });
           nominal = parseInt(nominalInput.value.replace(/\./g, ""));
-          if (nominal == 0 || nominalInput.value === "") {
+          if (nominal < 1000 || nominalInput.value === "") {
             Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
             Swal.disableButtons();
           } else {
