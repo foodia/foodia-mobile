@@ -68,7 +68,7 @@ const MetodePembayaran = () => {
         },
       })
       .then((response) => {
-        // setLoading(true);
+        setLoading(false);
         const responeUrl = response.data.body.actions.desktop_web_checkout_url;
         localStorage.setItem("external_id", response.data.body.external_id);
         router.push(`${responeUrl}`);
