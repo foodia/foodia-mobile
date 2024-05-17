@@ -1,71 +1,55 @@
 import styles from "@/styles/Home.module.css";
+import axios from "axios";
 import Image from "next/image";
-import { IconBuildingStore, IconCirclePlus } from "@tabler/icons-react";
-import CardCampaign from "../CardCampaign";
-import SlideCard from "../SlideCard";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
-import SearchBar from "../SearchBar";
+import CardCampaign from "../CardCampaign";
+import Error401 from "../error401";
 
 const HomePage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [dataApi, setDataApi] = useState([]);
   const [DataCamp, setDataCamp] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState(null);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const observer = useRef();
+  const [selectedStatus, setSelectedStatus] = useState("OPEN");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=OPEN`,
-          {
-            headers: {
-              Authorization: `Bearer`,
-            },
-          }
-        );
-
+    axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=OPEN`,
+        {
+          headers: {
+            Authorization: `Bearer`,
+          },
+        }
+      )
+      .then((response) => {
+        setLoading(false);
         const approvedCampaigns = response.data.body.filter(
           (campaign) => campaign.status === "approved"
         );
-        setSelectedStatus("OPEN");
-        setDataApi(approvedCampaigns);
         setDataCamp(approvedCampaigns);
+      })
+      .catch((error) => {
         setLoading(false);
-
-        if (approvedCampaigns.length === 0) {
-          setHasMore(false);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
+        Error401(error, router);
+      });
   }, []);
 
   const handleFilterChange = (status) => {
-    let filtered = [];
-
     setLoading(true);
+    setSelectedStatus(status);
     if (status === "OPEN") {
       axios
         .get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}`
         )
         .then((response) => {
-          setDataApi(response.data.body);
           setDataCamp(response.data.body);
           setLoading(false);
         })
         .catch((error) => {
-          console.error("Error fetching data:", error);
+          Error401(error, router);
         });
     } else if (status === "INPROGRESS") {
       axios
@@ -73,12 +57,11 @@ const HomePage = () => {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}`
         )
         .then((response) => {
-          setDataApi(response.data.body);
           setDataCamp(response.data.body);
           setLoading(false);
         })
         .catch((error) => {
-          console.error("Error fetching data:", error);
+          Error401(error, router);
         });
     } else if (status === "FINISHED") {
       axios
@@ -86,17 +69,13 @@ const HomePage = () => {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}`
         )
         .then((response) => {
-          setDataApi(response.data.body);
           setDataCamp(response.data.body);
           setLoading(false);
         })
         .catch((error) => {
-          console.error("Error fetching data:", error);
+          Error401(error, router);
         });
     }
-
-    setSelectedStatus(status);
-    // setFilteredData(filtered);
   };
 
   return (
@@ -104,8 +83,8 @@ const HomePage = () => {
       <div className="bg-white overflow-hidden">
         {/* <SearchBar /> */}
         <div className="flex items-center justify-center px-6 my-2">
-          <div className="bg-gray-100 rounded-xl py-2">
-            <div className="flex justify-between gap-5 px-1 py-3 text-[12px] font-lato">
+          <div className="bg-gray-100 rounded-xl py-2 w-full">
+            <div className="flex justify-around gap-5 px-1 py-3 text-[12px] font-lato">
               <Link
                 href={"/detonator"}
                 className="grid gap-2 justify-items-center w-24"
@@ -135,7 +114,7 @@ const HomePage = () => {
                 </div>
                 <p className=" text-gray-500 dark:text-gray-400">UMKM</p>
               </Link>
-              <Link href={""} className="grid gap-2 justify-items-center w-24">
+              {/* <Link href={""} className="grid gap-2 justify-items-center w-24">
                 <div className={`${styles.iconMenu}`}>
                   <Image
                     src={"/img/icon/icon_camp_terdekat.png"}
@@ -145,7 +124,7 @@ const HomePage = () => {
                   />
                 </div>
                 <p className=" text-gray-500 dark:text-gray-400">Terdekat</p>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>
@@ -185,7 +164,7 @@ const HomePage = () => {
             status="Approved"
           />
         </div> */}
-        <div className="flex flex-row px-6 py-4 justify-between items-end">
+        <div className="flex flex-row px-6 py-4 justify-between items-end w-full">
           <div
             className={`cursor-pointer px-0 pb-3 w-36 ${
               selectedStatus === "OPEN"
