@@ -20,7 +20,7 @@ const inbox = (inbox) => {
     const id = localStorage.getItem("id");
     const detonator_id = localStorage.getItem("id_detonator");
     const merchant_id = localStorage.getItem("id_merchant");
-    // console.log(id, detonator_id, merchant_id);
+    console.log(id, detonator_id, merchant_id);
 
     if (id) {
       setDonaturActive(true);
