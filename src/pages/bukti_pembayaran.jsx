@@ -93,8 +93,8 @@ const BuktiPembayaran = () => {
           <div className="flex justify-between mb-2">
             <h1 className="font-normal text-sm text-[#A1A5C1]">Detail</h1>
             <p className="font-semibold text-sm">
-              {pembayaran.description === "Donation" ||
-              pembayaran.description === "Terima Dana Donasi"
+              {pembayaran.description === "Terima Dana Donasi" ||
+              pembayaran.description === "Donation"
                 ? "Donasi"
                 : pembayaran.description}
               {/* {prevPath !== "/mydonation" ? "Donasi" : "Tabungan Donasi" || "-"} */}
