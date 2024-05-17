@@ -1,3 +1,4 @@
+import CompressImage from "@/components/CompressImage";
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
@@ -33,9 +34,6 @@ const MerchantUpdateProfile = (profile) => {
   const [uploadedFile, setUploadedFile] = useState("");
   const [validImage, setValidImage] = useState(true);
   const [converted, setconverted] = useState();
-
-  console.log("Updated === ", uploadedFile);
-  console.log("Profile_Default === ", profile_pic);
 
   const getMimeType = (uploadedFile) => {
     const match = uploadedFile.match(/^data:(.*?);base64,/);
@@ -203,40 +201,42 @@ const MerchantUpdateProfile = (profile) => {
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.type)) {
-        // Swal.fire({
-        //   icon: "error",
-        //   title: "Oops...",
-        //   text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
-        // });
         setValidImage(false);
         event.target.value = "";
       } else if (file.size > maxSize) {
-        // Swal.fire({
-        //   icon: "error",
-        //   title: "Oops...",
-        //   text: "Ukuran gambar melebihi 5MB!",
-        // });
         setValidImage(false);
         event.target.value = "";
       } else {
         setValidImage(true);
-
-        if (file) {
-          reader.readAsDataURL(file);
-        }
-
-        reader.onloadend = () => {
-          const base64String = reader.result.split(",")[1];
-          localStorage.setItem("uploadedFile", reader.result);
-          setUploadedFile(reader.result);
-        };
-        localStorage.setItem(
-          "fileName",
-          file.name.substring(0, file.name.lastIndexOf("."))
-        );
-        setProfilePic(file);
-
-        // localStorage.setItem("uploadedFile", file);
+        CompressImage(file)
+          .then((compressedFile) => {
+            const size = (compressedFile.size / (1024 * 1024)).toFixed(2);
+            if (size <= maxSize) {
+              reader.readAsDataURL(compressedFile);
+              reader.onloadend = () => {
+                localStorage.setItem("uploadedFile", reader.result);
+                setUploadedFile(reader.result);
+              };
+              localStorage.setItem(
+                "fileName",
+                file.name.substring(0, file.name.lastIndexOf("."))
+              );
+              setProfilePic(compressedFile);
+            } else {
+              Toast.fire({
+                icon: "error",
+                title: "Ukuran gambar melebihi 5MB!",
+                iconColor: "bg-black",
+              });
+            }
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Ukuran gambar melebihi 5MB!",
+            });
+          });
       }
     }
   };

@@ -119,24 +119,33 @@ const UpdateProfile = (profile) => {
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.type)) {
-        // Swal.fire({
-        //   icon: "error",
-        //   title: "Oops...",
-        //   text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
-        // });
         setValidImage(false);
         event.target.value = "";
       } else if (file.size > maxSize) {
-        // Swal.fire({
-        //   icon: "error",
-        //   title: "Oops...",
-        //   text: "Ukuran gambar melebihi 5MB!",
-        // });
         setValidImage(false);
         event.target.value = "";
       } else {
         setValidImage(true);
-        setUploadedFile(file);
+        CompressImage(file)
+          .then((compressedFile) => {
+            const size = (compressedFile.size / (1024 * 1024)).toFixed(2);
+            if (size <= maxSize) {
+              setUploadedFile(compressedFile);
+            } else {
+              Toast.fire({
+                icon: "error",
+                title: "Ukuran gambar melebihi 5MB!",
+                iconColor: "bg-black",
+              });
+            }
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Ukuran gambar melebihi 5MB!",
+            });
+          });
       }
     }
   };
