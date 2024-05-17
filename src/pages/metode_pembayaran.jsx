@@ -11,19 +11,19 @@ const MetodePembayaran = () => {
   const router = useRouter();
   const [metodePembayaran, setMetodePembayaran] = useState("");
   const { state, setDonation } = useAppState();
-  const [pajak, setPajak] = useState(0);
-  const [total, setTotal] = useState(0);
+  // const [pajak, setPajak] = useState(0);
+  // const [total, setTotal] = useState(0);
   const [titleCard, setTitleCard] = useState("");
   const [nominalDonasi, setNominalDonasi] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  console.log(router);
+  // console.log(router);
 
   useEffect(() => {
-    const pajakAmount = state.donation.amount * 0.025; // 2.5% tax
-    const totalBayar = state.donation.amount + pajakAmount;
+    // const pajakAmount = state.donation.amount * 0.025; // 2.5% tax
+    // const totalBayar = state.donation.amount + pajakAmount;
 
-    if (!state.donation.amount || totalBayar === 0) {
+    if (!state.donation.amount) {
       // Use SweetAlert to show a warning
       Swal.fire({
         icon: "error",
@@ -43,16 +43,14 @@ const MetodePembayaran = () => {
     }
 
     setNominalDonasi(state.donation.amount);
-    setPajak(pajakAmount);
-    setTotal(totalBayar);
+    // setTotal(totalBayar);
   }, [state.donation]);
 
   const handleBayarSekarang = () => {
     setLoading(true);
     const data = {
       amount: state.donation.amount,
-      admin_fee: pajak,
-      total_amount: total,
+      total_amount: state.donation.amount,
       payment_channel: metodePembayaran,
       success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
       detail: {
@@ -70,7 +68,7 @@ const MetodePembayaran = () => {
         },
       })
       .then((response) => {
-        // setLoading(true);
+        setLoading(false);
         const responeUrl = response.data.body.actions.desktop_web_checkout_url;
         localStorage.setItem("external_id", response.data.body.external_id);
         router.push(`${responeUrl}`);
