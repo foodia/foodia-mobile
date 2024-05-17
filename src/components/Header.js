@@ -1,11 +1,6 @@
-import { useEffect, useState } from "react";
-import {
-  IconSearch,
-  IconChevronCompactLeft,
-  IconArrowLeft,
-} from "@tabler/icons-react";
-import Link from "next/link";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const Header = ({ title = "", backto = "" }) => {
   const router = useRouter();
@@ -13,6 +8,7 @@ const Header = ({ title = "", backto = "" }) => {
   // Handle the back button click
   const handleBackButtonClick = () => {
     // Navigate back to the previous page
+    localStorage.removeItem("prevPath");
     if (backto) {
       router.push(backto);
     } else {
