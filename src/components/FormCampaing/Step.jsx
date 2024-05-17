@@ -73,6 +73,8 @@ function StepOne({
 }) {
   const router = useRouter();
   const [loadingFile, setLoadingFile] = useState(false);
+  const [onFocusDate, setOnFocusDate] = useState(false);
+  const [onFocusTime, setOnFocusTime] = useState(false);
   const [eventName, setEventName] = useState(() => {
     const storedFormData = localStorage.getItem("formData");
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
@@ -351,7 +353,9 @@ function StepOne({
             value={TypeEvent}
             id="TypeEvent"
             onChange={handleTypeEventChange}
-            className="text-black ml-1 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+            className={` ${
+              TypeEvent === "" ? "text-gray-400" : "text-black"
+            } ml-1 w-full p-0 py-4 pl-1 bg-transparent focus:border-none`}
           >
             <option disabled value="">
               Tipe Campaign
@@ -368,9 +372,11 @@ function StepOne({
             onChange={handleTanggalChange}
             value={Tanggal}
             name="Tanggal"
-            type="date"
+            type={`${onFocusDate ? "date" : "text"}`}
             className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
             placeholder="Tanggal Pelaksanaan"
+            onFocus={() => setOnFocusDate(true)}
+            onBlur={() => setOnFocusDate(false)}
             required
           />
         </div>
@@ -380,12 +386,14 @@ function StepOne({
           <input
             onChange={handleWaktuChange}
             value={Waktu}
-            type="time"
+            type={`${onFocusTime ? "time" : "text"}`}
             name="Waktu"
             className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
             placeholder="Waktu Pelaksanaan"
             min="00:01"
             max="22:59"
+            onFocus={() => setOnFocusTime(true)}
+            onBlur={() => setOnFocusTime(false)}
             required
           />
         </div>
@@ -396,9 +404,8 @@ function StepOne({
             onChange={handleDescriptionChange}
             value={Description}
             className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
-            placeholder="Description"
+            placeholder="Deskripsi Campaign"
             required
-            name="Description"
             rows={2} // Atur jumlah baris sesuai kebutuhan
           />
         </div>
@@ -1124,7 +1131,7 @@ function StepThree({
 }
 
 function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
-  const [isDropdownMethodOpen, setIsDropdownMethodOpen] = useState(true);
+  const [isDropdownMethodOpen, setIsDropdownMethodOpen] = useState(false);
   const [isDropdownChannelOpen, setIsDropdownChannelOpen] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState("");
   const [selectedChannel, setSelectedChannel] = useState("");
@@ -1671,6 +1678,7 @@ function Stepfour({
     // Load cart data from local storage on component mount
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(storedCart);
+    setLoading(true);
     axios
       .get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant-product/filter?merchant_id=${IdMerchan}`,
@@ -1698,12 +1706,9 @@ function Stepfour({
         }, {});
         setGroupedFoods(groupedByMerchant);
       })
-
       .catch((error) => {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       });
   }, [setCart]);
 
@@ -1822,7 +1827,14 @@ function Stepfour({
   );
 }
 
-function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
+function Stepfive({
+  cart,
+  setCart,
+  setUploadedFile,
+  uploadedFile,
+  loading,
+  setLoading,
+}) {
   const [groupedFoods, setGroupedFoods] = useState({});
   const router = useRouter();
   const [dataApi, setDataApi] = useState([]);
@@ -1849,7 +1861,7 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         if (!detonator_id || !token) {
           throw new Error("Missing required session data");
         }
-
+        setLoading(true);
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/filter?per_page=100000`,
           {
@@ -1867,11 +1879,10 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         });
         setDataApi(approvedMerchants);
         setFilteredData(approvedMerchants);
-        // setLoading(false);
+        setLoading(false);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
+        setLoading(false);
       }
     };
 
@@ -1913,8 +1924,6 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
 
       <div className="items-center justify-center w-full">
         <div className="items-center justify-center w-full">
-          {loading && <p>Loading...</p>}
-
           {dataApi.map((item) => (
             <>
               <CardListMerchan key={item.id} data={item} />

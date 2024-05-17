@@ -1,13 +1,11 @@
 import styles from "@/styles/Home.module.css";
 import axios from "axios";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import CardCampaign from "../CardCampaign";
-import Error401 from "../error401";
 import Loading from "../Loading";
+import Error401 from "../error401";
 import MenuDetonator from "./Detonator/MenuDetonator";
 
 const Detonator = () => {
@@ -16,18 +14,9 @@ const Detonator = () => {
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("DRAFT");
-  // const [menu, setMenu] = useState("campaign-list");
-  // const [hasMore, setHasMore] = useState(true);
-  // const observer = useRef();
-  // const [errorCode, setErrorCode] = useState(null);
-
   useEffect(() => {
     const authenticateUser = async () => {
-      // const role = localStorage.getItem('role');
       const token = localStorage.getItem("token");
-      const id_detonator = localStorage.getItem("id_detonator");
-      // const status = localStorage.getItem('status');
-      // const id = localStorage.getItem('id');
       if (!token) {
         Swal.fire({
           icon: "error",
@@ -39,7 +28,6 @@ const Detonator = () => {
           showCancelButton: true,
           cancelButtonText: "Tutup",
           cancelButtonColor: "red",
-          // timer: 2000,
         }).then((result) => {
           if (result.isConfirmed) {
             setLoading(true);
@@ -48,9 +36,6 @@ const Detonator = () => {
             router.push("/home");
           }
         });
-        // setTimeout(() => {
-        //   router.push("/home");
-        // }, 2000);
       } else {
         try {
           const response = await axios.get(
@@ -62,7 +47,7 @@ const Detonator = () => {
             }
           );
           const cekData = response.data.body;
-          console.log('cekData', cekData);
+          console.log("cekData", cekData);
 
           if (!cekData.detonator) {
             Swal.fire({
@@ -83,18 +68,12 @@ const Detonator = () => {
                 router.push("/home");
               }
             });
-            // setTimeout(() => {
-            //   router.push("/registrasi/detonator?step=1");
-            // }, 2000);
           } else {
             if (cekData.detonator.status == "waiting") {
               localStorage.setItem("id", cekData.detonator.detonator_id);
               localStorage.setItem("role", "detonator");
               localStorage.setItem("status", cekData.detonator.status);
               localStorage.setItem("note", cekData.detonator.note);
-              //       localStorage.setItem("id", responeData.id || " ");
-              // localStorage.setItem("status", responeData.status || " ");
-              // localStorage.setItem("note", responeData.note || " ");
 
               Swal.fire({
                 icon: "warning",
@@ -130,15 +109,11 @@ const Detonator = () => {
             }
           }
         } catch (error) {
-          if (error.response && error.response.status === 401) {
-            Error401(error, router);
-            // localStorage.clear();
-            // localStorage.removeItem("cart");
-            // localStorage.removeItem("formData");
-            // router.push("/login");
-          }
+          Error401(error, router);
+          localStorage.clear();
+          localStorage.removeItem("cart");
+          localStorage.removeItem("formData");
         }
-
       }
     };
 
@@ -197,15 +172,11 @@ const Detonator = () => {
           setLoading(false);
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            Error401(error, router);
-            localStorage.clear();
-            localStorage.removeItem("cart");
-            localStorage.removeItem("formData");
-            router.push("/login");
-            router.push("/login");
-          }
-          console.error("Error fetching data:", error);
+          Error401(error, router);
+          localStorage.clear();
+          localStorage.removeItem("cart");
+          localStorage.removeItem("formData");
+          router.push("/login");
         });
     } else if (status === "OPEN,INPROGRESS") {
       axios
@@ -223,14 +194,11 @@ const Detonator = () => {
           setLoading(false);
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            Error401(error, router);
-            localStorage.clear();
-            localStorage.removeItem("cart");
-            localStorage.removeItem("formData");
-            router.push("/login");
-          }
-          console.error("Error fetching data:", error);
+          Error401(error, router);
+          localStorage.clear();
+          localStorage.removeItem("cart");
+          localStorage.removeItem("formData");
+          router.push("/login");
         });
     } else if (status === "FINISHED") {
       axios
@@ -248,26 +216,9 @@ const Detonator = () => {
           setLoading(false);
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            Error401(error, router);
-          }
-          console.error("Error fetching data:", error);
+          Error401(error, router);
         });
     }
-
-    // setFilteredData(filtered);
-  };
-
-  const handleRequestError = (error) => {
-    console.error("Error fetching data:", error);
-
-    if (error.response && error.response.status === 401) {
-      localStorage.clear();
-      router.push("/login/detonator");
-    }
-
-    setLoading(false);
-    setFilteredData([]);
   };
 
   return (
@@ -278,28 +229,31 @@ const Detonator = () => {
         </div>
         <div className="flex flex-row px-6 py-4 justify-between items-end">
           <div
-            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "DRAFT"
-              ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-              }`}
+            className={`cursor-pointer text-center pb-2 text-[16px] ${
+              selectedStatus === "DRAFT"
+                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
+            }`}
             onClick={() => handleFilterChange("DRAFT")}
           >
             <p>Campaign Baru</p>
           </div>
           <div
-            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "OPEN,INPROGRESS"
-              ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-              }`}
+            className={`cursor-pointer text-center pb-2 text-[16px] ${
+              selectedStatus === "OPEN,INPROGRESS"
+                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
+            }`}
             onClick={() => handleFilterChange("OPEN,INPROGRESS")}
           >
             <p>Campaign Berjalan</p>
           </div>
           <div
-            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "FINISHED"
-              ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-              }`}
+            className={`cursor-pointer text-center pb-2 text-[16px] ${
+              selectedStatus === "FINISHED"
+                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+                : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
+            }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
             <p>Campaign Selesai</p>
