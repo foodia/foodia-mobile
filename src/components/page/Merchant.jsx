@@ -80,94 +80,86 @@ const Merchant = () => {
         }
       });
     } else {
-      if (id_merchant) {
-        localStorage.setItem("id", id_merchant);
-        localStorage.setItem("role", "merchant");
-        localStorage.setItem("status", 'approved');
-        localStorage.setItem("note", 'approved');
-        getMenus(id_merchant, token);
-      } else {
-        axios
-          .get(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-          .then((response) => {
-            const cekData = response.data.body;
-            if (!cekData.merchant) {
+      axios
+        .get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          const cekData = response.data.body;
+          if (!cekData.merchant) {
+            Swal.fire({
+              icon: "warning",
+              title: "Akun Belum Terdaftar sebagai Merchant",
+              text: "Mohon untuk registrasi sebagai Merchant",
+              showConfirmButton: true,
+              confirmButtonColor: "green",
+              confirmButtonText: "Registrasi",
+              showCancelButton: true,
+              cancelButtonColor: "red",
+              cancelButtonText: "Tutup",
+              // timer: 2000,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                router.push("/merchant/syarat");
+              } else if (result.isDismissed) {
+                router.push("/home");
+              }
+            });
+          } else {
+            if (cekData.merchant.status == "waiting") {
+              localStorage.setItem("id", cekData.merchant.merchant_id);
+              localStorage.setItem("role", "merchant");
+              localStorage.setItem("status", cekData.merchant.status);
+              localStorage.setItem("note", cekData.merchant.note);
+
               Swal.fire({
                 icon: "warning",
-                title: "Akun Belum Terdaftar sebagai Merchant",
-                text: "Mohon untuk registrasi sebagai Merchant",
-                showConfirmButton: true,
-                confirmButtonColor: "green",
-                confirmButtonText: "Registrasi",
+                title: "Akun Merchant Anda Belum Terverifikasi",
+                text: ` Mohon tunggu konfirmasi dari admin kami`,
+                showConfirmButton: false,
                 showCancelButton: true,
                 cancelButtonColor: "red",
                 cancelButtonText: "Tutup",
-                // timer: 2000,
               }).then((result) => {
-                if (result.isConfirmed) {
-                  router.push("/merchant/syarat");
-                } else if (result.isDismissed) {
+                if (result.isDismissed) {
                   router.push("/home");
                 }
               });
+            } else if (cekData.merchant.status == "rejected") {
+              setLoading(false);
+              localStorage.setItem("id", cekData.merchant.merchant_id);
+              localStorage.setItem("role", "merchant");
+              localStorage.setItem("status", cekData.merchant.status);
+              localStorage.setItem("note", cekData.merchant.note);
+              Swal.fire({
+                icon: "warning",
+                title: "Merchant Ditolak",
+                text: `${cekData.merchant.note}`,
+                showConfirmButton: false,
+                timer: 2000,
+              });
+              setTimeout(() => {
+                router.push("/merchant/edit");
+              }, 2000);
             } else {
-              if (cekData.merchant.status == "waiting") {
-                localStorage.setItem("id", cekData.merchant.merchant_id);
-                localStorage.setItem("role", "merchant");
-                localStorage.setItem("status", cekData.merchant.status);
-                localStorage.setItem("note", cekData.merchant.note);
-
-                Swal.fire({
-                  icon: "warning",
-                  title: "Akun Merchant Anda Belum Terverifikasi",
-                  text: ` Mohon tunggu konfirmasi dari admin kami`,
-                  showConfirmButton: false,
-                  showCancelButton: true,
-                  cancelButtonColor: "red",
-                  cancelButtonText: "Tutup",
-                }).then((result) => {
-                  if (result.isDismissed) {
-                    router.push("/home");
-                  }
-                });
-              } else if (cekData.merchant.status == "rejected") {
-                setLoading(false);
-                localStorage.setItem("id", cekData.merchant.merchant_id);
-                localStorage.setItem("role", "merchant");
-                localStorage.setItem("status", cekData.merchant.status);
-                localStorage.setItem("note", cekData.merchant.note);
-                Swal.fire({
-                  icon: "warning",
-                  title: "Merchant Ditolak",
-                  text: `${cekData.merchant.note}`,
-                  showConfirmButton: false,
-                  timer: 2000,
-                });
-                setTimeout(() => {
-                  router.push("/merchant/edit");
-                }, 2000);
-              } else {
-                localStorage.setItem("id", cekData.merchant.merchant_id);
-                localStorage.setItem("role", "merchant");
-                localStorage.setItem("status", cekData.merchant.status);
-                localStorage.setItem("note", cekData.merchant.note);
-                getMenus(cekData.merchant.merchant_id, token);
-              }
+              localStorage.setItem("id", cekData.merchant.merchant_id);
+              localStorage.setItem("role", "merchant");
+              localStorage.setItem("status", cekData.merchant.status);
+              localStorage.setItem("note", cekData.merchant.note);
+              getMenus(cekData.merchant.merchant_id, token);
             }
-          })
-          .catch((error) => {
-            if (error.response && error.response.status === 401) {
-              Error401(error, router);
-            }
-          });
-      }
+          }
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            Error401(error, router);
+          }
+        });
 
     }
   }, []);

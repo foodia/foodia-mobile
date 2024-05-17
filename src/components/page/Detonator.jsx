@@ -52,97 +52,90 @@ const Detonator = () => {
         //   router.push("/home");
         // }, 2000);
       } else {
-        if (id_detonator) {
-          localStorage.setItem("id", id_detonator);
-          localStorage.setItem("role", "detonator");
-          localStorage.setItem("status", 'approved');
-          localStorage.setItem("note", 'approved');
-        } else {
-          try {
-            const response = await axios.get(
-              `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-            const cekData = response.data.body;
-            console.log('cekData', cekData);
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const cekData = response.data.body;
+          console.log('cekData', cekData);
 
-            if (!cekData.detonator) {
+          if (!cekData.detonator) {
+            Swal.fire({
+              icon: "warning",
+              title: "Akun Belum Terdaftar sebagai Detonator",
+              text: `Mohon untuk registrasi sebagai Detonator.`,
+              showConfirmButton: true,
+              confirmButtonColor: "green",
+              confirmButtonText: "Registrasi",
+              showCancelButton: true,
+              cancelButtonColor: "red",
+              cancelButtonText: "Tutup",
+              // timer: 2000,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                router.push("/detonator/syarat");
+              } else if (result.isDismissed) {
+                router.push("/home");
+              }
+            });
+            // setTimeout(() => {
+            //   router.push("/registrasi/detonator?step=1");
+            // }, 2000);
+          } else {
+            if (cekData.detonator.status == "waiting") {
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
+              //       localStorage.setItem("id", responeData.id || " ");
+              // localStorage.setItem("status", responeData.status || " ");
+              // localStorage.setItem("note", responeData.note || " ");
+
               Swal.fire({
                 icon: "warning",
-                title: "Akun Belum Terdaftar sebagai Detonator",
-                text: `Mohon untuk registrasi sebagai Detonator.`,
-                showConfirmButton: true,
-                confirmButtonColor: "green",
-                confirmButtonText: "Registrasi",
-                showCancelButton: true,
-                cancelButtonColor: "red",
-                cancelButtonText: "Tutup",
-                // timer: 2000,
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  router.push("/detonator/syarat");
-                } else if (result.isDismissed) {
-                  router.push("/home");
-                }
+                title: "Detonator Belum Terverifikasi",
+                text: ` Mohon tunggu konfirmasi dari admin kami.`,
+                showConfirmButton: false,
+                timer: 2000,
               });
-              // setTimeout(() => {
-              //   router.push("/registrasi/detonator?step=1");
-              // }, 2000);
+              setTimeout(() => {
+                router.push("/home");
+              }, 2000);
+            } else if (cekData.detonator.status == "rejected") {
+              setLoading(false);
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
+              Swal.fire({
+                icon: "warning",
+                title: "Detonator Ditolak",
+                text: `${cekData.detonator.note}`,
+                showConfirmButton: false,
+                timer: 2000,
+              });
+              setTimeout(() => {
+                router.push("/detonator/edit");
+              }, 2000);
             } else {
-              if (cekData.detonator.status == "waiting") {
-                localStorage.setItem("id", cekData.detonator.detonator_id);
-                localStorage.setItem("role", "detonator");
-                localStorage.setItem("status", cekData.detonator.status);
-                localStorage.setItem("note", cekData.detonator.note);
-                //       localStorage.setItem("id", responeData.id || " ");
-                // localStorage.setItem("status", responeData.status || " ");
-                // localStorage.setItem("note", responeData.note || " ");
-
-                Swal.fire({
-                  icon: "warning",
-                  title: "Detonator Belum Terverifikasi",
-                  text: ` Mohon tunggu konfirmasi dari admin kami.`,
-                  showConfirmButton: false,
-                  timer: 2000,
-                });
-                setTimeout(() => {
-                  router.push("/home");
-                }, 2000);
-              } else if (cekData.detonator.status == "rejected") {
-                setLoading(false);
-                localStorage.setItem("id", cekData.detonator.detonator_id);
-                localStorage.setItem("role", "detonator");
-                localStorage.setItem("status", cekData.detonator.status);
-                localStorage.setItem("note", cekData.detonator.note);
-                Swal.fire({
-                  icon: "warning",
-                  title: "Detonator Ditolak",
-                  text: `${cekData.detonator.note}`,
-                  showConfirmButton: false,
-                  timer: 2000,
-                });
-                setTimeout(() => {
-                  router.push("/detonator/edit");
-                }, 2000);
-              } else {
-                localStorage.setItem("id", cekData.detonator.detonator_id);
-                localStorage.setItem("role", "detonator");
-                localStorage.setItem("status", cekData.detonator.status);
-                localStorage.setItem("note", cekData.detonator.note);
-              }
+              localStorage.setItem("id", cekData.detonator.detonator_id);
+              localStorage.setItem("role", "detonator");
+              localStorage.setItem("status", cekData.detonator.status);
+              localStorage.setItem("note", cekData.detonator.note);
             }
-          } catch (error) {
-            if (error.response && error.response.status === 401) {
-              Error401(error, router);
-              // localStorage.clear();
-              // localStorage.removeItem("cart");
-              // localStorage.removeItem("formData");
-              // router.push("/login");
-            }
+          }
+        } catch (error) {
+          if (error.response && error.response.status === 401) {
+            Error401(error, router);
+            // localStorage.clear();
+            // localStorage.removeItem("cart");
+            // localStorage.removeItem("formData");
+            // router.push("/login");
           }
         }
 
