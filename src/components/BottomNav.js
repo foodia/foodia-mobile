@@ -180,6 +180,7 @@ const BottomNav = () => {
     };
     setDonation(data);
     setLoading(false);
+    localStorage.setItem("prevPath", "BottomNav");
     router.push("/metode_pembayaran");
   };
 
