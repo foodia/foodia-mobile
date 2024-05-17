@@ -13,8 +13,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { useAppState } from "./UserContext";
 import Loading from "../Loading";
+import { useAppState } from "./UserContext";
+import moment from "moment/moment";
+import { data } from "autoprefixer";
 
 const DetailCamp = ({ data }) => {
   const router = useRouter();
@@ -102,11 +104,7 @@ const DetailCamp = ({ data }) => {
 
           nominal = parseInt(nominalInput.value.replace(/\./g, ""));
 
-
-          console.log('nominal', nominal);
-
-
-
+          console.log("nominal", nominal);
 
           if (
             nominal + data.donation_collected > data.donation_target ||
@@ -119,8 +117,6 @@ const DetailCamp = ({ data }) => {
             Swal.getConfirmButton().style.backgroundColor = "#3FB648";
             Swal.enableButtons();
           }
-
-
         });
         if (radios == undefined || nominalInput.value === "") {
           Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
@@ -139,43 +135,51 @@ const DetailCamp = ({ data }) => {
       <p class="text-md font-bold">Pilih Nominal Donasi</p>
       <div class="flex flex-col space-y-2 pt-5">
       <label>
-        <input type="radio" name="donation" id="donation_20000" class="hidden peer" value="20000"  ${20000 + data.donation_collected > data.donation_target
+        <input type="radio" name="donation" id="donation_20000" class="hidden peer" value="20000"  ${
+          20000 + data.donation_collected > data.donation_target
             ? "disabled"
             : ""
-          }/>
-        <div class=" ${data.donation_collected + 20000 > data.donation_target
+        }/>
+        <div class=" ${
+          data.donation_collected + 20000 > data.donation_target
             ? "cursor-not-allowed bg-gray-300"
             : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-          }   py-2 px-4 rounded-lg font-semibold">Rp 20.000</div>
+        }   py-2 px-4 rounded-lg font-semibold">Rp 20.000</div>
       </label>
       <label>
-          <input  type="radio" name="donation" id="donation_50000" class="hidden peer" value="50000"  ${50000 + data.donation_collected > data.donation_target
-            ? "disabled"
-            : ""
+          <input  type="radio" name="donation" id="donation_50000" class="hidden peer" value="50000"  ${
+            50000 + data.donation_collected > data.donation_target
+              ? "disabled"
+              : ""
           }/>
-          <div class=" ${data.donation_collected + 50000 > data.donation_target
-            ? "cursor-not-allowed bg-gray-300"
-            : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+          <div class=" ${
+            data.donation_collected + 50000 > data.donation_target
+              ? "cursor-not-allowed bg-gray-300"
+              : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
           }   py-2 px-4 rounded-lg font-semibold">Rp 50.000</div>
       </label>
       <label>
-      <input  type="radio" name="donation" id="donation_100000" class="hidden peer" value="100000"  ${100000 + data.donation_collected > data.donation_target
-            ? "disabled"
-            : ""
-          }/>
-      <div class=" ${data.donation_collected + 100000 > data.donation_target
-            ? "cursor-not-allowed bg-gray-300"
-            : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
-          }   py-2 px-4 rounded-lg font-semibold">Rp 100.000</div>
+      <input  type="radio" name="donation" id="donation_100000" class="hidden peer" value="100000"  ${
+        100000 + data.donation_collected > data.donation_target
+          ? "disabled"
+          : ""
+      }/>
+      <div class=" ${
+        data.donation_collected + 100000 > data.donation_target
+          ? "cursor-not-allowed bg-gray-300"
+          : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+      }   py-2 px-4 rounded-lg font-semibold">Rp 100.000</div>
       </label>
       <label>
-          <input  type="radio" name="donation" id="donation_200000" class="hidden peer" value="200000"  ${200000 + data.donation_collected > data.donation_target
-            ? "disabled"
-            : ""
+          <input  type="radio" name="donation" id="donation_200000" class="hidden peer" value="200000"  ${
+            200000 + data.donation_collected > data.donation_target
+              ? "disabled"
+              : ""
           }/>
-          <div class=" ${data.donation_collected + 200000 > data.donation_target
-            ? "cursor-not-allowed bg-gray-300"
-            : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
+          <div class=" ${
+            data.donation_collected + 200000 > data.donation_target
+              ? "cursor-not-allowed bg-gray-300"
+              : "cursor-pointer peer-checked:bg-blue-900 peer-checked:text-white bg-gray-100"
           }   py-2 px-4 rounded-lg font-semibold">Rp 200.000</div>
       </label>
         <div class="bg-gray-100 p-3 rounded-lg">
@@ -253,17 +257,18 @@ const DetailCamp = ({ data }) => {
         text: `Donasi melebihi batas target`,
       });
     } else {
-      const data = {
+      const datas = {
         amount: parseInt(value),
         payment_channel: "",
         success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
         detail: {
+          campaign_name: data?.event_name,
           campaign_id: idCamp,
           description: "Donation",
           donation_type: "campaign",
         },
       };
-      setDonation(data);
+      setDonation(datas);
       router.push("/metode_pembayaran");
     }
   };
@@ -294,28 +299,11 @@ const DetailCamp = ({ data }) => {
     }
   };
 
-  const formatToRupiah = (amount) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-    }).format(amount);
-  };
-
   let percentageCollected = 0;
   data.donation_target > 0
     ? (percentageCollected =
-      (data.donation_collected / data.donation_target) * 100)
+        (data.donation_collected / data.donation_target) * 100)
     : (percentageCollected = 0);
-
-  const totalCollected = (percentageCollected) => {
-    if (percentageCollected === undefined || percentageCollected === null) {
-      return 0;
-    } else if (percentageCollected > 100) {
-      return 100;
-    } else {
-      return percentageCollected;
-    }
-  };
 
   const remainingDays = calculateRemainingTime(data.event_date);
   return (
@@ -332,6 +320,9 @@ const DetailCamp = ({ data }) => {
         <div className="items-start justify-start px-4 mt-0 p-2 flex flex-col gap-3">
           <div className="flex flex-col gap-2">
             <h1 className="font-bold text-lg">{data.event_name}</h1>
+            <span className="font-sans text-sm font-medium">
+              {moment(data.event_date).format("DD MMM YYYY hh:ss") + " WIB"}
+            </span>
             <div className="flex flex-row justify-center items-center mb-1 gap-5">
               <p className="text-sm font-normal">{data.address}</p>
               <Link
@@ -343,17 +334,6 @@ const DetailCamp = ({ data }) => {
             </div>
           </div>
           <div className="w-full">
-            {/* <div className="flex justify-between">
-              <p className="font-sans text-sm">
-                Tanggal Kegiatan :
-                <span className="font-sans text-sm font-medium text-blue-800 ml-1">
-                  {`${("0" + new Date(data.event_date).getDate()).slice(-2)}-${(
-                    "0" +
-                    (new Date(data.event_date).getMonth() + 1)
-                  ).slice(-2)}-${new Date(data.event_date).getFullYear()}`}
-                </span>
-              </p>
-            </div> */}
             <div className="flex justify-between">
               <p className="font-semibold text-sm">
                 Target Donasi :
@@ -376,8 +356,8 @@ const DetailCamp = ({ data }) => {
                     data.donation_collected > data.donation_target
                       ? data.donation_target
                       : data.donation_collected
-                        ? data.donation_collected
-                        : 0
+                      ? data.donation_collected
+                      : 0
                   )}
                 </span>
               </p>
@@ -401,10 +381,11 @@ const DetailCamp = ({ data }) => {
                 data.campaign_status === "FINISHED" || remainingDays < 1
               }
               onClick={showSweetAlert}
-              className={`w-full h-14 mt-4 text-white rounded-2xl inline-flex items-center justify-center px-2.5 py-2.5 ${data.campaign_status === "FINISHED" || remainingDays < 1
-                ? "bg-gray-400"
-                : "bg-primary"
-                } font-bold text-lg`}
+              className={`w-full h-14 mt-4 text-white rounded-2xl inline-flex items-center justify-center px-2.5 py-2.5 ${
+                data.campaign_status === "FINISHED" || remainingDays < 1
+                  ? "bg-gray-400"
+                  : "bg-primary"
+              } font-bold text-lg`}
             >
               Donasi
             </button>
@@ -504,8 +485,9 @@ const DetailCamp = ({ data }) => {
             Tentang Program
           </h5>
           <p
-            className={`font-normal text-gray-700 text-xs ${!showFullText && "truncate"
-              }`}
+            className={`font-normal text-gray-700 text-xs ${
+              !showFullText && "truncate"
+            }`}
           >
             {data.description}
           </p>
@@ -527,9 +509,11 @@ const DetailCamp = ({ data }) => {
         <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0" />
         <div className="w-full rounded-lg items-center px-4 py-2.5 mt-4">
           <div className="flex mb-4">
-            <p className="text-base font-bold text-black">Donasi</p>
+            <p className="text-base font-bold text-black">Donatur</p>
             <div className="bg-primary px-1 rounded-xl ml-2 flex items-center justify-center">
-              <p className="text-xs font-bold text-white">{cart.length}</p>
+              <p className="text-xs font-bold flex items-center justify-center text-white">
+                {cart.length}
+              </p>
             </div>
           </div>
           {/* Looping untuk menampilkan item yang dimuat dalam keranjang belanja */}

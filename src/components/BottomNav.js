@@ -112,7 +112,7 @@ const BottomNav = () => {
                 <hr class="border border-gray-400 w-10 h-1 bg-gray-400 rounded-lg "/>
             </div>
             <div class="mt-4">
-                <p class="text-md font-bold">Pilih Nominal Donasi</p>
+                <p class="text-md font-bold">Pilih Nominal Tabungan Donasi</p>
                 <div class="flex flex-col space-y-4 pt-5">
                     <label>
                         <input type="radio" name="donation" class="hidden peer" value="20000" />
@@ -174,12 +174,13 @@ const BottomNav = () => {
       success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
       detail: {
         campaign_id: "",
-        description: "Donation",
+        description: "Tabungan Donasi",
         donation_type: "agnostic",
       },
     };
     setDonation(data);
     setLoading(false);
+    localStorage.setItem("prevPath", "/mydonation");
     router.push("/metode_pembayaran");
   };
 
@@ -215,14 +216,14 @@ const BottomNav = () => {
         `}
       >
         <Link className="items-center flex flex-col gap-1 static" href="/inbox">
-          <div className="absolute top-0 right-0 w-3 bg-red-500 h-3 rounded-full flex justify-center items-center">
+          {/* <div className="absolute top-0 right-0 w-3 bg-red-500 h-3 rounded-full flex justify-center items-center">
             <p
               className="text-center font-semibold text-white"
               style={{ fontSize: "8px" }}
             >
               1
             </p>
-          </div>
+          </div> */}
           <IconMail />
           <p className="text-xs">Inbox</p>
         </Link>
