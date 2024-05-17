@@ -1,7 +1,5 @@
-import styles from "@/styles/Campaign.module.css";
 import {
   IconArrowNarrowRight,
-  IconBellRingingFilled,
   IconChevronDown,
   IconChevronUp,
   IconClock,
@@ -9,14 +7,13 @@ import {
   IconMapPin,
   IconUser,
 } from "@tabler/icons-react";
+import moment from "moment/moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Loading from "../Loading";
 import { useAppState } from "./UserContext";
-import moment from "moment/moment";
-import { data } from "autoprefixer";
 
 const DetailCamp = ({ data }) => {
   const router = useRouter();
@@ -266,7 +263,7 @@ const DetailCamp = ({ data }) => {
         },
       };
       setDonation(datas);
-      localStorage.setItem("prevPath", "DetailPage");
+      // localStorage.setItem("prevPath", "DetailPage");
       router.push("/metode_pembayaran");
     }
   };

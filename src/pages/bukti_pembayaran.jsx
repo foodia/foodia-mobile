@@ -93,7 +93,11 @@ const BuktiPembayaran = () => {
           <div className="flex justify-between mb-2">
             <h1 className="font-normal text-sm text-[#A1A5C1]">Detail</h1>
             <p className="font-semibold text-sm">
-              {prevPath !== "/mydonation" ? "Donasi" : "Tabungan Donasi" || "-"}
+              {pembayaran.description === "Terima Dana Donasi" ||
+              pembayaran.description === "Donation"
+                ? "Donasi"
+                : pembayaran.description}
+              {/* {prevPath !== "/mydonation" ? "Donasi" : "Tabungan Donasi" || "-"} */}
             </p>
           </div>
           <div className="flex justify-between mb-2">
@@ -119,7 +123,9 @@ const BuktiPembayaran = () => {
             </h1>
             <p className="font-semibold text-sm">
               {pembayaran
-                ? pembayaran.payment_channel
+                ? pembayaran.payment_channel === "campaign_wallet"
+                  ? "Tabunganku"
+                  : pembayaran.payment_channel
                   ? pembayaran.payment_channel
                   : "Mayar"
                 : "-"}
