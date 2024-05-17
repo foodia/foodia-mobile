@@ -1,7 +1,8 @@
 import Swal from "sweetalert2";
 
-const Error401 = (errCode, router) => {
+const Error401 = (errCode, router, messages) => {
   const code = errCode?.response?.data?.code;
+  console.log(errCode);
 
   if (code === 401) {
     localStorage.clear();
@@ -38,7 +39,7 @@ const Error401 = (errCode, router) => {
         confirmButton: "custom-confirm-button-swal",
       },
       icon: "error",
-      title: `<p class="w-auto pl-1 font-bold text-md">Kendala Server</p><p class="text-sm w-auto pl-1 font-light">Mohon maaf terdapat kegagalan dalam membuat ulang kata sandi, silahkan coba beberapa waktu lagi</p>`,
+      title: `<p class="w-auto pl-1 font-bold text-md">Oops! Ada Kendala</p><p class="text-sm w-auto pl-1 font-light">Mohon maaf sedang ada gangguan, bisa dicoba beberapa saat lagi ya, terimakasih</p>`,
       html: `
             <div class="absolute px-28 ml-4 top-0 mt-4">
               <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
@@ -70,7 +71,7 @@ const Error401 = (errCode, router) => {
       confirmButtonText: "Tutup",
       confirmButtonColor: "#3FB648",
     });
-  } else if (errCode.code === "ERR_BAD_REQUEST") {
+  } else if (code === 400) {
     Swal.fire({
       position: "bottom",
       customClass: {
@@ -80,7 +81,33 @@ const Error401 = (errCode, router) => {
         confirmButton: "custom-confirm-button-swal",
       },
       icon: "error",
-      title: `<p class="w-auto pl-1 font-bold text-md">Data Tidak ditemukan</p><p class="text-sm w-auto pl-1 font-light">Silahkan coba beberapa waktu lagi</p>`,
+      title: `<p class="w-auto pl-1 font-bold text-md">Data Tidak Sesuai</p><p class="text-sm w-auto pl-1 font-light">Silahkan Cek Kembali Data</p>`,
+      html: `
+            <div class="absolute px-28 ml-4 top-0 mt-4">
+              <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+            </div>
+          `,
+      width: "375px",
+      showConfirmButton: true,
+      confirmButtonText: "Tutup",
+      confirmButtonColor: "#3FB648",
+    });
+  } else if (code === 404) {
+    // Not Found
+    Swal.fire({
+      position: "bottom",
+      customClass: {
+        popup: "custom-swal",
+        icon: "custom-icon-swal",
+        title: "custom-title-swal",
+        confirmButton: "custom-confirm-button-swal",
+      },
+      icon: "error",
+      title: `<p class="w-auto pl-1 font-bold text-md">${
+        messages ? messages.title : "Data Tidak Ditemukan"
+      }</p><p class="text-sm w-auto pl-1 font-light">${
+        messages ? messages.text : "Silahkan Coba Lagi"
+      }</p>`,
       html: `
             <div class="absolute px-28 ml-4 top-0 mt-4">
               <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>

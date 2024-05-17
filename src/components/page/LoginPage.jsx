@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import Header from "../Header";
 import Loading from "../Loading";
 import { useAppState } from "./UserContext";
+import Error401 from "../error401";
 
 const LoginPage = () => {
   const [inputEmail, setEmail] = useState("");
@@ -50,24 +51,6 @@ const LoginPage = () => {
   const handleSubmit = () => {
     setLoading(true); // Set loading to true when starting authentication
 
-    if (!inputEmail || !inputPassword) {
-      Toast.fire({
-        icon: "error",
-        title: "Please fill in all fields",
-        iconColor: "bg-black",
-      });
-      setLoading(false);
-      return;
-    }
-    if (!/^\S+@\S+\.\S+$/.test(inputEmail)) {
-      Toast.fire({
-        icon: "error",
-        title: "Invalid email address",
-        iconColor: "bg-black",
-      });
-      setLoading(false);
-      return;
-    }
     if (inputPassword.length < 8) {
       // window.alert("Password must be at least 8 characters");
       Toast.fire({
@@ -88,14 +71,24 @@ const LoginPage = () => {
         const responeData = response.data.body;
 
         if (responeData.is_active) {
-          axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`, {
-            headers: {
-              Authorization: `Bearer ${responeData.token}`,
-            },
-          })
+          axios
+            .get(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
+              {
+                headers: {
+                  Authorization: `Bearer ${responeData.token}`,
+                },
+              }
+            )
             .then((res) => {
-              localStorage.setItem("id_merchant", res.data.body.merchant?.merchant_id);
-              localStorage.setItem("id_detonator", res.data.body.detonator?.detonator_id);
+              localStorage.setItem(
+                "id_merchant",
+                res.data.body.merchant?.merchant_id
+              );
+              localStorage.setItem(
+                "id_detonator",
+                res.data.body.detonator?.detonator_id
+              );
               localStorage.setItem("Session", "start");
               localStorage.setItem("fullname", responeData.fullname);
               localStorage.setItem("phone", responeData.phone);
@@ -117,7 +110,6 @@ const LoginPage = () => {
                 setLoading(false);
                 router.push("/home");
               }, 2000);
-
             })
             .catch(() => {
               setLoading(false);
@@ -128,8 +120,7 @@ const LoginPage = () => {
                 showConfirmButton: false,
                 timer: 2000,
               });
-            })
-
+            });
         } else {
           setRegistrasi(responeData);
           localStorage.setItem("email", responeData.email);
@@ -146,15 +137,13 @@ const LoginPage = () => {
           }, 2000);
         }
       })
-      .catch(() => {
+      .catch((error) => {
         setLoading(false);
-        Swal.fire({
-          icon: "error",
+        const messages = {
           title: "Login Failed",
-          text: "Please check your email and password and try again.",
-          showConfirmButton: false,
-          timer: 2000,
-        });
+          text: "Please check your email and password or try again",
+        };
+        Error401(error, router, messages);
       });
   };
 
@@ -202,9 +191,12 @@ const LoginPage = () => {
         </div>
         <div className=" grid gap-6 content-center">
           <button
+            disabled={!inputEmail || !inputPassword}
             onClick={handleSubmit}
             type="submit"
-            className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-md w-full sm:w-auto py-4 text-center "
+            className={`text-white ${
+              !inputEmail || !inputPassword ? "bg-slate-400" : "bg-primary"
+            } outline-none focus:ring-gray-300 font-bold rounded-xl text-md w-full sm:w-auto py-2 text-center `}
           >
             Masuk
           </button>
