@@ -17,8 +17,6 @@ const MetodePembayaran = () => {
   const [nominalDonasi, setNominalDonasi] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  console.log(router);
-
   useEffect(() => {
     // const pajakAmount = state.donation.amount * 0.025; // 2.5% tax
     // const totalBayar = state.donation.amount + pajakAmount;

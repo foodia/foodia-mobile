@@ -20,7 +20,7 @@ const inbox = (inbox) => {
     const id = localStorage.getItem("id");
     const detonator_id = localStorage.getItem("id_detonator");
     const merchant_id = localStorage.getItem("id_merchant");
-    // console.log(id, detonator_id, merchant_id);
+    console.log(id, detonator_id, merchant_id);
 
     if (id) {
       setDonaturActive(true);
@@ -64,6 +64,8 @@ const inbox = (inbox) => {
 
   const handleFilterChange = (status) => {
     const token = localStorage.getItem("token");
+    const id_merchant = localStorage.getItem("token");
+    const id_detonator = localStorage.getItem("token");
 
     setLoading(true);
     let url = '';
@@ -85,6 +87,7 @@ const inbox = (inbox) => {
         .then((response) => {
           setDataApi(response.data.body);
           setDataInbox(response.data.body);
+          console.log(response.data.body);
           setLoading(false);
         })
         .catch((error) => {
@@ -96,6 +99,7 @@ const inbox = (inbox) => {
 
     setSelectedStatus(status);
   };
+
 
   return (
     <>

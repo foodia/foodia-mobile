@@ -64,12 +64,6 @@ const DetailCamp = ({ data }) => {
         icon: "custom-icon-swal",
         confirmButton: "custom-confirm-button-swal", // Custom class for styling
       },
-      willOpen: () => {
-        Swal.getPopup().classList.add("swal2-show-swipeup");
-      },
-      willClose: () => {
-        Swal.getPopup().classList.add("swal2-show-swipedown");
-      },
       didRender: () => {
         let nominal;
         let radios;
@@ -83,6 +77,7 @@ const DetailCamp = ({ data }) => {
           radio.addEventListener("click", () => {
             // Menghapus nilai input nominal jika opsi nominal dipilih
             nominalInput.value = "";
+            console.log("radio", radio.checked);
             if (!radio.checked) {
               Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
               Swal.disableButtons();
@@ -97,18 +92,14 @@ const DetailCamp = ({ data }) => {
         nominalInput.addEventListener("input", () => {
           // Format input nominal dengan titik setiap 3 digit
           nominalInput.value = formatNominal(nominalInput.value);
-
           donationRadios.forEach((radio) => {
             radio.checked = false;
+            console.log("radio", radio.checked);
           });
-
           nominal = parseInt(nominalInput.value.replace(/\./g, ""));
-
-          console.log("nominal", nominal);
-
           if (
             nominal + data.donation_collected > data.donation_target ||
-            nominal < 1000 ||
+            nominal == 0 ||
             nominalInput.value === ""
           ) {
             Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
@@ -269,6 +260,7 @@ const DetailCamp = ({ data }) => {
         },
       };
       setDonation(datas);
+      localStorage.setItem("prevPath", "DetailPage");
       router.push("/metode_pembayaran");
     }
   };
@@ -276,6 +268,7 @@ const DetailCamp = ({ data }) => {
   const cart = data?.campaign_donation || [];
   const [showAll, setShowAll] = useState(false);
 
+  // Mengurutkan item dalam keranjang belanja
   const sortedCart = [...cart].reverse();
 
   const calculateTimeAgo = (createdAt) => {
@@ -308,8 +301,8 @@ const DetailCamp = ({ data }) => {
   const remainingDays = calculateRemainingTime(data.event_date);
   return (
     <>
-      <div className="container mx-auto pt-24 bg-white h-full">
-        <div className="place-content-center px-4">
+      <div className="container mx-auto pt-24 px-3 bg-white h-full">
+        <div className="place-content-center px-2">
           <img
             src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.image_url}`}
             alt=""
@@ -317,8 +310,9 @@ const DetailCamp = ({ data }) => {
             style={{ width: "390px", height: "195px", objectFit: "cover" }}
           />
         </div>
-        <div className="items-start justify-start px-4 mt-0 p-2 flex flex-col gap-3">
-          <div className="flex flex-col gap-2">
+
+        <div className="place-content-center mt-0 p-2 flex flex-col gap-5">
+          <div>
             <h1 className="font-bold text-lg">{data.event_name}</h1>
             <span className="font-sans text-sm font-medium">
               {moment(data.event_date).format("DD MMM YYYY hh:ss") + " WIB"}
@@ -335,13 +329,13 @@ const DetailCamp = ({ data }) => {
           </div>
           <div className="w-full">
             <div className="flex justify-between">
-              <p className="font-semibold text-sm">
+              <p className="font-sans text-sm">
                 Target Donasi :
-                <span className="font-bold text-[#1D5882] ml-1">
+                <span className="font-sans text-sm font-medium text-blue-800 ml-1">
                   {formatUang(data.donation_target ? data.donation_target : 0)}
                 </span>
               </p>
-              <div className="flex items-center text-[#1D5882] font-sans text-sm">
+              <div className="flex items-center font-medium text-blue-800 font-sans text-sm">
                 <IconClock size={11} />
                 <p className="font-sans ml-1">
                   {remainingDays > 0 ? remainingDays : 0} Hari
@@ -349,9 +343,9 @@ const DetailCamp = ({ data }) => {
               </div>
             </div>
             <div className="flex justify-between">
-              <p className="font-semibold text-sm">
+              <p className="font-sans text-sm">
                 Donasi Terkumpul :
-                <span className=" text-sm font-bold text-[#1D5882] ml-1">
+                <span className="font-sans text-sm font-medium text-blue-800 ml-1">
                   {formatUang(
                     data.donation_collected > data.donation_target
                       ? data.donation_target
@@ -362,7 +356,7 @@ const DetailCamp = ({ data }) => {
                 </span>
               </p>
             </div>
-            {/* <div className="flex justify-between px-1.5 items-center ">
+            <div className="flex justify-between px-1.5 items-center ">
               <div className="w-full rounded-full h-2.5 bg-gray-200">
                 <div
                   className="bg-primary h-2.5 rounded-full w-max-"
@@ -375,11 +369,8 @@ const DetailCamp = ({ data }) => {
               <p className="text-primary font-sans ml-1 mb-1 text-xs">
                 {totalCollected(percentageCollected).toFixed()}%
               </p>
-            </div> */}
+            </div>
             <button
-              disabled={
-                data.campaign_status === "FINISHED" || remainingDays < 1
-              }
               onClick={showSweetAlert}
               className={`w-full h-14 mt-4 text-white rounded-2xl inline-flex items-center justify-center px-2.5 py-2.5 ${
                 data.campaign_status === "FINISHED" || remainingDays < 1
@@ -391,12 +382,13 @@ const DetailCamp = ({ data }) => {
             </button>
           </div>
         </div>
-        <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0" />
+        <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
+
         <div className="items-center justify-center mt-1 w-full">
           {/* Detonator */}
           <div
             href={`/food/${idCamp}`}
-            className="w-full h-16  px-4 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center py-2.5 "
+            className="w-full h-16 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center px-2.5 py-2.5 "
           >
             <div className="flex justify-between w-full">
               <div className="flex">
@@ -423,13 +415,16 @@ const DetailCamp = ({ data }) => {
                   </div>
                 </div>
               </div>
+              {/* <div className="grid place-items-center">
+                <IconArrowNarrowRight className=" grid grid-cols-3 gap-4 place-items-end text-gray-500" />
+              </div> */}
             </div>
           </div>
           <hr className="w-80 h-0.5 mx-auto mt-2 mb-2 bg-gray-100 border-0 rounded" />
           {/* Merchants */}
           <Link
             href={`/food/${idCamp}`}
-            className="w-full h-16 bg-white hover:bg-gray-100 px-4 text-black rounded-lg inline-flex items-center py-2.5 "
+            className="w-full h-16 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center px-2.5 py-2.5 "
           >
             <div className="flex justify-between w-full">
               <div className="flex">
@@ -453,20 +448,20 @@ const DetailCamp = ({ data }) => {
               </div>
             </div>
           </Link>
-
           <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
           <Link
             href={`/report/${idCamp}`}
-            className="w-full h-16  px-4 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center  py-2.5 mt-2 "
+            className="w-full h-16 bg-white hover:bg-gray-100  text-black rounded-lg inline-flex items-center px-2.5 py-2.5 mt-2"
           >
             <div className="flex justify-between w-full">
               <div className="flex">
                 <div className="text-left place-items-start">
                   <div className="mb-1 text-primary flex">
-                    Laporan Kegiatan{" "}
-                    <div className="bg-[#DE0606] px-1 rounded-xl ml-2 flex items-center justify-center">
-                      <p className="text-xs font-bold text-white">0</p>
-                    </div>
+                    Kabar Terbaru{" "}
+                    <IconBellRingingFilled
+                      size={10}
+                      className="text-blue-600"
+                    />
                   </div>
                   <div className="-mt-1 font-sans text-xs text-gray-500">
                     Terahir Update 18 Oktober 2023
@@ -479,8 +474,8 @@ const DetailCamp = ({ data }) => {
             </div>
           </Link>
         </div>
-        <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0" />
-        <div className="block mt-1 p-2 bg-white max-w-full px-4">
+        <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
+        <div className="block mt-1 p-2 bg-white">
           <h5 className="mb-2 text-md tracking-tight text-primary">
             Tentang Program
           </h5>
@@ -492,22 +487,21 @@ const DetailCamp = ({ data }) => {
             {data.description}
           </p>
           <hr className="w-full h-0.5 mx-auto mt-2 bg-gray-100 border-0 rounded" />
-          {data.description.length > 49 && (
-            <div className="bg-white grid place-content-center rounded-sm text-primary text-xs mt-2">
-              {showFullText ? (
-                <button className="flex" onClick={toggleReadMore}>
-                  Lebih Sedikit <IconChevronUp size={20} />
-                </button>
-              ) : (
-                <button className="flex" onClick={toggleReadMore}>
-                  Selengkapnya <IconChevronDown size={20} />
-                </button>
-              )}
-            </div>
-          )}
+          <div className="bg-white grid place-content-center rounded-sm text-primary text-xs mt-2">
+            {showFullText ? (
+              <button className="flex" onClick={toggleReadMore}>
+                Lebih Sedikit <IconChevronUp size={20} />
+              </button>
+            ) : (
+              <button className="flex" onClick={toggleReadMore}>
+                Selengkapnya <IconChevronDown size={20} />
+              </button>
+            )}
+          </div>
         </div>
-        <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0" />
-        <div className="w-full rounded-lg items-center px-4 py-2.5 mt-4">
+
+        <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
+        <div className="w-full rounded-lg items-center px-2 py-2.5 mt-4">
           <div className="flex mb-4">
             <p className="text-base font-bold text-black">Donatur</p>
             <div className="bg-primary px-1 rounded-xl ml-2 flex items-center justify-center">
@@ -537,7 +531,7 @@ const DetailCamp = ({ data }) => {
                       <div className="font-sans text-xs text-gray-500">
                         Berdonasi Sebesar{" "}
                         <span className="font-bold">
-                          {formatUang(item.amount ? item.amount : 0)}
+                          {formatToRupiah(item.amount)}
                         </span>
                       </div>
                       <div className="flex mt-1 font-sans text-xs items-center gap-1 text-gray-500">
@@ -553,7 +547,7 @@ const DetailCamp = ({ data }) => {
           <hr className="w-full h-0.5 mx-auto mt-2 bg-gray-100 border-0 rounded" />
           <div className="block mt-1 p-2 ">
             <div className="bg-white grid place-content-center rounded-sm text-primary text-xs mt-2">
-              {!showAll && cart.length > 4 ? (
+              {!showAll ? (
                 <button
                   className="flex focus:outline-none"
                   onClick={() => setShowAll(true)}
@@ -561,21 +555,18 @@ const DetailCamp = ({ data }) => {
                   Selengkapnya <IconChevronDown size={20} />
                 </button>
               ) : (
-                showAll &&
-                cart.length > 4 && (
-                  <button
-                    className="flex focus:outline-none"
-                    onClick={() => setShowAll(false)}
-                  >
-                    Lebih Sedikit <IconChevronUp size={20} />
-                  </button>
-                )
+                <button
+                  className="flex focus:outline-none"
+                  onClick={() => setShowAll(false)}
+                >
+                  Lebih Sedikit <IconChevronUp size={20} />
+                </button>
               )}
             </div>
           </div>
         </div>
+        {loading && <Loading />}
       </div>
-      {loading && <Loading />}
     </>
   );
 };

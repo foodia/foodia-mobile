@@ -25,6 +25,7 @@ const Detonator = () => {
     const authenticateUser = async () => {
       // const role = localStorage.getItem('role');
       const token = localStorage.getItem("token");
+      const id_detonator = localStorage.getItem("id_detonator");
       // const status = localStorage.getItem('status');
       // const id = localStorage.getItem('id');
       if (!token) {
@@ -137,6 +138,7 @@ const Detonator = () => {
             // router.push("/login");
           }
         }
+
       }
     };
 
@@ -277,8 +279,8 @@ const Detonator = () => {
         <div className="flex flex-row px-6 py-4 justify-between items-end">
           <div
             className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "DRAFT"
-                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-                : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
+              ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
               }`}
             onClick={() => handleFilterChange("DRAFT")}
           >
@@ -286,8 +288,8 @@ const Detonator = () => {
           </div>
           <div
             className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "OPEN,INPROGRESS"
-                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-                : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
+              ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
               }`}
             onClick={() => handleFilterChange("OPEN,INPROGRESS")}
           >
@@ -295,8 +297,8 @@ const Detonator = () => {
           </div>
           <div
             className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "FINISHED"
-                ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
-                : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
+              ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
+              : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
               }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
