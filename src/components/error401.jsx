@@ -1,7 +1,8 @@
 import Swal from "sweetalert2";
 
-const Error401 = (errCode, router) => {
+const Error401 = (errCode, router, messages) => {
   const code = errCode?.response?.data?.code;
+  console.log(errCode);
 
   if (code === 401) {
     localStorage.clear();
@@ -70,7 +71,7 @@ const Error401 = (errCode, router) => {
       confirmButtonText: "Tutup",
       confirmButtonColor: "#3FB648",
     });
-  } else if (errCode.code === "ERR_BAD_REQUEST") {
+  } else if (code === 400) {
     Swal.fire({
       position: "bottom",
       customClass: {
@@ -80,7 +81,11 @@ const Error401 = (errCode, router) => {
         confirmButton: "custom-confirm-button-swal",
       },
       icon: "error",
-      title: `<p class="w-auto pl-1 font-bold text-md">Data Tidak ditemukan</p><p class="text-sm w-auto pl-1 font-light">Silahkan coba beberapa waktu lagi</p>`,
+      title: `<p class="w-auto pl-1 font-bold text-md">${
+        messages ? messages.title : "Data Tidak ditemukan"
+      }</p><p class="text-sm w-auto pl-1 font-light">${
+        messages ? messages.text : "Silahkan coba beberapa waktu lagi"
+      }</p>`,
       html: `
             <div class="absolute px-28 ml-4 top-0 mt-4">
               <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
