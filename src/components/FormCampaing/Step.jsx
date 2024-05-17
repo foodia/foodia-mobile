@@ -1267,47 +1267,49 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                 showConfirmButton: false,
                 timer: 2000,
               });
-              // setTimeout(() => {
-              //   router.push("/bukti_pembayaran");
-              // }, 2000);
+              setTimeout(() => {
+                router.push(
+                  `/bukti_pembayaran/${response.data.body.payment.external_id}`
+                );
+              }, 2000);
+            }
+          })
+          .catch((error) => {
+            if (error.response && error.response.status === 401) {
+              localStorage.removeItem("cart");
+              localStorage.removeItem("formData");
+              Error401(error, router);
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Gagal Membuat Campaign",
+                text: "Gagal Membuat Campaign Mohon Coba Lagi",
+                showConfirmButton: false,
+                timer: 2000,
+              });
             }
           });
-        // .catch((error) => {
-        //   if (error.response && error.response.status === 401) {
-        //     localStorage.removeItem("cart");
-        //     localStorage.removeItem("formData");
-        //     Error401(error, router);
-        //   } else {
-        //     Swal.fire({
-        //       icon: "error",
-        //       title: "Gagal Membuat Campaign",
-        //       text: "Gagal Membuat Campaign Mohon Coba Lagi",
-        //       showConfirmButton: false,
-        //       timer: 2000,
-        //     });
-        //   }
-        // });
-      });
-    // .catch((error) => {
-    //   setLoading(false);
-    //   if (error.response && error.response.status === 401) {
-    //     localStorage.removeItem("cart");
-    //     localStorage.removeItem("formData");
-    //     Error401(error, router);
-    //   } else {
-    //     Swal.fire({
-    //       icon: "error",
-    //       title: "Image Gagal Upload",
-    //       text: "Gagal Upload Image Mohon Coba Lagi",
-    //       showConfirmButton: false,
-    //       timer: 2000,
-    //     });
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("cart");
+          localStorage.removeItem("formData");
+          Error401(error, router);
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Image Gagal Upload",
+            text: "Gagal Upload Image Mohon Coba Lagi",
+            showConfirmButton: false,
+            timer: 2000,
+          });
 
-    //     setTimeout(() => {
-    //       router.push("/createcampaign?step=1");
-    //     }, 2000);
-    //   }
-    // });
+          setTimeout(() => {
+            router.push("/createcampaign?step=1");
+          }, 2000);
+        }
+      });
   };
 
   const methodOptions = [
