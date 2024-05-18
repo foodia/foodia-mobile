@@ -14,6 +14,7 @@ const Detonator = () => {
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("DRAFT");
+
   useEffect(() => {
     const authenticateUser = async () => {
       const token = localStorage.getItem("token");
@@ -21,7 +22,7 @@ const Detonator = () => {
         Swal.fire({
           icon: "error",
           title: "Akses Dibatasi",
-          text: ` Mohon untuk login kembali menggunakan akun Detonator.`,
+          text: `Mohon untuk login kembali menggunakan akun Detonator.`,
           showConfirmButton: true,
           confirmButtonText: "Login",
           confirmButtonColor: "green",
@@ -37,13 +38,6 @@ const Detonator = () => {
           }
         });
       } else {
-
-        // if (id_detonator !== '-') {
-        //   console.log('id_detonator sudah terdaftar', id_detonator);
-        // } else {
-        //   console.log('id_detonator belum terdaftar', id_detonator);
-        // }
-
         try {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
@@ -142,14 +136,12 @@ const Detonator = () => {
         setLoading(false);
       })
       .catch((error) => {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-          localStorage.clear();
-          localStorage.removeItem("cart");
-          localStorage.removeItem("formData");
-          router.push("/login");
-          router.push("/login");
-        }
+        setLoading(false);
+        Error401(error, router);
+        localStorage.clear();
+        localStorage.removeItem("cart");
+        localStorage.removeItem("formData");
+        router.push("/login");
       });
   }, [selectedStatus, loading]);
 
@@ -231,7 +223,7 @@ const Detonator = () => {
         <div className="flex items-center justify-center px-6 my-2">
           <MenuDetonator />
         </div>
-        <div className="flex flex-row px-6 py-4 justify-between items-end">
+        <div className="flex flex-row px-6 py-4 justify-between">
           <div
             className={`cursor-pointer text-center pb-2 text-[16px] ${
               selectedStatus === "DRAFT"
@@ -243,7 +235,7 @@ const Detonator = () => {
             <p>Campaign Baru</p>
           </div>
           <div
-            className={`cursor-pointer text-center pb-2 text-[16px] ${
+            className={`cursor-pointer text-center pb-2 ml-2 text-[16px] ${
               selectedStatus === "OPEN,INPROGRESS"
                 ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
                 : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
@@ -263,7 +255,7 @@ const Detonator = () => {
             <p>Campaign Selesai</p>
           </div>
         </div>
-        {loading ? (
+        {loading || filteredData.length === 0 ? (
           <div className={`${styles.card}`}>
             {[...Array(4)].map((_, index) => (
               <div key={index} className={`${styles.loadingCard}`}>
