@@ -20,14 +20,13 @@ const inbox = (inbox) => {
     const id = localStorage.getItem("id");
     const detonator_id = localStorage.getItem("id_detonator");
     const merchant_id = localStorage.getItem("id_merchant");
-    console.log(id, detonator_id, merchant_id);
 
     if (id) {
       setDonaturActive(true);
-      if (detonator_id !== '-') {
+      if (detonator_id !== "-") {
         setDetonatorActive(true);
       }
-      if (merchant_id !== '-') {
+      if (merchant_id !== "-") {
         setMerchantActive(true);
       }
     }
@@ -35,11 +34,6 @@ const inbox = (inbox) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    // if (!token) {
-    //   router.push("/login");
-    // } else {
-    //   fetchData();
-    // }
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -50,11 +44,16 @@ const inbox = (inbox) => {
             },
           }
         );
+        const data = response.data.body;
+
+        data.sort((a, b) => b.value - a.value);
+
         setSelectedStatus("donator");
-        setDataApi(response.data.body);
-        setDataInbox(response.data.body);
+        setDataApi(data);
+        setDataInbox(data);
         setLoading(false);
       } catch (error) {
+        setLoading(false);
         Error401(error, router);
       }
     };
@@ -68,7 +67,7 @@ const inbox = (inbox) => {
     const id_detonator = localStorage.getItem("token");
 
     setLoading(true);
-    let url = '';
+    let url = "";
 
     if (status === "donator") {
       url = `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=donator`;
@@ -79,19 +78,22 @@ const inbox = (inbox) => {
     }
 
     if (url) {
-      axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      axios
+        .get(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
-          setDataApi(response.data.body);
-          setDataInbox(response.data.body);
-          console.log(response.data.body);
+          const data = response.data.body;
+
+          // data.sort((a, b) => b.id - a.id);
+
+          setDataApi(data);
+          setDataInbox(data);
           setLoading(false);
         })
         .catch((error) => {
-          // console.error("Error fetching data:", error);
           Error401(error, router);
           setLoading(false);
         });
@@ -100,10 +102,9 @@ const inbox = (inbox) => {
     setSelectedStatus(status);
   };
 
-
   return (
     <>
-      <div className="container mx-auto h-screen max-w-480 bg-white flex flex-col">
+      <div className="container mx-auto h-screen overflow-hidden max-w-480 bg-white flex flex-col">
         <div className="bg-white h-screen">
           {/* <SearchBar /> */}
           <div className="flex items-center justify-center px-6 py-4">
@@ -111,14 +112,14 @@ const inbox = (inbox) => {
           </div>
 
           <div className="flex flex-row px-6 py-4 justify-between items-end">
-
             {donaturActive ? (
               <div className="px-2 w-full">
                 <div
-                  className={` cursor-pointer text-center font-semibold text-lg ${selectedStatus === "donator"
-                    ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                    : "cursor-pointer text-center text-gray-500"
-                    }`}
+                  className={`cursor-pointer text-center border border-t-0 border-x-0 font-semibold text-lg ${
+                    selectedStatus === "donator"
+                      ? " text-primary text-center border-b-primary"
+                      : "cursor-pointer text-center text-gray-500  border-b-transparent"
+                  }`}
                   onClick={() => handleFilterChange("donator")}
                 >
                   <span>Donator</span>
@@ -129,13 +130,14 @@ const inbox = (inbox) => {
             {detonatorActive ? (
               <div className="px-2 w-full">
                 <div
-                  className={`cursor-pointer text-center font-semibold text-lg ${selectedStatus === "detonator"
-                    ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                    : "cursor-pointer text-center text-gray-500"
-                    }`}
+                  className={`cursor-pointer text-center border border-t-0 border-x-0 font-semibold text-lg ${
+                    selectedStatus === "detonator"
+                      ? " text-primary text-center border-b-primary"
+                      : "cursor-pointer text-center text-gray-500  border-b-transparent"
+                  }`}
                   onClick={() => handleFilterChange("detonator")}
                 >
-                  <span>Detonator</span>
+                  <span>Volunteer</span>
                 </div>
               </div>
             ) : null}
@@ -143,18 +145,17 @@ const inbox = (inbox) => {
             {merchantActive ? (
               <div className="px-2 w-full">
                 <div
-                  className={`cursor-pointer text-center font-semibold text-lg ${selectedStatus === "merchant"
-                    ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                    : "cursor-pointer text-center text-gray-500"
-                    }`}
+                  className={`cursor-pointer text-center font-semibold text-lg ${
+                    selectedStatus === "merchant"
+                      ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                      : "cursor-pointer text-center text-gray-500"
+                  }`}
                   onClick={() => handleFilterChange("merchant")}
                 >
                   <span>Merchant</span>
                 </div>
               </div>
             ) : null}
-
-
           </div>
 
           {loading ? (
@@ -166,14 +167,15 @@ const inbox = (inbox) => {
               ))}
             </div>
           ) : (
-            <div className={`pb-28`}>
+            <div className={`overflow-auto h-screen px-1 pb-[300px]`}>
               {DataInbox.length > 0 ? (
                 DataInbox.map((inboxData) => (
                   <CardInbox DataInbox={inboxData} key={inboxData.id} />
-
                 ))
               ) : (
-                <div className="flex justify-center items-center h-[326px] text-center font-semibold text-[#D9D9D9] text-[16px]">No Data</div>
+                <div className="flex justify-center items-center h-[326px] text-center font-semibold text-[#D9D9D9] text-[16px]">
+                  No Data
+                </div>
               )}
             </div>
           )}
