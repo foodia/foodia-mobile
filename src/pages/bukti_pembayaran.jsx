@@ -123,7 +123,8 @@ const BuktiPembayaran = () => {
             </h1>
             <p className="font-semibold text-sm">
               {pembayaran
-                ? pembayaran.payment_channel === "campaign_wallet"
+                ? pembayaran.payment_channel === "campaign_wallet" ||
+                  pembayaran.payment_channel === "agnostic_wallet"
                   ? "Tabunganku"
                   : pembayaran.payment_channel
                   ? pembayaran.payment_channel

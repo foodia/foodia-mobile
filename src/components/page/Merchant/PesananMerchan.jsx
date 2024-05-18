@@ -83,10 +83,8 @@ const PesananMerchan = () => {
     if (status === "review") {
       filtered = dataApi.filter((data) => data.order_status === "review");
       console.log(filtered, dataApi);
-
     } else if (status === "diproses") {
       filtered = dataApi.filter((data) => data.order_status === "diproses");
-
     } else if (status === "selesai") {
       filtered = dataApi.filter(
         (data) =>
@@ -102,28 +100,31 @@ const PesananMerchan = () => {
         <MenuBarMechant />
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "review"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "review"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("review")}
           >
             <span>Pesanan</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "diproses"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("diproses")}
           >
             <span>Berlangsung</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "selesai"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("selesai")}
           >
             <span>History</span>
@@ -140,28 +141,23 @@ const PesananMerchan = () => {
           </div>
         ) : (
           <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
-            {filteredData.length == 0 ? (
+            {loading || filteredData.length == 0 ? (
               <p className="text-gray-400  flex justify-center items-center">
                 {selectedStatus === "review"
                   ? "Tidak Ada Pesanan"
                   : selectedStatus === "diproses"
-                    ? "Tidak Ada Pesanan Berlangsung"
-                    : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
+                  ? "Tidak Ada Pesanan Berlangsung"
+                  : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
               </p>
             ) : (
               filteredData.map((data) => (
-
                 <CardPesanan
                   key={data.id}
-
                   to={`/merchant/detailpesanan/${data.id}`}
                   idOrder={data.id}
                   img={
-                    selectedStatus === "diproses"
-                      ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.campaign.image_url}`
-                      : data.merchant_product.images.length > 0
-                        ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product.images[0].image_url}`
-                        : "/img/default-image.png"
+                    `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product.images[0].image_url}` ||
+                    "/img/default-image.png"
                   }
                   title={data.campaign.event_name}
                   productName={data.merchant_product.name}

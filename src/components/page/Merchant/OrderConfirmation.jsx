@@ -106,7 +106,7 @@ const OrderConfirmation = () => {
             `,
           width: "375px",
           showConfirmButton: true,
-          confirmButtonText: "Kembali",
+          confirmButtonText: "Lanjutkan",
           confirmButtonColor: "#3FB648",
           allowOutsideClick: false,
         }).then((result) => {

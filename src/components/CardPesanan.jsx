@@ -56,7 +56,7 @@ const CardPesanan = (props) => {
               <div className="flex items-end justify-between mt-2">
                 <div className="flex flex-col">
                   <p className="font-normal text-xs italic">{`${qty} x ${productName}`}</p>
-                  <span className="text-[#6CB28E] font-bold text-xl">
+                  <span className="text-[#6CB28E] max-w-[100px] font-bold text-xl">
                     {formatPrice(total_amount)}
                   </span>
                 </div>

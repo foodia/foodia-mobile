@@ -1143,6 +1143,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
   const admin_fee = 2500;
   const month = moment().format("YYYY-MM");
 
+  console.log(selectedChannel);
+  console.log(selectedMethod);
+
   useEffect(() => {
     axios
       .get(
@@ -1240,7 +1243,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             admin_fee: admin_fee,
             total_amount: parseFloat(donationRequired),
             payment_channel: `${
-              selectedMethod !== "agnostic" && selectedChannel
+              selectedMethod === "agnostic" ? "Tabunganku" : selectedChannel
             }`,
             success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
           },
@@ -1333,42 +1336,42 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
       value: "ewallet",
       label: "Ewallet",
     },
-    {
-      id: 3,
-      value: "bank",
-      label: "Bank",
-    },
+    // {
+    //   id: 3,
+    //   value: "bank",
+    //   label: "Bank",
+    // },
   ];
 
   const eWalletChannelOptions = [
     {
       id: 1,
       logo: LinkAja,
-      value: "link_aja",
-      label: "LinkAja",
+      value: "LinkAja",
+      // label: "LinkAja",
     },
     {
       id: 2,
       logo: gopay,
-      value: "gopay",
-      label: "Gopay",
+      value: "Gopay",
+      // label: "Gopay",
     },
   ];
 
-  const bankChannelOptions = [
-    {
-      id: 1,
-      logo: mandiri,
-      value: "mandiri",
-      label: "Mandiri",
-    },
-    {
-      id: 2,
-      logo: bri,
-      value: "bri",
-      label: "BRI",
-    },
-  ];
+  // const bankChannelOptions = [
+  //   {
+  //     id: 1,
+  //     logo: mandiri,
+  //     value: "Mandiri",
+  //     // label: "Mandiri",
+  //   },
+  //   {
+  //     id: 2,
+  //     logo: bri,
+  //     value: "BRI",
+  //     // label: "BRI",
+  //   },
+  // ];
 
   return (
     <div className="w-full">
@@ -1519,7 +1522,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                           htmlFor="ewallet"
                           className="font-bold text-black"
                         >
-                          {data.label}
+                          {data.value}
                         </label>
                       </div>
                       <input
@@ -1559,7 +1562,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                           htmlFor="ewallet"
                           className="font-bold text-black"
                         >
-                          {data.label}
+                          {data.value}
                         </label>
                       </div>
                       <input
@@ -1916,7 +1919,7 @@ function Stepfive({
         {location}
       </p>
       <div className="flex justify-center">
-        <Image src={Market} />
+        <Image src={Market} alt="" />
       </div>
       <p className="py-2 pb-7 text-gray-700 font-medium text-xl">
         Merchant Terdekat
