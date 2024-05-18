@@ -1,11 +1,12 @@
 // Tes.jsx
-import compressImage from "@/components/CompressImage";
+import CompressImage from "@/components/CompressImage";
 import { useEffect, useState } from "react";
 
 
 const Tes = () => {
     const [foto, setFoto] = useState(null);
     const [ukuran, setUkuran] = useState(null);
+    const [ukuranAsli, setUkuranAsli] = useState(null);
 
     const uploadImage = (event) => {
         const file = event.target.files[0];
@@ -13,7 +14,8 @@ const Tes = () => {
             setFoto(file);
             setUkuran((file.size / (1024 * 1024)).toFixed(2));
         } else {
-            compressImage(file)
+            setUkuranAsli((file.size / (1024 * 1024)).toFixed(2));
+            CompressImage(file)
                 .then((compressedFile) => {
                     setFoto(compressedFile);
                     setUkuran((compressedFile.size / (1024 * 1024)).toFixed(2));
@@ -39,6 +41,9 @@ const Tes = () => {
                         </div>
                         <div>
                             Ukuran gambar: {ukuran} MB
+                        </div>
+                        <div>
+                            Ukuran asli: {ukuranAsli} MB
                         </div>
                     </>
                 )}

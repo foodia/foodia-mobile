@@ -75,7 +75,7 @@ const DetonatorRating = (DetonatorRating) => {
   const handleSubmit = (event) => {
     // event.preventDefault();
     setloading(true);
-    const id_merchant = localStorage.getItem("id");
+    const id_merchant = localStorage.getItem("id_detonator");
     const token = localStorage.getItem("token");
 
     // Validation checks

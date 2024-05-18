@@ -4,8 +4,9 @@ import Compressor from "compressorjs";
 const CompressImage = (file) => {
     return new Promise((resolve, reject) => {
         new Compressor(file, {
-            quality: 0.9, //10.21% off
-            // maxWidth: 1024,
+            quality: 0.2,
+            // maxWidth: 5024,
+            // maxHeight: 5024,
             success(result) {
                 resolve(result);
             },

@@ -56,6 +56,10 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
     const maxSize = 5 * 1024 * 1024;
     setLoadingSelfi(true);
+    if (!file) {
+      setLoadingSelfi(false);
+      return;
+    }
     if (!allowedTypes.includes(file.type)) {
       Swal.fire({
         icon: "error",
@@ -82,6 +86,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
               iconColor: 'bg-black',
             })
           }
+          console.log('ukuran compressedFile', size);
           setLoadingSelfi(false);
           console.log('hasil compressedFile', compressedFile);
         })
@@ -101,6 +106,10 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
     const maxSize = 5 * 1024 * 1024;
     setLoadingKTP(true);
+    if (!file) {
+      setLoadingKTP(false);
+      return;
+    }
     if (!allowedTypes.includes(file.type)) {
       Swal.fire({
         icon: "error",
