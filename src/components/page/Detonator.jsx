@@ -37,6 +37,13 @@ const Detonator = () => {
           }
         });
       } else {
+
+        // if (id_detonator !== '-') {
+        //   console.log('id_detonator sudah terdaftar', id_detonator);
+        // } else {
+        //   console.log('id_detonator belum terdaftar', id_detonator);
+        // }
+
         try {
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
@@ -110,9 +117,6 @@ const Detonator = () => {
           }
         } catch (error) {
           Error401(error, router);
-          localStorage.clear();
-          localStorage.removeItem("cart");
-          localStorage.removeItem("formData");
         }
       }
     };

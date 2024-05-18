@@ -24,10 +24,10 @@ const inbox = (inbox) => {
 
     if (id) {
       setDonaturActive(true);
-      if (detonator_id !== 'undefined') {
+      if (detonator_id !== '-') {
         setDetonatorActive(true);
       }
-      if (merchant_id !== 'undefined') {
+      if (merchant_id !== '-') {
         setMerchantActive(true);
       }
     }

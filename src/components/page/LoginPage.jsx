@@ -52,7 +52,6 @@ const LoginPage = () => {
     setLoading(true); // Set loading to true when starting authentication
 
     if (inputPassword.length < 8) {
-      // window.alert("Password must be at least 8 characters");
       Toast.fire({
         icon: "error",
         title: "Password must be at least 8 characters",
@@ -68,46 +67,50 @@ const LoginPage = () => {
         password: inputPassword,
       })
       .then((response) => {
-        const responeData = response.data.body;
+        const responseData = response.data.body;
 
-        if (responeData.is_active) {
+        if (responseData.is_active) {
           axios
             .get(
               `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
               {
                 headers: {
-                  Authorization: `Bearer ${responeData.token}`,
+                  Authorization: `Bearer ${responseData.token}`,
                 },
               }
             )
             .then((res) => {
-              localStorage.setItem(
-                "id_merchant",
-                res.data.body.merchant?.merchant_id
-              );
-              localStorage.setItem(
-                "id_detonator",
-                res.data.body.detonator?.detonator_id
-              );
+              const { detonator, merchant } = res.data.body;
+
+              if (detonator?.status === "approved" && detonator.detonator_id) {
+                localStorage.setItem("id_detonator", detonator.detonator_id);
+              } else {
+                localStorage.setItem("id_detonator", '-');
+              }
+              if (merchant?.status === "approved" && merchant.merchant_id) {
+                localStorage.setItem("id_merchant", merchant.merchant_id);
+              } else {
+                localStorage.setItem("id_merchant", '-');
+              }
+
               localStorage.setItem("Session", "start");
-              localStorage.setItem("fullname", responeData.fullname);
-              localStorage.setItem("phone", responeData.phone);
-              localStorage.setItem("email", responeData.email);
-              localStorage.setItem("role", responeData.role);
-              localStorage.setItem("token", responeData.token);
-              localStorage.setItem("id", responeData.user_id || " ");
-              localStorage.setItem("status", responeData.status || " ");
-              localStorage.setItem("note", responeData.note || " ");
+              localStorage.setItem("fullname", responseData.fullname);
+              localStorage.setItem("phone", responseData.phone);
+              localStorage.setItem("email", responseData.email);
+              localStorage.setItem("role", responseData.role);
+              localStorage.setItem("token", responseData.token);
+              localStorage.setItem("id", responseData.user_id || " ");
+              localStorage.setItem("status", responseData.status || " ");
+              localStorage.setItem("note", responseData.note || " ");
               setLoading(false);
               Swal.fire({
                 icon: "success",
                 title: "Login Success",
-                text: `Welcome ${responeData.fullname}`,
+                text: `Welcome ${responseData.fullname}`,
                 showConfirmButton: false,
                 timer: 2000,
               });
               setTimeout(() => {
-                setLoading(false);
                 router.push("/home");
               }, 2000);
             })
@@ -122,19 +125,14 @@ const LoginPage = () => {
               });
             });
         } else {
-          setRegistrasi(responeData);
-          localStorage.setItem("email", responeData.email);
+          setLoading(false);
           Swal.fire({
-            icon: "warning",
-            title: "Login Failed",
-            text: `please activate your account by login first to access this page`,
+            icon: "error",
+            title: "Account Inactive",
+            text: "Your account is not active. Please contact support.",
             showConfirmButton: false,
             timer: 2000,
           });
-          setTimeout(() => {
-            setLoading(false);
-            router.push("/otp");
-          }, 2000);
         }
       })
       .catch((error) => {
@@ -194,9 +192,8 @@ const LoginPage = () => {
             disabled={!inputEmail || !inputPassword}
             onClick={handleSubmit}
             type="submit"
-            className={`text-white ${
-              !inputEmail || !inputPassword ? "bg-slate-400" : "bg-primary"
-            } outline-none focus:ring-gray-300 font-bold rounded-xl text-md w-full sm:w-auto py-2 text-center `}
+            className={`text-white ${!inputEmail || !inputPassword ? "bg-slate-400" : "bg-primary"
+              } outline-none focus:ring-gray-300 font-bold rounded-xl text-md w-full sm:w-auto py-2 text-center `}
           >
             Masuk
           </button>
