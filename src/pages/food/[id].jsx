@@ -1,13 +1,10 @@
-import styles from "@/styles/Campaign.module.css";
-import { IconCirclePlus } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import axios from "axios";
-import { Link } from "tabler-icons-react";
-import Header from "@/components/Header";
 import CardRepordFood from "@/components/CardRepordFood";
+import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 const FoodCampaign = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -33,6 +30,7 @@ const FoodCampaign = () => {
         setDetonatorId(response.data.body.detonator_id);
         setLoading(false);
       } catch (error) {
+        setLoading(false);
         Error401(error);
       }
     };

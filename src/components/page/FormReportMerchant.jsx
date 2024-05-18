@@ -64,7 +64,13 @@ const FormReportMerchant = () => {
 
   const handleimage_urlChange = (event) => {
     const file = event.target.files[0];
-    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
+    const allowedTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/heif",
+      "image/heic",
+    ];
     const maxSize = 5 * 1024 * 1024;
     setLoadingImage(true);
     if (!allowedTypes.includes(file.type)) {
@@ -79,7 +85,7 @@ const FormReportMerchant = () => {
     if (file.size <= maxSize) {
       setimage_url(file);
       setLoadingImage(false);
-      console.log('file', file);
+      console.log("file", file);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
@@ -88,13 +94,13 @@ const FormReportMerchant = () => {
             setimage_url(compressedFile);
           } else {
             Toast.fire({
-              icon: 'error',
-              title: 'Ukuran gambar melebihi 5MB!',
-              iconColor: 'bg-black',
-            })
+              icon: "error",
+              title: "Ukuran gambar melebihi 5MB!",
+              iconColor: "bg-black",
+            });
           }
           setLoadingImage(false);
-          console.log('hasil compressedFile', compressedFile);
+          console.log("hasil compressedFile", compressedFile);
         })
         .catch((error) => {
           Swal.fire({
@@ -105,7 +111,6 @@ const FormReportMerchant = () => {
           setLoadingImage(false);
         });
     }
-
   };
 
   const handledescriptionChange = (event) => {
@@ -183,7 +188,7 @@ const FormReportMerchant = () => {
           setLoading(false);
         }
       })
-      .catch(() => {
+      .catch((error) => {
         setLoading(false);
         Error401(error, router);
       });
@@ -276,7 +281,6 @@ const FormReportMerchant = () => {
                 </div>
               </div>
 
-
               <div className="py-4">
                 <div className="flex flex-row p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
                   <IconFileDescription className="mt-3.5" />
@@ -285,7 +289,7 @@ const FormReportMerchant = () => {
                     onChange={(e) => handledescriptionChange(e)}
                     value={description}
                     type="text"
-                    className="ml-2 w-full min-h-[135px] p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
+                    className="ml-2 w-full text-black min-h-[135px] p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
                     placeholder="Komentar"
                     required
                     style={{ resize: "none" }}

@@ -1,14 +1,9 @@
-import styles from "@/styles/Home.module.css";
 import {
   IconCheck,
-  IconCircleCheck,
-  IconClockFilled,
   IconHourglassEmpty,
   IconPackageExport,
-  IconPlaystationX,
 } from "@tabler/icons-react";
 import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -49,8 +44,10 @@ const CardRepordFood = (props) => {
         return <IconHourglassEmpty size={22} />;
       case "incoming":
         return <IconHourglassEmpty size={22} />;
-      case "terima":
+      case "diproses":
         return <IconHourglassEmpty size={22} />;
+      case "terima":
+        return <IconCheck size={22} />;
       case "selesai":
         return <IconPackageExport size={22} />;
       // case "tolak":
@@ -110,19 +107,16 @@ const CardRepordFood = (props) => {
                     confirmButtonColor: "green",
                   });
                   setLoading(false);
-                  // router.push(`/detonator/campaign/${id}`);
+                  router.reload();
                 })
                 .catch((error) => {
                   setLoading(false);
-                  if (error.response && error.response.status === 401) {
-                    Error401(error, router);
-                  }
+                  Error401(error, router);
                 });
             } else {
               return;
             }
           });
-        } else {
         }
       }
     } else {
@@ -143,7 +137,7 @@ const CardRepordFood = (props) => {
               alt=""
             />
             <div className={`text-left ml-2`}>
-              <p className="w-full text-primary font-sans font-bold text-[15px] capitalize">
+              <p className="w-full max-w-[150px] text-primary font-sans font-bold text-[15px] capitalize">
                 {title}
               </p>
               <p className="mb-1 font-sans font-bold text-xs truncate">
@@ -180,7 +174,7 @@ const CardRepordFood = (props) => {
                   onClick={handleButoon}
                   className={`rounded-full ${
                     detonator_id != id_detonator
-                      ? "cursor-not-allowed hover:bg-gray-300"
+                      ? "hidden"
                       : "cursor-pointer hover:bg-blue-300"
                   }`}
                 >
@@ -190,6 +184,8 @@ const CardRepordFood = (props) => {
                         ? "text-[#6B4EFF]"
                         : order_status === "incoming"
                         ? "text-[#6B4EFF]"
+                        : order_status === "diproses"
+                        ? "text-[#1D5882]"
                         : order_status === "terima"
                         ? "text-[#1D5882]"
                         : order_status === "tolak"
@@ -205,8 +201,10 @@ const CardRepordFood = (props) => {
                         ? "Review Merchant"
                         : order_status === "incoming"
                         ? "Review Admin"
-                        : order_status === "terima"
+                        : order_status === "diproses"
                         ? "Makanan Di Proses"
+                        : order_status === "terima"
+                        ? "Makanan Terkonfirmasi"
                         : order_status === "tolak"
                         ? "Ganti Menu"
                         : order_status === "selesai"
@@ -222,6 +220,8 @@ const CardRepordFood = (props) => {
                       ? "text-[#6B4EFF]"
                       : order_status === "incoming"
                       ? "text-[#6B4EFF]"
+                      : order_status === "diproses"
+                      ? "text-[#1D5882]"
                       : order_status === "terima"
                       ? "text-[#1D5882]"
                       : order_status === "selesai"
@@ -232,13 +232,15 @@ const CardRepordFood = (props) => {
                   <p className="mr-1">
                     {order_status === "tolak" ? "" : getorder_status()}
                   </p>
-                  <p className="w-16 break-words text-xs font-bold">{`${
+                  <p className="w-[79px] break-words text-xs font-bold">{`${
                     order_status === "review"
                       ? "Review Merchant"
                       : order_status === "incoming"
                       ? "Review Admin"
-                      : order_status === "terima"
+                      : order_status === "diproses"
                       ? "Makanan Di Proses"
+                      : order_status === "terima"
+                      ? "Makanan Terkonfirmasi"
                       : order_status === "selesai"
                       ? "Makanan Diterima"
                       : ""

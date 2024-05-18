@@ -14,14 +14,22 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Loading from "../Loading";
 import { useAppState } from "./UserContext";
+import Error401 from "../error401";
+import axios from "axios";
 
 const DetailCamp = ({ data }) => {
   const router = useRouter();
   const idCamp = router.query.id;
   const [showFullText, setShowFullText] = useState(false);
   const [loading, setloading] = useState(true);
+  const [merchantReportLength, setMerchantReportLength] = useState();
+  const [detonatorReportLength, setDetonatorReportLength] = useState();
   const { state, setDonation } = useAppState();
   const [nominalDonasi, setNominalDonasi] = useState(0);
+
+  console.log(merchantReportLength);
+  console.log(detonatorReportLength);
+
   const toggleReadMore = () => {
     setShowFullText((prevShowFullText) => !prevShowFullText);
   };
@@ -52,7 +60,46 @@ const DetailCamp = ({ data }) => {
       // Handle the case where data is not available yet
       setloading(false);
     }
-  });
+  }, []);
+
+  //get data report
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign-report/filter?campaign_id=${idCamp}&type=merchant`
+        // {
+        //     headers: {
+        //         Authorization: `Bearer ${token}`,
+        //     },
+        // }
+      )
+      .then((response) => {
+        setMerchantReportLength(response.data.body.length);
+        // setReportDetonator(response.data.body);
+        setloading(false);
+      })
+      .catch((error) => {
+        setloading(false);
+        Error401(error, router);
+      });
+    axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign-report/filter?campaign_id=${idCamp}&type=detonator&per_page=1`
+        // {
+        //     headers: {
+        //         Authorization: `Bearer ${token}`,
+        //     },
+        // }
+      )
+      .then((response) => {
+        setDetonatorReportLength(response.data.body.length);
+        setloading(false);
+      })
+      .catch((error) => {
+        setloading(false);
+        Error401(error, router);
+      });
+  }, []);
 
   const showSweetAlert = async () => {
     const swal = Swal.mixin({
@@ -295,11 +342,11 @@ const DetailCamp = ({ data }) => {
     }
   };
 
-  let percentageCollected = 0;
-  data.donation_target > 0
-    ? (percentageCollected =
-        (data.donation_collected / data.donation_target) * 100)
-    : (percentageCollected = 0);
+  // let percentageCollected = 0;
+  // data.donation_target > 0
+  //   ? (percentageCollected =
+  //       (data.donation_collected / data.donation_target) * 100)
+  //   : (percentageCollected = 0);
 
   const remainingDays = calculateRemainingTime(data.event_date);
   return (
@@ -461,11 +508,14 @@ const DetailCamp = ({ data }) => {
                   <div className="mb-1 text-primary flex">
                     Laporan Kegiatan{" "}
                     <div className="bg-[#DE0606] px-1 rounded-xl ml-2 flex items-center justify-center">
-                      <p className="text-xs font-bold text-white">0</p>
+                      <p className="text-xs font-bold flex items-center justify-center text-white">
+                        {detonatorReportLength + merchantReportLength || 0}
+                      </p>
                     </div>
                   </div>
                   <div className="-mt-1 font-sans text-xs text-gray-500">
-                    Terahir Update 18 Oktober 2023
+                    Terakhir Update{" "}
+                    {moment(data.updated_at).format("DD MMM YYYY")}
                   </div>
                 </div>
               </div>
@@ -506,7 +556,7 @@ const DetailCamp = ({ data }) => {
         <div className="w-full rounded-lg items-center px-4 py-2.5 mt-4">
           <div className="flex mb-4">
             <p className="text-base font-bold text-black">Donatur</p>
-            <div className="bg-primary px-1 rounded-xl ml-2 flex items-center justify-center">
+            <div className="bg-primary px-1 rounded-xl ml-2 flex items-center justify-start">
               <p className="text-xs font-bold flex items-center justify-center text-white">
                 {cart.length}
               </p>
