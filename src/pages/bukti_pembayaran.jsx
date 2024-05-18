@@ -93,7 +93,11 @@ const BuktiPembayaran = () => {
           <div className="flex justify-between mb-2">
             <h1 className="font-normal text-sm text-[#A1A5C1]">Detail</h1>
             <p className="font-semibold text-sm">
-              {pembayaran ? "Donasi" : "-"}
+              {pembayaran.description === "Terima Dana Donasi" ||
+              pembayaran.description === "Donation"
+                ? "Donasi"
+                : pembayaran.description}
+              {/* {prevPath !== "/mydonation" ? "Donasi" : "Tabungan Donasi" || "-"} */}
             </p>
           </div>
           <div className="flex justify-between mb-2">
@@ -118,7 +122,13 @@ const BuktiPembayaran = () => {
               Metode Pembayaran
             </h1>
             <p className="font-semibold text-sm">
-              {pembayaran ? "Mayar" : "-"}
+              {pembayaran
+                ? pembayaran.payment_channel === "campaign_wallet"
+                  ? "Tabunganku"
+                  : pembayaran.payment_channel
+                  ? pembayaran.payment_channel
+                  : "Mayar"
+                : "-"}
             </p>
           </div>
           <div className="flex justify-between mb-2">
@@ -133,7 +143,7 @@ const BuktiPembayaran = () => {
               }).format(pembayaran.total_amount || 0)}
             </p>
           </div>
-          <div className="flex justify-between">
+          {/* <div className="flex justify-between">
             <h1 className="font-normal text-sm text-[#A1A5C1]">
               Biaya Transaksi
             </h1>
@@ -144,7 +154,7 @@ const BuktiPembayaran = () => {
                 minimumFractionDigits: 0,
               }).format(pembayaran.admin_fee || 0)}
             </p>
-          </div>
+          </div> */}
 
           <hr className="w-full mx-auto my-4 bg-gray-300" />
           <div className="flex justify-between">

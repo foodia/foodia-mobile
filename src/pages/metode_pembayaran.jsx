@@ -17,13 +17,11 @@ const MetodePembayaran = () => {
   const [nominalDonasi, setNominalDonasi] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  console.log(router);
-
   useEffect(() => {
-    const pajakAmount = state.donation.amount * 0.025; // 2.5% tax
-    const totalBayar = state.donation.amount + pajakAmount;
+    // const pajakAmount = state.donation.amount * 0.025; // 2.5% tax
+    // const totalBayar = state.donation.amount + pajakAmount;
 
-    if (!state.donation.amount || totalBayar === 0) {
+    if (!state.donation.amount) {
       // Use SweetAlert to show a warning
       Swal.fire({
         icon: "error",
@@ -38,20 +36,19 @@ const MetodePembayaran = () => {
       return; // Stop execution if no amount
     }
 
-    if (localStorage.getItem("prevPath") === "BottomNav") {
+    if (localStorage.getItem("prevPath") === "/mydonation") {
       setTitleCard("Tabungan Donasi");
     }
 
     setNominalDonasi(state.donation.amount);
-    setPajak(pajakAmount);
-    setTotal(totalBayar);
+    // setPajak(pajakAmount);
+    setTotal(state.donation.amount);
   }, [state.donation]);
 
   const handleBayarSekarang = () => {
     setLoading(true);
     const data = {
       amount: state.donation.amount,
-      admin_fee: pajak,
       total_amount: total,
       payment_channel: metodePembayaran,
       success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
