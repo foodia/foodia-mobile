@@ -1,19 +1,16 @@
 // src/components/FormCampaing.jsx
 
-import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import {
-  StepOne,
-  StepTwo,
-  StepThree,
-  Stepfour,
-  Stepfive,
   SingleDonationPayment,
+  StepOne,
+  StepThree,
+  StepTwo,
+  Stepfive,
+  Stepfour,
 } from "../FormCampaing/Step";
-import AddFood from "./AddFoodCamp";
 import Loading from "../Loading";
-// import StepThree from '../FormCampaing/CreateCamp';
 
 const FormCampaing = () => {
   const router = useRouter();
@@ -21,24 +18,6 @@ const FormCampaing = () => {
   const [cart, setCart] = useState([]);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  // useEffect(() => {
-  //     const role = localStorage.getItem('role');
-  //     const token = localStorage.getItem('token');
-  //     const status = localStorage.getItem('status');
-  //     const idDetonator = localStorage.getItem('id');
-
-  //     if (!role || !token || role !== 'detonator' || status !== 'approved' || !idDetonator) {
-  //         // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
-  //         localStorage.clear();
-  //         localStorage.removeItem('cart');
-  //         localStorage.removeItem('formData');
-  //         router.push('/login/detonator');
-  //     } else {
-  //         // Role is 'detonator' and token is present
-  //         setLoading(false); // Set loading to false once the check is complete
-  //     }
-  // }, [router]);
 
   // Retrieve form data from local storage on component mount
   useEffect(() => {

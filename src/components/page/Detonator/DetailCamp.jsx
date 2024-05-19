@@ -80,7 +80,10 @@ const DetailCamp = ({ data }) => {
     return <p>Loading...</p>;
   }
   let percentageCollected = 0;
-  data.donation_target > 0 ? (percentageCollected = (data.donation_collected / data.donation_target) * 100) : (percentageCollected = 0);
+  data.donation_target > 0
+    ? (percentageCollected =
+        (data.donation_collected / data.donation_target) * 100)
+    : (percentageCollected = 0);
 
   const totalCollected = (percentageCollected) => {
     if (percentageCollected === undefined || percentageCollected === null) {
@@ -105,7 +108,6 @@ const DetailCamp = ({ data }) => {
           />
         </div>
 
-
         <div className="place-content-center mt-4  p-2">
           <div className="flex">
             <h1>{data.event_name}</h1>
@@ -117,10 +119,12 @@ const DetailCamp = ({ data }) => {
             <p className="font-sans text-sm">
               Tanggal Kegiatan :
               <span className="font-sans text-sm font-medium text-blue-800 ml-1">
-                {`${('0' + new Date(data.event_date).getDate()).slice(-2)}-${('0' + (new Date(data.event_date).getMonth() + 1)).slice(-2)}-${new Date(data.event_date).getFullYear()}`}
+                {`${("0" + new Date(data.event_date).getDate()).slice(-2)}-${(
+                  "0" +
+                  (new Date(data.event_date).getMonth() + 1)
+                ).slice(-2)}-${new Date(data.event_date).getFullYear()}`}
               </span>
             </p>
-
           </div>
           <div className="flex flex-wrap items-center justify-between ">
             <h4> {formatUang(data.donation_target)}</h4>
@@ -130,42 +134,40 @@ const DetailCamp = ({ data }) => {
             </h4>
           </div>
 
-
-          <div className="flex justify-between ">
-
+          {/* <div className="flex justify-between ">
             <ol className="flex items-center mt-2">
               <li className="flex w-24 items-center after:w-full after:border-b after:border-4 after:border-primary">
                 <span className="flex items-center justify-center w-6 h-6  rounded-full  bg-primary shrink-0">
                   <IconCalendarEvent className="w-3.5 h-3.5 text-gray-100" />
                 </span>
               </li>
-              <li className="flex w-24 items-center after:w-full after:w-full after:h-1 after:border-b  after:border-4  after:border-gray-700">
+              <li className="flex w-24 items-center after:w-full after:h-1 after:border-b  after:border-4  after:border-gray-700">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary shrink-0">
                   <IconCreditCard className="w-3.5 h-3.5 text-gray-100" />
                 </span>
               </li>
               <li className="flex items-center w-full">
-                <span className="flex items-center justify-center w-6 h-6 bg-gray-100 rounded-full bg-gray-700 shrink-0">
+                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-700 shrink-0">
                   <IconClipboardCheck className="w-3.5 h-3.5 text-gray-100" />
                 </span>
               </li>
             </ol>
 
             <div
-              className={`flex justify-center items-center rounded-full w-24 mt-2 ${data.status === "waiting"
-                ? "bg-blue-600"
-                : data.status === "approved"
+              className={`flex justify-center items-center rounded-full w-24 mt-2 ${
+                data.status === "waiting"
+                  ? "bg-blue-600"
+                  : data.status === "approved"
                   ? "bg-green-500"
                   : data.status === "rejected"
-                    ? "bg-red-500"
-                    : ""
-                }`}
+                  ? "bg-red-500"
+                  : ""
+              }`}
             >
               <p className="text-white">{data.status}</p>
             </div>
-
-          </div>
-          <div className="flex justify-between px-1.5 items-center ">
+          </div> */}
+          {/* <div className="flex justify-between px-1.5 items-center ">
             <div className="w-full rounded-full h-2.5 bg-gray-200">
               <div
                 className="bg-primary h-2.5 rounded-full w-max-"
@@ -178,7 +180,7 @@ const DetailCamp = ({ data }) => {
             <p className="text-primary font-sans ml-1 mb-1 text-xs">
               {totalCollected(percentageCollected).toFixed()}%
             </p>
-          </div>
+          </div> */}
         </div>
         <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
 
@@ -202,7 +204,6 @@ const DetailCamp = ({ data }) => {
                   ) : (
                     <IconUser className="grid grid-cols-3 gap-4 place-items-end text-gray-500" />
                   )}
-
                 </div>
                 <div className="text-left place-items-start">
                   <div className="mb-1 text-primary">
@@ -235,7 +236,7 @@ const DetailCamp = ({ data }) => {
                   />
                 </div>
                 <div className="text-left place-items-start">
-                  <div className="mb-1 text-primary">Lacak Pesanan</div>
+                  <div className="mb-1 text-primary">Lacak Pesananaaa</div>
                   <div className="-mt-1 font-sans text-xs text-gray-500">
                     {data.orders ? data.orders.length : 0} Verified Merchants{" "}
                   </div>
@@ -279,8 +280,9 @@ const DetailCamp = ({ data }) => {
             Tentang Program
           </h5>
           <p
-            className={`font-normal text-gray-700 text-xs  ${showFullText ? "" : styles.truncate
-              }`}
+            className={`font-normal text-gray-700 text-xs  ${
+              showFullText ? "" : styles.truncate
+            }`}
           >
             {data.description}
           </p>

@@ -7,6 +7,7 @@ import axios from "axios";
 import CardReport from "@/components/CardReport";
 import CardReting from "@/components/CardRating";
 import Error401 from "@/components/error401";
+import Loading from "@/components/Loading";
 const ReportCamp = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -49,7 +50,7 @@ const ReportCamp = () => {
         setdataCamp(response.data.body);
         setLoading(false);
       } catch (error) {
-        handleRequestError(error);
+        Error401(error);
       }
     };
 
@@ -77,7 +78,7 @@ const ReportCamp = () => {
         setDataReting(response.data.body);
         setLoading(false);
       } catch (error) {
-        handleRequestError(error);
+        Error401(error);
       }
     };
 
@@ -106,10 +107,7 @@ const ReportCamp = () => {
         // setReportDetonator(response.data.body);
         setLoading(false);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
-        handleRequestError(error);
+        Error401(error, router);
       }
     };
 
@@ -137,10 +135,7 @@ const ReportCamp = () => {
         setReportDetonator(response.data.body);
         setLoading(false);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
-        handleRequestError(error);
+        Error401(error, router);
       }
     };
 
@@ -160,17 +155,6 @@ const ReportCamp = () => {
       setButtonStatus(false);
     }
   }, [dataApi]);
-  const handleRequestError = (error) => {
-    console.error("Error fetching data:", error);
-
-    if (error.response && error.response.status === 401) {
-      localStorage.clear();
-      router.push("/login/detonator");
-    }
-
-    setLoading(false);
-    setdataCamp([]);
-  };
 
   return (
     <>
@@ -181,7 +165,7 @@ const ReportCamp = () => {
         </div>
         {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
         <h1 className="m-2 font-medium text-sm">{`Merchant Report (${jumlahTrue}/${jumlahOrder}) `}</h1>
-        {loading && <p>Loading...</p>}
+        {loading && <Loading />}
         {/* {dataReting.map((item) => (
                     <CardReting key={item.id} data={item} />
                 ))} */}

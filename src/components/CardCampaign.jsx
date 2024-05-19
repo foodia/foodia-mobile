@@ -141,7 +141,7 @@ const CardCampaign = (props) => {
               alt=""
             />
             <div className={`px-2`}>
-              <p className="mb-1 text-black font-bold text-sm capitalize">
+              <p className="mb-1 max-w-[120px] text-black font-bold text-sm capitalize">
                 {title}
               </p>
               <p className={`font-sans text-xs font-normal`}>{address}</p>
