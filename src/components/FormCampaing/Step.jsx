@@ -384,7 +384,7 @@ function StepOne({
             name="Waktu"
             className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
             placeholder="Waktu Pelaksanaan"
-            min="00:01"
+            min="01:01"
             max="22:59"
             required
           />
