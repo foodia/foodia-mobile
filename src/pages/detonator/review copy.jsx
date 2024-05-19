@@ -1,4 +1,5 @@
 import BottomNav from "@/components/BottomNav";
+import CardCampaign from "@/components/CardCampaign";
 import CardReview from "@/components/CardReview";
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
@@ -6,64 +7,63 @@ import Error401 from "@/components/error401";
 import MenuDetonator from "@/components/page/Detonator/MenuDetonator";
 import styles from "@/styles/Home.module.css";
 import axios from "axios";
-import { Inter } from "next/font/google";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
-
-const inter = Inter({ subsets: ["latin"] });
-
-export default function review() {
+const review = (review) => {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [dataApi, setDataApi] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState("KirimUlasan");
-    // const [cekData, setCekData] = useState("");
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const observer = useRef();
+    const [menu, setMenu] = useState("review-list");
     const [jumlah, setJumlah] = useState(0);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            Swal.fire({
-                icon: "error",
-                title: "Akses Dibatasi",
-                text: ` Mohon untuk login kembali menggunakan akun Volunteer.`,
-                showConfirmButton: true,
-                confirmButtonText: "Login",
-                confirmButtonColor: "green",
-                showCancelButton: true,
-                cancelButtonText: "Tutup",
-                cancelButtonColor: "red",
-                // timer: 2000,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    router.push("/login");
-                } else if (result.isDismissed) {
-                    router.push("/home");
-                }
-            });
-        } else {
-            axios
-                .get(
-                    `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
+        const authenticateUser = async () => {
+            // const role = localStorage.getItem('role');
+            const token = localStorage.getItem("token");
+            // const status = localStorage.getItem('status');
+            // const id = localStorage.getItem('id');
+            if (!token) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Akses Dibatasi",
+                    text: ` Mohon untuk login kembali menggunakan akun Detonator.`,
+                    showConfirmButton: true,
+                    confirmButtonText: "Login",
+                    confirmButtonColor: "green",
+                    showCancelButton: true,
+                    cancelButtonText: "Tutup",
+                    cancelButtonColor: "red",
+                    // timer: 2000,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        setLoading(true);
+                        router.push("/login");
+                    } else if (result.isDismissed) {
+                        router.push("/home");
                     }
-                )
-                .then((response) => {
+                });
+            } else {
+                try {
+                    const response = await axios.get(
+                        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/check-register-status`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
                     const cekData = response.data.body;
 
                     if (!cekData.detonator) {
                         Swal.fire({
                             icon: "warning",
-                            title: "Akun Belum Terdaftar sebagai Volunteer",
-                            text: "Mohon untuk registrasi sebagai Volunteer",
+                            title: "Akun Belum Terdaftar sebagai Detonator",
+                            text: `Mohon untuk registrasi sebagai Detonator.`,
                             showConfirmButton: true,
                             confirmButtonColor: "green",
                             confirmButtonText: "Registrasi",
@@ -78,26 +78,29 @@ export default function review() {
                                 router.push("/home");
                             }
                         });
+                        // setTimeout(() => {
+                        //   router.push("/registrasi/detonator?step=1");
+                        // }, 2000);
                     } else {
                         if (cekData.detonator.status == "waiting") {
                             localStorage.setItem("id", cekData.detonator.detonator_id);
                             localStorage.setItem("role", "detonator");
                             localStorage.setItem("status", cekData.detonator.status);
                             localStorage.setItem("note", cekData.detonator.note);
+                            //       localStorage.setItem("id", responeData.id || " ");
+                            // localStorage.setItem("status", responeData.status || " ");
+                            // localStorage.setItem("note", responeData.note || " ");
 
                             Swal.fire({
                                 icon: "warning",
-                                title: "Akun Volunteer Anda Belum Terverifikasi",
-                                text: ` Mohon tunggu konfirmasi dari admin kami`,
+                                title: "Detonator Belum Terverifikasi",
+                                text: ` Mohon tunggu konfirmasi dari admin kami.`,
                                 showConfirmButton: false,
-                                showCancelButton: true,
-                                cancelButtonColor: "red",
-                                cancelButtonText: "Tutup",
-                            }).then((result) => {
-                                if (result.isDismissed) {
-                                    router.push("/home");
-                                }
+                                timer: 2000,
                             });
+                            setTimeout(() => {
+                                router.push("/home");
+                            }, 2000);
                         } else if (cekData.detonator.status == "rejected") {
                             setLoading(false);
                             localStorage.setItem("id", cekData.detonator.detonator_id);
@@ -106,7 +109,7 @@ export default function review() {
                             localStorage.setItem("note", cekData.detonator.note);
                             Swal.fire({
                                 icon: "warning",
-                                title: "Volunteer Ditolak",
+                                title: "Detonator Ditolak",
                                 text: `${cekData.detonator.note}`,
                                 showConfirmButton: false,
                                 timer: 2000,
@@ -119,72 +122,56 @@ export default function review() {
                             localStorage.setItem("role", "detonator");
                             localStorage.setItem("status", cekData.detonator.status);
                             localStorage.setItem("note", cekData.detonator.note);
-                            getReviwe(cekData.detonator.detonator_id, token);
                         }
-
                     }
-
-                })
-                .catch((error) => {
+                } catch (error) {
                     if (error.response && error.response.status === 401) {
                         Error401(error, router);
+                        // localStorage.clear();
+                        // localStorage.removeItem("cart");
+                        // localStorage.removeItem("formData");
+                        // router.push("/login");
                     }
-                });
-        }
+                }
+            }
+        };
+
+        authenticateUser();
     }, []);
 
-    const getReviwe = (id, token) => {
-        axios
-            .get(
-                process.env.NEXT_PUBLIC_API_BASE_URL + `rating/not-reviewed?type=detonator&id=${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-            .then((response) => {
-                setJumlah(response.data.body.length);
-                setDataApi(response.data.body);
-                // const filtered = response.data.body.filter(
-                //     (data) => data.is_rating === false && data.approval_status === "approved"
-                // )
-                // setFilteredData(filtered);
-                setFilteredData(response.data.body);
-                setLoading(false);
-
-                if (response.data.body.length === 0) {
-                    setHasMore(false);
-                }
-            })
-            .catch((error) => {
-                setLoading(false);
-                Error401(error, router);
-                console.error("Error fetching data:", error);
-
-                if (error.response && error.response.status === 401) {
-                    // Unauthorized error (e.g., token expired)
-                    localStorage.clear();
-                    router.push("/login");
-                }
-            });
-
-    };
-
-
-    const handleFilterChange = (status) => {
+    useEffect(() => {
         const token = localStorage.getItem("token");
         const id = localStorage.getItem("id");
-        let filtered = [];
+        // let filtered = [];
+        axios.get(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/not-reviewed?type=detonator&id=${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((res) => {
+                // setSelectedStatus()
+                setDataApi(res.data.body);
+                setJumlah(res?.data?.body?.length);
+                // setFilteredData(res.data.body);
+                setLoading(false);
+            }).catch((error) => {
+                Error401(error, router);
+            })
+    }, [selectedStatus, loading]);
+
+    useEffect(() => {
         setLoading(true);
+        const token = localStorage.getItem("token");
+        const id = localStorage.getItem("id");
+        if (selectedStatus == "KirimUlasan") {
+            setFilteredData(dataApi);
+            setJumlah(dataApi?.length);
+            setLoading(false)
 
-        if (status === "KirimUlasan") {
-            // Show items with 'waiting' or 'rejected' status
-            filtered = dataApi
-            setFilteredData(filtered);
-            setLoading(false);
 
-        } else if (status === "UlasanSelesai") {
+
+        } else if (selectedStatus == "UlasanSelesai") {
 
             axios.get(
                 `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/filter?relation_id=${id}`, {
@@ -193,15 +180,27 @@ export default function review() {
                 },
             })
                 .then((res) => {
+
                     setFilteredData(res.data.body);
                     setLoading(false);
                 }).catch((error) => {
+                    setLoading(false);
                     Error401(error, router);
                 })
         }
 
-        setSelectedStatus(status);
+    }, [dataApi, selectedStatus]);
 
+    const handleFilterChange = (status) => {
+        setLoading(true);
+        setSelectedStatus(status);
+        if (status === "KirimUlasan") {
+            // setLoading(false);
+        } else if (status === "UlasanSelesai") {
+            // setLoading(false);
+        }
+
+        // setFilteredData(filtered);
     };
 
     return (
@@ -221,8 +220,9 @@ export default function review() {
                                 }`}
                             onClick={() => handleFilterChange("KirimUlasan")}
                         >
-                            <div className="flex items-center justify-between w-full">
-                                <p className="flex-1 text-center">Kasih Ulasan</p>
+                            <div className="flex items-center justify-center">
+
+                                <p>Kasih Ulasan</p>
                                 <div className="h-[16px] w-[16px] bg-red-500 rounded-full flex justify-center items-center text-[8px] font-bold text-white">
                                     <span>{loading ? '...' : (jumlah || 0)}</span>
                                 </div>
@@ -303,3 +303,5 @@ export default function review() {
         </>
     );
 }
+
+export default review;

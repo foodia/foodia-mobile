@@ -25,8 +25,11 @@ const CardInbox = ({ DataInbox }) => {
             localStorage.setItem("status", "approved");
             localStorage.setItem("note", 'approved');
 
-            if (DataInbox.title === "Campaign Disetujui Admin" || DataInbox.title === "Campaign Ditolak Admin" || DataInbox.title === "Pesanan Ditolak Merchant" || DataInbox.title === "Pesanan Diterima Merchant" || DataInbox.title === "Donasi Campaign Terpenuhi") {
+            if (DataInbox.title === "Campaign Disetujui Admin" || DataInbox.title === "Campaign Ditolak Admin" || DataInbox.title === "Donasi Campaign Terpenuhi") {
                 setUrl(`/campaign/${DataInbox.campaign.id}`)
+            } else if (DataInbox.title === "Pesanan Ditolak Merchant " || DataInbox.title === "Pesanan Diterima Merchant") {
+                setUrl(`/food/${DataInbox.campaign.id}`)
+
             } else if (DataInbox.title === "Makanan Sudah Diterima") {
                 setUrl(`/report/${DataInbox.campaign.id}`)
             } else if (DataInbox.title === "Lihat  Review Campaign") {
