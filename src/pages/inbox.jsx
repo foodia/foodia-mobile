@@ -44,7 +44,7 @@ const inbox = (inbox) => {
             },
           }
         );
-        const data = response.data.body;
+        const data = response.data.body.detail;
 
         data.sort((a, b) => b.value - a.value);
 
@@ -85,7 +85,8 @@ const inbox = (inbox) => {
           },
         })
         .then((response) => {
-          const data = response.data.body;
+          const data = response.data.body.detail;
+          // console.log('cek all', response.data.body);
 
           // data.sort((a, b) => b.id - a.id);
 
@@ -98,7 +99,7 @@ const inbox = (inbox) => {
           setLoading(false);
         });
     }
-
+    // console.log(inboxData);
     setSelectedStatus(status);
   };
 
@@ -115,11 +116,10 @@ const inbox = (inbox) => {
             {donaturActive ? (
               <div className="px-2 w-full">
                 <div
-                  className={`cursor-pointer text-center border border-t-0 border-x-0 font-semibold text-lg ${
-                    selectedStatus === "donator"
-                      ? " text-primary text-center border-b-primary"
-                      : "cursor-pointer text-center text-gray-500  border-b-transparent"
-                  }`}
+                  className={`cursor-pointer text-center border border-t-0 border-x-0 font-semibold text-lg ${selectedStatus === "donator"
+                    ? " text-primary text-center border-b-primary"
+                    : "cursor-pointer text-center text-gray-500  border-b-transparent"
+                    }`}
                   onClick={() => handleFilterChange("donator")}
                 >
                   <span>Donator</span>
@@ -130,11 +130,10 @@ const inbox = (inbox) => {
             {detonatorActive ? (
               <div className="px-2 w-full">
                 <div
-                  className={`cursor-pointer text-center border border-t-0 border-x-0 font-semibold text-lg ${
-                    selectedStatus === "detonator"
-                      ? " text-primary text-center border-b-primary"
-                      : "cursor-pointer text-center text-gray-500  border-b-transparent"
-                  }`}
+                  className={`cursor-pointer text-center border border-t-0 border-x-0 font-semibold text-lg ${selectedStatus === "detonator"
+                    ? " text-primary text-center border-b-primary"
+                    : "cursor-pointer text-center text-gray-500  border-b-transparent"
+                    }`}
                   onClick={() => handleFilterChange("detonator")}
                 >
                   <span>Volunteer</span>
@@ -145,11 +144,10 @@ const inbox = (inbox) => {
             {merchantActive ? (
               <div className="px-2 w-full">
                 <div
-                  className={`cursor-pointer text-center font-semibold text-lg ${
-                    selectedStatus === "merchant"
-                      ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                      : "cursor-pointer text-center text-gray-500"
-                  }`}
+                  className={`cursor-pointer text-center font-semibold text-lg ${selectedStatus === "merchant"
+                    ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
+                    : "cursor-pointer text-center text-gray-500"
+                    }`}
                   onClick={() => handleFilterChange("merchant")}
                 >
                   <span>Merchant</span>

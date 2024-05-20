@@ -152,7 +152,7 @@ function StepOne({
     localStorage.setItem("formData", JSON.stringify({ Waktu: `${hour}:${selectedMinute}` }));
   };
 
-  const hourOptions = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
+  const hourOptions = Array.from({ length: 22 }, (_, i) => String(i + 1).padStart(2, '0'));
   const minuteOptions = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
 
   const handleEventNameChange = (event) => {
