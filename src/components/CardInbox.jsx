@@ -1,68 +1,132 @@
 // src\components\cardInbox.jsx
-import Link from "next/link";
+import axios from "axios";
 import { useEffect, useState } from "react";
+import Error401 from "./error401";
+import { useRouter } from "next/router";
 
 const CardInbox = ({ DataInbox }) => {
     const [url, setUrl] = useState('');
+    const router = useRouter();
     // console.log(DataInbox);
-    // console.log(DataInbox.campaign.id);
+
     useEffect(() => {
         const detonator_id = localStorage.getItem("id_detonator");
         const merchant_id = localStorage.getItem("id_merchant");
 
-        if (DataInbox.inbox_type === "donator") {
-            if (DataInbox.title === "Campaign Baru" || DataInbox.title === "Berjalan" || DataInbox.title === "Selesai") {
-                setUrl(`/campaign/${DataInbox.campaign.id}`)
-            } else if (DataInbox.title === "Laporan Campaign") {
-                setUrl(`/report/${DataInbox.campaign.id}`)
-            } else if (DataInbox.title === "Pembayaran Donasi Berhasil") {
-                setUrl(`/bukti_pembayaran?external_id=${DataInbox.transaction.external_id}`)
+        const determineUrl = () => {
+            switch (DataInbox.inbox_type) {
+                case "donator":
+                    handleDonatorInbox();
+                    break;
+                case "detonator":
+                    handleDetonatorInbox(detonator_id);
+                    break;
+                case "merchant":
+                    handleMerchantInbox(merchant_id);
+                    break;
+                default:
+                    break;
             }
-        }
-        if (DataInbox.inbox_type === "detonator") {
-            localStorage.setItem("id", detonator_id);
+        };
+
+        const handleDonatorInbox = () => {
+            switch (DataInbox.title) {
+                case "Campaign Baru":
+                case "Berjalan":
+                case "Selesai":
+                    setUrl(`/campaign/${DataInbox.campaign.id}`);
+                    break;
+                case "Laporan Campaign":
+                    setUrl(`/report/${DataInbox.campaign.id}`);
+                    break;
+                case "Pembayaran Donasi Berhasil":
+                    setUrl(`/bukti_pembayaran?external_id=${DataInbox.transaction.external_id}`);
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        const handleDetonatorInbox = (id) => {
+            localStorage.setItem("id", id);
             localStorage.setItem("role", "detonator");
             localStorage.setItem("status", "approved");
-            localStorage.setItem("note", 'approved');
+            localStorage.setItem("note", "approved");
 
-            if (DataInbox.title === "Campaign Disetujui Admin" || DataInbox.title === "Campaign Ditolak Admin" || DataInbox.title === "Donasi Campaign Terpenuhi") {
-                setUrl(`/campaign/${DataInbox.campaign.id}`)
-            } else if (DataInbox.title === "Pesanan Ditolak Merchant " || DataInbox.title === "Pesanan Diterima Merchant") {
-                setUrl(`/food/${DataInbox.campaign.id}`)
-
-            } else if (DataInbox.title === "Makanan Sudah Diterima") {
-                setUrl(`/report/${DataInbox.campaign.id}`)
-            } else if (DataInbox.title === "Lihat  Review Campaign") {
-                setUrl(`/detonator/review`)
+            switch (DataInbox.title) {
+                case "Campaign Disetujui Admin":
+                case "Campaign Ditolak Admin":
+                case "Donasi Campaign Terpenuhi":
+                    setUrl(`/campaign/${DataInbox.campaign.id}`);
+                    break;
+                case "Pesanan Ditolak Merchant":
+                case "Pesanan Diterima Merchant":
+                    setUrl(`/food/${DataInbox.campaign.id}`);
+                    break;
+                case "Makanan Sudah Diterima":
+                    setUrl(`/report/${DataInbox.campaign.id}`);
+                    break;
+                case "Lihat Review Campaign":
+                    setUrl(`/detonator/review`);
+                    break;
+                default:
+                    break;
             }
-        }
-        if (DataInbox.inbox_type === "merchant") {
-            localStorage.setItem("id", merchant_id);
+        };
+
+        const handleMerchantInbox = (id) => {
+            localStorage.setItem("id", id);
             localStorage.setItem("role", "merchant");
             localStorage.setItem("status", "approved");
-            localStorage.setItem("note", 'approved');
-            if (DataInbox.title === "Ada Pesanan Baru") {
-                setUrl(`/merchant/detailpesanan/${DataInbox.order.id}`)
-            } else if (DataInbox.title === "Saldo Pembayaran Sudah Masuk") {
-                setUrl(`/merchant/saldo`)
-            } else if (DataInbox.title === "Lihat  Review Pesanan") {
-                setUrl(`/merchant/review`)
-            }
-        }
+            localStorage.setItem("note", "approved");
 
-        console.log(url);
+            switch (DataInbox.title) {
+                case "Ada Pesanan Baru":
+                    setUrl(`/merchant/detailpesanan/${DataInbox.order.id}`);
+                    break;
+                case "Saldo Pembayaran Sudah Masuk":
+                    setUrl(`/merchant/saldo`);
+                    break;
+                case "Lihat Review Pesanan":
+                    setUrl(`/merchant/review`);
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        determineUrl();
     }, [DataInbox]);
+
+    const setRead = (idInbox) => {
+        const token = localStorage.getItem("token");
+        axios.post(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/read`,
+            { inbox_id: idInbox },
+            { headers: { Authorization: `Bearer ${token}` } }
+        )
+            .then(response =>
+                console.log(response)
+            )
+            .catch(error => Error401(error, router));
+    };
+
+    const handleClick = () => {
+        setRead(DataInbox.id); // Mark as read when clicked
+        router.push(url);
+    };
+
     return (
         <div className="flex items-center justify-center pb-2">
-            <Link href={url} className="flex flex-col w-full max-w-[320px] leading-1.5 p-2  hover:border-primary border-2 bg-white rounded-lg shadow-[0px_0px_10px_#0000001A]">
+            <div onClick={handleClick} className={`${DataInbox.is_read === 0 ? "border-primary border-2" : ""} flex flex-col w-full max-w-[320px] leading-1.5 p-2 bg-white rounded-lg shadow-[0px_0px_10px_#0000001A] cursor-pointer`}>
                 <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                    <span className="text-[14px] font-bold text-black">{DataInbox.title}</span>
+                    <span className="text-[14px] font-bold text-black">{DataInbox.title} {DataInbox.is_read}</span>
                 </div>
                 <p className="text-[12px] font-normal text-gray-900">{DataInbox.campaign.event_name}</p>
                 <span className="text-[8px] font-italic text-gray-500 dark:text-gray-400">{DataInbox.description}</span>
-            </Link>
+            </div>
         </div>
     );
-}
+};
 
 export default CardInbox;
