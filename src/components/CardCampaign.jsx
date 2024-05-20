@@ -85,7 +85,7 @@ const CardCampaign = (props) => {
           <div className="flex px-1.5 pt-1.5">
             <img
               src={img}
-              className={`grid grid-cols-3 gap-4 place-items-end bg-gray-200 rounded-lg object-cover ${styles.img_card}`}
+              className={` grid grid-cols-3 gap-4 place-items-end bg-gray-200 rounded-lg object-cover ${styles.img_card}`}
               alt=""
             />
             <div className={`px-2 ${styles.text_card}`}>
@@ -110,15 +110,14 @@ const CardCampaign = (props) => {
                       Rp. {TotalHarga?.toLocaleString("id-ID")}
                     </p>
                     <div
-                      className={`font-sans text-xs text-white rounded-lg p-1 flex justify-center items-center ${
-                        status == "waiting"
-                          ? "bg-blue-600"
-                          : status == "Completed"
+                      className={`font-sans text-xs text-white rounded-lg p-1 flex justify-center items-center ${status == "waiting"
+                        ? "bg-blue-600"
+                        : status == "Completed"
                           ? "bg-primary"
                           : status == "rejected"
-                          ? "bg-red-500"
-                          : ""
-                      }`}
+                            ? "bg-red-500"
+                            : ""
+                        }`}
                     >
                       <p className="">{status}</p>
                     </div>
@@ -147,15 +146,14 @@ const CardCampaign = (props) => {
               <p className={`font-sans text-xs font-normal`}>{address}</p>
             </div>
             <div
-              className={`font-sans h-5 capitalize px-2 text-xs text-white rounded-xl p-1 flex justify-center items-center ${
-                status == "waiting"
-                  ? "bg-blue-600"
-                  : status == "approved"
+              className={`font-sans h-5 capitalize px-2 text-xs text-white rounded-xl p-1 flex justify-center items-center ${status == "waiting"
+                ? "bg-blue-600"
+                : status == "approved"
                   ? "bg-primary"
                   : status == "rejected"
-                  ? "bg-red-500"
-                  : ""
-              }`}
+                    ? "bg-red-500"
+                    : ""
+                }`}
             >
               <p className="">{status}</p>
             </div>
@@ -189,26 +187,24 @@ const CardCampaign = (props) => {
                 ""
               ) : (
                 <div
-                  className={`flex items-center justify-center  font-medium  font-sans text-xs  rounded-lg px-1 ${
-                    status == "waiting"
-                      ? "bg-blue-600"
-                      : status == "approved"
+                  className={`flex items-center justify-center  font-medium  font-sans text-xs  rounded-lg px-1 ${status == "waiting"
+                    ? "bg-blue-600"
+                    : status == "approved"
                       ? "bg-green-500"
                       : status == "rejected"
-                      ? "bg-red-500"
-                      : status == "Completed"
-                      ? "bg-primary"
-                      : ""
-                  }`}
+                        ? "bg-red-500"
+                        : status == "Completed"
+                          ? "bg-primary"
+                          : ""
+                    }`}
                 >
                   <p
-                    className={`font-sans mb-1  ${
-                      status == "approved"
-                        ? "text-white"
-                        : status == "Completed"
+                    className={`font-sans mb-1  ${status == "approved"
+                      ? "text-white"
+                      : status == "Completed"
                         ? "text-white"
                         : "text-white"
-                    }`}
+                      }`}
                   >
                     {status}
                   </p>
