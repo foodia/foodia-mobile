@@ -100,31 +100,28 @@ const PesananMerchan = () => {
         <MenuBarMechant />
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "review"
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "review"
                 ? "text-primary border-b-2 border-primary"
                 : "text-gray-500"
-            }`}
+              }`}
             onClick={() => handleFilterChange("review")}
           >
             <span>Pesanan</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "diproses"
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
                 ? "text-primary border-b-2 border-primary"
                 : "text-gray-500"
-            }`}
+              }`}
             onClick={() => handleFilterChange("diproses")}
           >
             <span>Berlangsung</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
-              selectedStatus === "selesai"
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
                 ? "text-primary border-b-2 border-primary"
                 : "text-gray-500"
-            }`}
+              }`}
             onClick={() => handleFilterChange("selesai")}
           >
             <span>History</span>
@@ -146,8 +143,8 @@ const PesananMerchan = () => {
                 {selectedStatus === "review"
                   ? "Tidak Ada Pesanan"
                   : selectedStatus === "diproses"
-                  ? "Tidak Ada Pesanan Berlangsung"
-                  : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
+                    ? "Tidak Ada Pesanan Berlangsung"
+                    : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
               </p>
             ) : (
               filteredData.map((data) => (
@@ -156,7 +153,7 @@ const PesananMerchan = () => {
                   to={`/merchant/detailpesanan/${data.id}`}
                   idOrder={data.id}
                   img={
-                    `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product.images[0].image_url}` ||
+                    `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.campaign.image_url}` ||
                     "/img/default-image.png"
                   }
                   title={data.campaign.event_name}
