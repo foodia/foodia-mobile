@@ -115,6 +115,7 @@ const MetodePembayaran = () => {
       });
       setTimeout(() => {
         router.push("/home");
+        localStorage.removeItem("prevPath");
       }, 2000);
       return; // Stop execution if no amount
     }
@@ -433,8 +434,7 @@ const MetodePembayaran = () => {
             className={`${
               selectedMethod === "" ||
               (selectedMethod !== "agnostic" && selectedChannel === "") ||
-              (selectedMethod === "agnostic" &&
-                donationRequired > wallet_balance)
+              (selectedMethod === "agnostic" && nominalDonasi > wallet_balance)
                 ? "bg-gray-400"
                 : "bg-primary"
             } text-white w-full h-12 rounded-xl font-bold`}

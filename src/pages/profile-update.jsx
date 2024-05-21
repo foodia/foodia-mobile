@@ -98,11 +98,9 @@ const UpdateProfile = (profile) => {
           }
         });
       })
-      .catch(() => {
+      .catch((error) => {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       });
   };
 
@@ -171,26 +169,29 @@ const UpdateProfile = (profile) => {
               htmlFor="images"
               className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 cursor-pointer"
             >
-              {uploadedFile ? (
+              {uploadedFile && validImage ? (
                 <img
                   src={URL.createObjectURL(uploadedFile)}
                   alt="Foto KTP"
                   className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
                 />
-              ) : profile_pic !== "" ? (
+              ) : profile_pic !== "" && validImage ? (
                 <img
                   src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${profile_pic}`}
                   alt=""
                   className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
                 />
               ) : (
-                <div className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 ">
-                  <IconUser />
-                </div>
+                !validImage && (
+                  <div className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 ">
+                    <IconUser />
+                  </div>
+                )
               )}
               <input
                 id="images"
                 type="file"
+                accept=".jpeg, .jpg, .png, .heif"
                 className="hidden"
                 onChange={handleProfilePhotoChange}
               />
@@ -273,10 +274,12 @@ const UpdateProfile = (profile) => {
         </div>
         <div className="flex justify-end py-8 px-2">
           <button
-            disabled={!phone || !email || !fullname || !validPhone}
+            disabled={
+              !validImage || !phone || !email || !fullname || !validPhone
+            }
             onClick={onSubmit}
             className={`flex items-center justify-center ${
-              !phone || !email || !fullname || !validPhone
+              !validImage || !phone || !email || !fullname || !validPhone
                 ? "bg-gray-400"
                 : "bg-primary"
             } border-0 rounded-lg w-full h-10 text-white font-bold text-center`}
