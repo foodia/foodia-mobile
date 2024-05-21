@@ -1,8 +1,14 @@
 //new-password
 import AlertError from "@/components/AlertError";
 import Header from "@/components/Header";
+import Loading from "@/components/Loading";
 import { useAppState } from "@/components/page/UserContext";
-import { IconEye, IconEyeClosed, IconInfoCircle, IconLock } from "@tabler/icons-react";
+import {
+  IconEye,
+  IconEyeClosed,
+  IconInfoCircle,
+  IconLock,
+} from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -22,16 +28,17 @@ const newPassword = (newPassword) => {
   const [messageError, setMessageError] = useState("");
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
+  const handleClickShowConfirmPassword = () =>
+    setShowConfirmPassword((show) => !show);
   const [loading, setLoading] = useState(false);
 
-  const Password_REGEX = /^[0-9A-Za-z]{8,}$/;
-  const confirmPassword_REGEX = /^[0-9A-Za-z]{8,}$/;
-
+  const Password_REGEX = /^[0-9A-Za-z!@#$%^&*`()_+{}\[\]:;<>,.?=~\/\\|-]{8,}$/;
+  const confirmPassword_REGEX =
+    /^[0-9A-Za-z!@#$%^&*`()_+{}\[\]:;<>,.?=~\/\\|-]{8,}$/;
 
   //token
   useEffect(() => {
-    setToken(localStorage.getItem("token"))
+    setToken(localStorage.getItem("token"));
   }, [register]);
 
   useEffect(() => {
@@ -53,15 +60,20 @@ const newPassword = (newPassword) => {
       setMessageError("Kata sandi tidak boleh kosong");
       return;
     }
-    const ressponse = axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}auth/change-password`, {
-      new_password: inputPassword,
-      confirm_password: confirmPassword
-    }, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(response => {
+    const ressponse = axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/change-password`,
+        {
+          new_password: inputPassword,
+          confirm_password: confirmPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
         setLoading(false);
         if (response.data.code === 200) {
           Swal.fire({
@@ -88,21 +100,18 @@ const newPassword = (newPassword) => {
               localStorage.clear();
               router.push("/login");
             }
-          })
+          });
         } else {
           setLoading(false);
           // setMessageError("Kode OTP Tidak Sesuai");
           AlertError(error, router);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         setLoading(false);
         AlertError(error, router);
-
-      })
-
-
-  }
+      });
+  };
   return (
     <main className="my-0 mx-auto min-h-full mobile-w relative">
       <div className="my-0 mx-auto h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
@@ -110,8 +119,17 @@ const newPassword = (newPassword) => {
           <Header backto="/" title="Buat Ulang Kata Sandi" />
 
           <div className="p-4 flex flex-col gap-2">
-            <label htmlFor="password" className="text-sm"> Kata Sandi Baru</label>
-            <div className={`flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400   ${inputPassword && !validpassword || messageError ? 'borde border-2 border-red-500' : ''}`}>
+            <label htmlFor="password" className="text-sm">
+              {" "}
+              Kata Sandi Baru
+            </label>
+            <div
+              className={`flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400   ${
+                (inputPassword && !validpassword) || messageError
+                  ? "borde border-2 border-red-500"
+                  : ""
+              }`}
+            >
               <IconLock />
               <input
                 onChange={(e) => setPassword(e.target.value)}
@@ -133,21 +151,26 @@ const newPassword = (newPassword) => {
               }
             >
               <IconInfoCircle size={15} className="mr-1 text-red-600" />
-              <span className="text-red-600">
-                Minimal 8 karakter
-              </span>
-
+              <span className="text-red-600">Minimal 8 karakter</span>
             </p>
-            {messageError && <p className="instructions italic text-[10px] flex items-center">
-              <IconInfoCircle size={15} className="mr-1 text-red-600" />
+            {messageError && (
+              <p className="instructions italic text-[10px] flex items-center">
+                <IconInfoCircle size={15} className="mr-1 text-red-600" />
 
-              <span className="text-red-600">
-                {messageError}
-              </span>
-            </p>}
+                <span className="text-red-600">{messageError}</span>
+              </p>
+            )}
 
-            <label htmlFor="confirmPassword" className="text-sm">Masukan ulang kata sandi baru</label>
-            <div className={`flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${confirmPassword && !validconfirmPassword || messageError ? 'borde border-2 border-red-500' : ''}`}>
+            <label htmlFor="confirmPassword" className="text-sm">
+              Masukan ulang kata sandi baru
+            </label>
+            <div
+              className={`flex flex-row items-center p-4 pr-2 py-0 bg-gray-100 text-sm rounded-lg focus:ring-blue-500 w-full text-gray-400 ${
+                (confirmPassword && !validconfirmPassword) || messageError
+                  ? "borde border-2 border-red-500"
+                  : ""
+              }`}
+            >
               <IconLock />
               <input
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -169,23 +192,21 @@ const newPassword = (newPassword) => {
               }
             >
               <IconInfoCircle size={15} className="mr-1 text-red-600" />
-              <span className="text-red-600">
-                Minimal 8 karakter
-              </span>
+              <span className="text-red-600">Minimal 8 karakter</span>
             </p>
-            {messageError && <p className="instructions italic text-[10px] flex items-center">
-              <IconInfoCircle size={15} className="mr-1 text-red-600" />
+            {messageError && (
+              <p className="instructions italic text-[10px] flex items-center">
+                <IconInfoCircle size={15} className="mr-1 text-red-600" />
 
-              <span className="text-red-600">
-                {messageError}
-              </span>
-            </p>}
+                <span className="text-red-600">{messageError}</span>
+              </p>
+            )}
 
             <div className="grid gap-6 content-center absolute bottom-0 left-0 w-full p-4">
               <button
                 onClick={handleSubmit}
                 type="submit"
-                className=" text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-md w-full sm:w-auto py-4 text-center "
+                className=" text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-md w-full sm:w-auto py-3 text-center "
               >
                 Kirim
               </button>
@@ -197,6 +218,6 @@ const newPassword = (newPassword) => {
       </div>
     </main>
   );
-}
+};
 
 export default newPassword;

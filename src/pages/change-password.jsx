@@ -35,9 +35,9 @@ const ChangePassword = (ChangePassword) => {
     setShowConfirmPassword((show) => !show);
   const [loading, setLoading] = useState(false);
 
-  const Password_REGEX = /^[0-9A-Za-z!@#$%^&*`()_+{}\[\]:;<>,.?\/\\|-]{8,}$/;
+  const Password_REGEX = /^[0-9A-Za-z!@#$%^&*`()_+{}\[\]:;<>,.?=~\/\\|-]{8,}$/;
   const confirmPassword_REGEX =
-    /^[0-9A-Za-z!@#$%^&*`()_+{}\[\]:;<>,.?\/\\|-]{8,}$/;
+    /^[0-9A-Za-z!@#$%^&*`()_+{}\[\]:;<>,.?=~\/\\|-]{8,}$/;
 
   useEffect(() => {
     setValidPassword(Password_REGEX.test(inputPassword));

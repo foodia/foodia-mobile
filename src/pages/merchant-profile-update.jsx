@@ -127,7 +127,9 @@ const MerchantUpdateProfile = (profile) => {
     formData.append("latitude", latitude);
     formData.append("longitude", longitude);
     formData.append("no_link_aja", phone);
-    formData.append("merchant_photo", profile_pic);
+    if (uploadedFile) {
+      formData.append("merchant_photo", uploadedFile);
+    }
     axios
       .put(
         `${
@@ -270,26 +272,29 @@ const MerchantUpdateProfile = (profile) => {
                 htmlFor="images"
                 className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 cursor-pointer"
               >
-                {uploadedFile ? (
+                {uploadedFile && validImage ? (
                   <img
                     src={uploadedFile}
                     alt=""
                     className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
                   />
-                ) : profile_pic !== "" ? (
+                ) : profile_pic !== "" && validImage ? (
                   <img
                     src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${profile_pic}`}
                     alt=""
                     className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 object-cover"
                   />
                 ) : (
-                  <div className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 ">
-                    <IconUser />
-                  </div>
+                  !validImage && (
+                    <div className="w-24 h-24 rounded-full bg-blue-100 grid place-items-center text-blue-600 ">
+                      <IconUser />
+                    </div>
+                  )
                 )}
                 <input
                   id="images"
                   type="file"
+                  accept=".jpeg, .jpg, .png, .heif"
                   className="hidden"
                   onChange={handleProfilePhotoChange}
                 />
@@ -401,10 +406,12 @@ const MerchantUpdateProfile = (profile) => {
         )}
         <div className="flex justify-end py-8 px-2">
           <button
-            disabled={!phone || !merchant_name || !address || !validPhone}
+            disabled={
+              !validImage || !phone || !merchant_name || !address || !validPhone
+            }
             onClick={onSubmit}
             className={`flex items-center justify-center ${
-              !phone || !merchant_name || !address || !validPhone
+              !validImage || !phone || !merchant_name || !address || !validPhone
                 ? "bg-gray-400"
                 : "bg-primary"
             } border-0 rounded-lg w-full h-10 text-white font-bold text-center`}
