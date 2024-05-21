@@ -128,7 +128,7 @@ const MerchantUpdateProfile = (profile) => {
     formData.append("longitude", longitude);
     formData.append("no_link_aja", phone);
     if (uploadedFile) {
-      formData.append("merchant_photo", uploadedFile);
+      formData.append("merchant_photo", profile_pic);
     }
     axios
       .put(
