@@ -390,6 +390,9 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
   const handleFotoSelfiChange = (event) => {
     // setFotoSelfi(event.target.files[0]);
     const file = event.target.files[0];
+    if (!file) {
+      return;
+    }
     if (file.size <= 3 * 1024 * 1024) {
       setFotoSelfi(file);
       setUkuran((file.size / (1024 * 1024)).toFixed(2));
