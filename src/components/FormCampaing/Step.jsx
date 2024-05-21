@@ -93,8 +93,8 @@ function StepOne({
     return parsedFormData.Tanggal || "";
   });
 
-  const [hour, setHour] = useState('');
-  const [minute, setMinute] = useState('');
+  const [hour, setHour] = useState("");
+  const [minute, setMinute] = useState("");
   const [Waktu, setWaktu] = useState("");
   // const [Waktu, setWaktu] = useState(() => {
   //   const storedFormData = localStorage.getItem("formData");
@@ -119,8 +119,12 @@ function StepOne({
     setLoading(false);
     const storedFormData = localStorage.getItem("formData");
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-    const savedHour = parsedFormData.Waktu ? parsedFormData.Waktu.split(':')[0] : '';
-    const savedMinute = parsedFormData.Waktu ? parsedFormData.Waktu.split(':')[1] : '';
+    const savedHour = parsedFormData.Waktu
+      ? parsedFormData.Waktu.split(":")[0]
+      : "";
+    const savedMinute = parsedFormData.Waktu
+      ? parsedFormData.Waktu.split(":")[1]
+      : "";
     setHour(savedHour);
     setMinute(savedMinute);
     setWaktu(parsedFormData.Waktu || "");
@@ -141,19 +145,29 @@ function StepOne({
   }, []);
 
   const handleHourChange = (e) => {
-    const selectedHour = e.target.value.padStart(2, '0');
+    const selectedHour = e.target.value.padStart(2, "0");
     setHour(selectedHour);
-    localStorage.setItem("formData", JSON.stringify({ Waktu: `${selectedHour}:${minute}` }));
+    localStorage.setItem(
+      "formData",
+      JSON.stringify({ Waktu: `${selectedHour}:${minute}` })
+    );
   };
 
   const handleMinuteChange = (e) => {
-    const selectedMinute = e.target.value.padStart(2, '0');
+    const selectedMinute = e.target.value.padStart(2, "0");
     setMinute(selectedMinute);
-    localStorage.setItem("formData", JSON.stringify({ Waktu: `${hour}:${selectedMinute}` }));
+    localStorage.setItem(
+      "formData",
+      JSON.stringify({ Waktu: `${hour}:${selectedMinute}` })
+    );
   };
 
-  const hourOptions = Array.from({ length: 22 }, (_, i) => String(i + 1).padStart(2, '0'));
-  const minuteOptions = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'));
+  const hourOptions = Array.from({ length: 22 }, (_, i) =>
+    String(i + 1).padStart(2, "0")
+  );
+  const minuteOptions = Array.from({ length: 60 }, (_, i) =>
+    String(i).padStart(2, "0")
+  );
 
   const handleEventNameChange = (event) => {
     setEventName(event.target.value);
@@ -206,6 +220,7 @@ function StepOne({
       });
     }
   };
+
   const isTimeWithinRange = (time) => {
     const selectedHour = parseInt(time.split(":")[0], 10);
     const selectedMinute = parseInt(time.split(":")[1], 10);
@@ -283,6 +298,7 @@ function StepOne({
         });
     }
     setUploadedFile(file);
+    console.log("dada", file);
   };
 
   const handleSubmit = (e) => {
@@ -379,6 +395,7 @@ function StepOne({
         <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none">
           <IconUser />
           <input
+            onFocus={() => setOnFocusTime(false)}
             onChange={handleEventNameChange}
             value={eventName}
             name="eventName"
@@ -390,88 +407,92 @@ function StepOne({
           />
         </div>
 
-        <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none">
+        <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none outline-none">
           <Icon123 />
           <select
+            onFocus={() => setOnFocusTime(false)}
             name="TypeEvent"
             value={TypeEvent}
             id="TypeEvent"
             onChange={handleTypeEventChange}
-            className={` ${TypeEvent === "" ? "text-gray-400" : "text-black"
-              } ml-1 w-full p-0 py-4 pl-1 bg-transparent focus:border-none`}
+            className={` ${
+              TypeEvent === "" ? "text-gray-400" : "text-black"
+            } ml-1 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none`}
           >
             <option disabled value="">
               Tipe Campaign
             </option>
-            <option value="one_time">One Time</option>
-            <option value="regular">Single Donation</option>
-            {/* <option value="regular">Regular</option> */}
+            <option value="one_time">Dana Terbuka</option>
+            <option value="regular">Dana Pribadi</option>
           </select>
         </div>
 
         <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconCalendar />
           <input
-            onChange={handleTanggalChange}
+            onChange={() => handleTanggalChange}
             value={Tanggal}
             name="Tanggal"
             type={`${onFocusDate ? "date" : "text"}`}
             className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
             placeholder="Tanggal Pelaksanaan"
-            onFocus={() => setOnFocusDate(true)}
+            onFocus={() => {
+              setOnFocusTime(false);
+              setOnFocusDate(true);
+            }}
             onBlur={() => setOnFocusDate(false)}
             required
           />
         </div>
         <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none my-2">
           <IconClock />
-          <select
-            onChange={handleHourChange}
-            value={hour}
-            name="Hour"
-            className={`${hour === "" ? "text-gray-400" : "text-black"} py-4 px-2 bg-transparent appearance-none focus:border-none ml-2 text-center`}
-            required
+          <button
+            className="w-full text-start ml-2 p-0 py-4 pl-1 bg-transparent focus:border-none flex flex-row gap-1"
+            onClick={() => setOnFocusTime(!onFocusTime)}
           >
-            <option value="" disabled>--</option>
-            {hourOptions.map(h => (
-              <option key={h} value={h}>{h}</option>
-            ))}
-          </select>
-          <span className="">:</span>
-          <select
-            onChange={handleMinuteChange}
-            value={minute}
-            name="Minute"
-            className={` ${minute === "" ? "text-gray-400" : "text-black"}  py-4 px-2 bg-transparent appearance-none focus:border-none text-center`}
-            required
-          >
-            <option value="" disabled>--</option>
-            {minuteOptions.map(m => (
-              <option key={m} value={m}>{m}</option>
-            ))}
-          </select>
+            {!onFocusTime && !hour && !minute ? (
+              <p>Waktu Pelaksanaan</p>
+            ) : (
+              <>
+                <p className="text-black hover:bg-gray-400">{hour}</p>:
+                <p className="text-black hover:bg-gray-400">{minute}</p>
+              </>
+            )}
+          </button>
         </div>
-        {/* 
-        <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-          <IconClock />
-          <input
-            onChange={handleWaktuChange}
-            value={Waktu}
-            type={`${onFocusTime ? "time" : "text"}`}
-            name="Waktu"
-            className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
-            placeholder="Waktu Pelaksanaan"
-            min="01:01"
-            max="22:59"
-            onFocus={() => setOnFocusTime(true)}
-            onBlur={() => setOnFocusTime(false)}
-            required
-          />
-        </div> */}
+        {onFocusTime && (
+          <div className="absolute lg:left-[580px] lg:top-[270px] flex gap-2">
+            <div className="bg-white w-10 border text-black bottom-[230px] border-black flex flex-col overflow-auto h-24 ">
+              {hourOptions.map((h) => (
+                <button
+                  onClick={(h) => handleHourChange(h)}
+                  className="hover:bg-gray-400"
+                  key={h}
+                  value={h}
+                >
+                  {h}
+                </button>
+              ))}
+            </div>
+            <div className="bg-white w-10 border text-black bottom-[230px] border-black flex flex-col overflow-auto h-24">
+              {minuteOptions.map((m) => (
+                <button
+                  onClick={(m) => handleMinuteChange(m)}
+                  className="hover:bg-gray-400"
+                  key={m}
+                  value={m}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none outline-none">
           <IconFileDescription />
           <textarea
+            onFocus={() => setOnFocusTime(false)}
             onChange={handleDescriptionChange}
             value={Description}
             className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
@@ -482,7 +503,10 @@ function StepOne({
         </div>
 
         <div className="mb-2 ">
-          <div className="flex items-center justify-center w-full relative">
+          <div
+            onClick={() => setOnFocusTime(false)}
+            className="flex items-center justify-center w-full relative"
+          >
             <label
               htmlFor="images"
               className="flex flex-col justify-center w-full h-32 border-2 border-black border-dashed rounded-lg cursor-pointer bg-gray-200 hover:bg-gray-100"
@@ -553,11 +577,11 @@ function StepOne({
             type="submit"
             className={
               !eventName ||
-                !TypeEvent ||
-                !Tanggal ||
-                !Waktu ||
-                !Description ||
-                !uploadedFile
+              !TypeEvent ||
+              !Tanggal ||
+              !Waktu ||
+              !Description ||
+              !uploadedFile
                 ? "text-white bg-gray-400 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
                 : "text-white bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
             }
@@ -1061,10 +1085,11 @@ function StepThree({
         <div className="items-center justify-center mt-1 w-full">
           <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
             <div
-              className={`flex ${Object.keys(groupedCart).length > 0
-                ? "justify-between"
-                : "justify-center"
-                } w-full`}
+              className={`flex ${
+                Object.keys(groupedCart).length > 0
+                  ? "justify-between"
+                  : "justify-center"
+              } w-full`}
             >
               <div className="flex">
                 {Object.keys(groupedCart).length > 0 ? (
@@ -1101,81 +1126,82 @@ function StepThree({
         <div className="items-center justify-center w-full">
           {Object.keys(groupedCart).length > 0
             ? Object.keys(groupedCart).map((IdMerchan, storeIndex) => (
-              <div key={storeIndex} className="mb-4 p-2">
-                {groupedCart[IdMerchan].map((item, itemIndex) => (
-                  <div
-                    key={itemIndex}
-                    className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
-                  >
-                    <div className="flex h-30 w-full">
-                      <img
-                        className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
-                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0
-                          ? item.images[0].image_url
-                          : ""
+                <div key={storeIndex} className="mb-4 p-2">
+                  {groupedCart[IdMerchan].map((item, itemIndex) => (
+                    <div
+                      key={itemIndex}
+                      className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
+                    >
+                      <div className="flex h-30 w-full">
+                        <img
+                          className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
+                          src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${
+                            item.images.length > 0
+                              ? item.images[0].image_url
+                              : ""
                           }`}
-                        alt=""
-                      />
-                      <div className="flex flex-col justify-between w-full">
-                        <div className="text-left place-items-start">
-                          <div className="text-primary font-bold capitalize">
-                            {item.name}
-                            {/* {item.imageUrl} */}
+                          alt=""
+                        />
+                        <div className="flex flex-col justify-between w-full">
+                          <div className="text-left place-items-start">
+                            <div className="text-primary font-bold capitalize">
+                              {item.name}
+                              {/* {item.imageUrl} */}
+                            </div>
+                            <div className="mb-1 font-sans text-[11px]">
+                              {/* terjual | Disukai oleh: 20 | */}
+                              Max Quota: {item.capacity}
+                            </div>
+                            <div className="mb-1 font-sans text-[11px]">
+                              {item.description}
+                            </div>
                           </div>
-                          <div className="mb-1 font-sans text-[11px]">
-                            {/* terjual | Disukai oleh: 20 | */}
-                            Max Quota: {item.capacity}
-                          </div>
-                          <div className="mb-1 font-sans text-[11px]">
-                            {item.description}
-                          </div>
-                        </div>
-                        <div className="mt-2 flex flex-row gap-4 justify-between">
-                          <p className="font-bold text-primary">
-                            {new Intl.NumberFormat("id-ID", {
-                              style: "currency",
-                              currency: "IDR",
-                              minimumFractionDigits: 0,
-                            }).format(item.price * item.quantity || 0)}
-                          </p>
-                          <div className="grid place-items-center">
-                            <div className="flex items-center">
-                              <button
-                                className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                onClick={() =>
-                                  handleDecrease(
-                                    IdMerchan,
-                                    item.id,
-                                    item.capacity
-                                  )
-                                }
-                              >
-                                <IconMinus size={15} />
-                              </button>
-                              <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
-                                {item.quantity}
-                              </span>
-                              <button
-                                className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                onClick={() =>
-                                  handleIncrease(
-                                    IdMerchan,
-                                    item.id,
-                                    item.capacity
-                                  )
-                                }
-                              >
-                                <IconPlus size={15} />
-                              </button>
+                          <div className="mt-2 flex flex-row gap-4 justify-between">
+                            <p className="font-bold text-primary">
+                              {new Intl.NumberFormat("id-ID", {
+                                style: "currency",
+                                currency: "IDR",
+                                minimumFractionDigits: 0,
+                              }).format(item.price * item.quantity || 0)}
+                            </p>
+                            <div className="grid place-items-center">
+                              <div className="flex items-center">
+                                <button
+                                  className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                  onClick={() =>
+                                    handleDecrease(
+                                      IdMerchan,
+                                      item.id,
+                                      item.capacity
+                                    )
+                                  }
+                                >
+                                  <IconMinus size={15} />
+                                </button>
+                                <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                  onClick={() =>
+                                    handleIncrease(
+                                      IdMerchan,
+                                      item.id,
+                                      item.capacity
+                                    )
+                                  }
+                                >
+                                  <IconPlus size={15} />
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ))
+                  ))}
+                </div>
+              ))
             : ""}
         </div>
         {/* </div> */}
@@ -1212,13 +1238,11 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
   const admin_fee = 2500;
   const month = moment().format("YYYY-MM");
 
-  console.log(selectedChannel);
-  console.log(selectedMethod);
-
   useEffect(() => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
         }donation/list?start=${month}-01&end=${month}-${new Date(
           moment(month, "YYYY-MM").format("YYYY"),
           moment(month, "YYYY-MM").format("MM"),
@@ -1310,8 +1334,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             amount: parseFloat(donationRequired),
             admin_fee: admin_fee,
             total_amount: parseFloat(donationRequired),
-            payment_channel: `${selectedMethod === "agnostic" ? "Tabunganku" : selectedChannel
-              }`,
+            payment_channel: `${
+              selectedMethod === "agnostic" ? "Tabunganku" : selectedChannel
+            }`,
             success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
           },
         };
@@ -1455,8 +1480,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
           className="flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none"
         >
           <p
-            className={`capitalize font-bold ${selectedMethod === "" ? "text-gray-400" : "text-black"
-              }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
+            className={`capitalize font-bold ${
+              selectedMethod === "" ? "text-gray-400" : "text-black"
+            }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
           >
             {selectedMethod === "" ? "Pilih Salah Satu..." : selectedMethod}
           </p>
@@ -1484,12 +1510,14 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                     className="hidden"
                   />
                   <div
-                    className={`w-[10px] h-[10px] ${data.value === selectedMethod && "bg-primary"
-                      } rounded-full flex justify-center items-center`}
+                    className={`w-[10px] h-[10px] ${
+                      data.value === selectedMethod && "bg-primary"
+                    } rounded-full flex justify-center items-center`}
                   >
                     <div
-                      className={`rounded-full p-2 ${data.value === selectedMethod && "border-primary"
-                        } border-2`}
+                      className={`rounded-full p-2 ${
+                        data.value === selectedMethod && "border-primary"
+                      } border-2`}
                     />
                   </div>
                 </button>
@@ -1508,10 +1536,11 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                 setIsDropdownChannelOpen(!isDropdownChannelOpen);
                 setIsDropdownMethodOpen(false);
               }}
-              className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${selectedMethod === "agnostic"
-                ? "bg-[#1D5882] cursor-normal"
-                : ""
-                }`}
+              className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${
+                selectedMethod === "agnostic"
+                  ? "bg-[#1D5882] cursor-normal"
+                  : ""
+              }`}
             >
               {selectedMethod === "agnostic" ? (
                 <>
@@ -1533,8 +1562,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
               ) : (
                 <>
                   <p
-                    className={`capitalize font-bold ${selectedChannel === "" ? "text-gray-400" : "text-black"
-                      }  pl-2 cursor-pointer outline-none py-4  focus:border-none`}
+                    className={`capitalize font-bold ${
+                      selectedChannel === "" ? "text-gray-400" : "text-black"
+                    }  pl-2 cursor-pointer outline-none py-4  focus:border-none`}
                   >
                     {selectedChannel === "" ? (
                       `Pilih ${selectedMethod}...`
@@ -1556,7 +1586,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             <p
               className={
                 selectedMethod === "agnostic" &&
-                  donationRequired + admin_fee > wallet_balance
+                donationRequired + admin_fee > wallet_balance
                   ? "instructions italic text-[10px] flex items-center"
                   : "hidden"
               }
@@ -1570,81 +1600,85 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
           <div className="flex flex-col px-4 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none">
             {selectedMethod === "ewallet"
               ? eWalletChannelOptions.map((data, index) => (
-                <>
-                  <button
-                    onClick={() => {
-                      setSelectedChannel(data.value);
-                      setSelectedChannelLogo(data.logo);
-                    }}
-                    className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Image width={30} src={data.logo} />
-                      <label
-                        htmlFor="ewallet"
-                        className="font-bold text-black"
-                      >
-                        {data.value}
-                      </label>
-                    </div>
-                    <input
-                      type="radio"
-                      id={data.value}
-                      name="paymentOption"
-                      value={data.value}
-                      className="hidden"
-                    />
-                    <div
-                      className={`w-[10px] h-[10px] ${data.value === selectedChannel && "bg-primary"
-                        } rounded-full flex justify-center items-center`}
+                  <>
+                    <button
+                      onClick={() => {
+                        setSelectedChannel(data.value);
+                        setSelectedChannelLogo(data.logo);
+                      }}
+                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
                     >
-                      <div
-                        className={`rounded-full p-2 ${data.value === selectedChannel && "border-primary"
-                          } border-2`}
+                      <div className="flex items-center gap-2">
+                        <Image width={30} src={data.logo} />
+                        <label
+                          htmlFor="ewallet"
+                          className="font-bold text-black"
+                        >
+                          {data.value}
+                        </label>
+                      </div>
+                      <input
+                        type="radio"
+                        id={data.value}
+                        name="paymentOption"
+                        value={data.value}
+                        className="hidden"
                       />
-                    </div>
-                  </button>
-                  {index !== eWalletChannelOptions.length - 1 ? <hr /> : ""}
-                </>
-              ))
+                      <div
+                        className={`w-[10px] h-[10px] ${
+                          data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                      >
+                        <div
+                          className={`rounded-full p-2 ${
+                            data.value === selectedChannel && "border-primary"
+                          } border-2`}
+                        />
+                      </div>
+                    </button>
+                    {index !== eWalletChannelOptions.length - 1 ? <hr /> : ""}
+                  </>
+                ))
               : bankChannelOptions.map((data, index) => (
-                <>
-                  <button
-                    onClick={() => {
-                      setSelectedChannel(data.value);
-                      setSelectedChannelLogo(data.logo);
-                    }}
-                    className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Image width={30} src={data.logo} />
-                      <label
-                        htmlFor="ewallet"
-                        className="font-bold text-black"
-                      >
-                        {data.value}
-                      </label>
-                    </div>
-                    <input
-                      type="radio"
-                      id={data.value}
-                      name="paymentOption"
-                      value={data.value}
-                      className="hidden"
-                    />
-                    <div
-                      className={`w-[10px] h-[10px] ${data.value === selectedChannel && "bg-primary"
-                        } rounded-full flex justify-center items-center`}
+                  <>
+                    <button
+                      onClick={() => {
+                        setSelectedChannel(data.value);
+                        setSelectedChannelLogo(data.logo);
+                      }}
+                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
                     >
-                      <div
-                        className={`rounded-full p-2 ${data.value === selectedChannel && "border-primary"
-                          } border-2`}
+                      <div className="flex items-center gap-2">
+                        <Image width={30} src={data.logo} />
+                        <label
+                          htmlFor="ewallet"
+                          className="font-bold text-black"
+                        >
+                          {data.value}
+                        </label>
+                      </div>
+                      <input
+                        type="radio"
+                        id={data.value}
+                        name="paymentOption"
+                        value={data.value}
+                        className="hidden"
                       />
-                    </div>
-                  </button>
-                  {index !== bankChannelOptions.length - 1 ? <hr /> : ""}
-                </>
-              ))}
+                      <div
+                        className={`w-[10px] h-[10px] ${
+                          data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                      >
+                        <div
+                          className={`rounded-full p-2 ${
+                            data.value === selectedChannel && "border-primary"
+                          } border-2`}
+                        />
+                      </div>
+                    </button>
+                    {index !== bankChannelOptions.length - 1 ? <hr /> : ""}
+                  </>
+                ))}
           </div>
         ) : (
           ""
@@ -1669,7 +1703,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
               }).format(donationRequired || 0)}
             </p>
           </div>
-          <div className="w-full flex flex-row justify-between">
+          {/* <div className="w-full flex flex-row justify-between">
             <p className="text-gray-400">Biaya Transaksi</p>
             <p className="text-black font-medium">
               {new Intl.NumberFormat("id-ID", {
@@ -1678,7 +1712,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                 minimumFractionDigits: 0,
               }).format(admin_fee)}
             </p>
-          </div>
+          </div> */}
           <div className="w-full">
             <hr />
           </div>
@@ -1689,7 +1723,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                 style: "currency",
                 currency: "IDR",
                 minimumFractionDigits: 0,
-              }).format(donationRequired + admin_fee)}
+              }).format(donationRequired)}
             </p>
           </div>
         </div>
@@ -1699,15 +1733,15 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
               selectedMethod === "" ||
               (selectedMethod !== "agnostic" && selectedChannel === "") ||
               (selectedMethod === "agnostic" &&
-                donationRequired + admin_fee > wallet_balance)
+                donationRequired > wallet_balance)
             }
             onClick={() => handleSubmit()}
             type="submit"
             className={
               selectedMethod === "" ||
-                (selectedMethod !== "agnostic" && selectedChannel === "") ||
-                (selectedMethod === "agnostic" &&
-                  donationRequired + admin_fee > wallet_balance)
+              (selectedMethod !== "agnostic" && selectedChannel === "") ||
+              (selectedMethod === "agnostic" &&
+                donationRequired > wallet_balance)
                 ? "text-white bg-gray-400 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
                 : "text-white bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
             }
@@ -1780,11 +1814,11 @@ function Stepfour({
       const updatedCart = cart.map((item, index) =>
         index === existingItemIndex
           ? {
-            ...item,
-            quantity: item.quantity + food.quantity,
-            total: (item.quantity + food.quantity) * item.price,
-            capacity: food.qty,
-          }
+              ...item,
+              quantity: item.quantity + food.quantity,
+              total: (item.quantity + food.quantity) * item.price,
+              capacity: food.qty,
+            }
           : item
       );
       setCart(updatedCart);

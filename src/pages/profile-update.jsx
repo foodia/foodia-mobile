@@ -1,3 +1,4 @@
+import CompressImage from "@/components/CompressImage";
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
