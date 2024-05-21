@@ -32,8 +32,8 @@ const CardInbox = ({ DataInbox }) => {
         const handleDonatorInbox = () => {
             switch (DataInbox.title) {
                 case "Campaign Baru":
-                case "Berjalan":
-                case "Selesai":
+                case "Campaign Berjalan":
+                case "Campaign Selesai":
                     setUrl(`/campaign/${DataInbox.campaign.id}`);
                     break;
                 case "Laporan Campaign":
@@ -61,13 +61,18 @@ const CardInbox = ({ DataInbox }) => {
                     break;
                 case "Pesanan Ditolak Merchant":
                 case "Pesanan Diterima Merchant":
-                    setUrl(`/food/${DataInbox.campaign.id}`);
+                    setUrl(`/campaign/${DataInbox.campaign.id}`);
+                    // setUrl(`/food/${DataInbox.campaign.id}`);
                     break;
                 case "Makanan Sudah Diterima":
                     setUrl(`/report/${DataInbox.campaign.id}`);
                     break;
+                case "Donasi Campaign Terpenuhi":
+                    setUrl(`/campaign/${DataInbox.campaign.id}`);
+                    break;
                 case "Lihat Review Campaign":
-                    setUrl(`/detonator/review`);
+                    setUrl(`/report/${DataInbox.campaign.id}`);
+                    // setUrl(`/detonator/review`);
                     break;
                 default:
                     break;
@@ -88,7 +93,8 @@ const CardInbox = ({ DataInbox }) => {
                     setUrl(`/merchant/saldo`);
                     break;
                 case "Lihat Review Pesanan":
-                    setUrl(`/merchant/review`);
+                    setUrl(`/report/${DataInbox.campaign.id}`);
+                    // setUrl(`/merchant/review`);
                     break;
                 default:
                     break;

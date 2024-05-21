@@ -15,6 +15,9 @@ const inbox = (inbox) => {
   const [donaturActive, setDonaturActive] = useState(false);
   const [detonatorActive, setDetonatorActive] = useState(false);
   const [merchantActive, setMerchantActive] = useState(false);
+  const [isReadDonatur, setIsReadDonatur] = useState(0);
+  const [isReadDetonator, setIsReadDetonator] = useState(0);
+  const [isReadMerchant, setIsReadMerchant] = useState(0);
 
   useEffect(() => {
     const id = localStorage.getItem("id");
@@ -30,11 +33,39 @@ const inbox = (inbox) => {
         setMerchantActive(true);
       }
     }
+  }, []);
+
+  const fetchInboxData = async (inboxType, setReadState) => {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=${inboxType}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const unreadCount = res.data.body.detail.filter(item => item.is_read === 0).length;
+      setReadState(unreadCount);
+      // setReadState(res.data.body.detail);
+    } catch (error) {
+      Error401(error, router);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInboxData("donator", setIsReadDonatur);
+    fetchInboxData("detonator", setIsReadDetonator);
+    fetchInboxData("merchant", setIsReadMerchant);
   }, [selectedStatus]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=donator`,
@@ -63,43 +94,50 @@ const inbox = (inbox) => {
 
   const handleFilterChange = (status) => {
     const token = localStorage.getItem("token");
-    const id_merchant = localStorage.getItem("token");
-    const id_detonator = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("No token found");
+      return;
+    }
 
     setLoading(true);
     let url = "";
 
-    if (status === "donator") {
-      url = `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=donator`;
-    } else if (status === "detonator") {
-      url = `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=detonator`;
-    } else if (status === "merchant") {
-      url = `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=merchant`;
+    switch (status) {
+      case "donator":
+        url = `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=donator`;
+        break;
+      case "detonator":
+        url = `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=detonator`;
+        break;
+      case "merchant":
+        url = `${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=merchant`;
+        break;
+      default:
+        console.error("Invalid status");
+        setLoading(false);
+        return;
     }
 
-    if (url) {
-      axios
-        .get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          const data = response.data.body.detail;
-          // console.log('cek all', response.data.body);
+    axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        const data = response.data.body.detail;
+        setDataApi(data);
+        setDataInbox(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setDataApi([]);
+        setDataInbox([]);
+        Error401(error, router);
+        setLoading(false);
+      })
 
-          // data.sort((a, b) => b.id - a.id);
-
-          setDataApi(data);
-          setDataInbox(data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          Error401(error, router);
-          setLoading(false);
-        });
-    }
-    // console.log(inboxData);
     setSelectedStatus(status);
   };
 
@@ -117,18 +155,25 @@ const inbox = (inbox) => {
               <div className="px-2 w-full">
                 <div
                   className={`cursor-pointer text-center border border-t-0 border-x-0 font-semibold text-lg ${selectedStatus === "donator"
-                    ? " text-primary text-center border-b-primary"
-                    : "cursor-pointer text-center text-gray-500  border-b-transparent"
+                    ? "text-primary border-b-primary"
+                    : "text-gray-500 border-b-transparent"
                     }`}
                   onClick={() => handleFilterChange("donator")}
                 >
-                  <span>Donator</span>
+                  <div className="flex relative justify-center items-center">
+                    <span>Donator</span>
+                    <div className="w-[20px] h-[20px] rounded-full text-[12px] text-white bg-red-500 absolute top-0 right-0 flex justify-center items-center">
+                      {isReadDonatur}
+                    </div>
+                  </div>
                 </div>
               </div>
+
             ) : null}
 
             {detonatorActive ? (
               <div className="px-2 w-full">
+
                 <div
                   className={`cursor-pointer text-center border border-t-0 border-x-0 font-semibold text-lg ${selectedStatus === "detonator"
                     ? " text-primary text-center border-b-primary"
@@ -136,7 +181,12 @@ const inbox = (inbox) => {
                     }`}
                   onClick={() => handleFilterChange("detonator")}
                 >
-                  <span>Volunteer</span>
+                  <div className="flex relative justify-center items-center">
+                    <span>Volunteer</span>
+                    <div className="w-[20px] h-[20px] rounded-full text-[12px] text-white bg-red-500 absolute top-0 right-0 flex justify-center items-center">
+                      {isReadDetonator}
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : null}
@@ -150,7 +200,12 @@ const inbox = (inbox) => {
                     }`}
                   onClick={() => handleFilterChange("merchant")}
                 >
-                  <span>Merchant</span>
+                  <div className="flex relative justify-center items-center">
+                    <span>Merchant</span>
+                    <div className="w-[20px] h-[20px] rounded-full text-[12px] text-white bg-red-500 absolute top-0 right-0 flex justify-center items-center">
+                      {isReadMerchant}
+                    </div>
+                  </div>
                 </div>
               </div>
             ) : null}

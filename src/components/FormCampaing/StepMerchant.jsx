@@ -78,6 +78,9 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
     const file = event.target.files[0];
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
     const maxSize = 5 * 1024 * 1024;
+    if (!file) {
+      return;
+    }
     setLoadingSelfi(true);
     if (!allowedTypes.includes(file.type)) {
       Swal.fire({
@@ -122,6 +125,9 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
     const file = event.target.files[0];
     const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
     const maxSize = 5 * 1024 * 1024;
+    if (!file) {
+      return;
+    }
     setLoadingKTP(true);
     if (!allowedTypes.includes(file.type)) {
       Swal.fire({
