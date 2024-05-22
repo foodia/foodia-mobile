@@ -15,10 +15,13 @@ const mydonation = () => {
   const [data, setData] = useState();
   const [history, setHistory] = useState();
   const [month, setMonth] = useState(moment().format("YYYY-MM"));
+  const [monthOptions, setMonthOptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isChecked, setIsChecked] = useState();
   const [isCheckedSuccess, setIsCheckedSuccess] = useState();
   const [isOpenedMonthOptions, setIsOpenedMonthOptions] = useState(false);
+
+  console.log(monthOptions);
 
   const toggleSwitch = () => {
     setIsChecked((prevState) => !prevState);
@@ -44,7 +47,8 @@ const mydonation = () => {
     setLoading(true);
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
         }donation/list?start=${month}-01&end=${month}-${new Date(
           moment(month, "YYYY-MM").format("YYYY"),
           moment(month, "YYYY-MM").format("MM"),
@@ -66,6 +70,11 @@ const mydonation = () => {
           setIsCheckedSuccess(false);
         }
 
+        setMonthOptions(
+          response.data.body.year_filters.sort(
+            (a, b) => new Date(b) - new Date(a)
+          )
+        );
         const sortedData = response.data.body.donation_history.sort(
           (a, b) => b.transaction.id - a.transaction.id
         );
@@ -152,11 +161,12 @@ const mydonation = () => {
                         onClick={() => {
                           onChangeMonth(bulan);
                         }}
-                        className={`${moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                        className={`${
+                          moment(bulan, "YYYY-MM").format("MMM YYYY") ===
                           moment(month, "YYYY-MM").format("MMM YYYY")
-                          ? "text-primary"
-                          : "text-black"
-                          } text-[12px] w-full text-left font-semibold`}
+                            ? "text-primary"
+                            : "text-black"
+                        } text-[12px] w-full text-left font-semibold`}
                       >
                         {moment(bulan, "YYYY-MM").format("MMM YYYY")}
                       </button>
@@ -173,7 +183,6 @@ const mydonation = () => {
               </p>
             </div>
           </div>
-
 
           {loading ? (
             <div className={`${styles.card} `}>
@@ -196,10 +205,11 @@ const mydonation = () => {
                       </p>
                     </div>
                     <p
-                      className={`text-[16px] font-bold ${data.type_donation === "booster"
-                        ? "text-[#1D5882]"
-                        : "text-primary"
-                        }`}
+                      className={`text-[16px] font-bold ${
+                        data.type_donation === "booster"
+                          ? "text-[#1D5882]"
+                          : "text-primary"
+                      }`}
                     >
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",
