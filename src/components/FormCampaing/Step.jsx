@@ -186,9 +186,9 @@ function StepOne({
     // Convert the selected date to a Date object for comparison
     const selectedDateObject = new Date(selectedDate);
 
-    // Calculate the minimum allowed date (7 days from the current date)
+    // Calculate the minimum allowed date (2 days from the current date)
     const minAllowedDate = new Date();
-    minAllowedDate.setDate(currentDate.getDate() + 2);
+    minAllowedDate.setDate(currentDate.getDate() + 1);
 
     // Check if the selected date is at least 7 days from the current date
     if (selectedDateObject >= minAllowedDate) {
@@ -271,7 +271,6 @@ function StepOne({
     if (file.size <= maxSize) {
       setUploadedFile(file);
       setLoadingFile(false);
-      console.log("file", file);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
@@ -286,7 +285,6 @@ function StepOne({
             });
           }
           setLoadingFile(false);
-          console.log("hasil compressedFile", compressedFile);
         })
         .catch((error) => {
           Swal.fire({
@@ -298,7 +296,6 @@ function StepOne({
         });
     }
     setUploadedFile(file);
-    console.log("dada", file);
   };
 
   const handleSubmit = (e) => {
@@ -422,15 +419,19 @@ function StepOne({
             <option disabled value="">
               Tipe Campaign
             </option>
-            <option value="one_time">Dana Terbuka</option>
-            <option value="regular">Dana Pribadi</option>
+            <option className="text-gray-500" value="one_time">
+              Dana Terbuka
+            </option>
+            <option className="text-gray-500" value="regular">
+              Dana Mandiri
+            </option>
           </select>
         </div>
 
         <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconCalendar />
           <input
-            onChange={() => handleTanggalChange}
+            onChange={handleTanggalChange}
             value={Tanggal}
             name="Tanggal"
             type={`${onFocusDate ? "date" : "text"}`}
@@ -461,7 +462,7 @@ function StepOne({
           </button>
         </div>
         {onFocusTime && (
-          <div className="absolute lg:left-[580px] lg:top-[270px] flex gap-2">
+          <div className="absolute lg:left-[580px] lg:top-[270px] left-[65px] top-[270px] flex gap-2 z-10">
             <div className="bg-white w-10 border text-black bottom-[230px] border-black flex flex-col overflow-auto h-24 ">
               {hourOptions.map((h) => (
                 <button
