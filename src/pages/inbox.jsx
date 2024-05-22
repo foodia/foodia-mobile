@@ -162,9 +162,10 @@ const inbox = (inbox) => {
                 >
                   <div className="flex relative justify-center items-center">
                     <span>Donator</span>
-                    <div className="w-[20px] h-[20px] rounded-full text-[12px] text-white bg-red-500 absolute top-0 right-0 flex justify-center items-center">
+                    {isReadDonatur === 0 ? null : <div className="w-[20px] h-[20px] rounded-full text-[12px] text-white bg-red-500 absolute top-0 right-0 flex justify-center items-center">
                       {isReadDonatur}
-                    </div>
+                    </div>}
+
                   </div>
                 </div>
               </div>
@@ -183,9 +184,10 @@ const inbox = (inbox) => {
                 >
                   <div className="flex relative justify-center items-center">
                     <span>Volunteer</span>
-                    <div className="w-[20px] h-[20px] rounded-full text-[12px] text-white bg-red-500 absolute top-0 right-0 flex justify-center items-center">
+                    {isReadDetonator === 0 ? null : <div className="w-[20px] h-[20px] rounded-full text-[12px] text-white bg-red-500 absolute top-0 right-0 flex justify-center items-center">
                       {isReadDetonator}
-                    </div>
+                    </div>}
+
                   </div>
                 </div>
               </div>
@@ -202,9 +204,10 @@ const inbox = (inbox) => {
                 >
                   <div className="flex relative justify-center items-center">
                     <span>Merchant</span>
-                    <div className="w-[20px] h-[20px] rounded-full text-[12px] text-white bg-red-500 absolute top-0 right-0 flex justify-center items-center">
+                    {isReadMerchant === 0 ? null : <div className="w-[20px] h-[20px] rounded-full text-[12px] text-white bg-red-500 absolute top-0 right-0 flex justify-center items-center">
                       {isReadMerchant}
-                    </div>
+                    </div>}
+
                   </div>
                 </div>
               </div>
