@@ -111,22 +111,37 @@ const CardInbox = ({ DataInbox }) => {
             { inbox_id: idInbox },
             { headers: { Authorization: `Bearer ${token}` } }
         )
-            .then(response =>
-                console.log(response)
-            )
-            .catch(error => Error401(error, router));
+            .then(response => {
+                if (response.status === 200) {
+                    router.push(url);
+                } else {
+                    throw new Error('Failed to load page');
+                }
+            })
+            .catch(error => {
+                const messages = {
+                    title: "Error",
+                    text: "Gagal Memuat Halaman"
+                };
+                Error401(error, router, messages);
+            });
     };
 
     const handleClick = () => {
-        setRead(DataInbox.id); // Mark as read when clicked
-        router.push(url);
-    };
+        if (DataInbox.is_read === 0) {
+            setRead(DataInbox.id); // Mark as read when clicked
+
+        } else {
+            router.push(url);
+        }
+    }
+
 
     return (
         <div className="flex items-center justify-center pb-2">
             <div onClick={handleClick} className={`${DataInbox.is_read === 0 ? "border-primary border-2" : ""} flex flex-col w-full max-w-[320px] leading-1.5 p-2 bg-white rounded-lg shadow-[0px_0px_10px_#0000001A] cursor-pointer`}>
                 <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                    <span className="text-[14px] font-bold text-black">{DataInbox.title} {DataInbox.is_read}</span>
+                    <span className="text-[14px] font-bold text-black">{DataInbox.title}</span>
                 </div>
                 <p className="text-[12px] font-normal text-gray-900">{DataInbox.campaign.event_name}</p>
                 <span className="text-[8px] font-italic text-gray-500 dark:text-gray-400">{DataInbox.description}</span>
