@@ -100,7 +100,11 @@ const UpdateProfile = (profile) => {
       })
       .catch((error) => {
         setLoading(false);
-        Error401(error, router);
+        const messages = {
+          title: "Profile Gagal Diubah",
+          text: "Nomor hp telah digunakan di akun lain",
+        };
+        Error401(error, router, messages);
       });
   };
 
