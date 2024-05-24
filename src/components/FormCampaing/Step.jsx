@@ -124,19 +124,22 @@ function StepOne({
   const handleHourChange = (e) => {
     const selectedHour = e.target.value.padStart(2, "0");
     setHour(selectedHour);
-    localStorage.setItem(
-      "formData",
-      JSON.stringify({ Waktu: `${selectedHour}:${minute}` })
-    );
+    setWaktu(`${selectedHour}:${minute}`);
+    // localStorage.setItem(
+    //   "formData",
+    //   JSON.stringify({ Waktu: `${selectedHour}:${minute}` })
+    // );
   };
 
   const handleMinuteChange = (e) => {
     const selectedMinute = e.target.value.padStart(2, "0");
     setMinute(selectedMinute);
-    localStorage.setItem(
-      "formData",
-      JSON.stringify({ Waktu: `${hour}:${selectedMinute}` })
-    );
+    setWaktu(`${hour}:${selectedMinute}`);
+    // localStorage.setItem(
+    //   "formData",
+    //   JSON.stringify({ Waktu: `${hour}:${selectedMinute}` })
+    // );
+    // setWaktu
   };
 
   const hourOptions = Array.from({ length: 22 }, (_, i) =>
@@ -180,14 +183,13 @@ function StepOne({
     }
   };
 
-  const handleWaktuChange = (event) => {
-    const selectedTime = event.target.value;
-    console.log(selectedTime);
+  const handleWaktuChange = (waktu) => {
+    // const selectedTime = event.target.value;
 
     const isWithinAllowedRange = isTimeWithinRange(selectedTime);
 
     if (isWithinAllowedRange) {
-      setWaktu(selectedTime);
+      setWaktu(waktu);
     } else {
       Swal.fire({
         icon: "error",
@@ -274,9 +276,6 @@ function StepOne({
     }
     setUploadedFile(file);
   };
-
-  console.log("tipe == ", TypeEvent);
-  console.log("foto == ", uploadedFile);
 
   const handleSubmit = (e) => {
     setLoading(true);
@@ -455,18 +454,20 @@ function StepOne({
                 </button>
               ))}
             </div>
-            <div className="bg-white w-10 border text-black bottom-[230px] border-black flex flex-col overflow-auto h-24">
-              {minuteOptions.map((m) => (
-                <button
-                  onClick={(m) => handleMinuteChange(m)}
-                  className="hover:bg-gray-400"
-                  key={m}
-                  value={m}
-                >
-                  {m}
-                </button>
-              ))}
-            </div>
+            {hour && (
+              <div className="bg-white w-10 border text-black bottom-[230px] border-black flex flex-col overflow-auto h-24">
+                {minuteOptions.map((m) => (
+                  <button
+                    onClick={(m) => handleMinuteChange(m)}
+                    className="hover:bg-gray-400"
+                    key={m}
+                    value={m}
+                  >
+                    {m}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
