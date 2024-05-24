@@ -88,7 +88,6 @@ const FormReportMerchant = () => {
     if (file.size <= maxSize) {
       setimage_url(file);
       setLoadingImage(false);
-      console.log("file", file);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
@@ -311,8 +310,9 @@ const FormReportMerchant = () => {
                   disabled={!image_url || !description}
                   onClick={() => handleStepTwoSubmit()}
                   type="submit"
-                  className={`text-white ${!image_url || !description ? "bg-gray-400" : "bg-primary"
-                    }  hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
+                  className={`text-white ${
+                    !image_url || !description ? "bg-gray-400" : "bg-primary"
+                  } focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
                 >
                   Kirim
                 </button>
