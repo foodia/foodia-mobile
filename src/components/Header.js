@@ -8,17 +8,17 @@ const Header = ({ title = "", backto = "" }) => {
   // Handle the back button click
   const handleBackButtonClick = () => {
     // Navigate back to the previous page
-    localStorage.removeItem("prevPath");
-    localStorage.removeItem("phone");
-    localStorage.removeItem("merchantName");
-    localStorage.removeItem("updatedAddress");
-    localStorage.removeItem("uploadedFile");
-    localStorage.removeItem("phone");
-    localStorage.removeItem("merchantName");
-    localStorage.removeItem("updatedAddress");
-    localStorage.removeItem("uploadedFile");
-    localStorage.removeItem("fileName");
     if (backto) {
+      localStorage.removeItem("prevPath");
+      localStorage.removeItem("phone");
+      localStorage.removeItem("merchantName");
+      localStorage.removeItem("updatedAddress");
+      localStorage.removeItem("uploadedFile");
+      localStorage.removeItem("phone");
+      localStorage.removeItem("merchantName");
+      localStorage.removeItem("updatedAddress");
+      localStorage.removeItem("uploadedFile");
+      localStorage.removeItem("fileName");
       router.push(backto);
     } else {
       router.back();
