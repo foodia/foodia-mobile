@@ -1,4 +1,3 @@
-// src\components\cardInbox.jsx
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Error401 from "./error401";
@@ -7,9 +6,10 @@ import { useRouter } from "next/router";
 const CardInbox = ({ DataInbox }) => {
     const [url, setUrl] = useState('');
     const router = useRouter();
-    // console.log(DataInbox);
 
     useEffect(() => {
+        if (!DataInbox) return;
+
         const detonator_id = localStorage.getItem("id_detonator");
         const merchant_id = localStorage.getItem("id_merchant");
 
@@ -62,7 +62,6 @@ const CardInbox = ({ DataInbox }) => {
                 case "Pesanan Ditolak Merchant":
                 case "Pesanan Diterima Merchant":
                     setUrl(`/campaign/${DataInbox.campaign.id}`);
-                    // setUrl(`/food/${DataInbox.campaign.id}`);
                     break;
                 case "Makanan Sudah Diterima":
                     setUrl(`/report/${DataInbox.campaign.id}`);
@@ -72,7 +71,6 @@ const CardInbox = ({ DataInbox }) => {
                     break;
                 case "Lihat Review Campaign":
                     setUrl(`/report/${DataInbox.campaign.id}`);
-                    // setUrl(`/detonator/review`);
                     break;
                 default:
                     break;
@@ -94,7 +92,6 @@ const CardInbox = ({ DataInbox }) => {
                     break;
                 case "Lihat Review Pesanan":
                     setUrl(`/report/${DataInbox.campaign.id}`);
-                    // setUrl(`/merchant/review`);
                     break;
                 default:
                     break;
@@ -128,14 +125,14 @@ const CardInbox = ({ DataInbox }) => {
     };
 
     const handleClick = () => {
-        if (DataInbox.is_read === 0) {
-            setRead(DataInbox.id); // Mark as read when clicked
+        if (!DataInbox) return;
 
+        if (DataInbox.is_read === 0) {
+            setRead(DataInbox.id);
         } else {
             router.push(url);
         }
     }
-
 
     return (
         <div className="flex items-center justify-center pb-2">
@@ -149,7 +146,6 @@ const CardInbox = ({ DataInbox }) => {
                 <span className="text-[8px] font-italic text-gray-500 dark:text-gray-400">{DataInbox?.description || "Deskripsi tidak tersedia"}</span>
             </div>
         </div>
-
     );
 };
 
