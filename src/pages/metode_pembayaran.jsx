@@ -64,28 +64,28 @@ const MetodePembayaran = () => {
   }, []);
 
   useEffect(() => {
-    if (localStorage.getItem("prevPath") === "/mydonation") {
-      setmethodOptions([
-        {
-          id: 1,
-          value: "ewallet",
-          label: "Ewallet",
-        },
-      ]);
-    } else {
-      setmethodOptions([
-        {
-          id: 1,
-          value: "agnostic",
-          label: "Tabunganku",
-        },
-        {
-          id: 2,
-          value: "ewallet",
-          label: "Ewallet",
-        },
-      ]);
-    }
+    // if (localStorage.getItem("prevPath") === "/mydonation") {
+    setmethodOptions([
+      {
+        id: 1,
+        value: "ewallet",
+        label: "Ewallet",
+      },
+    ]);
+    // } else {
+    //   setmethodOptions([
+    //     {
+    //       id: 1,
+    //       value: "agnostic",
+    //       label: "Tabunganku",
+    //     },
+    //     {
+    //       id: 2,
+    //       value: "ewallet",
+    //       label: "Ewallet",
+    //     },
+    //   ]);
+    // }
   }, []);
 
   const eWalletChannelOptions = [
