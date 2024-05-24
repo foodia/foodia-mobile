@@ -10,45 +10,34 @@ import {
   Icon123,
   IconCalendar,
   IconCamera,
-  IconChevronCompactDown,
   IconChevronDown,
   IconChevronUp,
   IconCirclePlus,
   IconClock,
-  IconCurrentLocation,
-  IconDetails,
   IconFileDescription,
-  IconGardenCart,
   IconHome2,
   IconInfoCircle,
   IconMap,
   IconMapPin,
-  IconMapPinExclamation,
   IconMinus,
-  IconMoneybag,
   IconNotes,
-  IconPhotoScan,
   IconPlus,
   IconShoppingCart,
   IconUser,
-  IconWallet,
 } from "@tabler/icons-react";
 import axios from "axios";
+import moment from "moment/moment";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Swal from "sweetalert2";
-import Market from "../../../public/img/illustration/market.png";
-import CardListMerchan from "../page/Detonator/CardListMerchan";
-import AddFoodCamp from "./AddFoodCamp";
-import Error401 from "../error401";
-import Header from "../Header";
-import Loading from "../Loading";
 import LinkAja from "../../../public/icon/payment/LinkAja.png";
 import gopay from "../../../public/icon/payment/gopay.png";
-import mandiri from "../../../public/bank/mandiri.png";
-import bri from "../../../public/bank/bri.png";
+import Market from "../../../public/img/illustration/market.png";
 import CompressImage from "../CompressImage";
-import moment from "moment/moment";
+import Header from "../Header";
+import Error401 from "../error401";
+import CardListMerchan from "../page/Detonator/CardListMerchan";
+import AddFoodCamp from "./AddFoodCamp";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
@@ -96,24 +85,12 @@ function StepOne({
   const [hour, setHour] = useState("");
   const [minute, setMinute] = useState("");
   const [Waktu, setWaktu] = useState("");
-  // const [Waktu, setWaktu] = useState(() => {
-  //   const storedFormData = localStorage.getItem("formData");
-  //   const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-  //   return parsedFormData.Waktu || "";
-  // });
-
   const [Description, setDescription] = useState(() => {
     const storedFormData = localStorage.getItem("formData");
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
     return parsedFormData.Description || "";
     Description;
   });
-
-  // const [ImageCamp, setImageCamp] = useState(() => {
-  //     const storedFormData = localStorage.getItem('formData');
-  //     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-  //     return parsedFormData.ImageCamp || '';
-  // });
 
   useEffect(() => {
     setLoading(false);
@@ -259,7 +236,7 @@ function StepOne({
     }
     setLoadingFile(true);
 
-    if (!allowedTypes.includes(file.type)) {
+    if (!allowedTypes.includes(file?.type)) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -297,6 +274,9 @@ function StepOne({
     }
     setUploadedFile(file);
   };
+
+  console.log("tipe == ", TypeEvent);
+  console.log("foto == ", uploadedFile);
 
   const handleSubmit = (e) => {
     setLoading(true);
@@ -567,24 +547,17 @@ function StepOne({
         <div className="grid gap-4 content-center">
           <button
             disabled={
-              !eventName ||
-              !TypeEvent ||
-              !Tanggal ||
-              !Waktu ||
-              !Description ||
-              !uploadedFile
+              eventName === "" ||
+              TypeEvent === "" ||
+              Tanggal === "" ||
+              Waktu === "" ||
+              Description === "" ||
+              uploadedFile === null
             }
             onClick={() => handleSubmit()}
             type="submit"
             className={
-              !eventName ||
-              !TypeEvent ||
-              !Tanggal ||
-              !Waktu ||
-              !Description ||
-              !uploadedFile
-                ? "text-white bg-gray-400 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
-                : "text-white bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+              "text-white disabled:bg-gray-400 bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
             }
           >
             Lanjut
@@ -896,6 +869,8 @@ function StepThree({
     );
     updateCart(updatedCart, totalCartPrice, totalCartQuantity);
   };
+
+  console.log("====", campData.TypeEvent);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -2032,9 +2007,9 @@ function Stepfive({
 }
 
 export {
+  SingleDonationPayment,
   StepOne,
   StepThree,
-  SingleDonationPayment,
   StepTwo,
   Stepfive,
   Stepfour,
