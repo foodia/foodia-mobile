@@ -92,7 +92,7 @@ const ReviewCamp = () => {
     <div className="container mx-auto pt-14 bg-white h-screen">
       <Header
         title="Review Volunteer"
-        backto={`/merchant/detailpesanan/${id_order}`}
+        // backto={`/merchant/detailpesanan/${id_order}`}
       />
       <div className="place-content-center">
         <div className=" w-full p-2">
@@ -139,8 +139,9 @@ const ReviewCamp = () => {
             {[1, 2, 3, 4, 5].map((index) => (
               <svg
                 key={index}
-                className={`w-12 h-12 cursor-pointer ${index <= star ? "text-yellow-300" : "text-gray-500"
-                  }`}
+                className={`w-12 h-12 cursor-pointer ${
+                  index <= star ? "text-yellow-300" : "text-gray-500"
+                }`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
@@ -156,10 +157,9 @@ const ReviewCamp = () => {
               disabled={!star}
               onClick={() => handleSubmit()}
               type="submit"
-              className={`${!star
-                ? "bg-gray-300"
-                : "bg-primary"
-                } text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
+              className={`${
+                !star ? "bg-gray-300" : "bg-primary"
+              } text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
             >
               Submit
             </button>
