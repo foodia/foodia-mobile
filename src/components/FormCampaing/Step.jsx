@@ -875,7 +875,7 @@ function StepThree({
 
   const handleSubmit = async () => {
     setLoading(true);
-    if (campData.TypeEvent !== "regular") {
+    if (campData.TypeEvent === "regular") {
       router.push("/createcampaign?step=Payment");
     } else {
       const emptyFields = [];
@@ -1189,7 +1189,7 @@ function StepThree({
               onClick={() => handleSubmit()}
               className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center"
             >
-              {campData.TypeEvent !== "regular"
+              {campData.TypeEvent === "regular"
                 ? "Lanjutkan Pembayaran"
                 : "Ajukan"}
             </button>
