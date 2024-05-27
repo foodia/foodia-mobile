@@ -110,48 +110,56 @@ const UpdateProfile = (profile) => {
 
   const handleProfilePhotoChange = (event) => {
     const file = event.target.files[0];
-
-    if (file) {
-      const allowedTypes = [
-        "image/png",
-        "image/jpeg",
-        "image/jpg",
-        "image/heif",
-        "image/heic",
-      ];
-      const maxSize = 5 * 1024 * 1024; // 5MB
-
-      if (!allowedTypes.includes(file.type)) {
-        setValidImage(false);
-        event.target.value = "";
-      } else if (file.size > maxSize) {
-        setValidImage(false);
-        event.target.value = "";
-      } else {
-        setValidImage(true);
-        CompressImage(file)
-          .then((compressedFile) => {
-            const size = (compressedFile.size / (1024 * 1024)).toFixed(2);
-            if (size <= maxSize) {
-              setUploadedFile(compressedFile);
-            } else {
-              Toast.fire({
-                icon: "error",
-                title: "Ukuran gambar melebihi 5MB!",
-                iconColor: "bg-black",
-              });
-            }
-          })
-          .catch((error) => {
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Ukuran gambar melebihi 5MB!",
-            });
-          });
-      }
-      setLoading(false)
+    const allowedTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/heif",
+      "image/heic",
+    ];
+    const maxSize = 5 * 1024 * 1024;
+    if (!file) {
+      return;
     }
+    setLoading(true);
+
+    if (!allowedTypes.includes(file?.type)) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+      });
+      setLoading(false);
+      return;
+    }
+    if (file.size <= maxSize) {
+      setUploadedFile(file);
+      setLoading(false);
+    } else {
+      CompressImage(file)
+        .then((compressedFile) => {
+          const size = (compressedFile.size / (1024 * 1024)).toFixed(2);
+          if (size <= maxSize) {
+            setUploadedFile(compressedFile);
+          } else {
+            Toast.fire({
+              icon: "error",
+              title: "Ukuran gambar melebihi 5MB!",
+              iconColor: "bg-black",
+            });
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Ukuran gambar melebihi 5MB!",
+          });
+          setLoading(false);
+        });
+    }
+    setUploadedFile(file);
   };
 
   const PHONE_REGEX = /^(\+62|62|0)8[1-9][0-9]{7,10}$/;

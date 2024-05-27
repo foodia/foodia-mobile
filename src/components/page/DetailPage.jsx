@@ -27,9 +27,6 @@ const DetailCamp = ({ data }) => {
   const { state, setDonation } = useAppState();
   const [nominalDonasi, setNominalDonasi] = useState(0);
 
-  console.log(merchantReportLength);
-  console.log(detonatorReportLength);
-
   const toggleReadMore = () => {
     setShowFullText((prevShowFullText) => !prevShowFullText);
   };
@@ -342,12 +339,6 @@ const DetailCamp = ({ data }) => {
     }
   };
 
-  // let percentageCollected = 0;
-  // data.donation_target > 0
-  //   ? (percentageCollected =
-  //       (data.donation_collected / data.donation_target) * 100)
-  //   : (percentageCollected = 0);
-
   const remainingDays = calculateRemainingTime(data.event_date);
   return (
     <>
@@ -471,6 +462,7 @@ const DetailCamp = ({ data }) => {
           <hr className="w-80 h-0.5 mx-auto mt-2 mb-2 bg-gray-100 border-0 rounded" />
           {/* Merchants */}
           <Link
+            onClick={() => localStorage.setItem("prevPath", "/home")}
             href={`/food/${idCamp}`}
             className="w-full h-16 bg-white hover:bg-gray-100 px-4 text-black rounded-lg inline-flex items-center py-2.5 "
           >

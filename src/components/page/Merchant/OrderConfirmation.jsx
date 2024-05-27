@@ -111,9 +111,7 @@ const OrderConfirmation = () => {
           allowOutsideClick: false,
         }).then((result) => {
           if (result.isConfirmed) {
-            router.push(
-              `/merchant/review/${id_order}?id_camp=${dataApi?.campaign_id}`
-            );
+            router.push(`/merchant/detailpesanan/${id_order}`);
           }
         });
       })
