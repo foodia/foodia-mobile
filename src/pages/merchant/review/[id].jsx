@@ -92,7 +92,6 @@ const ReviewCamp = () => {
     <div className="container mx-auto pt-14 bg-white h-screen">
       <Header
         title="Review Volunteer"
-        backto={`/merchant/detailpesanan/${id_order}`}
       />
       <div className="place-content-center">
         <div className=" w-full p-2">
