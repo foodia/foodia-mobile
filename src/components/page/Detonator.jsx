@@ -173,6 +173,7 @@ const Detonator = () => {
           localStorage.removeItem("cart");
           localStorage.removeItem("formData");
           router.push("/login");
+          setLoading(false);
         });
     } else if (status === "OPEN,INPROGRESS") {
       axios
@@ -195,6 +196,7 @@ const Detonator = () => {
           localStorage.removeItem("cart");
           localStorage.removeItem("formData");
           router.push("/login");
+          setLoading(false);
         });
     } else if (status === "FINISHED") {
       axios
@@ -212,6 +214,7 @@ const Detonator = () => {
           setLoading(false);
         })
         .catch((error) => {
+          setLoading(false);
           Error401(error, router);
         });
     }
@@ -225,34 +228,37 @@ const Detonator = () => {
         </div>
         <div className="flex flex-row px-6 py-4 justify-between">
           <div
-            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "DRAFT"
+            className={`cursor-pointer text-center pb-2 text-[16px] ${
+              selectedStatus === "DRAFT"
                 ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
                 : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-              }`}
+            }`}
             onClick={() => handleFilterChange("DRAFT")}
           >
             <p>Campaign Baru</p>
           </div>
           <div
-            className={`cursor-pointer text-center pb-2 ml-2 text-[16px] ${selectedStatus === "OPEN,INPROGRESS"
+            className={`cursor-pointer text-center pb-2 ml-2 text-[16px] ${
+              selectedStatus === "OPEN,INPROGRESS"
                 ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
                 : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-              }`}
+            }`}
             onClick={() => handleFilterChange("OPEN,INPROGRESS")}
           >
             <p>Campaign Berjalan</p>
           </div>
           <div
-            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "FINISHED"
+            className={`cursor-pointer text-center pb-2 text-[16px] ${
+              selectedStatus === "FINISHED"
                 ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
                 : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-              }`}
+            }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
             <p>Campaign Selesai</p>
           </div>
         </div>
-        {loading || filteredData.length === 0 ? (
+        {loading ? (
           <div className={`${styles.card}`}>
             {[...Array(4)].map((_, index) => (
               <div key={index} className={`${styles.loadingCard}`}>
