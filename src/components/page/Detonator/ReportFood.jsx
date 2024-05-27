@@ -35,7 +35,7 @@ const ReportFood = (ReportFood) => {
                 Swal.fire({
                     icon: "error",
                     title: "Oops...",
-                    text: "Hanya file PNG, JPG, dan JPEG dan HEIF yang diizinkan!",
+                    text: "Hanya file PNG, JPG, JPEG dan HEIF yang diizinkan!",
                 });
                 event.target.value = "";
             } else if (file.size > maxSize) {

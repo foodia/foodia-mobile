@@ -73,8 +73,7 @@ const ReviewCamp = () => {
           icon: "success",
           title: "Review Berhasil Disimpan",
           text: "Terima kasih telah memberi review",
-          showConfirmButton: false,
-          timer: 2000,
+          showConfirmButton: true,
           confirmButtonColor: "#6CB28E",
           confirmButtonText: "OK",
         }).then(() => {
