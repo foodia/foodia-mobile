@@ -102,7 +102,7 @@ const FormReportMerchant = () => {
             });
           }
           setLoadingImage(false);
-          console.log("hasil compressedFile", compressedFile);
+          // console.log("hasil compressedFile", compressedFile);
         })
         .catch((error) => {
           Swal.fire({

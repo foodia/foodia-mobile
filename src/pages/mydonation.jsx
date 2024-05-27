@@ -21,7 +21,7 @@ const mydonation = () => {
   const [isCheckedSuccess, setIsCheckedSuccess] = useState();
   const [isOpenedMonthOptions, setIsOpenedMonthOptions] = useState(false);
 
-  console.log(monthOptions);
+  // console.log(monthOptions);
 
   const toggleSwitch = () => {
     setIsChecked((prevState) => !prevState);
@@ -47,8 +47,7 @@ const mydonation = () => {
     setLoading(true);
     axios
       .get(
-        `${
-          process.env.NEXT_PUBLIC_API_BASE_URL
+        `${process.env.NEXT_PUBLIC_API_BASE_URL
         }donation/list?start=${month}-01&end=${month}-${new Date(
           moment(month, "YYYY-MM").format("YYYY"),
           moment(month, "YYYY-MM").format("MM"),
@@ -161,12 +160,11 @@ const mydonation = () => {
                         onClick={() => {
                           onChangeMonth(bulan);
                         }}
-                        className={`${
-                          moment(bulan, "YYYY-MM").format("MMM YYYY") ===
-                          moment(month, "YYYY-MM").format("MMM YYYY")
+                        className={`${moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                            moment(month, "YYYY-MM").format("MMM YYYY")
                             ? "text-primary"
                             : "text-black"
-                        } text-[12px] w-full text-left font-semibold`}
+                          } text-[12px] w-full text-left font-semibold`}
                       >
                         {moment(bulan, "YYYY-MM").format("MMM YYYY")}
                       </button>
@@ -205,11 +203,10 @@ const mydonation = () => {
                       </p>
                     </div>
                     <p
-                      className={`text-[16px] font-bold ${
-                        data.type_donation === "booster"
+                      className={`text-[16px] font-bold ${data.type_donation === "booster"
                           ? "text-[#1D5882]"
                           : "text-primary"
-                      }`}
+                        }`}
                     >
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",

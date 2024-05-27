@@ -82,7 +82,7 @@ const PesananMerchan = () => {
 
     if (status === "review") {
       filtered = dataApi.filter((data) => data.order_status === "review");
-      console.log(filtered, dataApi);
+      // console.log(filtered, dataApi);
     } else if (status === "diproses") {
       filtered = dataApi.filter((data) => data.order_status === "diproses");
     } else if (status === "selesai") {
@@ -101,8 +101,8 @@ const PesananMerchan = () => {
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "review"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
               }`}
             onClick={() => handleFilterChange("review")}
           >
@@ -110,8 +110,8 @@ const PesananMerchan = () => {
           </div>
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
               }`}
             onClick={() => handleFilterChange("diproses")}
           >
@@ -119,8 +119,8 @@ const PesananMerchan = () => {
           </div>
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
+              ? "text-primary border-b-2 border-primary"
+              : "text-gray-500"
               }`}
             onClick={() => handleFilterChange("selesai")}
           >

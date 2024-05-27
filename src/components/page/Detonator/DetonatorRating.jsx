@@ -182,7 +182,7 @@ const DetonatorRating = (DetonatorRating) => {
     if (file.size <= maxSize) {
       setImages(file);
       setLoadingImage(false);
-      console.log('file', file);
+      // console.log('file', file);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
@@ -197,7 +197,7 @@ const DetonatorRating = (DetonatorRating) => {
             })
           }
           setLoadingImage(false);
-          console.log('hasil compressedFile', compressedFile);
+          // console.log('hasil compressedFile', compressedFile);
         })
         .catch((error) => {
           Swal.fire({

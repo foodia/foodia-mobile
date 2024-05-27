@@ -205,7 +205,7 @@ function StepOne({
 
   const handleWaktuChange = (event) => {
     const selectedTime = event.target.value;
-    console.log(selectedTime);
+    // console.log(selectedTime);
 
     const isWithinAllowedRange = isTimeWithinRange(selectedTime);
 
