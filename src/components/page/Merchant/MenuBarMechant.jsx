@@ -32,7 +32,7 @@ const MenuBarMechant = () => {
             })
                 .then((res) => {
                     setLoading(false);
-                    setJumlah(res.data.body.length);
+                    setJumlah(res.data.body?.length);
                 }).catch((error) => {
                     setLoading(false);
                     Error401(error, router);
@@ -124,9 +124,14 @@ const MenuBarMechant = () => {
                         className="flex flex-col items-center justify-center gap-1 w-24"
                     >
                         <div className="relative w-[48px] h-[48px] rounded-md bg-menu text-green flex items-center justify-center">
-                            <div className="absolute top-0 right-0 h-[13px] w-[13px] bg-red-500 text-white rounded-full flex items-center justify-center text-[8px] font-bold">
-                                <span>{loading ? "..." : jumlah}</span>
-                            </div>
+                            {jumlah ? (
+                                <div className="absolute top-0 right-0 h-[13px] w-[13px] bg-red-500 text-white rounded-full flex items-center justify-center text-[8px] font-bold">
+                                    <span>{loading ? "..." : jumlah}</span>
+                                </div>
+                            ) : (
+                                ""
+                            )}
+
                             <Image
                                 src={"/icon/ulasan.png"}
                                 alt="Ulasan"

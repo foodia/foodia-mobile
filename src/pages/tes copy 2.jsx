@@ -19,14 +19,14 @@ const Tes = () => {
                     setUkuran((result.size / (1024 * 1024)).toFixed(2));
                 },
                 error(err) {
-                    console.log(err.message);
+                    // console.log(err.message);
                 }
             });
         }
     }
 
     useEffect(() => {
-        console.log(foto);
+        // console.log(foto);
     }, [foto]);
 
     return (

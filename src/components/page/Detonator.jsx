@@ -48,7 +48,7 @@ const Detonator = () => {
             }
           );
           const cekData = response.data.body;
-          console.log("cekData", cekData);
+          // console.log("cekData", cekData);
 
           if (!cekData.detonator) {
             Swal.fire({
@@ -225,31 +225,28 @@ const Detonator = () => {
         </div>
         <div className="flex flex-row px-6 py-4 justify-between">
           <div
-            className={`cursor-pointer text-center pb-2 text-[16px] ${
-              selectedStatus === "DRAFT"
+            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "DRAFT"
                 ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
                 : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-            }`}
+              }`}
             onClick={() => handleFilterChange("DRAFT")}
           >
             <p>Campaign Baru</p>
           </div>
           <div
-            className={`cursor-pointer text-center pb-2 ml-2 text-[16px] ${
-              selectedStatus === "OPEN,INPROGRESS"
+            className={`cursor-pointer text-center pb-2 ml-2 text-[16px] ${selectedStatus === "OPEN,INPROGRESS"
                 ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
                 : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-            }`}
+              }`}
             onClick={() => handleFilterChange("OPEN,INPROGRESS")}
           >
             <p>Campaign Berjalan</p>
           </div>
           <div
-            className={`cursor-pointer text-center pb-2 text-[16px] ${
-              selectedStatus === "FINISHED"
+            className={`cursor-pointer text-center pb-2 text-[16px] ${selectedStatus === "FINISHED"
                 ? "text-[#6CB28E] font-bold border border-t-0 border-x-0 border-b-[2px] border-b-[#6CB28E]"
                 : "text-gray-400 font-bold border border-t-0 border-x-0 border-b-[2px] border-b-transparent"
-            }`}
+              }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
             <p>Campaign Selesai</p>

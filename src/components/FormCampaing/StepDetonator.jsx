@@ -72,7 +72,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
     if (file.size <= maxSize) {
       setFotoSelfi(file);
       setLoadingSelfi(false);
-      console.log('file', file);
+      // console.log('file', file);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
@@ -86,9 +86,9 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
               iconColor: 'bg-black',
             })
           }
-          console.log('ukuran compressedFile', size);
+          // console.log('ukuran compressedFile', size);
           setLoadingSelfi(false);
-          console.log('hasil compressedFile', compressedFile);
+          // console.log('hasil compressedFile', compressedFile);
         })
         .catch((error) => {
           Swal.fire({
@@ -123,7 +123,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
     if (file.size <= maxSize) {
       setFotoKTP(file);
       setLoadingKTP(false);
-      console.log('file', file);
+      // console.log('file', file);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
@@ -404,7 +404,7 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
           setFotoSelfi(compressedFile);
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
         });
     }
   };

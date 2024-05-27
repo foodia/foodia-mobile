@@ -60,7 +60,7 @@ const ReviewCamp = () => {
           order_id: parseInt(id_order),
           star: star,
           photo: "-",
-          note: description,
+          note: description ? description : "-",
         },
         {
           headers: {

@@ -30,13 +30,13 @@ const Tes = () => {
                     setPercentReduction(reduction.toFixed(2));
                 })
                 .catch((error) => {
-                    console.log(error);
+                    // console.log(error);
                 });
         }
     };
 
     useEffect(() => {
-        console.log(foto);
+        // console.log(foto);
     }, [foto]);
 
     return (
