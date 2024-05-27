@@ -73,6 +73,7 @@ const Edit = () => {
                 });
                 event.target.value = "";
             } else {
+                setLoading(false)
                 setFotoSelfi(file);
             }
         }
@@ -102,6 +103,7 @@ const Edit = () => {
                 event.target.value = "";
             } else {
                 setKtpPhoto(file);
+                setLoading(false)
             }
         }
     };

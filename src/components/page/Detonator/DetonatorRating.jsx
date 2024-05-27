@@ -24,7 +24,7 @@ const DetonatorRating = (DetonatorRating) => {
   const [dataOrder, setDataOrder] = useState({});
   const [star, setStar] = useState(newReport?.star || 0);
   const [description, setDescription] = useState(newReport?.description ?? "");
-  const [loading, setloading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [images, setImages] = useState("");
   const [loadingImage, setLoadingImage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,7 +43,7 @@ const DetonatorRating = (DetonatorRating) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setloading(true);
+    setLoading(false)
     axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${id_camp}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -53,16 +53,16 @@ const DetonatorRating = (DetonatorRating) => {
         const orderData = response.data.body.orders.filter((order) => order.id === parseInt(id_order));
         setDataOrder(orderData[0]);
         setnewReport(response.data.body);
-        setloading(false);
+        setLoading(false)
       })
       .catch((error) => {
-        setloading(false);
+        setLoading(false)
         Error401(error, router);
       })
   }, [id_camp]);
 
   useEffect(() => {
-    setloading(false);
+    setLoading(false)
   }, [star]);
 
   const handleStarChange = (index) => {
@@ -74,14 +74,14 @@ const DetonatorRating = (DetonatorRating) => {
   };
   const handleSubmit = (event) => {
     // event.preventDefault();
-    setloading(true);
+    setLoading(false);
     const id_merchant = localStorage.getItem("id_detonator");
     const token = localStorage.getItem("token");
 
     // Validation checks
     if (!star || !description) {
       window.alert("All fields are required");
-      setloading(false);
+      setLoading(false)
       return;
     }
 
@@ -109,19 +109,23 @@ const DetonatorRating = (DetonatorRating) => {
         .then((createRatingResponse) => {
           Swal.fire({
             icon: "success",
-            title: "Review Detonator Berhasil Disimpan",
-            text: "Terima kasih telah memberi review detonator",
+            title: "Review Berhasil Disimpan",
+            text: "Terima kasih telah memberi review",
             showConfirmButton: false,
             timer: 2000,
-          });
+            confirmButtonColor: "#6CB28E",
+            confirmButtonText: "OK",
+          }).then(() => {
+            router.push("/detonator/review");
+          })
 
           setTimeout(() => {
             router.push("/detonator/review");
           }, 2000);
-          setloading(false);
+          setLoading(false)
         })
         .catch((error) => {
-          setloading(false);
+          setLoading(false)
           Error401(error, router);
         });
     };
@@ -141,7 +145,7 @@ const DetonatorRating = (DetonatorRating) => {
           }
         })
         .catch((error) => {
-          setloading(false);
+          setLoading(false)
           if (error.response && error.response.status === 401) {
             Error401(error, router);
           } else {
@@ -173,7 +177,7 @@ const DetonatorRating = (DetonatorRating) => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Hanya file PNG, JPG, dan JPEG dan HEIF yang diizinkan!",
+        text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
       });
       setLoadingImage(false);
       return;
@@ -205,6 +209,7 @@ const DetonatorRating = (DetonatorRating) => {
             text: "Ukuran gambar melebihi 5MB!",
           });
           setLoadingImage(false);
+          setLoading(false)
         });
     }
   };

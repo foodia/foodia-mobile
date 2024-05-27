@@ -29,6 +29,7 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
   // const { stepForm } = props;
   const router = useRouter();
   const [loadingSelfi, setLoadingSelfi] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [loadingKTP, setLoadingKTP] = useState(false);
   const [merchant_name, setmerchant_name] = useState(
     registrasiMerchant?.merchant_name ?? ""
@@ -118,6 +119,7 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
             text: "Ukuran gambar melebihi 5MB!",
           });
           setLoadingSelfi(false);
+          setLoading(false)
         });
     }
   };
@@ -165,6 +167,7 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
             text: "Ukuran gambar melebihi 5MB!",
           });
           setLoadingKTP(false);
+          setLoading(false)
         });
     }
 

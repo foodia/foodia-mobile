@@ -11,6 +11,7 @@ const CreateReport = (CreateReport) => {
     // const { stepForm } = props;
     const router = useRouter();
     const campaign_id = router.query.id;
+    const [loading, setLoading] = useState(false);
     const [newReport, setnewReport] = useState({});
     const [title, seTitle] = useState(newReport?.title ?? '');
     const [description, setDescription] = useState(newReport?.description ?? '');
@@ -60,6 +61,7 @@ const CreateReport = (CreateReport) => {
                 event.target.value = "";
             } else {
                 setImgReport(file);
+                setLoading(false)
             }
         }
     };

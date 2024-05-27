@@ -111,6 +111,7 @@ const FormReportMerchant = () => {
             text: "Ukuran gambar melebihi 5MB!",
           });
           setLoadingImage(false);
+          setLoading(false)
         });
     }
   };

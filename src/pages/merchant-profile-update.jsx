@@ -60,8 +60,7 @@ const MerchantUpdateProfile = (profile) => {
   useEffect(() => {
     axios
       .get(
-        `${
-          process.env.NEXT_PUBLIC_API_BASE_URL
+        `${process.env.NEXT_PUBLIC_API_BASE_URL
         }merchant/fetch/${localStorage.getItem("Merchant_id")}`,
         {
           headers: {
@@ -132,8 +131,7 @@ const MerchantUpdateProfile = (profile) => {
     }
     axios
       .put(
-        `${
-          process.env.NEXT_PUBLIC_API_BASE_URL
+        `${process.env.NEXT_PUBLIC_API_BASE_URL
         }merchant/update/${localStorage.getItem("Merchant_id")}`,
         formData,
         {
@@ -274,9 +272,8 @@ const MerchantUpdateProfile = (profile) => {
         ) : (
           <div class="pt-12 w-full h-screen flex flex-col">
             <div
-              className={`flex flex-col items-center justify-center mt-5 w-full gap-6 ${
-                uploadedFile || validImage ? "mb-6" : ""
-              }`}
+              className={`flex flex-col items-center justify-center mt-5 w-full gap-6 ${uploadedFile || validImage ? "mb-6" : ""
+                }`}
             >
               <label
                 htmlFor="images"
@@ -326,11 +323,9 @@ const MerchantUpdateProfile = (profile) => {
             </div>
             <div className="mb-4 p-3 px-2 flex flex-col gap-3">
               <div
-                className={`flex flex-row items-center p-3 pr-2 py-0  ${
-                  merchant_name ? "bg-transparent" : "bg-gray-50"
-                } border-[1px] ${
-                  !merchant_name && "border-red-500"
-                }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
+                className={`flex flex-row items-center p-3 pr-2 py-0  ${merchant_name ? "bg-transparent" : "bg-gray-50"
+                  } border-[1px] ${!merchant_name && "border-red-500"
+                  }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
               >
                 <IconBuildingStore />
                 <input
@@ -349,12 +344,10 @@ const MerchantUpdateProfile = (profile) => {
               </div>
               <div className="flex flex-col gap-1">
                 <div
-                  className={`flex flex-row items-center p-3 pr-2 py-0 ${
-                    phone ? "bg-transparent" : "bg-gray-50"
-                  } border-[1px] ${
-                    (!phone && !validPhone && "border-red-500") ||
+                  className={`flex flex-row items-center p-3 pr-2 py-0 ${phone ? "bg-transparent" : "bg-gray-50"
+                    } border-[1px] ${(!phone && !validPhone && "border-red-500") ||
                     (phone && !validPhone && "border-red-500")
-                  }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
+                    }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
                 >
                   <IconDeviceMobile />
                   <input
@@ -384,11 +377,9 @@ const MerchantUpdateProfile = (profile) => {
                 </p>
               </div>
               <div
-                className={`flex flex-row items-start h-24 p-3 pr-2  ${
-                  address ? "bg-transparent" : "bg-gray-50"
-                } border-[1px] ${
-                  !address && "border-red-500"
-                }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
+                className={`flex flex-row items-start h-24 p-3 pr-2  ${address ? "bg-transparent" : "bg-gray-50"
+                  } border-[1px] ${!address && "border-red-500"
+                  }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
               >
                 <IconHome />
                 <textarea
@@ -420,11 +411,10 @@ const MerchantUpdateProfile = (profile) => {
               !validImage || !phone || !merchant_name || !address || !validPhone
             }
             onClick={onSubmit}
-            className={`flex items-center justify-center ${
-              !validImage || !phone || !merchant_name || !address || !validPhone
+            className={`flex items-center justify-center ${!validImage || !phone || !merchant_name || !address || !validPhone
                 ? "bg-gray-400"
                 : "bg-primary"
-            } border-0 rounded-lg w-full h-10 text-white font-bold text-center`}
+              } border-0 rounded-lg w-full h-10 text-white font-bold text-center`}
           >
             Ubah
           </button>

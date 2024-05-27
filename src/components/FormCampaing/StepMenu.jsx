@@ -105,6 +105,7 @@ function StepOne({ Menu, setMenu }) {
             text: "Ukuran gambar melebihi 5MB!",
           });
           setLoadingImage(false);
+          setLoading(false)
         });
     }
   };
