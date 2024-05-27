@@ -150,6 +150,7 @@ const UpdateProfile = (profile) => {
             });
           });
       }
+      setLoading(false)
     }
   };
 
@@ -165,9 +166,8 @@ const UpdateProfile = (profile) => {
         <Header title="Ubah Profile" />
         <div class="pt-12 w-full h-screen flex flex-col">
           <div
-            className={`flex flex-col items-center justify-center mt-5 w-full gap-6 ${
-              uploadedFile || validImage ? "mb-6" : ""
-            }`}
+            className={`flex flex-col items-center justify-center mt-5 w-full gap-6 ${uploadedFile || validImage ? "mb-6" : ""
+              }`}
           >
             <label
               htmlFor="images"
@@ -217,9 +217,8 @@ const UpdateProfile = (profile) => {
           </div>
           <div className="mb-4 p-3 px-2 flex flex-col gap-3">
             <div
-              className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-[1px] ${
-                !fullname && "border-red-500"
-              }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
+              className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-[1px] ${!fullname && "border-red-500"
+                }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
             >
               <IconUser />
               <input
@@ -245,10 +244,9 @@ const UpdateProfile = (profile) => {
             </div>
             <div className="flex flex-col gap-1">
               <div
-                className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-[1px] ${
-                  (!phone && !validPhone && "border-red-500") ||
+                className={`flex flex-row items-center p-3 pr-2 py-0 bg-transparent border-[1px] ${(!phone && !validPhone && "border-red-500") ||
                   (phone && !validPhone && "border-red-500")
-                }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
+                  }  text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none`}
               >
                 <IconDeviceMobile />
                 <input
@@ -282,11 +280,10 @@ const UpdateProfile = (profile) => {
               !validImage || !phone || !email || !fullname || !validPhone
             }
             onClick={onSubmit}
-            className={`flex items-center justify-center ${
-              !validImage || !phone || !email || !fullname || !validPhone
+            className={`flex items-center justify-center ${!validImage || !phone || !email || !fullname || !validPhone
                 ? "bg-gray-400"
                 : "bg-primary"
-            } border-0 rounded-lg w-full h-10 text-white font-bold text-center`}
+              } border-0 rounded-lg w-full h-10 text-white font-bold text-center`}
           >
             Ubah
           </button>

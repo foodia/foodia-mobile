@@ -97,6 +97,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
             text: "Ukuran gambar melebihi 5MB!",
           });
           setLoadingSelfi(false);
+          setLoading(false)
         });
     }
   };
@@ -146,6 +147,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
             text: "Ukuran gambar melebihi 5MB!",
           });
           setLoadingKTP(false);
+          setLoading(false)
         });
     }
   };

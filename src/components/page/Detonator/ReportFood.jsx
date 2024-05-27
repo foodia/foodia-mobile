@@ -10,6 +10,7 @@ import Error401 from "@/components/error401";
 const ReportFood = (ReportFood) => {
     const router = useRouter();
     const { id } = router.query;
+    const [loading, setLoading] = useState(false);
     const [newReport, setnewReport] = useState({});
     const [star, setStar] = useState(newReport?.star || 0);
     const [description, setDescription] = useState(newReport?.description ?? '');
@@ -46,6 +47,7 @@ const ReportFood = (ReportFood) => {
                 event.target.value = "";
             } else {
                 setImgReport(file);
+                setLoading(false)
             }
         }
     };
