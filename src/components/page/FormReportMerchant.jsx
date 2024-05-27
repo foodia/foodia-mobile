@@ -80,7 +80,7 @@ const FormReportMerchant = () => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Hanya file PNG, JPG, dan JPEG dan HEIF yang diizinkan!",
+        text: "Hanya file PNG, JPG, JPEG dan HEIF yang diizinkan!",
       });
       setLoadingImage(false);
       return;
@@ -311,9 +311,8 @@ const FormReportMerchant = () => {
                   disabled={!image_url || !description}
                   onClick={() => handleStepTwoSubmit()}
                   type="submit"
-                  className={`text-white ${
-                    !image_url || !description ? "bg-gray-400" : "bg-primary"
-                  } focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
+                  className={`text-white ${!image_url || !description ? "bg-gray-400" : "bg-primary"
+                    } focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
                 >
                   Kirim
                 </button>

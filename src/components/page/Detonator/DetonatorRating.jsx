@@ -111,18 +111,15 @@ const DetonatorRating = (DetonatorRating) => {
             icon: "success",
             title: "Review Berhasil Disimpan",
             text: "Terima kasih telah memberi review",
-            showConfirmButton: false,
-            timer: 2000,
+            showConfirmButton: true,
             confirmButtonColor: "#6CB28E",
             confirmButtonText: "OK",
           }).then(() => {
+            setLoading(false)
             router.push("/detonator/review");
           })
 
-          setTimeout(() => {
-            router.push("/detonator/review");
-          }, 2000);
-          setLoading(false)
+
         })
         .catch((error) => {
           setLoading(false)
