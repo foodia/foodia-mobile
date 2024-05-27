@@ -71,16 +71,17 @@ const ReviewCamp = () => {
       .then((response) => {
         Swal.fire({
           icon: "success",
-          title: "Success",
-          text: "Ulasan Anda telah dikirimkan",
-          showConfirmButton: true,
-          confirmButtonText: "Ok",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            router.push("/merchant/review");
-          }
-        });
-        setloading(false);
+          title: "Review Berhasil Disimpan",
+          text: "Terima kasih telah memberi review",
+          showConfirmButton: false,
+          timer: 2000,
+          confirmButtonColor: "#6CB28E",
+          confirmButtonText: "OK",
+        }).then(() => {
+          setloading(false);
+          router.push("/merchant/review");
+        })
+
       })
       .catch((error) => {
         setloading(false);

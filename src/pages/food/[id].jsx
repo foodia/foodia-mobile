@@ -49,7 +49,7 @@ const FoodCampaign = () => {
     <>
       <main className="overflow-hidden">
         <div className="my-0 mx-auto max-w-480 h-screen overflow-hidden bg-white flex flex-col">
-          <Header title="Status Merchant" backto={`/campaign/${id}`} />
+          <Header title="Status Merchant" />
           <div className="container mx-auto mt-14 bg-white h-screen">
             {/* <div className="mx-auto text-center p-2 text-primary">
               <h1 className="font-bold">Status Pesanan</h1>

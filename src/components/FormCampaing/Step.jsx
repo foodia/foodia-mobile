@@ -296,6 +296,7 @@ function StepOne({
         });
     }
     setUploadedFile(file);
+    setLoading(false)
   };
 
   const handleSubmit = (e) => {
