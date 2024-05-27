@@ -174,7 +174,7 @@ const BuktiPembayaran = () => {
           href={prevPath}
           onClick={() => {
             localStorage.removeItem("external_id");
-            localStorage.removeItem("prevPath");
+            localStorage.setItem("prevPath", "/home");
           }}
           className="bg-slate-200 flex justify-center items-center bg-transparent border-2 h-10 border-primary p-3 rounded-xl outline-none"
         >

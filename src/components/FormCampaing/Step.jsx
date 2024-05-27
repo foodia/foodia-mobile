@@ -96,24 +96,12 @@ function StepOne({
   const [hour, setHour] = useState("");
   const [minute, setMinute] = useState("");
   const [Waktu, setWaktu] = useState("");
-  // const [Waktu, setWaktu] = useState(() => {
-  //   const storedFormData = localStorage.getItem("formData");
-  //   const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-  //   return parsedFormData.Waktu || "";
-  // });
-
   const [Description, setDescription] = useState(() => {
     const storedFormData = localStorage.getItem("formData");
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
     return parsedFormData.Description || "";
     Description;
   });
-
-  // const [ImageCamp, setImageCamp] = useState(() => {
-  //     const storedFormData = localStorage.getItem('formData');
-  //     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-  //     return parsedFormData.ImageCamp || '';
-  // });
 
   useEffect(() => {
     setLoading(false);
@@ -147,19 +135,22 @@ function StepOne({
   const handleHourChange = (e) => {
     const selectedHour = e.target.value.padStart(2, "0");
     setHour(selectedHour);
-    localStorage.setItem(
-      "formData",
-      JSON.stringify({ Waktu: `${selectedHour}:${minute}` })
-    );
+    setWaktu(`${selectedHour}:${minute}`);
+    // localStorage.setItem(
+    //   "formData",
+    //   JSON.stringify({ Waktu: `${selectedHour}:${minute}` })
+    // );
   };
 
   const handleMinuteChange = (e) => {
     const selectedMinute = e.target.value.padStart(2, "0");
     setMinute(selectedMinute);
-    localStorage.setItem(
-      "formData",
-      JSON.stringify({ Waktu: `${hour}:${selectedMinute}` })
-    );
+    setWaktu(`${hour}:${selectedMinute}`);
+    // localStorage.setItem(
+    //   "formData",
+    //   JSON.stringify({ Waktu: `${hour}:${selectedMinute}` })
+    // );
+    // setWaktu
   };
 
   const hourOptions = Array.from({ length: 22 }, (_, i) =>
@@ -203,14 +194,13 @@ function StepOne({
     }
   };
 
-  const handleWaktuChange = (event) => {
-    const selectedTime = event.target.value;
-    // console.log(selectedTime);
+  const handleWaktuChange = (waktu) => {
+    // const selectedTime = event.target.value;
 
     const isWithinAllowedRange = isTimeWithinRange(selectedTime);
 
     if (isWithinAllowedRange) {
-      setWaktu(selectedTime);
+      setWaktu(waktu);
     } else {
       Swal.fire({
         icon: "error",
@@ -259,7 +249,7 @@ function StepOne({
     }
     setLoadingFile(true);
 
-    if (!allowedTypes.includes(file.type)) {
+    if (!allowedTypes.includes(file?.type)) {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -296,7 +286,7 @@ function StepOne({
         });
     }
     setUploadedFile(file);
-    setLoading(false)
+    setLoading(false);
   };
 
   const handleSubmit = (e) => {
@@ -413,8 +403,9 @@ function StepOne({
             value={TypeEvent}
             id="TypeEvent"
             onChange={handleTypeEventChange}
-            className={` ${TypeEvent === "" ? "text-gray-400" : "text-black"
-              } ml-1 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none`}
+            className={` ${
+              TypeEvent === "" ? "text-gray-400" : "text-black"
+            } ml-1 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none`}
           >
             <option disabled value="">
               Tipe Campaign
@@ -475,18 +466,20 @@ function StepOne({
                 </button>
               ))}
             </div>
-            <div className="bg-white w-10 border text-black bottom-[230px] border-black flex flex-col overflow-auto h-24">
-              {minuteOptions.map((m) => (
-                <button
-                  onClick={(m) => handleMinuteChange(m)}
-                  className="hover:bg-gray-400"
-                  key={m}
-                  value={m}
-                >
-                  {m}
-                </button>
-              ))}
-            </div>
+            {hour && (
+              <div className="bg-white w-10 border text-black bottom-[230px] border-black flex flex-col overflow-auto h-24">
+                {minuteOptions.map((m) => (
+                  <button
+                    onClick={(m) => handleMinuteChange(m)}
+                    className="hover:bg-gray-400"
+                    key={m}
+                    value={m}
+                  >
+                    {m}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -567,24 +560,17 @@ function StepOne({
         <div className="grid gap-4 content-center">
           <button
             disabled={
-              !eventName ||
-              !TypeEvent ||
-              !Tanggal ||
-              !Waktu ||
-              !Description ||
-              !uploadedFile
+              eventName === "" ||
+              TypeEvent === "" ||
+              Tanggal === "" ||
+              Waktu === "" ||
+              Description === "" ||
+              uploadedFile === null
             }
             onClick={() => handleSubmit()}
             type="submit"
             className={
-              !eventName ||
-                !TypeEvent ||
-                !Tanggal ||
-                !Waktu ||
-                !Description ||
-                !uploadedFile
-                ? "text-white bg-gray-400 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
-                : "text-white bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+              "text-white disabled:bg-gray-400 bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
             }
           >
             Lanjut
@@ -1086,10 +1072,11 @@ function StepThree({
         <div className="items-center justify-center mt-1 w-full">
           <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
             <div
-              className={`flex ${Object.keys(groupedCart).length > 0
-                ? "justify-between"
-                : "justify-center"
-                } w-full`}
+              className={`flex ${
+                Object.keys(groupedCart).length > 0
+                  ? "justify-between"
+                  : "justify-center"
+              } w-full`}
             >
               <div className="flex">
                 {Object.keys(groupedCart).length > 0 ? (
@@ -1126,81 +1113,82 @@ function StepThree({
         <div className="items-center justify-center w-full">
           {Object.keys(groupedCart).length > 0
             ? Object.keys(groupedCart).map((IdMerchan, storeIndex) => (
-              <div key={storeIndex} className="mb-4 p-2">
-                {groupedCart[IdMerchan].map((item, itemIndex) => (
-                  <div
-                    key={itemIndex}
-                    className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
-                  >
-                    <div className="flex h-30 w-full">
-                      <img
-                        className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
-                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0
-                          ? item.images[0].image_url
-                          : ""
+                <div key={storeIndex} className="mb-4 p-2">
+                  {groupedCart[IdMerchan].map((item, itemIndex) => (
+                    <div
+                      key={itemIndex}
+                      className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
+                    >
+                      <div className="flex h-30 w-full">
+                        <img
+                          className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
+                          src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${
+                            item.images.length > 0
+                              ? item.images[0].image_url
+                              : ""
                           }`}
-                        alt=""
-                      />
-                      <div className="flex flex-col justify-between w-full">
-                        <div className="text-left place-items-start">
-                          <div className="text-primary font-bold capitalize">
-                            {item.name}
-                            {/* {item.imageUrl} */}
+                          alt=""
+                        />
+                        <div className="flex flex-col justify-between w-full">
+                          <div className="text-left place-items-start">
+                            <div className="text-primary font-bold capitalize">
+                              {item.name}
+                              {/* {item.imageUrl} */}
+                            </div>
+                            <div className="mb-1 font-sans text-[11px]">
+                              {/* terjual | Disukai oleh: 20 | */}
+                              Max Quota: {item.capacity}
+                            </div>
+                            <div className="mb-1 font-sans text-[11px]">
+                              {item.description}
+                            </div>
                           </div>
-                          <div className="mb-1 font-sans text-[11px]">
-                            {/* terjual | Disukai oleh: 20 | */}
-                            Max Quota: {item.capacity}
-                          </div>
-                          <div className="mb-1 font-sans text-[11px]">
-                            {item.description}
-                          </div>
-                        </div>
-                        <div className="mt-2 flex flex-row gap-4 justify-between">
-                          <p className="font-bold text-primary">
-                            {new Intl.NumberFormat("id-ID", {
-                              style: "currency",
-                              currency: "IDR",
-                              minimumFractionDigits: 0,
-                            }).format(item.price * item.quantity || 0)}
-                          </p>
-                          <div className="grid place-items-center">
-                            <div className="flex items-center">
-                              <button
-                                className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                onClick={() =>
-                                  handleDecrease(
-                                    IdMerchan,
-                                    item.id,
-                                    item.capacity
-                                  )
-                                }
-                              >
-                                <IconMinus size={15} />
-                              </button>
-                              <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
-                                {item.quantity}
-                              </span>
-                              <button
-                                className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                onClick={() =>
-                                  handleIncrease(
-                                    IdMerchan,
-                                    item.id,
-                                    item.capacity
-                                  )
-                                }
-                              >
-                                <IconPlus size={15} />
-                              </button>
+                          <div className="mt-2 flex flex-row gap-4 justify-between">
+                            <p className="font-bold text-primary">
+                              {new Intl.NumberFormat("id-ID", {
+                                style: "currency",
+                                currency: "IDR",
+                                minimumFractionDigits: 0,
+                              }).format(item.price * item.quantity || 0)}
+                            </p>
+                            <div className="grid place-items-center">
+                              <div className="flex items-center">
+                                <button
+                                  className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                  onClick={() =>
+                                    handleDecrease(
+                                      IdMerchan,
+                                      item.id,
+                                      item.capacity
+                                    )
+                                  }
+                                >
+                                  <IconMinus size={15} />
+                                </button>
+                                <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                  onClick={() =>
+                                    handleIncrease(
+                                      IdMerchan,
+                                      item.id,
+                                      item.capacity
+                                    )
+                                  }
+                                >
+                                  <IconPlus size={15} />
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ))
+                  ))}
+                </div>
+              ))
             : ""}
         </div>
         {/* </div> */}
@@ -1240,7 +1228,8 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
   useEffect(() => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
         }donation/list?start=${month}-01&end=${month}-${new Date(
           moment(month, "YYYY-MM").format("YYYY"),
           moment(month, "YYYY-MM").format("MM"),
@@ -1332,8 +1321,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             amount: parseFloat(donationRequired),
             admin_fee: admin_fee,
             total_amount: parseFloat(donationRequired),
-            payment_channel: `${selectedMethod === "agnostic" ? "Tabunganku" : selectedChannel
-              }`,
+            payment_channel: `${
+              selectedMethod === "agnostic" ? "Tabunganku" : selectedChannel
+            }`,
             success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
           },
         };
@@ -1477,8 +1467,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
           className="flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none"
         >
           <p
-            className={`capitalize font-bold ${selectedMethod === "" ? "text-gray-400" : "text-black"
-              }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
+            className={`capitalize font-bold ${
+              selectedMethod === "" ? "text-gray-400" : "text-black"
+            }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
           >
             {selectedMethod === "" ? "Pilih Salah Satu..." : selectedMethod}
           </p>
@@ -1506,12 +1497,14 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                     className="hidden"
                   />
                   <div
-                    className={`w-[10px] h-[10px] ${data.value === selectedMethod && "bg-primary"
-                      } rounded-full flex justify-center items-center`}
+                    className={`w-[10px] h-[10px] ${
+                      data.value === selectedMethod && "bg-primary"
+                    } rounded-full flex justify-center items-center`}
                   >
                     <div
-                      className={`rounded-full p-2 ${data.value === selectedMethod && "border-primary"
-                        } border-2`}
+                      className={`rounded-full p-2 ${
+                        data.value === selectedMethod && "border-primary"
+                      } border-2`}
                     />
                   </div>
                 </button>
@@ -1530,10 +1523,11 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                 setIsDropdownChannelOpen(!isDropdownChannelOpen);
                 setIsDropdownMethodOpen(false);
               }}
-              className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${selectedMethod === "agnostic"
-                ? "bg-[#1D5882] cursor-normal"
-                : ""
-                }`}
+              className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${
+                selectedMethod === "agnostic"
+                  ? "bg-[#1D5882] cursor-normal"
+                  : ""
+              }`}
             >
               {selectedMethod === "agnostic" ? (
                 <>
@@ -1555,8 +1549,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
               ) : (
                 <>
                   <p
-                    className={`capitalize font-bold ${selectedChannel === "" ? "text-gray-400" : "text-black"
-                      }  pl-2 cursor-pointer outline-none py-4  focus:border-none`}
+                    className={`capitalize font-bold ${
+                      selectedChannel === "" ? "text-gray-400" : "text-black"
+                    }  pl-2 cursor-pointer outline-none py-4  focus:border-none`}
                   >
                     {selectedChannel === "" ? (
                       `Pilih ${selectedMethod}...`
@@ -1578,7 +1573,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             <p
               className={
                 selectedMethod === "agnostic" &&
-                  donationRequired + admin_fee > wallet_balance
+                donationRequired + admin_fee > wallet_balance
                   ? "instructions italic text-[10px] flex items-center"
                   : "hidden"
               }
@@ -1592,81 +1587,85 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
           <div className="flex flex-col px-4 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none">
             {selectedMethod === "ewallet"
               ? eWalletChannelOptions.map((data, index) => (
-                <>
-                  <button
-                    onClick={() => {
-                      setSelectedChannel(data.value);
-                      setSelectedChannelLogo(data.logo);
-                    }}
-                    className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Image width={30} src={data.logo} />
-                      <label
-                        htmlFor="ewallet"
-                        className="font-bold text-black"
-                      >
-                        {data.value}
-                      </label>
-                    </div>
-                    <input
-                      type="radio"
-                      id={data.value}
-                      name="paymentOption"
-                      value={data.value}
-                      className="hidden"
-                    />
-                    <div
-                      className={`w-[10px] h-[10px] ${data.value === selectedChannel && "bg-primary"
-                        } rounded-full flex justify-center items-center`}
+                  <>
+                    <button
+                      onClick={() => {
+                        setSelectedChannel(data.value);
+                        setSelectedChannelLogo(data.logo);
+                      }}
+                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
                     >
-                      <div
-                        className={`rounded-full p-2 ${data.value === selectedChannel && "border-primary"
-                          } border-2`}
+                      <div className="flex items-center gap-2">
+                        <Image width={30} src={data.logo} />
+                        <label
+                          htmlFor="ewallet"
+                          className="font-bold text-black"
+                        >
+                          {data.value}
+                        </label>
+                      </div>
+                      <input
+                        type="radio"
+                        id={data.value}
+                        name="paymentOption"
+                        value={data.value}
+                        className="hidden"
                       />
-                    </div>
-                  </button>
-                  {index !== eWalletChannelOptions.length - 1 ? <hr /> : ""}
-                </>
-              ))
+                      <div
+                        className={`w-[10px] h-[10px] ${
+                          data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                      >
+                        <div
+                          className={`rounded-full p-2 ${
+                            data.value === selectedChannel && "border-primary"
+                          } border-2`}
+                        />
+                      </div>
+                    </button>
+                    {index !== eWalletChannelOptions.length - 1 ? <hr /> : ""}
+                  </>
+                ))
               : bankChannelOptions.map((data, index) => (
-                <>
-                  <button
-                    onClick={() => {
-                      setSelectedChannel(data.value);
-                      setSelectedChannelLogo(data.logo);
-                    }}
-                    className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Image width={30} src={data.logo} />
-                      <label
-                        htmlFor="ewallet"
-                        className="font-bold text-black"
-                      >
-                        {data.value}
-                      </label>
-                    </div>
-                    <input
-                      type="radio"
-                      id={data.value}
-                      name="paymentOption"
-                      value={data.value}
-                      className="hidden"
-                    />
-                    <div
-                      className={`w-[10px] h-[10px] ${data.value === selectedChannel && "bg-primary"
-                        } rounded-full flex justify-center items-center`}
+                  <>
+                    <button
+                      onClick={() => {
+                        setSelectedChannel(data.value);
+                        setSelectedChannelLogo(data.logo);
+                      }}
+                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
                     >
-                      <div
-                        className={`rounded-full p-2 ${data.value === selectedChannel && "border-primary"
-                          } border-2`}
+                      <div className="flex items-center gap-2">
+                        <Image width={30} src={data.logo} />
+                        <label
+                          htmlFor="ewallet"
+                          className="font-bold text-black"
+                        >
+                          {data.value}
+                        </label>
+                      </div>
+                      <input
+                        type="radio"
+                        id={data.value}
+                        name="paymentOption"
+                        value={data.value}
+                        className="hidden"
                       />
-                    </div>
-                  </button>
-                  {index !== bankChannelOptions.length - 1 ? <hr /> : ""}
-                </>
-              ))}
+                      <div
+                        className={`w-[10px] h-[10px] ${
+                          data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                      >
+                        <div
+                          className={`rounded-full p-2 ${
+                            data.value === selectedChannel && "border-primary"
+                          } border-2`}
+                        />
+                      </div>
+                    </button>
+                    {index !== bankChannelOptions.length - 1 ? <hr /> : ""}
+                  </>
+                ))}
           </div>
         ) : (
           ""
@@ -1727,9 +1726,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             type="submit"
             className={
               selectedMethod === "" ||
-                (selectedMethod !== "agnostic" && selectedChannel === "") ||
-                (selectedMethod === "agnostic" &&
-                  donationRequired > wallet_balance)
+              (selectedMethod !== "agnostic" && selectedChannel === "") ||
+              (selectedMethod === "agnostic" &&
+                donationRequired > wallet_balance)
                 ? "text-white bg-gray-400 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
                 : "text-white bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
             }
@@ -1802,11 +1801,11 @@ function Stepfour({
       const updatedCart = cart.map((item, index) =>
         index === existingItemIndex
           ? {
-            ...item,
-            quantity: item.quantity + food.quantity,
-            total: (item.quantity + food.quantity) * item.price,
-            capacity: food.qty,
-          }
+              ...item,
+              quantity: item.quantity + food.quantity,
+              total: (item.quantity + food.quantity) * item.price,
+              capacity: food.qty,
+            }
           : item
       );
       setCart(updatedCart);
@@ -2019,9 +2018,9 @@ function Stepfive({
 }
 
 export {
+  SingleDonationPayment,
   StepOne,
   StepThree,
-  SingleDonationPayment,
   StepTwo,
   Stepfive,
   Stepfour,
