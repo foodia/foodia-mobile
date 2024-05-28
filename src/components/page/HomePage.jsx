@@ -14,6 +14,12 @@ const HomePage = () => {
   const [selectedStatus, setSelectedStatus] = useState("OPEN");
 
   useEffect(() => {
+    if (localStorage.getItem("prevPath") === "payment_reciept") {
+      localStorage.removeItem("prevPath");
+    }
+  });
+
+  useEffect(() => {
     axios
       .get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=OPEN`,

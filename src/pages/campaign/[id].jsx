@@ -16,8 +16,10 @@ const Campaign = () => {
 
   useEffect(() => {
     const prevPath = localStorage.getItem("prevPath");
-    if (prevPath) {
+    if (prevPath !== "payment_reciept") {
       setPrevPath(prevPath);
+    } else if (prevPath === "payment_reciept") {
+      setPrevPath("/home");
     }
 
     const token = localStorage.getItem("token");

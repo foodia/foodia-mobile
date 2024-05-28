@@ -1319,7 +1319,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             payment_method:
               selectedMethod === "agnostic" ? "agnostic" : "mayar",
             amount: parseFloat(donationRequired),
-            admin_fee: admin_fee,
+            admin_fee: 0,
             total_amount: parseFloat(donationRequired),
             payment_channel: `${
               selectedMethod === "agnostic" ? "Tabunganku" : selectedChannel
@@ -1347,19 +1347,19 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             localStorage.removeItem("cart");
             localStorage.removeItem("formData");
             setLoading(false);
+            Swal.fire({
+              icon: "success",
+              title: "Campaign Berhasil dibuat",
+              text: "Terimakasih Telah Membantu Sesama",
+              showConfirmButton: false,
+              timer: 2000,
+            });
             if (selectedMethod !== "agnostic") {
               setTimeout(() => {
                 router.push(`${responeUrl}`);
               }, 2000);
             } else {
               setTimeout(() => {
-                Swal.fire({
-                  icon: "success",
-                  title: "Campaign Berhasil dibuat",
-                  text: "Terimakasih Telah Membantu Sesama",
-                  showConfirmButton: false,
-                  timer: 2000,
-                });
                 router.push(
                   `/bukti_pembayaran?external_id=${response.data.body.payment.external_id}`
                 );
