@@ -141,38 +141,45 @@ const CardFood = (props) => {
                   </div>
                 )}
               </div>
-              <div className="flex mt-5 justify-between items-end  w-full">
-                <span className="text-[#6CB28E] font-bold text-xl">
-                  {formatPrice(price)}
-                </span>
-                {status == "approved" ? (
-                  <div className="flex gap-1">
-                    <Link
-                      href={`merchant/product/edit/${idProduct}`}
-                      className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-medium py-3 p-2 text-sm h-2 rounded"
-                    >
-                      <IconEdit size={15} />
-                    </Link>
-                  </div>
-                ) : (
-                  <div className="pb-1">
-                    <div
-                      className={`flex justify-center items-center rounded-full h-5 ${
-                        status === "waiting"
-                          ? "bg-blue-600"
-                          : status === "approved"
-                          ? "bg-green-500"
-                          : status === "rejected"
-                          ? "bg-red-500"
-                          : ""
-                      }`}
-                    >
-                      <p className="text-white font-medium text-[10px] px-2">
-                        {getStatusIcon()}
-                      </p>
+              <div className="flex flex-col mt-5 justify-between items-start w-full">
+                <div className="flex justify-between w-full">
+                  <span className="text-[#6CB28E] font-bold text-xl">
+                    {formatPrice(price)}
+                  </span>
+                  {status == "approved" ? (
+                    <div className="flex gap-1">
+                      <Link
+                        href={`merchant/product/edit/${idProduct}`}
+                        className="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-medium py-3 p-2 text-sm h-2 rounded"
+                      >
+                        <IconEdit size={15} />
+                      </Link>
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <div className="pb-1">
+                      <div
+                        className={`flex justify-center items-center rounded-full h-5 ${
+                          status === "waiting"
+                            ? "bg-blue-600"
+                            : status === "approved"
+                            ? "bg-green-500"
+                            : status === "rejected"
+                            ? "bg-red-500"
+                            : ""
+                        }`}
+                      >
+                        <p className="text-white font-medium text-[10px] px-2">
+                          {getStatusIcon()}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="text-[10px] text-[#1D5882] flex items-center justify-center font-bold">
+                  <span>{`(`}</span>
+                  <p className="mt-[1px] px-0.5">+ Rp 1.000 - Biaya Platform</p>
+                  <span>{`)`}</span>
+                </div>
               </div>
             </div>
           </div>
