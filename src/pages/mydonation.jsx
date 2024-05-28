@@ -47,7 +47,8 @@ const mydonation = () => {
     setLoading(true);
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
         }donation/list?start=${month}-01&end=${month}-${new Date(
           moment(month, "YYYY-MM").format("YYYY"),
           moment(month, "YYYY-MM").format("MM"),
@@ -130,7 +131,8 @@ const mydonation = () => {
               </label>
             </div>
           </div>
-          <div className="bg-primary w-full px-4 py-2 flex flex-col gap-1 min-h-[22px] rounded-xl">
+          <hr className="h-[2px] border-0 bg-gray-400 rounded-xl" />
+          <div className="bg-primary w-full mt-2 px-4 py-2 flex flex-col gap-1 min-h-[22px] rounded-xl">
             <div className="flex justify-between text-white font-semibold text-base">
               <p>Total Donasi</p>
               <p>
@@ -160,11 +162,12 @@ const mydonation = () => {
                         onClick={() => {
                           onChangeMonth(bulan);
                         }}
-                        className={`${moment(bulan, "YYYY-MM").format("MMM YYYY") ===
-                            moment(month, "YYYY-MM").format("MMM YYYY")
+                        className={`${
+                          moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                          moment(month, "YYYY-MM").format("MMM YYYY")
                             ? "text-primary"
                             : "text-black"
-                          } text-[12px] w-full text-left font-semibold`}
+                        } text-[12px] w-full text-left font-semibold`}
                       >
                         {moment(bulan, "YYYY-MM").format("MMM YYYY")}
                       </button>
@@ -203,10 +206,11 @@ const mydonation = () => {
                       </p>
                     </div>
                     <p
-                      className={`text-[16px] font-bold ${data.type_donation === "booster"
+                      className={`text-[16px] font-bold ${
+                        data.type_donation === "booster"
                           ? "text-[#1D5882]"
                           : "text-primary"
-                        }`}
+                      }`}
                     >
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",
