@@ -73,7 +73,7 @@ const BuktiPembayaran = () => {
                 style: "currency",
                 currency: "IDR",
                 minimumFractionDigits: 0,
-              }).format(pembayaran.total_amount || 0)}
+              }).format(pembayaran.amount || 0)}
             </p>
           </div>
           <hr className="w-full mx-auto my-4 bg-gray-300" />
@@ -141,7 +141,7 @@ const BuktiPembayaran = () => {
                 style: "currency",
                 currency: "IDR",
                 minimumFractionDigits: 0,
-              }).format(pembayaran.total_amount || 0)}
+              }).format(pembayaran.amount || 0)}
             </p>
           </div>
           {/* <div className="flex justify-between">
@@ -165,7 +165,7 @@ const BuktiPembayaran = () => {
                 style: "currency",
                 currency: "IDR",
                 minimumFractionDigits: 0,
-              }).format(pembayaran.total_amount || 0)}
+              }).format(pembayaran.amount || 0)}
             </p>
           </div>
         </div>

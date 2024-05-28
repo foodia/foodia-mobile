@@ -1347,19 +1347,19 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             localStorage.removeItem("cart");
             localStorage.removeItem("formData");
             setLoading(false);
-            Swal.fire({
-              icon: "success",
-              title: "Campaign Created!",
-              text: "Campaign Berhasil dibuat Mohon Tunggu approval dari admin",
-              showConfirmButton: false,
-              timer: 2000,
-            });
             if (selectedMethod !== "agnostic") {
               setTimeout(() => {
                 router.push(`${responeUrl}`);
               }, 2000);
             } else {
               setTimeout(() => {
+                Swal.fire({
+                  icon: "success",
+                  title: "Campaign Berhasil dibuat",
+                  text: "Terimakasih Telah Membantu Sesama",
+                  showConfirmButton: false,
+                  timer: 2000,
+                });
                 router.push(
                   `/bukti_pembayaran?external_id=${response.data.body.payment.external_id}`
                 );
@@ -1367,40 +1367,28 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             }
           })
           .catch((error) => {
-            if (error.response && error.response.status === 401) {
-              localStorage.removeItem("cart");
-              localStorage.removeItem("formData");
-              Error401(error, router);
-            } else {
-              Swal.fire({
-                icon: "error",
-                title: "Gagal Membuat Campaign",
-                text: "Gagal Membuat Campaign Mohon Coba Lagi",
-                showConfirmButton: false,
-                timer: 2000,
-              });
-            }
+            setLoading(false);
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            const messages = {
+              title: "Gagal Membuat Campaign",
+              text: "Gagal Membuat Campaign Mohon Coba Lagi",
+            };
+            Error401(error, router, messages);
           });
       })
       .catch((error) => {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
-          localStorage.removeItem("cart");
-          localStorage.removeItem("formData");
-          Error401(error, router);
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Image Gagal Upload",
-            text: "Gagal Upload Image Mohon Coba Lagi",
-            showConfirmButton: false,
-            timer: 2000,
-          });
-
-          setTimeout(() => {
-            router.push("/createcampaign?step=1");
-          }, 2000);
-        }
+        localStorage.removeItem("cart");
+        localStorage.removeItem("formData");
+        const messages = {
+          title: "Image Gagal Upload",
+          text: "Gagal Upload Image Mohon Coba Lagi",
+        };
+        Error401(error, router, messages);
+        setTimeout(() => {
+          router.push("/createcampaign?step=1");
+        }, 2000);
       });
   };
 
