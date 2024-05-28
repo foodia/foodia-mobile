@@ -9,7 +9,9 @@ const Header = ({ title = "", backto = "" }) => {
   const handleBackButtonClick = () => {
     // Navigate back to the previous page
     if (backto) {
-      localStorage.removeItem("prevPath");
+      if (localStorage.getItem("prevPath") !== "payment_reciept") {
+        localStorage.removeItem("prevPath");
+      }
       localStorage.removeItem("phone");
       localStorage.removeItem("merchantName");
       localStorage.removeItem("updatedAddress");
