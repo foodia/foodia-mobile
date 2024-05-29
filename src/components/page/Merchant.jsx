@@ -231,7 +231,7 @@ const Merchant = () => {
                     date={data.created_at}
                     status={data.status}
                     qty={data.qty}
-                    price={data.original_price}
+                    price={data.price - 1000}
                     images={data.images}
                     idProduct={data.id}
                   />
