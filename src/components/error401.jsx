@@ -79,11 +79,9 @@ const Error401 = (errCode, router, messages) => {
         confirmButton: "custom-confirm-button-swal",
       },
       icon: "error",
-      title: `<p class="w-auto pl-1 font-bold text-md">${
-        messages ? messages.title : "Data Tidak Sesuai"
-      }</p><p class="text-sm w-auto pl-1 font-light">${
-        messages ? messages.text : "Silahkan Cek Kembali Data"
-      }</p>`,
+      title: `<p class="w-auto pl-1 font-bold text-md">${messages ? messages.title : "Data Tidak Sesuai"
+        }</p><p class="text-sm w-auto pl-1 font-light">${messages ? messages.text : "Silahkan Cek Kembali Data"
+        }</p>`,
       html: `
             <div class="absolute px-28 ml-4 top-0 mt-4">
               <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
@@ -105,11 +103,9 @@ const Error401 = (errCode, router, messages) => {
         confirmButton: "custom-confirm-button-swal",
       },
       icon: "error",
-      title: `<p class="w-auto pl-1 font-bold text-md">${
-        messages ? messages.title : "Data Tidak Ditemukan"
-      }</p><p class="text-sm w-auto pl-1 font-light">${
-        messages ? messages.text : "Silahkan Coba Lagi"
-      }</p>`,
+      title: `<p class="w-auto pl-1 font-bold text-md">${messages ? messages.title : "Data Tidak Ditemukan"
+        }</p><p class="text-sm w-auto pl-1 font-light">${messages ? messages.text : "Silahkan Coba Lagi"
+        }</p>`,
       html: `
             <div class="absolute px-28 ml-4 top-0 mt-4">
               <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>

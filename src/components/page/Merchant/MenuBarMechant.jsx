@@ -126,7 +126,7 @@ const MenuBarMechant = () => {
                         <div className="relative w-[48px] h-[48px] rounded-md bg-menu text-green flex items-center justify-center">
                             {jumlah !== 0 && (
                                 <div className="absolute top-0 right-0 h-[13px] w-[13px] bg-red-500 text-white rounded-full flex items-center justify-center text-[8px] font-bold">
-                                    <span>{loading ? "..." : jumlah}</span>
+                                    <span>{jumlah}</span>
                                 </div>
                             )}
 

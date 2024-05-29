@@ -60,7 +60,7 @@ const BottomNav = () => {
       // console.log("no token");
       setLoading(false);
     }
-  }, [router, token]);
+  }, [token]);
 
   function formatNominal(value) {
     value = value.replace(/\D/g, "");
