@@ -39,15 +39,20 @@ const BuktiPembayaran = () => {
         )
         .then((response) => {
           setPembayaran(response.data.body);
-          if (response.data.body.donation_type !== "agnostic") {
-            setPath(
+          if (
+            prevPath !== "/mydonation" &&
+            response.data.body.donation_type !== "agnostic"
+          ) {
+            setPrevPath(
               `/campaign/${response.data.body.campaign_donation.campaign_id}`
             );
-            localStorage.setItem("prevPath", "payment_reciept");
           }
 
-          if (response.data.body.donation_type === "agnostic") {
-            setPath("/mydonation");
+          if (
+            prevPath !== "/mydonation" &&
+            response.data.body.donation_type === "agnostic"
+          ) {
+            setPrevPath("/mydonation");
           }
 
           setLoading(false);
@@ -61,7 +66,7 @@ const BuktiPembayaran = () => {
 
   return (
     <div className="my-0 h-screen max-w-480 bg-white flex flex-col">
-      <Header title="Detail Donasi" backto={path} />
+      <Header title="Detail Donasi" backto={prevPath} />
       <div className="mt-10 p-4 overflow-hidden">
         <div className="p-4 py-8 w-full mb-4 bg-white shadow-[rgba(0,0,2,0.5)_0px_0px_6px_0px] rounded-lg">
           <div className="flex justify-center items-center mb-4 animate-zoom">
@@ -176,7 +181,7 @@ const BuktiPembayaran = () => {
         </div>
 
         <Link
-          href={path}
+          href={prevPath}
           onClick={() => {
             localStorage.removeItem("external_id");
             // localStorage.setItem("prevPath", "/home");

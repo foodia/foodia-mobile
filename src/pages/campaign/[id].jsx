@@ -14,6 +14,8 @@ const Campaign = () => {
   const [campaignData, setCampaignData] = useState(null);
   const [prevPath, setPrevPath] = useState("");
 
+  console.log(prevPath);
+
   useEffect(() => {
     const prevPath = localStorage.getItem("prevPath");
     if (prevPath !== "payment_reciept") {
