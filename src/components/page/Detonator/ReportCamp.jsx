@@ -143,9 +143,14 @@ const ReportCamp = () => {
   }, [id]);
 
   useEffect(() => {
-    setJumlahOrder(dataApi.length);
+    console.log('cek data', dataApi);
+    const filter = dataApi.filter((data) => data.approval_status === 'approved');
+    setJumlahOrder(filter.length);
     setJumlahTrue(dataApi.filter((data) => data.is_report === true).length);
 
+  }, [dataApi]);
+
+  useEffect(() => {
     if (jumlahTrue === jumlahOrder) {
       setButtonStatus(true);
       if (ReportDetonator.length > 0) {
@@ -154,8 +159,7 @@ const ReportCamp = () => {
     } else {
       setButtonStatus(false);
     }
-  }, [dataApi]);
-
+  }, [jumlahOrder, jumlahTrue, ReportDetonator]);
   return (
     <>
       <div className="container mx-auto bg-white h-screen">
@@ -190,29 +194,24 @@ const ReportCamp = () => {
             {token && (
               <>
                 {role === "user" ? (
-                  <div className="w-full flex items-center p-2">
-                    {buttonStatus ? (
-                      <Link
-                        href={`/report/${id}`}
-                        className="bg-primary text-white w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
-                      >
-                        Unduh Laporan
-                      </Link>
-                    ) : (
-                      <button
-                        className="bg-gray-300 text-gray-500 w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
-                        disabled
-                      >
-                        Unduh Laporan
-                      </button>
-                    )}
-                  </div>
+                  <>
+                    {/* <div className="w-full flex items-center p-2">
+                      {!buttonStatus ? (
+                        <button
+                          className="bg-gray-300 text-gray-500 w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
+                          disabled
+                        >
+                          Unduh Laporan
+                        </button>
+                      ) : ''}
+                    </div> */}
+                  </>
                 ) : role === "detonator" ? (
                   <div className="w-full flex items-center p-2">
                     {buttonStatus ? (
                       <Link
                         href={`/detonator/createreport/${id}`}
-                        className="bg-primary text-white w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
+                        className={` text-white w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center ${ReportDetonator.length > 0 ? "cursor-not-allowed bg-gray-500" : "bg-primary"} `}
                       >
                         <IconCirclePlus className="mr-2" />
                         Buat Laporan
