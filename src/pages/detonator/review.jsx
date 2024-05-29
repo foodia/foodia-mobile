@@ -126,9 +126,7 @@ export default function review() {
 
                 })
                 .catch((error) => {
-                    if (error.response && error.response.status === 401) {
-                        Error401(error, router);
-                    }
+                    Error401(error, router);
                 });
         }
     }, []);
@@ -187,7 +185,7 @@ export default function review() {
         } else if (status === "UlasanSelesai") {
 
             axios.get(
-                `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/filter?relation_id=${id}`, {
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/filter?relation_id=${id}&type=detonator`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
