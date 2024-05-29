@@ -118,7 +118,7 @@ function EditProduct() {
     }
 
     const token = localStorage.getItem("token");
-    const idMerchant = sessionStorage.getItem("id");
+    const idMerchant = localStorage.getItem("id");
 
     // Check if an image file is selected
     if (images) {

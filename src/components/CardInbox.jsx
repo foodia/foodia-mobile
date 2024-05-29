@@ -90,6 +90,7 @@ const CardInbox = ({ DataInbox }) => {
           setUrl(`/merchant/detailpesanan/${DataInbox.order.id}`);
           break;
         case "Saldo Pembayaran Sudah Masuk":
+          localStorage.setItem('statusSaldo', 'selesai');
           setUrl(`/merchant/saldo`);
           break;
         case "Lihat Review Pesanan":
@@ -141,9 +142,8 @@ const CardInbox = ({ DataInbox }) => {
     <div className="flex items-center justify-center pb-2">
       <div
         onClick={handleClick}
-        className={`${
-          DataInbox?.is_read === 0 ? "border-primary border-2" : ""
-        } flex flex-col w-full max-w-[320px] leading-1.5 p-2 bg-white rounded-lg shadow-[0px_0px_10px_#0000001A] cursor-pointer`}
+        className={`${DataInbox?.is_read === 0 ? "border-primary border-2" : ""
+          } flex flex-col w-full max-w-[320px] leading-1.5 p-2 bg-white rounded-lg shadow-[0px_0px_10px_#0000001A] cursor-pointer`}
       >
         <div className="flex items-center space-x-2 rtl:space-x-reverse">
           <span className="text-[14px] font-bold text-black">
