@@ -155,7 +155,7 @@ const OrderConfirmation = () => {
                     style: "currency",
                     currency: "IDR",
                     minimumFractionDigits: 0,
-                  }).format(qty * dataApi?.merchant_product?.price || 0)}
+                  }).format(qty * dataApi?.total_price_product || 0)}
                 </p>
               </div>
             </div>
@@ -201,7 +201,7 @@ const OrderConfirmation = () => {
                           style: "currency",
                           currency: "IDR",
                           minimumFractionDigits: 0,
-                        }).format(dataApi?.merchant_product?.price || 0)}
+                        }).format(dataApi?.total_price_product || 0)}
                       </p>
                       <div className="grid place-items-center">
                         <div className="flex items-center">
