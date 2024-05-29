@@ -188,7 +188,7 @@ export default function PageMerchant() {
         } else if (status === "UlasanSelesai") {
 
             axios.get(
-                `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/filter?relation_id=${id}`, {
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/filter?relation_id=${id}&type=merchant`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
