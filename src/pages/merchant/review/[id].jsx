@@ -27,6 +27,7 @@ const ReviewCamp = () => {
         },
       })
       .then((response) => {
+        // console.log(response.data.body);
         setnewReport(response.data.body);
 
         // setnewReport(response.data.body);

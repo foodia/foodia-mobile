@@ -222,9 +222,12 @@ export default function PageMerchant() {
                         >
                             <div className="flex justify-between ">
                                 <span>Kasih Ulasan</span>
-                                <div className="h-[16px] w-[16px] bg-red-500 rounded-full flex justify-center items-center text-[8px] font-bold text-white">
-                                    <span>{jumlah}</span>
-                                </div>
+                                {jumlah !== 0 && (
+                                    <div className="h-[16px] w-[16px] bg-red-500 rounded-full flex justify-center items-center text-[8px] font-bold text-white">
+                                        <span>{jumlah}</span>
+                                    </div>
+                                )}
+
                             </div>
 
                         </div>
@@ -285,7 +288,7 @@ export default function PageMerchant() {
                                             {filteredData.map((dataFilter) => (
                                                 <CardReview
                                                     key={dataFilter.id}
-                                                    to={``}
+                                                    to={`/merchant/detail-review/${dataFilter.id}`}
                                                     img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.order?.campaign?.image_url}`}
                                                     title={dataFilter?.order?.campaign?.event_name}
                                                     description={"sfsfsf"}

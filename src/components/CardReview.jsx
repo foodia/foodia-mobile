@@ -124,7 +124,7 @@ const CardReview = (props) => {
                                         className={`h-[16px] font-sans text-[8px] text-white rounded-lg p-1 flex justify-center items-center ${status == 'waiting' ? 'bg-blue-600' : status == 'Completed' ? 'bg-primary' : status == 'rejected' ? 'bg-red-500' : ''
                                             }`}
                                     >
-                                        <p className="">{status}</p>
+                                        <p className="">ppp{status}</p>
                                     </div>
                                 ) : null}
 

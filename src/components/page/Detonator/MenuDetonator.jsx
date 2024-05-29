@@ -100,9 +100,12 @@ const MenuDetonator = (MenuDetonator) => {
             className="grid gap-3 justify-items-center w-24"
         >
             <div className="relative w-[48px] h-[48px] rounded-md bg-menu text-green flex items-center justify-center">
-                <div className="absolute top-0 right-0 h-[13px] w-[13px] bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                    <span>{loading ? '...' : jumlah}</span>
-                </div>
+                {jumlah !== 0 && (
+                    <div className="absolute top-0 right-0 h-[13px] w-[13px] bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                        <span>{loading ? '...' : jumlah}</span>
+                    </div>
+                )}
+
                 <Image
                     src={"/icon/ulasan.png"}
                     alt="Ulasan"

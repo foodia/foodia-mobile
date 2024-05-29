@@ -221,9 +221,12 @@ export default function review() {
                         >
                             <div className="flex items-center justify-between w-full">
                                 <p className="flex-1 text-center">Kasih Ulasan</p>
-                                <div className="h-[16px] w-[16px] bg-red-500 rounded-full flex justify-center items-center text-[8px] font-bold text-white">
-                                    <span>{loading ? '...' : (jumlah || 0)}</span>
-                                </div>
+                                {jumlah !== 0 && (
+                                    <div className="h-[16px] w-[16px] bg-red-500 rounded-full flex justify-center items-center text-[8px] font-bold text-white">
+                                        <span>{loading ? '...' : (jumlah || 0)}</span>
+                                    </div>
+                                )}
+
                             </div>
                         </div>
 
@@ -272,7 +275,7 @@ export default function review() {
                                             {filteredData.map((dataFilter) => (
                                                 <CardReview
                                                     key={dataFilter.id}
-                                                    to={``}
+                                                    to={`/detonator/detail-review/${dataFilter.id}`}
                                                     img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.order?.campaign?.image_url}`}
                                                     title={dataFilter?.order?.campaign?.event_name}
                                                     description={"sfsfsf"}
