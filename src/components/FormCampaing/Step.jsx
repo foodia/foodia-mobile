@@ -1354,6 +1354,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
               showConfirmButton: false,
               timer: 2000,
             });
+            localStorage.setItem("prevPath", "payment_reciept");
             if (selectedMethod !== "agnostic") {
               setTimeout(() => {
                 router.push(`${responeUrl}`);
