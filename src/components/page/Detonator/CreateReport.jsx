@@ -135,31 +135,30 @@ const CreateReport = (CreateReport) => {
                 };
                 setnewReport(eventData);
 
-                try {
-                    const creatReportCamp = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign-report/create`, eventData, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        },
+                axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign-report/create`, eventData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                    .then((resspones) => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Report Berhasil Disimpan',
+                            text: 'Terima kasih telah memberi report',
+                            showConfirmButton: true,
+                            confirmButtonColor: '#6CB28E',
+                            confirmButtonText: 'OK',
+                        }).then(() => {
+                            setLoading(false);
+                            localStorage.setItem("prevPath", "/home");
+                            router.push(`/campaign/${campaign_id}`);
+
+                        })
+                    })
+                    .catch((error) => {
+                        setLoading(false);
+                        Error401(error, router);
                     });
-                    router.push(`/detonator/report/${campaign_id}`);
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Report Campaign!',
-                        text: 'Report Campaign Berhasil Di Buat',
-                        showConfirmButton: false,
-                        timer: 2000,
-                    });
-
-                    setLoading(false);
-
-                    setTimeout(() => {
-                        router.push(`/detonator/report/${campaign_id}`);
-                    }, 2000);
-                } catch (error) {
-                    setLoading(false);
-                    Error401(error, router);
-                }
 
             } else {
                 setLoading(false);
