@@ -19,7 +19,6 @@ function EditProduct() {
   const [images, setImages] = useState("");
   const [loading, setLoading] = useState(true);
 
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     const ressponse = axios
@@ -42,9 +41,7 @@ function EditProduct() {
       })
       .catch((error) => {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       });
   }, [router.query.id]);
 
@@ -372,10 +369,10 @@ function EditProduct() {
             type="submit"
             className={
               name.length === 0 ||
-                price.length === 0 ||
-                qty.length === 0 ||
-                description.length > 256 ||
-                description.length === 0
+              price.length === 0 ||
+              qty.length === 0 ||
+              description.length > 256 ||
+              description.length === 0
                 ? "bg-slate-400 text-white focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center"
                 : "text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-bold rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center"
             }
