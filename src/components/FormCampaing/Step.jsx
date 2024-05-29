@@ -410,10 +410,10 @@ function StepOne({
             <option disabled value="">
               Tipe Campaign
             </option>
-            <option className="text-gray-500" value="one_time">
+            <option className="text-gray-500" value="dana_terbuka">
               Dana Terbuka
             </option>
-            <option className="text-gray-500" value="regular">
+            <option className="text-gray-500" value="dana_mandiri">
               Dana Mandiri
             </option>
           </select>
@@ -453,7 +453,7 @@ function StepOne({
           </button>
         </div>
         {onFocusTime && (
-          <div className="absolute lg:left-[580px] lg:top-[270px] left-[65px] top-[270px] flex gap-2 z-10">
+          <div className="absolute lg:left-[50%] left-[50%] top-[270px] flex gap-2 z-10">
             <div className="bg-white w-10 border text-black bottom-[230px] border-black flex flex-col overflow-auto h-24 ">
               {hourOptions.map((h) => (
                 <button
@@ -885,7 +885,7 @@ function StepThree({
 
   const handleSubmit = async () => {
     setLoading(true);
-    if (campData.TypeEvent === "regular") {
+    if (campData.TypeEvent === "dana_mandiri") {
       router.push("/createcampaign?step=Payment");
     } else {
       const emptyFields = [];
@@ -1199,7 +1199,7 @@ function StepThree({
               onClick={() => handleSubmit()}
               className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center"
             >
-              {campData.TypeEvent === "regular"
+              {campData.TypeEvent === "dana_mandiri"
                 ? "Lanjutkan Pembayaran"
                 : "Ajukan"}
             </button>

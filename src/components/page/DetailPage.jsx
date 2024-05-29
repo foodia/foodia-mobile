@@ -307,7 +307,6 @@ const DetailCamp = ({ data }) => {
         },
       };
       setDonation(datas);
-      // localStorage.setItem("prevPath", "DetailPage");
       router.push("/metode_pembayaran");
     }
   };
