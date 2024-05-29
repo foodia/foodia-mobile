@@ -48,13 +48,13 @@ const DetailReview = () => {
                     <div className="flex justify-between items-center w-full p-2 border border-gray-200 ">
                         <div className="flex items-center">
                             <img
-                                src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.campaign?.detonator?.self_photo}`}
-                                alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.campaign?.detonator?.self_photo}`}
+                                src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.order?.campaign?.detonator?.self_photo}`}
+                                alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.order?.campaign?.detonator?.self_photo}`}
                                 className="w-20 h-20 object-cover rounded-full"
                             />
                             <div className="ml-2">
                                 <p className="text-[14px] text-primary font-medium">
-                                    {dataDetail?.campaign?.detonator?.oauth?.fullname}
+                                    {dataDetail?.order?.campaign?.detonator?.oauth?.fullname}
                                 </p>
                                 <p className="text-[10px] font-normal">Verified Campaigner</p>
                             </div>
