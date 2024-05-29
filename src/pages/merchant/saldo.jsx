@@ -31,6 +31,13 @@ const Saldo = () => {
   }, [router]);
 
   useEffect(() => {
+    const getstatus = localStorage.getItem("statusSaldo");
+    if (getstatus) {
+      setSelectedStatus(getstatus);
+    }
+  }, [selectedStatus]);
+
+  useEffect(() => {
     const fetchBalance = async () => {
       const id = localStorage.getItem("id");
       const token = localStorage.getItem("token");
@@ -150,7 +157,7 @@ const Saldo = () => {
 
   return (
     <div className="container mx-auto h-screen overflow-hidden">
-      <Header title="Saldo" backto="/merchant" />
+      <Header title="Saldo" backto="" />
       <div className="container mx-auto pt-14 bg-white h-screen">
         <div className="mx-4 p-3 rounded-lg border-solid border-2 border-gray-300">
           <div>

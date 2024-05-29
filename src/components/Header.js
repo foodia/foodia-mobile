@@ -12,6 +12,8 @@ const Header = ({ title = "", backto = "" }) => {
       if (localStorage.getItem("prevPath") !== "payment_reciept") {
         localStorage.removeItem("prevPath");
       }
+      localStorage.removeItem("statusSaldo");
+
       localStorage.removeItem("phone");
       localStorage.removeItem("merchantName");
       localStorage.removeItem("updatedAddress");

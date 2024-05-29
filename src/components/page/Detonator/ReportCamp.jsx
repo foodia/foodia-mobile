@@ -160,6 +160,7 @@ const ReportCamp = () => {
       setButtonStatus(false);
     }
   }, [jumlahOrder, jumlahTrue, ReportDetonator]);
+
   return (
     <>
       <div className="container mx-auto bg-white h-screen">
