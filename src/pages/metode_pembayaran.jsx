@@ -94,12 +94,12 @@ const MetodePembayaran = () => {
       value: "LinkAja",
       // label: "LinkAja",
     },
-    {
-      id: 2,
-      logo: gopay,
-      value: "Gopay",
-      // label: "Gopay",
-    },
+    // {
+    //   id: 2,
+    //   logo: gopay,
+    //   value: "Gopay",
+    //   // label: "Gopay",
+    // },
   ];
 
   useEffect(() => {
