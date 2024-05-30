@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import CardFood from "../CardFood";
 import Error401 from "../error401";
+import MenuBarMechant from "./Merchant/MenuBarMechant";
 
 const Merchant = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const Merchant = () => {
     axios
       .get(
         process.env.NEXT_PUBLIC_API_BASE_URL +
-        `merchant-product/filter?merchant_id=${id}`,
+          `merchant-product/filter?merchant_id=${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -38,7 +39,6 @@ const Merchant = () => {
         );
         setFilteredData(filtered);
 
-        console.log("respone data menu", response.data.body);
         setLoading(false);
 
         if (response.data.body.length === 0) {
@@ -47,18 +47,13 @@ const Merchant = () => {
       })
       .catch((error) => {
         setLoading(false);
-        console.error("Error fetching data:", error);
-
-        if (error.response && error.response.status === 401) {
-          // Unauthorized error (e.g., token expired)
-          localStorage.clear();
-          router.push("/login");
-        }
+        Error401(error, router);
       });
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const id_merchant = localStorage.getItem("token");
     if (!token) {
       Swal.fire({
         icon: "error",
@@ -155,16 +150,10 @@ const Merchant = () => {
           }
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            Error401(error, router);
-          }
+          Error401(error, router);
         });
     }
   }, []);
-
-  // useEffect(() => {
-
-  // }, []);
 
   const handleFilterChange = (status) => {
     let filtered = [];
@@ -185,78 +174,28 @@ const Merchant = () => {
 
   return (
     <>
-      <div className="container mx-auto h-screen">
-        <div className="flex items-center justify-center px-6 pt-16">
-          <div className={`bg-gray-100 rounded-2xl w-full p-3`}>
-            <div className="flex justify-between items-center">
-              <Link
-                href="/createmenu?step=1"
-                className="grid justify-items-center gap-1 w-24"
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <IconCirclePlus />
-                </div>
-                <p className="text-xs font-normal text-black">Tambah Menu</p>
-              </Link>
-              <Link
-                href="/merchant/pesanan"
-                className="grid justify-items-center gap-1 w-24 "
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <Image
-                    src={"/icon/pesanan.png"}
-                    alt="Girl in a jacket"
-                    width={30}
-                    height={30}
-                  />
-                </div>
-                <p className="text-xs font-normal text-black">Pesanan</p>
-              </Link>
-              <Link
-                href="/merchant/saldo"
-                className="grid justify-items-center gap-1 w-24 "
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <Image
-                    src={"/icon/saldo.png"}
-                    alt="Girl in a jacket"
-                    width={30}
-                    height={30}
-                  />
-                </div>
-                <p className="text-xs font-normal text-black">Saldo</p>
-              </Link>
-            </div>
-          </div>
-        </div>
+      <div className="container mx-auto h-screen overflow-hidden">
+        <MenuBarMechant />
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "approved"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "approved"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("approved")}
           >
             <span>Menu</span>
-            {/* <div
-              className={`w-32 h-0.5 ${
-                selectedStatus === "approved" ? "bg-blue-500 w-32 " : "bg-black"
-              }`}
-            ></div> */}
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "listMenu"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
-              }`}
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+              selectedStatus === "listMenu"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+            }`}
             onClick={() => handleFilterChange("listMenu")}
           >
             <span>Pengajuan</span>
-            {/* <div
-              className={`w-32 h-0.5 ${
-                selectedStatus === "listMenu" ? "bg-blue-500 w-32 " : "bg-black"
-              }`}
-            ></div> */}
           </div>
         </div>
 
@@ -269,9 +208,9 @@ const Merchant = () => {
             ))}
           </div>
         ) : (
-          <div className={`${styles.card}`}>
+          <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
             {filteredData.length == 0 ? (
-              <p className="text-gray-400">
+              <p className="text-gray-400 flex justify-center items-center">
                 {selectedStatus === "approved"
                   ? "Belum Ada Menu"
                   : "Tidak Ada Pengajuan"}
@@ -292,7 +231,7 @@ const Merchant = () => {
                     date={data.created_at}
                     status={data.status}
                     qty={data.qty}
-                    price={data.price}
+                    price={data.price - 1000}
                     images={data.images}
                     idProduct={data.id}
                   />
@@ -302,10 +241,6 @@ const Merchant = () => {
           </div>
         )}
       </div>
-      {/* <div
-        id="infinite-scroll-trigger"
-        className={`${styles.loadingCard}`}
-      ></div> */}
     </>
   );
 };

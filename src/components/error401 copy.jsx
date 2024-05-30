@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 
 const Error401 = (errCode) => {
     const router = useRouter();
-    console.log("errCode", errCode?.response?.data?.code);
     const code = errCode?.response?.data?.code;
 
     if (code === 401) {
@@ -30,7 +29,6 @@ const Error401 = (errCode) => {
         });
         // router.push('/login');
     } else if (errCode.code === "ERR_NETWORK") {
-        console.log("network error");
     }
 
     return null;

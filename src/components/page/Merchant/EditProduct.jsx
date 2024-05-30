@@ -19,12 +19,6 @@ function EditProduct() {
   const [images, setImages] = useState("");
   const [loading, setLoading] = useState(true);
 
-  console.log(name.length);
-  console.log(description.length);
-  console.log(price.length);
-  console.log(qty.length);
-  console.log(images.length);
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     const ressponse = axios
@@ -47,9 +41,7 @@ function EditProduct() {
       })
       .catch((error) => {
         setLoading(false);
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       });
   }, [router.query.id]);
 
@@ -123,7 +115,7 @@ function EditProduct() {
     }
 
     const token = localStorage.getItem("token");
-    const idMerchant = sessionStorage.getItem("id");
+    const idMerchant = localStorage.getItem("id");
 
     // Check if an image file is selected
     if (images) {

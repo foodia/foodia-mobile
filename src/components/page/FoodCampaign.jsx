@@ -10,7 +10,6 @@ import Error401 from "../error401";
 const FoodCampaign = () => {
     const router = useRouter();
     const { id } = router.query;
-    console.log('rout', id);
     const [foodOrder, setFoodOrder] = useState([]);
     const [DataAPI, setDataApi] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -37,8 +36,6 @@ const FoodCampaign = () => {
                 setFoodOrder(response.data.body.orders);
                 setDataApi(response.data.body);
                 setLoading(false);
-                console.log('order', response.data.body.orders);
-                console.log('data', response.data.body);
 
             } catch (error) {
                 if (error.response && error.response.status === 401) {

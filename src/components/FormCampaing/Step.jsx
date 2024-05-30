@@ -10,6 +10,9 @@ import {
   Icon123,
   IconCalendar,
   IconCamera,
+  IconChevronCompactDown,
+  IconChevronDown,
+  IconChevronUp,
   IconCirclePlus,
   IconClock,
   IconCurrentLocation,
@@ -17,11 +20,18 @@ import {
   IconFileDescription,
   IconGardenCart,
   IconHome2,
+  IconInfoCircle,
   IconMap,
+  IconMapPin,
+  IconMapPinExclamation,
   IconMinus,
+  IconMoneybag,
+  IconNotes,
   IconPhotoScan,
   IconPlus,
+  IconShoppingCart,
   IconUser,
+  IconWallet,
 } from "@tabler/icons-react";
 import axios from "axios";
 import dynamic from "next/dynamic";
@@ -32,6 +42,13 @@ import CardListMerchan from "../page/Detonator/CardListMerchan";
 import AddFoodCamp from "./AddFoodCamp";
 import Error401 from "../error401";
 import Header from "../Header";
+import Loading from "../Loading";
+import LinkAja from "../../../public/icon/payment/LinkAja.png";
+import gopay from "../../../public/icon/payment/gopay.png";
+import mandiri from "../../../public/bank/mandiri.png";
+import bri from "../../../public/bank/bri.png";
+import CompressImage from "../CompressImage";
+import moment from "moment/moment";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
@@ -47,8 +64,17 @@ const Toast = Swal.mixin({
   timerProgressBar: true,
 });
 
-function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
+function StepOne({
+  updateLocalStorage,
+  setUploadedFile,
+  uploadedFile,
+  loading,
+  setLoading,
+}) {
   const router = useRouter();
+  const [loadingFile, setLoadingFile] = useState(false);
+  const [onFocusDate, setOnFocusDate] = useState(false);
+  const [onFocusTime, setOnFocusTime] = useState(false);
   const [eventName, setEventName] = useState(() => {
     const storedFormData = localStorage.getItem("formData");
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
@@ -67,12 +93,9 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     return parsedFormData.Tanggal || "";
   });
 
-  const [Waktu, setWaktu] = useState(() => {
-    const storedFormData = localStorage.getItem("formData");
-    const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-    return parsedFormData.Waktu || "";
-  });
-
+  const [hour, setHour] = useState("");
+  const [minute, setMinute] = useState("");
+  const [Waktu, setWaktu] = useState("");
   const [Description, setDescription] = useState(() => {
     const storedFormData = localStorage.getItem("formData");
     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
@@ -80,11 +103,62 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     Description;
   });
 
-  // const [ImageCamp, setImageCamp] = useState(() => {
-  //     const storedFormData = localStorage.getItem('formData');
-  //     const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
-  //     return parsedFormData.ImageCamp || '';
-  // });
+  useEffect(() => {
+    setLoading(false);
+    const storedFormData = localStorage.getItem("formData");
+    const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
+    const savedHour = parsedFormData.Waktu
+      ? parsedFormData.Waktu.split(":")[0]
+      : "";
+    const savedMinute = parsedFormData.Waktu
+      ? parsedFormData.Waktu.split(":")[1]
+      : "";
+    setHour(savedHour);
+    setMinute(savedMinute);
+    setWaktu(parsedFormData.Waktu || "");
+  }, []);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const storedFormData = localStorage.getItem("formData");
+      const parsedFormData = storedFormData ? JSON.parse(storedFormData) : {};
+      setWaktu(parsedFormData.Waktu || "");
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const handleHourChange = (e) => {
+    const selectedHour = e.target.value.padStart(2, "0");
+    setHour(selectedHour);
+    setWaktu(`${selectedHour}:${minute}`);
+    // localStorage.setItem(
+    //   "formData",
+    //   JSON.stringify({ Waktu: `${selectedHour}:${minute}` })
+    // );
+  };
+
+  const handleMinuteChange = (e) => {
+    const selectedMinute = e.target.value.padStart(2, "0");
+    setMinute(selectedMinute);
+    setWaktu(`${hour}:${selectedMinute}`);
+    // localStorage.setItem(
+    //   "formData",
+    //   JSON.stringify({ Waktu: `${hour}:${selectedMinute}` })
+    // );
+    // setWaktu
+  };
+
+  const hourOptions = Array.from({ length: 22 }, (_, i) =>
+    String(i + 1).padStart(2, "0")
+  );
+  const minuteOptions = Array.from({ length: 60 }, (_, i) =>
+    String(i).padStart(2, "0")
+  );
 
   const handleEventNameChange = (event) => {
     setEventName(event.target.value);
@@ -103,9 +177,9 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     // Convert the selected date to a Date object for comparison
     const selectedDateObject = new Date(selectedDate);
 
-    // Calculate the minimum allowed date (7 days from the current date)
+    // Calculate the minimum allowed date (2 days from the current date)
     const minAllowedDate = new Date();
-    minAllowedDate.setDate(currentDate.getDate() + 2);
+    minAllowedDate.setDate(currentDate.getDate() + 1);
 
     // Check if the selected date is at least 7 days from the current date
     if (selectedDateObject >= minAllowedDate) {
@@ -120,13 +194,13 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     }
   };
 
-  const handleWaktuChange = (event) => {
-    const selectedTime = event.target.value;
+  const handleWaktuChange = (waktu) => {
+    // const selectedTime = event.target.value;
 
     const isWithinAllowedRange = isTimeWithinRange(selectedTime);
 
     if (isWithinAllowedRange) {
-      setWaktu(selectedTime);
+      setWaktu(waktu);
     } else {
       Swal.fire({
         icon: "error",
@@ -136,6 +210,7 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
       });
     }
   };
+
   const isTimeWithinRange = (time) => {
     const selectedHour = parseInt(time.split(":")[0], 10);
     const selectedMinute = parseInt(time.split(":")[1], 10);
@@ -161,34 +236,61 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
 
   const handleImageCampChange = (event) => {
     const file = event.target.files[0];
-
-    if (file) {
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
-      const maxSize = 5 * 1024 * 1024; // 5MB
-
-      if (!allowedTypes.includes(file.type)) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
-        });
-        event.target.value = "";
-      } else if (file.size > maxSize) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Ukuran gambar melebihi 5MB!",
-        });
-        event.target.value = "";
-      } else {
-        setUploadedFile(file);
-      }
+    const allowedTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/heif",
+      "image/heic",
+    ];
+    const maxSize = 5 * 1024 * 1024;
+    if (!file) {
+      return;
     }
+    setLoadingFile(true);
+
+    if (!allowedTypes.includes(file?.type)) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Hanya file PNG, JPG, JPEG dan HEIF yang diizinkan!",
+      });
+      setLoadingFile(false);
+      return;
+    }
+    if (file.size <= maxSize) {
+      setUploadedFile(file);
+      setLoadingFile(false);
+    } else {
+      CompressImage(file)
+        .then((compressedFile) => {
+          const size = (compressedFile.size / (1024 * 1024)).toFixed(2);
+          if (size <= maxSize) {
+            setUploadedFile(compressedFile);
+          } else {
+            Toast.fire({
+              icon: "error",
+              title: "Ukuran gambar melebihi 5MB!",
+              iconColor: "bg-black",
+            });
+          }
+          setLoadingFile(false);
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Ukuran gambar melebihi 5MB!",
+          });
+          setLoadingFile(false);
+        });
+    }
+    setUploadedFile(file);
+    setLoading(false);
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-
+    setLoading(true);
     const requiredFields = [
       "eventName",
       "TypeEvent",
@@ -231,15 +333,6 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     if (emptyFields.length > 0) {
       return;
     }
-    // if (Description.length > 120) {
-    //   Toast.fire({
-    //     icon: 'error',
-    //     title: 'Deskripsi maksimal 120 karakter mohon periksa kembali',
-    //     iconColor: 'bg-black',
-    //     timer: 2000
-    //   });
-    //   return;
-    // }
     if (!uploadedFile) {
       Toast.fire({
         icon: "error",
@@ -261,104 +354,70 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
     // setImageCamp('');
 
     // Navigate to the next step
-    router.push(`creatcampaign?step=2`);
+    router.push(`createcampaign?step=2`);
   };
-
-  useEffect(() => {
-    console.log("gambar", uploadedFile);
-  }, [uploadedFile]);
 
   return (
     <>
-      <ol className="flex justify-center mb-2 w-full p-2">
+      <ol className="flex justify-center mb-4 sm:mb-5 w-full p-2">
         <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block  after:border-b after:border-4 after:border-primary`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-primary`}
+          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-primary`}
+          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
           iconCss={`w-4 h-4 text-white lg:w-6 lg:h-6 `}
-          iconName={"CalendarEvent"}
+          iconName={"Calendar"}
         />
         <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block   after:border-b after:border-4 after:border-gray-700`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-gray-700`}
-          iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
+          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-gray-300`}
+          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-gray-300`}
+          iconCss={`w-4 h-4 text-white lg:w-6 lg:h-6 `}
           iconName={"Map"}
         />
         <RoutStep
           liCss={`flex items-center`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-gray-700`}
+          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-gray-300`}
           iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-          iconName={"CalendarEvent"}
+          iconName={"Bowl"}
         />
       </ol>
-      <form className="p-2 mt-2 w-full px-5 space-y-3" onSubmit={handleSubmit}>
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none">
-          {/* <label
-            htmlFor="password"
-            className="block  text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Your password
-          </label> */}
+      <div className="p-2 mt-2 w-full px-5 space-y-3">
+        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none">
           <IconUser />
           <input
+            onFocus={() => setOnFocusTime(false)}
             onChange={handleEventNameChange}
             value={eventName}
             name="eventName"
             type="text"
             id="email"
-            className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+            className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
             placeholder="Nama Campaign"
             required
           />
         </div>
-        {/* <div className="mb-2 px-4">
-          <label
-            htmlFor="eventName"
-            className="text-sm font-medium text-gray-900"
-          >
-            Event Name
-          </label>
-          <IconUser />
-          <InputForm
-            cssInput="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full h-10 p-2.5"
-            label="eventName"
-            type="text"
-            name="eventName"
-            value={eventName}
-            onChange={handleEventNameChange}
-            placeholder="Nama Campaign"
-          />
-        </div> */}
 
-        <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none">
+        <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg w-full focus:border-none outline-none">
           <Icon123 />
           <select
+            onFocus={() => setOnFocusTime(false)}
             name="TypeEvent"
             value={TypeEvent}
             id="TypeEvent"
             onChange={handleTypeEventChange}
-            className="ml-1 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+            className={` ${
+              TypeEvent === "" ? "text-gray-400" : "text-black"
+            } ml-1 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none`}
           >
-            <option value="">Tipe Campaign</option>
-            <option value="one_time">One Time</option>
-            {/* <option value="regular">Regular</option> */}
+            <option disabled value="">
+              Tipe Campaign
+            </option>
+            <option className="text-gray-500" value="one_time">
+              Dana Terbuka
+            </option>
+            <option className="text-gray-500" value="regular">
+              Dana Mandiri
+            </option>
           </select>
         </div>
-
-        {/* <div className="mb-2 px-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Type Event:
-            <select
-              name="TypeEvent"
-              value={TypeEvent}
-              onChange={handleTypeEventChange}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-            >
-              <option>---Pilih Type Event---</option>
-              <option value="one_time">One Time</option>
-              <option value="regular">Regular</option>
-            </select>
-          </label>
-        </div> */}
 
         <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconCalendar />
@@ -366,150 +425,163 @@ function StepOne({ updateLocalStorage, setUploadedFile, uploadedFile }) {
             onChange={handleTanggalChange}
             value={Tanggal}
             name="Tanggal"
-            type="date"
-            className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+            type={`${onFocusDate ? "date" : "text"}`}
+            className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
             placeholder="Tanggal Pelaksanaan"
+            onFocus={() => {
+              setOnFocusTime(false);
+              setOnFocusDate(true);
+            }}
+            onBlur={() => setOnFocusDate(false)}
             required
           />
         </div>
-
-        {/* <div className="mb-2 px-4">
-          <label
-            htmlFor="Tanggal"
-            className="text-sm font-medium text-gray-900"
-          >
-            Tanggal
-          </label>
-          <InputForm
-            cssInput="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-            label="Tanggal"
-            type="date"
-            name="Tanggal"
-            value={Tanggal}
-            onChange={handleTanggalChange}
-            placeholder="Tanggal"
-          />
-        </div> */}
-
-        <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
-          {/* <label
-            htmlFor="password"
-            className="block  text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Your password
-          </label> */}
+        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none my-2">
           <IconClock />
-          <input
-            onChange={handleWaktuChange}
-            value={Waktu}
-            type="time"
-            name="Waktu"
-            className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
-            placeholder="Waktu Pelaksanaan"
-            required
-          />
+          <button
+            className="w-full text-start ml-2 p-0 py-4 pl-1 bg-transparent focus:border-none flex flex-row gap-1"
+            onClick={() => setOnFocusTime(!onFocusTime)}
+          >
+            {!onFocusTime && !hour && !minute ? (
+              <p>Waktu Pelaksanaan</p>
+            ) : (
+              <>
+                <p className="text-black hover:bg-gray-400">{hour}</p>:
+                <p className="text-black hover:bg-gray-400">{minute}</p>
+              </>
+            )}
+          </button>
         </div>
+        {onFocusTime && (
+          <div className="absolute lg:left-[580px] lg:top-[270px] left-[65px] top-[270px] flex gap-2 z-10">
+            <div className="bg-white w-10 border text-black bottom-[230px] border-black flex flex-col overflow-auto h-24 ">
+              {hourOptions.map((h) => (
+                <button
+                  onClick={(h) => handleHourChange(h)}
+                  className="hover:bg-gray-400"
+                  key={h}
+                  value={h}
+                >
+                  {h}
+                </button>
+              ))}
+            </div>
+            {hour && (
+              <div className="bg-white w-10 border text-black bottom-[230px] border-black flex flex-col overflow-auto h-24">
+                {minuteOptions.map((m) => (
+                  <button
+                    onClick={(m) => handleMinuteChange(m)}
+                    className="hover:bg-gray-400"
+                    key={m}
+                    value={m}
+                  >
+                    {m}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
-        {/* <TimePicker onChange='' value='' /> */}
-        {/* <div className="mb-2 px-4">
-          <label htmlFor="Waktu" className="text-sm font-medium text-gray-900">
-            Waktu
-          </label>
-          <InputForm
-            cssInput="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-            label="Waktu"
-            type="time"
-            name="Waktu"
-            value={Waktu}
-            onChange={handleWaktuChange}
-            placeholder="Waktu"
-          />
-        </div> */}
-
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none outline-none">
           <IconFileDescription />
           <textarea
+            onFocus={() => setOnFocusTime(false)}
             onChange={handleDescriptionChange}
             value={Description}
-            className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
-            placeholder="Description"
+            className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
+            placeholder="Deskripsi Campaign"
             required
-            name="Description"
             rows={2} // Atur jumlah baris sesuai kebutuhan
           />
         </div>
 
-        {/* <div className="mb-2 px-4">
-          <label
-            htmlFor="Description"
-            className="text-sm font-medium text-gray-900"
+        <div className="mb-2 ">
+          <div
+            onClick={() => setOnFocusTime(false)}
+            className="flex items-center justify-center w-full relative"
           >
-            Description
-          </label>
-          <textarea
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-            id="Description"
-            name="Description"
-            value={Description}
-            onChange={handleDescriptionChange}
-            placeholder="Description"
-          />
-        </div> */}
-
-        <div className="mb-2 px-4">
-          <label
-            htmlFor="ImageCamp"
-            className="text-sm font-medium text-gray-900"
-          >
-            Image
-          </label>
-          <div className="flex items-center justify-center w-full">
             <label
-              htmlFor="uploadedFile"
-              className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100"
+              htmlFor="images"
+              className="flex flex-col justify-center w-full h-32 border-2 border-black border-dashed rounded-lg cursor-pointer bg-gray-200 hover:bg-gray-100"
             >
+              {loadingFile && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 rounded-lg">
+                  <svg
+                    aria-hidden="true"
+                    className="w-12 h-12 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                    viewBox="0 0 100 101"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                      fill="currentFill"
+                    />
+                  </svg>
+                </div>
+              )}
+
               {uploadedFile ? (
                 <img
                   src={URL.createObjectURL(uploadedFile)}
-                  alt="Image"
+                  alt="Foto Campaign"
                   className="w-full h-full rounded-lg object-cover"
                 />
               ) : (
-                <div className="flex flex-col items-center justify-center pt-5 bg-gray-50 rounded-lg w-28">
-                  <IconPhotoScan className="w-8 h-8 mb-2 text-gray-500 dark:text-gray-400" />
-                  <div className="flex flex-col items-center justify-center bg-primary rounded-lg w-20">
-                    <IconCamera className="w-8 h-8 text-gray-500 dark:text-gray-400" />
+                <div className="flex items-center gap-2 px-3">
+                  <div className="bg-primary text-white font-light w-20 py-5 rounded-xl flex items-center justify-center">
+                    <IconCamera size={40} />
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm">Foto Campaign</p>
+                    <p className="font-light text-xs">Ambil foto Campaign</p>
                   </div>
                 </div>
               )}
               <input
-                id="uploadedFile"
+                id="images"
                 type="file"
                 className="hidden"
                 onChange={handleImageCampChange}
               />
             </label>
           </div>
+
           <p className="text-xs text-primary font-semibold">
             *file yang diperbolehkan jpg, jpeg, png dan max 5mb
           </p>
         </div>
 
-        <div className="grid gap-4 content-center px-4 mb-2">
+        <div className="grid gap-4 content-center">
           <button
+            disabled={
+              eventName === "" ||
+              TypeEvent === "" ||
+              Tanggal === "" ||
+              Waktu === "" ||
+              Description === "" ||
+              uploadedFile === null
+            }
+            onClick={() => handleSubmit()}
             type="submit"
-            className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+            className={
+              "text-white disabled:bg-gray-400 bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+            }
           >
             Lanjut
           </button>
         </div>
-      </form>
+      </div>
     </>
   );
 }
 function StepTwo({ updateLocalStorage, loading, setLoading }) {
   const router = useRouter();
-
   const [locationInfo, setLocationInfo] = useState(null);
   const [location, setLocation] = useState("");
   const [province, setProvince] = useState("");
@@ -540,6 +612,7 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
   };
 
   useEffect(() => {
+    setLoading(false);
     if (locationInfo) {
       setLocation(locationInfo.fullAdres);
       setProvince(locationInfo.province);
@@ -567,9 +640,9 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
   }, []);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    setLoading(true);
 
-    if (!location || !Jalan || !DetaiAlamat) {
+    if (!location || !Jalan) {
       window.alert("All fields are required");
       return;
     }
@@ -579,9 +652,8 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
         title: "Koordinat tidak ditemukan",
         text: "lokasi tidak ditemukan, Silakan pilih lokasi di peta",
         showConfirmButton: false,
-        timer: 2000
-
-      })
+        timer: 2000,
+      });
       return;
     }
 
@@ -601,112 +673,126 @@ function StepTwo({ updateLocalStorage, loading, setLoading }) {
     // upload data to local storage
     updateLocalStorage(formData);
 
-    router.push(`creatcampaign?step=3`);
+    router.push(`createcampaign?step=3`);
   };
 
   return (
     <>
       <ol className="flex justify-center mb-4 sm:mb-5 w-full p-2">
         <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block  after:border-b after:border-4 after:border-primary`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-primary`}
+          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-primary`}
+          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
           iconCss={`w-4 h-4 text-white lg:w-6 lg:h-6 `}
-          iconName={"CalendarEvent"}
+          iconName={"Calendar"}
         />
         <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block   after:border-b after:border-4 after:border-gray-700`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-primary`}
-          iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
+          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-primary`}
+          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
+          iconCss={`w-4 h-4 text-white lg:w-6 lg:h-6 `}
           iconName={"Map"}
         />
         <RoutStep
           liCss={`flex items-center`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-gray-700`}
+          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-gray-300`}
           iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-          iconName={"CalendarEvent"}
+          iconName={"Bowl"}
         />
       </ol>
 
-      <div className="flex justify-center border-gray-300 rounded-lg w-full mb-2 px-8">
-        <button
-          onClick={getCurrentLocation}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-        >
-          {tracking ? <p>Set Current Location</p> : <p>Custom Location</p>}
-        </button>
-      </div>
-      <form className="p-2 w-full px-6 space-y-2" onSubmit={handleSubmit}>
+      <div className="p-2 w-full px-6 space-y-2">
         <div className="flex justify-center border-gray-300 rounded-lg mb-1">
           <DynamicMap sendDataToPage={handleDataFromMap} tracking={tracking} />
         </div>
-        <div className="grid gap-4 content-center px-4 mb-2">
+        <div className="grid gap-4 content-center mb-2">
           <p className="text-primary font-semibold text-xs">
-            {tracking
-              ? "*Klik map untuk menentukan lokasi"
-              : "*Geser marker untuk menentukan lokasi"}
+            {tracking ? "" : "*Geser marker untuk menentukan lokasi"}
           </p>
         </div>
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+        <button
+          onClick={getCurrentLocation}
+          className="bg-gray-50 border-primary border-2 text-gray-900 text-sm rounded-lg block w-full p-2.5"
+        >
+          {tracking ? (
+            <p> Custom Location</p>
+          ) : (
+            <p className="flex flex-row items-center justify-center gap-2">
+              <IconMapPin color="red" />
+              Gunakan Lokasi Saat Ini
+            </p>
+          )}
+        </button>
+
+        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconMap />
           <textarea
             onChange={(e) => setLocation(e.target.value)}
             value={location}
             type="text"
-            className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+            className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
             placeholder="Wilayah"
             required
           />
         </div>
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
           <IconHome2 />
           <input
             onChange={handleJalanChange}
             value={Jalan}
             type="text"
-            className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+            className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
             placeholder="Nama Jalan, Gedung, No Rumah"
             required
           />
         </div>
 
-        <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none ">
-          <IconDetails />
+        <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none ">
+          <IconNotes />
           <input
             onChange={handleDetaiAlamatChange}
             value={DetaiAlamat}
             type="text"
-            className="ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+            className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
             placeholder="Detail Lainnya"
             required
           />
         </div>
-        <div className="grid gap-4 content-center pt-20 mb-2">
+        <div className="grid gap-4 content-center pt-12 mb-2">
           <button
+            disabled={!location || !Jalan}
+            onClick={() => handleSubmit()}
             type="submit"
-            className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+            className={
+              !location || !Jalan
+                ? "text-white bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-xl w-xl sm:w-auto px-5 py-2.5 text-center"
+                : "text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+            }
           >
             Lanjut
           </button>
         </div>
-      </form>
+      </div>
     </>
   );
 }
 function StepThree({
   cart,
   updateCart,
+  updateLocalStorage,
   setUploadedFile,
   uploadedFile,
   loading,
   setLoading,
 }) {
   const router = useRouter();
-
   const totalCartPrice = cart.reduce((total, item) => total + item.total, 0);
   const totalCartQuantity = cart.reduce(
     (total, item) => total + item.quantity,
     0
   );
+  const [campData, setCampData] = useState(
+    JSON.parse(localStorage.getItem("formData"))
+  );
+
   const groupedCart = cart.reduce((acc, item) => {
     const IdMerchan = item.merchant_id;
     if (!acc[IdMerchan]) {
@@ -716,17 +802,16 @@ function StepThree({
     return acc;
   }, {});
 
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
   const handleDecrease = (IdMerchan, itemId) => {
     const updatedCart = [...cart];
 
     const itemIndex = updatedCart.findIndex(
       (item) => item.merchant_id === parseInt(IdMerchan) && item.id === itemId
     );
-
-    // console.log("IdMerchan:", IdMerchan);
-    // console.log("itemId:", itemId);
-    // console.log("Data updatedCart:", updatedCart);
-    // console.log("itemIndex:", itemIndex);
 
     if (itemIndex !== -1) {
       const updatedItem = { ...updatedCart[itemIndex] };
@@ -745,8 +830,6 @@ function StepThree({
           (total, item) => total + item.quantity,
           0
         );
-
-        console.log("updatedCart after decrease:", updatedCart);
 
         updateCart(updatedCart, totalCartPrice, totalCartQuantity);
       } else {
@@ -801,215 +884,199 @@ function StepThree({
   };
 
   const handleSubmit = async () => {
-    console.log("data", cart);
     setLoading(true);
-    const emptyFields = [];
-    const campData = JSON.parse(localStorage.getItem("formData"));
-    const detonator_id = localStorage.getItem("id");
-    const token = localStorage.getItem("token");
+    if (campData.TypeEvent === "regular") {
+      router.push("/createcampaign?step=Payment");
+    } else {
+      const emptyFields = [];
+      const detonator_id = localStorage.getItem("id");
+      const token = localStorage.getItem("token");
 
-    const products = cart.map((item) => ({
-      merchant_id: parseInt(item.merchant_id),
-      merchant_product_id: parseInt(item.id),
-      qty: parseInt(item.quantity),
-    }));
+      const products = cart.map((item) => ({
+        merchant_id: parseInt(item.merchant_id),
+        merchant_product_id: parseInt(item.id),
+        qty: parseInt(item.quantity),
+      }));
 
-    // Validate data
-    if (!detonator_id) emptyFields.push("Detonator ID");
-    if (!campData.eventName) emptyFields.push("Event Name");
-    if (!campData.TypeEvent) emptyFields.push("Event Type");
-    if (!campData.Tanggal) emptyFields.push("Event Date");
-    if (!campData.Waktu) emptyFields.push("Event Time");
-    if (!campData.Description) emptyFields.push("Description");
-    if (!campData.province) emptyFields.push("Province");
-    if (!campData.city) emptyFields.push("City");
-    // if (!campData.sub_district) emptyFields.push("Sub District");
-    // if (!campData.postal_code) emptyFields.push("Postal Code");
-    if (!campData.location) emptyFields.push("Address");
-    if (!campData.coordinates.lat) emptyFields.push("Latitude");
-    if (!campData.coordinates.lng) emptyFields.push("Longitude");
-    // if (!mediaUploadResponse.data.body.file_url) emptyFields.push("Image URL");
-    if (!products) emptyFields.push("Products");
+      // Validate data
+      if (!detonator_id) emptyFields.push("Detonator ID");
+      if (!campData.eventName) emptyFields.push("Event Name");
+      if (!campData.TypeEvent) emptyFields.push("Event Type");
+      if (!campData.Tanggal) emptyFields.push("Event Date");
+      if (!campData.Waktu) emptyFields.push("Event Time");
+      if (!campData.Description) emptyFields.push("Description");
+      if (!campData.province) emptyFields.push("Province");
+      if (!campData.city) emptyFields.push("City");
+      // if (!campData.sub_district) emptyFields.push("Sub District");
+      // if (!campData.postal_code) emptyFields.push("Postal Code");
+      if (!campData.location) emptyFields.push("Address");
+      if (!campData.coordinates.lat) emptyFields.push("Latitude");
+      if (!campData.coordinates.lng) emptyFields.push("Longitude");
+      // if (!mediaUploadResponse.data.body.file_url) emptyFields.push("Image URL");
+      if (!products) emptyFields.push("Products");
 
-    if (emptyFields.length > 0) {
-      const errorMessage = `Please fill in all required fields: ${emptyFields.join(", ")}`;
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: errorMessage,
-        showConfirmButton: false,
-        timer: 2000
-      });
+      if (emptyFields.length > 0) {
+        const errorMessage = `Please fill in all required fields: ${emptyFields.join(
+          ", "
+        )}`;
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: errorMessage,
+          showConfirmButton: false,
+          timer: 2000,
+        });
 
-      setLoading(false);
-      return;
-    }
-    try {
-      const totalCartPrice = cart.reduce(
-        (total, item) => total + item.total,
-        0
-      );
-      const totalCartQuantity = cart.reduce(
-        (total, item) => total + item.quantity,
-        0
-      );
+        setLoading(false);
+        return;
+      }
+      try {
+        const totalCartPrice = cart.reduce(
+          (total, item) => total + item.total,
+          0
+        );
+        const totalCartQuantity = cart.reduce(
+          (total, item) => total + item.quantity,
+          0
+        );
 
+        const formData = new FormData();
+        formData.append("destination", "campaign");
+        formData.append("file", uploadedFile);
 
-      const formData = new FormData();
-      formData.append("destination", "campaign");
-      formData.append("file", uploadedFile);
+        const mediaUploadResponse = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-      const mediaUploadResponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+        if (mediaUploadResponse.status === 200) {
+          const eventData = {
+            detonator_id: parseInt(detonator_id),
+            event_name: campData.eventName,
+            event_type: campData.TypeEvent,
+            event_date: campData.Tanggal,
+            event_time: campData.Waktu, // Check if you intended to use it twice
+            description: campData.Description,
+            donation_target: parseFloat(totalCartPrice),
+            province: campData.province,
+            city: campData.city,
+            sub_district: campData.sub_district ?? "-",
+            postal_code: campData.postal_code ?? "-",
+            address: campData.location,
+            latitude: String(campData.coordinates.lat),
+            longitude: String(campData.coordinates.lng),
+            image_url: mediaUploadResponse.data.body.file_url, // Set to the actual file_url
+            food_required: parseInt(totalCartQuantity),
+            food_total: parseInt(totalCartQuantity),
+            products: products,
+          };
+          try {
+            const createCampaignResponse = await axios.post(
+              `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/create`,
+              eventData,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            setLoading(false);
+            // router.push("/detonator");
 
-      console.log(
-        "API Response media/upload:",
-        mediaUploadResponse.data.body.file_url
-      );
+            Swal.fire({
+              icon: "success",
+              title: "Campaign Created!",
+              text: "Campaign Berhasil dibuat Mohon Tunggu approval dari admin",
+              showConfirmButton: false,
+              timer: 2000,
+            });
 
-      if (mediaUploadResponse.status === 200) {
-
-
-        const eventData = {
-          detonator_id: parseInt(detonator_id),
-          event_name: campData.eventName,
-          event_type: campData.TypeEvent,
-          event_date: campData.Tanggal,
-          event_time: campData.Waktu, // Check if you intended to use it twice
-          description: campData.Description,
-          donation_target: parseFloat(totalCartPrice),
-          province: campData.province,
-          city: campData.city,
-          sub_district: campData.sub_district ?? "-",
-          postal_code: campData.postal_code ?? "-",
-          address: campData.location,
-          latitude: String(campData.coordinates.lat),
-          longitude: String(campData.coordinates.lng),
-          image_url: mediaUploadResponse.data.body.file_url, // Set to the actual file_url
-          food_required: parseInt(totalCartQuantity),
-          food_total: parseInt(totalCartQuantity),
-          products: products,
-        };
-
-        console.log("cek data", eventData);
-
-        try {
-          const createCampaignResponse = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/create`,
-            eventData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
+            setTimeout(() => {
+              router.push("/detonator");
+            }, 2000);
+          } catch (error) {
+            setLoading(false);
+            if (error.response && error.response.status === 401) {
+              localStorage.removeItem("cart");
+              localStorage.removeItem("formData");
+              Error401(error, router);
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Gagal Membuat Campaign",
+                text: "Gagal Membuat Campaign Mohon Coba Lagi",
+                showConfirmButton: false,
+                timer: 2000,
+              });
             }
-          );
-          console.log(
-            "API Response create campaign:",
-            createCampaignResponse.data
-          );
+          }
+        }
+      } catch (error) {
+        setLoading(false);
+        if (error.response && error.response.status === 401) {
           localStorage.removeItem("cart");
           localStorage.removeItem("formData");
-          setLoading(false);
-          // router.push("/detonator");
-
+          Error401(error, router);
+        } else {
           Swal.fire({
-            icon: "success",
-            title: "Campaign Created!",
-            text: "Campaign Berhasil dibuat Mohon Tunggu approval dari admin",
+            icon: "error",
+            title: "Image Gagal Upload",
+            text: "Gagal Upload Image Mohon Coba Lagi",
             showConfirmButton: false,
             timer: 2000,
           });
 
           setTimeout(() => {
-            router.push("/detonator");
+            router.push("/createcampaign?step=1");
           }, 2000);
-        } catch (error) {
-          setLoading(false);
-          console.error("Error creating campaign:", error);
-          if (error.response && error.response.status === 401) {
-            Error401(error, router);
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Gagal Membuat Campaign",
-              text: "Gagal Membuat Campaign Mohon Coba Lagi",
-              showConfirmButton: false,
-              timer: 2000,
-            });
-          }
         }
-      }
-    } catch (error) {
-      setLoading(false);
-      console.error("API Error:", error);
-      if (error.response && error.response.status === 401) {
-        localStorage.removeItem("cart");
-        localStorage.removeItem("formData");
-        Error401(error, router);
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Image Gagal Upload",
-          text: "Gagal Upload Image Mohon Coba Lagi",
-          showConfirmButton: false,
-          timer: 2000,
-        });
-
-        setTimeout(() => {
-          router.push("/creatcampaign?step=1");
-        }, 2000);
       }
     }
   };
 
   const handleLink = () => {
-    router.push("/creatcampaign?step=5");
-    console.log("data card", cart);
+    router.push("/createcampaign?step=5");
   };
-
-  console.log("groupedCart add", groupedCart);
-
-  // localStorage.removeItem('formData');
-  // localStorage.removeItem('cart');
 
   return (
     <>
-      <ol className="flex justify-center w-full p-2">
+      <ol className="flex justify-center mb-4 sm:mb-5 w-full p-2">
         <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block  after:border-b after:border-4 after:border-primary`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-primary`}
+          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-primary`}
+          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
           iconCss={`w-4 h-4 text-white lg:w-6 lg:h-6 `}
-          iconName={"CalendarEvent"}
+          iconName={"Calendar"}
         />
         <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block   after:border-b after:border-4 after:border-primary`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-primary`}
-          iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
+          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-primary`}
+          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
+          iconCss={`w-4 h-4 text-white lg:w-6 lg:h-6 `}
           iconName={"Map"}
         />
         <RoutStep
           liCss={`flex items-center`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-primary`}
+          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
           iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-          iconName={"CalendarEvent"}
+          iconName={"Bowl"}
         />
       </ol>
+
       <div className="container mx-auto">
-        {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
-        <div className="items-center justify-center mt-5 w-full">
+        <div className="items-center justify-center mt-1 w-full">
           <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
             <div
-              className={`flex ${Object.keys(groupedCart).length > 0
-                ? "justify-between"
-                : "justify-center"
-                } w-full`}
+              className={`flex ${
+                Object.keys(groupedCart).length > 0
+                  ? "justify-between"
+                  : "justify-center"
+              } w-full`}
             >
               <div className="flex">
                 {Object.keys(groupedCart).length > 0 ? (
@@ -1017,10 +1084,13 @@ function StepThree({
                     <div className="font-medium text-xs text-gray-500">
                       Total {totalCartQuantity} Pesanan
                     </div>
-                    <div className="text-primary font-bold text-lg">{`Rp ${totalCartPrice.toLocaleString(
-                      undefined,
-                      { minimumFractionDigits: 0, maximumFractionDigits: 0 }
-                    )}`}</div>
+                    <div className="text-primary font-bold text-lg">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        minimumFractionDigits: 0,
+                      }).format(totalCartPrice || 0)}
+                    </div>
                   </div>
                 ) : (
                   ""
@@ -1036,112 +1106,102 @@ function StepThree({
                   Menu
                 </button>
               </div>
-              {/* <div className="grid place-items-center">
-                <button
-                  onClick={handleLink}
-                  className="flex rounded-lg w-20 h-10 grid grid-cols-3 gap-4 content-center text-white bg-primary p-2 hover:shadow-lg"
-                >
-                  <IconCirclePlus />
-                  Menu
-                </button>
-              </div> */}
             </div>
           </div>
         </div>
 
-        {/* <div className="items-center justify-center w-full"> */}
         <div className="items-center justify-center w-full">
-          {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
           {Object.keys(groupedCart).length > 0
             ? Object.keys(groupedCart).map((IdMerchan, storeIndex) => (
-              <div key={storeIndex} className="mb-4 p-2">
-                {/* <h2 className="text-xl font-semibold my-2">ID :{IdMerchan}</h2> */}
-                {groupedCart[IdMerchan].map((item, itemIndex) => (
-                  <div
-                    key={itemIndex}
-                    className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
-                  >
-                    <div className="flex h-30 w-full">
-                      <img
-                        className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
-                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0
-                          ? item.images[0].image_url
-                          : ""
+                <div key={storeIndex} className="mb-4 p-2">
+                  {groupedCart[IdMerchan].map((item, itemIndex) => (
+                    <div
+                      key={itemIndex}
+                      className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
+                    >
+                      <div className="flex h-30 w-full">
+                        <img
+                          className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
+                          src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${
+                            item.images.length > 0
+                              ? item.images[0].image_url
+                              : ""
                           }`}
-                        alt=""
-                      />
-                      <div className="flex flex-col justify-between w-full">
-                        <div className="text-left place-items-start">
-                          <div className="text-primary font-bold capitalize">
-                            {item.name}
-                            {/* {item.imageUrl} */}
+                          alt=""
+                        />
+                        <div className="flex flex-col justify-between w-full">
+                          <div className="text-left place-items-start">
+                            <div className="text-primary font-bold capitalize">
+                              {item.name}
+                              {/* {item.imageUrl} */}
+                            </div>
+                            <div className="mb-1 font-sans text-[11px]">
+                              {/* terjual | Disukai oleh: 20 | */}
+                              Max Quota: {item.capacity}
+                            </div>
+                            <div className="mb-1 font-sans text-[11px]">
+                              {item.description}
+                            </div>
                           </div>
-                          <div className="mb-1 font-sans text-[11px]">
-                            {/* terjual | Disukai oleh: 20 | */}
-                            Max Quota: {item.capacity}
-                          </div>
-                          <div className="mb-1 font-sans text-[11px]">
-                            {item.description}
-                          </div>
-                          {/* <p className="text-gray-600 mt-2">{`Total: Rp${(item.total).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</p> */}
-                          {/* <p className="text-gray-700">{`Total: $${item.total.toFixed(2)}`}</p> */}
-                        </div>
-                        <div className="mt-2 flex flex-row gap-4 justify-between">
-                          <p className="font-bold text-primary">{`Rp ${(
-                            item.price * item.quantity
-                          ).toLocaleString(undefined, {
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 0,
-                          })}`}</p>
-                          <div className="grid place-items-center">
-                            <div className="flex items-center">
-                              <button
-                                className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                onClick={() =>
-                                  handleDecrease(
-                                    IdMerchan,
-                                    item.id,
-                                    item.capacity
-                                  )
-                                }
-                              >
-                                <IconMinus size={15} />
-                              </button>
-                              <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
-                                {item.quantity}
-                              </span>
-                              <button
-                                className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                onClick={() =>
-                                  handleIncrease(
-                                    IdMerchan,
-                                    item.id,
-                                    item.capacity
-                                  )
-                                }
-                              >
-                                <IconPlus size={15} />
-                              </button>
+                          <div className="mt-2 flex flex-row gap-4 justify-between">
+                            <p className="font-bold text-primary">
+                              {new Intl.NumberFormat("id-ID", {
+                                style: "currency",
+                                currency: "IDR",
+                                minimumFractionDigits: 0,
+                              }).format(item.price * item.quantity || 0)}
+                            </p>
+                            <div className="grid place-items-center">
+                              <div className="flex items-center">
+                                <button
+                                  className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                  onClick={() =>
+                                    handleDecrease(
+                                      IdMerchan,
+                                      item.id,
+                                      item.capacity
+                                    )
+                                  }
+                                >
+                                  <IconMinus size={15} />
+                                </button>
+                                <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                  onClick={() =>
+                                    handleIncrease(
+                                      IdMerchan,
+                                      item.id,
+                                      item.capacity
+                                    )
+                                  }
+                                >
+                                  <IconPlus size={15} />
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ))
+                  ))}
+                </div>
+              ))
             : ""}
         </div>
         {/* </div> */}
 
         {Object.keys(groupedCart).length > 0 ? (
-          <div className="grid gap-4 h-screencontent-center px-4">
+          <div className="grid gap-4 h-screencontent-center px-4 py-2">
             <button
-              onClick={handleSubmit}
+              onClick={() => handleSubmit()}
               className="text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center"
             >
-              Lanjut
+              {campData.TypeEvent === "regular"
+                ? "Lanjutkan Pembayaran"
+                : "Ajukan"}
             </button>
           </div>
         ) : (
@@ -1152,18 +1212,536 @@ function StepThree({
   );
 }
 
+function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
+  const [isDropdownMethodOpen, setIsDropdownMethodOpen] = useState(false);
+  const [isDropdownChannelOpen, setIsDropdownChannelOpen] = useState(false);
+  const [selectedMethod, setSelectedMethod] = useState("");
+  const [selectedChannel, setSelectedChannel] = useState("");
+  const [selectedChannelLogo, setSelectedChannelLogo] = useState();
+  const [donationRequired, setDonationRequired] = useState();
+  const [formData2, setFormData] = useState();
+  const [wallet_balance, setWalletBalance] = useState();
+  const router = useRouter();
+  const admin_fee = 2500;
+  const month = moment().format("YYYY-MM");
+
+  useEffect(() => {
+    axios
+      .get(
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
+        }donation/list?start=${month}-01&end=${month}-${new Date(
+          moment(month, "YYYY-MM").format("YYYY"),
+          moment(month, "YYYY-MM").format("MM"),
+          0
+        ).getDate()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        setLoading(false);
+        setWalletBalance(response.data.body.agnostic_balance);
+      })
+      .catch((error) => {
+        setLoading(false);
+        Error401(error, router);
+      });
+  }, []);
+
+  useEffect(() => {
+    setLoading(false);
+    // Check local storage for existing form data
+    const storedFormData = localStorage.getItem("formData");
+    if (storedFormData) {
+      const parsedFormData = JSON.parse(storedFormData);
+      if (parsedFormData) {
+        setFormData(parsedFormData);
+      }
+    }
+    setDonationRequired(cart.reduce((total, item) => total + item.total, 0));
+  }, []);
+
+  const handleSubmit = () => {
+    setLoading(true);
+    const detonator_id = localStorage.getItem("id");
+    const token = localStorage.getItem("token");
+
+    const formData = new FormData();
+    formData.append("destination", "campaign");
+    formData.append("file", uploadedFile);
+
+    axios
+      .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setLoading(false);
+        const totalCartPrice = cart.reduce(
+          (total, item) => total + item.total,
+          0
+        );
+        const totalCartQuantity = cart.reduce(
+          (total, item) => total + item.quantity,
+          0
+        );
+
+        const products = cart.map((item) => ({
+          merchant_id: parseInt(item.merchant_id),
+          merchant_product_id: parseInt(item.id),
+          qty: parseInt(item.quantity),
+        }));
+
+        const eventData = {
+          detonator_id: parseInt(detonator_id),
+          event_name: formData2.eventName,
+          event_type: formData2.TypeEvent,
+          event_date: formData2.Tanggal,
+          event_time: formData2.Waktu, // Check if you intended to use it twice
+          description: formData2.Description,
+          donation_target: parseFloat(totalCartPrice),
+          province: formData2.province,
+          city: formData2.city,
+          sub_district: formData2.sub_district ?? "-",
+          postal_code: formData2.postal_code ?? "-",
+          address: formData2.location,
+          latitude: String(formData2.coordinates.lat),
+          longitude: String(formData2.coordinates.lng),
+          image_url: res.data.body.file_url, // Set to the actual file_url
+          food_required: parseInt(totalCartQuantity),
+          food_total: parseInt(totalCartQuantity),
+          products: products,
+          payment: {
+            payment_method:
+              selectedMethod === "agnostic" ? "agnostic" : "mayar",
+            amount: parseFloat(donationRequired),
+            admin_fee: 0,
+            total_amount: parseFloat(donationRequired),
+            payment_channel: `${
+              selectedMethod === "agnostic" ? "Tabunganku" : selectedChannel
+            }`,
+            success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
+          },
+        };
+        axios
+          .post(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/single-donation`,
+            eventData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then((response) => {
+            const responeUrl =
+              response.data.body.payment.actions.desktop_web_checkout_url;
+            localStorage.setItem(
+              "external_id",
+              response.data.body.payment.external_id
+            );
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            setLoading(false);
+            Swal.fire({
+              icon: "success",
+              title: "Campaign Berhasil dibuat",
+              text: "Terimakasih Telah Membantu Sesama",
+              showConfirmButton: false,
+              timer: 2000,
+            });
+            localStorage.setItem("prevPath", "payment_reciept");
+            if (selectedMethod !== "agnostic") {
+              setTimeout(() => {
+                router.push(`${responeUrl}`);
+              }, 2000);
+            } else {
+              setTimeout(() => {
+                router.push(
+                  `/bukti_pembayaran?external_id=${response.data.body.payment.external_id}`
+                );
+              }, 2000);
+            }
+          })
+          .catch((error) => {
+            setLoading(false);
+            localStorage.removeItem("cart");
+            localStorage.removeItem("formData");
+            const messages = {
+              title: "Gagal Membuat Campaign",
+              text: "Gagal Membuat Campaign Mohon Coba Lagi",
+            };
+            Error401(error, router, messages);
+          });
+      })
+      .catch((error) => {
+        setLoading(false);
+        localStorage.removeItem("cart");
+        localStorage.removeItem("formData");
+        const messages = {
+          title: "Image Gagal Upload",
+          text: "Gagal Upload Image Mohon Coba Lagi",
+        };
+        Error401(error, router, messages);
+        setTimeout(() => {
+          router.push("/createcampaign?step=1");
+        }, 2000);
+      });
+  };
+
+  const methodOptions = [
+    {
+      id: 1,
+      value: "agnostic",
+      label: "Tabunganku",
+    },
+    {
+      id: 2,
+      value: "ewallet",
+      label: "Ewallet",
+    },
+    // {
+    //   id: 3,
+    //   value: "bank",
+    //   label: "Bank",
+    // },
+  ];
+
+  const eWalletChannelOptions = [
+    {
+      id: 1,
+      logo: LinkAja,
+      value: "LinkAja",
+      // label: "LinkAja",
+    },
+    {
+      id: 2,
+      logo: gopay,
+      value: "Gopay",
+      // label: "Gopay",
+    },
+  ];
+
+  // const bankChannelOptions = [
+  //   {
+  //     id: 1,
+  //     logo: mandiri,
+  //     value: "Mandiri",
+  //     // label: "Mandiri",
+  //   },
+  //   {
+  //     id: 2,
+  //     logo: bri,
+  //     value: "BRI",
+  //     // label: "BRI",
+  //   },
+  // ];
+
+  return (
+    <div className="w-full">
+      <Header title="Konfirmasi Pembayaran" />
+      <div className="flex flex-col w-full px-4 gap-3">
+        <p className="text-black text-sm font-medium">
+          Pilih Metode Pembayaran
+        </p>
+        <button
+          onClick={() => {
+            setIsDropdownMethodOpen(!isDropdownMethodOpen);
+            setIsDropdownChannelOpen(false);
+          }}
+          className="flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none"
+        >
+          <p
+            className={`capitalize font-bold ${
+              selectedMethod === "" ? "text-gray-400" : "text-black"
+            }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
+          >
+            {selectedMethod === "" ? "Pilih Salah Satu..." : selectedMethod}
+          </p>
+          {isDropdownMethodOpen ? <IconChevronUp /> : <IconChevronDown />}
+        </button>
+        {isDropdownMethodOpen ? (
+          <div className="flex flex-col px-4 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none">
+            {methodOptions.map((data, index) => (
+              <div key={data.id} className="w-full flex justify-between">
+                <button
+                  onClick={() => {
+                    setSelectedMethod(data.value);
+                    setSelectedChannel("");
+                  }}
+                  className="flex flex-row justify-between w-full items-center py-3 cursor-pointer "
+                >
+                  <label htmlFor="ewallet" className="font-bold text-black">
+                    {data.label}
+                  </label>
+                  <input
+                    type="radio"
+                    id={data.value}
+                    name="paymentOption"
+                    value={data.value}
+                    className="hidden"
+                  />
+                  <div
+                    className={`w-[10px] h-[10px] ${
+                      data.value === selectedMethod && "bg-primary"
+                    } rounded-full flex justify-center items-center`}
+                  >
+                    <div
+                      className={`rounded-full p-2 ${
+                        data.value === selectedMethod && "border-primary"
+                      } border-2`}
+                    />
+                  </div>
+                </button>
+                {index !== methodOptions.length - 1 ? <hr /> : ""}
+              </div>
+            ))}
+          </div>
+        ) : (
+          ""
+        )}
+        {selectedMethod !== "" && (
+          <>
+            <button
+              disabled={selectedMethod === "agnostic"}
+              onClick={() => {
+                setIsDropdownChannelOpen(!isDropdownChannelOpen);
+                setIsDropdownMethodOpen(false);
+              }}
+              className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${
+                selectedMethod === "agnostic"
+                  ? "bg-[#1D5882] cursor-normal"
+                  : ""
+              }`}
+            >
+              {selectedMethod === "agnostic" ? (
+                <>
+                  <p
+                    className={`font-bold text-xs text-white pl-2 outline-none py-4 focus:border-none`}
+                  >
+                    Nilai Tabungan
+                  </p>
+                  <p
+                    className={`font-bold text-base text-white pl-2 outline-none py-4 focus:border-none pr-2`}
+                  >
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(wallet_balance)}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p
+                    className={`capitalize font-bold ${
+                      selectedChannel === "" ? "text-gray-400" : "text-black"
+                    }  pl-2 cursor-pointer outline-none py-4  focus:border-none`}
+                  >
+                    {selectedChannel === "" ? (
+                      `Pilih ${selectedMethod}...`
+                    ) : (
+                      <p className="flex flex-row items-center gap-2">
+                        <Image width={30} src={selectedChannelLogo} />
+                        {selectedChannel}
+                      </p>
+                    )}
+                  </p>
+                  {isDropdownChannelOpen ? (
+                    <IconChevronUp />
+                  ) : (
+                    <IconChevronDown />
+                  )}
+                </>
+              )}
+            </button>
+            <p
+              className={
+                selectedMethod === "agnostic" &&
+                donationRequired + admin_fee > wallet_balance
+                  ? "instructions italic text-[10px] flex items-center"
+                  : "hidden"
+              }
+            >
+              <IconInfoCircle size={15} className="mr-1 text-red-600" />
+              <span className="text-red-600">Dana tidak cukup</span>
+            </p>
+          </>
+        )}
+        {isDropdownChannelOpen ? (
+          <div className="flex flex-col px-4 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none">
+            {selectedMethod === "ewallet"
+              ? eWalletChannelOptions.map((data, index) => (
+                  <>
+                    <button
+                      onClick={() => {
+                        setSelectedChannel(data.value);
+                        setSelectedChannelLogo(data.logo);
+                      }}
+                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Image width={30} src={data.logo} />
+                        <label
+                          htmlFor="ewallet"
+                          className="font-bold text-black"
+                        >
+                          {data.value}
+                        </label>
+                      </div>
+                      <input
+                        type="radio"
+                        id={data.value}
+                        name="paymentOption"
+                        value={data.value}
+                        className="hidden"
+                      />
+                      <div
+                        className={`w-[10px] h-[10px] ${
+                          data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                      >
+                        <div
+                          className={`rounded-full p-2 ${
+                            data.value === selectedChannel && "border-primary"
+                          } border-2`}
+                        />
+                      </div>
+                    </button>
+                    {index !== eWalletChannelOptions.length - 1 ? <hr /> : ""}
+                  </>
+                ))
+              : bankChannelOptions.map((data, index) => (
+                  <>
+                    <button
+                      onClick={() => {
+                        setSelectedChannel(data.value);
+                        setSelectedChannelLogo(data.logo);
+                      }}
+                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Image width={30} src={data.logo} />
+                        <label
+                          htmlFor="ewallet"
+                          className="font-bold text-black"
+                        >
+                          {data.value}
+                        </label>
+                      </div>
+                      <input
+                        type="radio"
+                        id={data.value}
+                        name="paymentOption"
+                        value={data.value}
+                        className="hidden"
+                      />
+                      <div
+                        className={`w-[10px] h-[10px] ${
+                          data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                      >
+                        <div
+                          className={`rounded-full p-2 ${
+                            data.value === selectedChannel && "border-primary"
+                          } border-2`}
+                        />
+                      </div>
+                    </button>
+                    {index !== bankChannelOptions.length - 1 ? <hr /> : ""}
+                  </>
+                ))}
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
+      <div className="flex flex-col w-full px-4 gap-3 pt-8">
+        <p className="text-black text-sm font-medium">Rincian Donasi</p>
+        <div className="flex flex-col gap-3 items-center justify-center py-3 px-4 shadow-sm shadow-gray-400 text-sm rounded-xl w-full focus:border-none">
+          <p className="text-black font-bold text-lg text-center">
+            {formData2?.eventName}
+          </p>
+          <div className="w-full">
+            <hr />
+          </div>
+          <div className="w-full flex flex-row justify-between">
+            <p className="text-gray-400">Nominal Donasi</p>
+            <p className="text-black font-medium">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(donationRequired || 0)}
+            </p>
+          </div>
+          {/* <div className="w-full flex flex-row justify-between">
+            <p className="text-gray-400">Biaya Transaksi</p>
+            <p className="text-black font-medium">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(admin_fee)}
+            </p>
+          </div> */}
+          <div className="w-full">
+            <hr />
+          </div>
+          <div className="w-full flex flex-row justify-between">
+            <p className="text-black font-medium">Total</p>
+            <p className="text-primary font-bold">
+              {new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+                minimumFractionDigits: 0,
+              }).format(donationRequired)}
+            </p>
+          </div>
+        </div>
+        <div className="grid gap-4 content-center pt-12 mb-2">
+          <button
+            disabled={
+              selectedMethod === "" ||
+              (selectedMethod !== "agnostic" && selectedChannel === "") ||
+              (selectedMethod === "agnostic" &&
+                donationRequired > wallet_balance)
+            }
+            onClick={() => handleSubmit()}
+            type="submit"
+            className={
+              selectedMethod === "" ||
+              (selectedMethod !== "agnostic" && selectedChannel === "") ||
+              (selectedMethod === "agnostic" &&
+                donationRequired > wallet_balance)
+                ? "text-white bg-gray-400 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+                : "text-white bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+            }
+          >
+            Lanjutkan
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Stepfour({
   cart,
   updateCart,
   setCart,
   setUploadedFile,
   uploadedFile,
+  setLoading,
 }) {
   const [groupedFoods, setGroupedFoods] = useState({});
   const router = useRouter();
   const IdMerchan = router.query.id;
   const nameMerchant = router.query.name;
-  console.log("router", router);
   const detonator_id = localStorage.getItem("id");
   const token = localStorage.getItem("token");
 
@@ -1171,8 +1749,7 @@ function Stepfour({
     // Load cart data from local storage on component mount
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(storedCart);
-
-    // Fetch data from API
+    setLoading(true);
     axios
       .get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant-product/filter?merchant_id=${IdMerchan}`,
@@ -1184,6 +1761,7 @@ function Stepfour({
       )
       .then((response) => {
         // Filter foods with status 'approved'
+        setLoading(false);
         const approvedFoods = response.data.body.filter(
           (food) => food.status === "approved"
         );
@@ -1199,12 +1777,9 @@ function Stepfour({
         }, {});
         setGroupedFoods(groupedByMerchant);
       })
-
       .catch((error) => {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
-        console.log(error);
+        setLoading(false);
+        Error401(error, router);
       });
   }, [setCart]);
 
@@ -1215,11 +1790,11 @@ function Stepfour({
       const updatedCart = cart.map((item, index) =>
         index === existingItemIndex
           ? {
-            ...item,
-            quantity: item.quantity + food.quantity,
-            total: (item.quantity + food.quantity) * item.price,
-            capacity: food.qty,
-          }
+              ...item,
+              quantity: item.quantity + food.quantity,
+              total: (item.quantity + food.quantity) * item.price,
+              capacity: food.qty,
+            }
           : item
       );
       setCart(updatedCart);
@@ -1248,7 +1823,7 @@ function Stepfour({
   };
 
   const handleLink = () => {
-    router.push("/creatcampaign?step=3");
+    router.push("/createcampaign?step=3");
   };
 
   const formatToRupiah = (amount) => {
@@ -1258,18 +1833,18 @@ function Stepfour({
     }).format(amount);
   };
 
-  // console.log('groupedFoods', groupedFoods);
   // Calculate total price and total quantity
   // const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(0);
-  const totalHarga = cart.reduce((acc, item) => acc + parseFloat(item.total), 0).toFixed(0);
+  const totalHarga = cart
+    .reduce((acc, item) => acc + parseFloat(item.total), 0)
+    .toFixed(0);
 
-  console.log('Total harga:', totalHarga);
   const jumlahMakanan = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <div className="w-full">
       <Header title={"Pilih Menu"} />
-      <div className="items-center justify-center mt-1 w-full">
+      <div className="items-center justify-center w-full">
         <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
           <div className="flex justify-between w-full">
             <div className="flex">
@@ -1289,10 +1864,10 @@ function Stepfour({
             <div className="grid place-items-center">
               <button
                 onClick={handleLink}
-                className="flex rounded-lg w-20 h-10 grid grid-cols-3 gap-4 content-center text-white bg-primary p-2 hover:shadow-lg"
+                className="flex rounded-lg w-20 h-10 grid-cols-3 gap-2 content-center text-white bg-primary p-2 hover:shadow-lg"
               >
-                <IconGardenCart />
-                Cart{" "}
+                <IconShoppingCart />
+                Cart
               </button>
             </div>
           </div>
@@ -1319,17 +1894,18 @@ function Stepfour({
           </>
         ))}
       </div>
-
-      {/* <div className="container mx-auto mt-4 bg-white h-screen">
-        <div className="items-center justify-center mt-2 w-full">
-          
-        </div>
-      </div> */}
     </div>
   );
 }
 
-function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
+function Stepfive({
+  cart,
+  setCart,
+  setUploadedFile,
+  uploadedFile,
+  loading,
+  setLoading,
+}) {
   const [groupedFoods, setGroupedFoods] = useState({});
   const router = useRouter();
   const [dataApi, setDataApi] = useState([]);
@@ -1356,7 +1932,7 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         if (!detonator_id || !token) {
           throw new Error("Missing required session data");
         }
-
+        setLoading(true);
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/filter?per_page=100000`,
           {
@@ -1372,15 +1948,12 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
             merchant.products.some((product) => product.status === "approved")
           );
         });
-        console.log("page creat camp data", approvedMerchants);
         setDataApi(approvedMerchants);
         setFilteredData(approvedMerchants);
-        // setLoading(false);
+        setLoading(false);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
-        console.log("error =", error);
+        Error401(error, router);
+        setLoading(false);
       }
     };
 
@@ -1388,7 +1961,7 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
   }, [detonator_id]);
 
   const handleLink = () => {
-    router.push("/creatcampaign?step=3");
+    router.push("/createcampaign?step=3");
   };
 
   // Calculate total price and total quantity
@@ -1410,11 +1983,11 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
         ))}
       </div> */}
       <p className="text-black font-light text-xs mb-5 flex flex-row items-center justify-center gap-1">
-        <IconCurrentLocation color="red" />
+        <IconMapPin color="red" />
         {location}
       </p>
       <div className="flex justify-center">
-        <Image src={Market} />
+        <Image src={Market} alt="" />
       </div>
       <p className="py-2 pb-7 text-gray-700 font-medium text-xl">
         Merchant Terdekat
@@ -1422,8 +1995,6 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
 
       <div className="items-center justify-center w-full">
         <div className="items-center justify-center w-full">
-          {loading && <p>Loading...</p>}
-
           {dataApi.map((item) => (
             <>
               <CardListMerchan key={item.id} data={item} />
@@ -1435,4 +2006,11 @@ function Stepfive({ cart, setCart, setUploadedFile, uploadedFile, loading }) {
   );
 }
 
-export { StepOne, StepThree, StepTwo, Stepfive, Stepfour };
+export {
+  SingleDonationPayment,
+  StepOne,
+  StepThree,
+  StepTwo,
+  Stepfive,
+  Stepfour,
+};

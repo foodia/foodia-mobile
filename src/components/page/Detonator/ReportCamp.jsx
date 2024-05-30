@@ -5,12 +5,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CardReport from "@/components/CardReport";
-import CardReting from "@/components/CardReting";
+import CardReting from "@/components/CardRating";
 import Error401 from "@/components/error401";
+import Loading from "@/components/Loading";
 const ReportCamp = () => {
   const router = useRouter();
   const { id } = router.query;
-  console.log("rout", id);
   const [dataApi, setDataApi] = useState([]);
   const [dataCamp, setdataCamp] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,20 +46,16 @@ const ReportCamp = () => {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${id}`
         );
 
-        console.log("data report campaign", response.data.body.orders);
         setDataApi(response.data.body.orders);
         setdataCamp(response.data.body);
         setLoading(false);
-        console.log('Data detonator id', response.data.body.detonator.id);
       } catch (error) {
-        handleRequestError(error);
-        console.log("error =", error);
+        Error401(error);
       }
     };
 
     fetchData();
   }, [id]);
-  // console.log('data api', dataCamp);
 
   //get data rating
   useEffect(() => {
@@ -79,17 +75,15 @@ const ReportCamp = () => {
           // }
         );
 
-        console.log("data Rating", response.data.body);
         setDataReting(response.data.body);
         setLoading(false);
       } catch (error) {
-        handleRequestError(error);
+        Error401(error);
       }
     };
 
     fetchData();
   }, [id]);
-  // console.log('data reting', dataReting);
 
   //get data report
   useEffect(() => {
@@ -109,16 +103,11 @@ const ReportCamp = () => {
           // }
         );
 
-        console.log("data Report food", response.data.body);
         setDataReport(response.data.body);
         // setReportDetonator(response.data.body);
         setLoading(false);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-
-        }
-        handleRequestError(error);
+        Error401(error, router);
       }
     };
 
@@ -143,15 +132,10 @@ const ReportCamp = () => {
           // }
         );
 
-        console.log("data Report", response.data.body);
         setReportDetonator(response.data.body);
         setLoading(false);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-
-        }
-        handleRequestError(error);
+        Error401(error, router);
       }
     };
 
@@ -159,9 +143,14 @@ const ReportCamp = () => {
   }, [id]);
 
   useEffect(() => {
-    setJumlahOrder(dataApi.length);
+    console.log('cek data', dataApi);
+    const filter = dataApi.filter((data) => data.approval_status === 'approved');
+    setJumlahOrder(filter.length);
     setJumlahTrue(dataApi.filter((data) => data.is_report === true).length);
 
+  }, [dataApi]);
+
+  useEffect(() => {
     if (jumlahTrue === jumlahOrder) {
       setButtonStatus(true);
       if (ReportDetonator.length > 0) {
@@ -170,30 +159,7 @@ const ReportCamp = () => {
     } else {
       setButtonStatus(false);
     }
-
-    console.log(
-      "jum",
-      dataApi.length,
-      "true",
-      dataApi.filter((data) => data.is_rating === true).length,
-      `jumlah order`,
-      jumlahOrder,
-      "button",
-      buttonStatus
-    );
-    console.log("data", dataApi);
-  }, [dataApi]);
-  const handleRequestError = (error) => {
-    console.error("Error fetching data:", error);
-
-    if (error.response && error.response.status === 401) {
-      localStorage.clear();
-      router.push("/login/detonator");
-    }
-
-    setLoading(false);
-    setdataCamp([]);
-  };
+  }, [jumlahOrder, jumlahTrue, ReportDetonator]);
 
   return (
     <>
@@ -204,7 +170,7 @@ const ReportCamp = () => {
         </div>
         {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
         <h1 className="m-2 font-medium text-sm">{`Merchant Report (${jumlahTrue}/${jumlahOrder}) `}</h1>
-        {loading && <p>Loading...</p>}
+        {loading && <Loading />}
         {/* {dataReting.map((item) => (
                     <CardReting key={item.id} data={item} />
                 ))} */}
@@ -229,31 +195,24 @@ const ReportCamp = () => {
             {token && (
               <>
                 {role === "user" ? (
-                  <div className="w-full flex items-center p-2">
-
-                    {buttonStatus ? (
-                      <Link
-                        href={`/report/${id}`}
-                        className="bg-primary text-white w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
-                      >
-
-                        Unduh Laporan
-                      </Link>
-                    ) : (
-                      <button
-                        className="bg-gray-300 text-gray-500 w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
-                        disabled
-                      >
-                        Unduh Laporan
-                      </button>
-                    )}
-                  </div>
+                  <>
+                    {/* <div className="w-full flex items-center p-2">
+                      {!buttonStatus ? (
+                        <button
+                          className="bg-gray-300 text-gray-500 w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
+                          disabled
+                        >
+                          Unduh Laporan
+                        </button>
+                      ) : ''}
+                    </div> */}
+                  </>
                 ) : role === "detonator" ? (
                   <div className="w-full flex items-center p-2">
                     {buttonStatus ? (
                       <Link
                         href={`/detonator/createreport/${id}`}
-                        className="bg-primary text-white w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
+                        className={` text-white w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center ${ReportDetonator.length > 0 ? "cursor-not-allowed bg-gray-500" : "bg-primary"} `}
                       >
                         <IconCirclePlus className="mr-2" />
                         Buat Laporan
@@ -274,9 +233,8 @@ const ReportCamp = () => {
             )}
           </>
         ) : (
-          ''
+          ""
         )}
-
       </div>
     </>
   );
