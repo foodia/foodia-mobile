@@ -71,11 +71,13 @@ const DetailReview = () => {
                                 htmlFor="images"
                                 className="flex flex-col justify-center w-full h-32 border-2 border-black border-dashed rounded-lg cursor-pointer bg-gray-200 hover:bg-gray-100"
                             >
-                                <img
-                                    src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.photo}`}
-                                    alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.photo}`}
-                                    className="w-full h-full rounded-lg object-cover"
-                                />
+                                {dataDetail?.photo == '-' ? <p className="text-center">No Photo</p> :
+                                    <img
+                                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.photo}`}
+                                        alt={`${dataDetail?.photo}`}
+                                        className="w-full h-full rounded-lg object-cover"
+                                    />}
+
                             </label>
                         </div>
 
