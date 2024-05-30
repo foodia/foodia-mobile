@@ -1418,12 +1418,12 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
       value: "LinkAja",
       // label: "LinkAja",
     },
-    {
-      id: 2,
-      logo: gopay,
-      value: "Gopay",
-      // label: "Gopay",
-    },
+    // {
+    //   id: 2,
+    //   logo: gopay,
+    //   value: "Gopay",
+    //   // label: "Gopay",
+    // },
   ];
 
   // const bankChannelOptions = [
@@ -1470,6 +1470,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
               <div key={data.id} className="w-full flex justify-between">
                 <button
                   onClick={() => {
+                    setIsDropdownMethodOpen(false);
                     setSelectedMethod(data.value);
                     setSelectedChannel("");
                   }}
@@ -1579,6 +1580,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                   <>
                     <button
                       onClick={() => {
+                        setIsDropdownChannelOpen(false);
                         setSelectedChannel(data.value);
                         setSelectedChannelLogo(data.logo);
                       }}
@@ -1619,6 +1621,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                   <>
                     <button
                       onClick={() => {
+                        setIsDropdownChannelOpen(false);
                         setSelectedChannel(data.value);
                         setSelectedChannelLogo(data.logo);
                       }}
