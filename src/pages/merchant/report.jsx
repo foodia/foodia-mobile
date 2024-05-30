@@ -1,8 +1,6 @@
-import FormReportMerchan from "@/components/page/FormReportMerchan";
-;
-
+import FormReportMerchant from "@/components/page/FormReportMerchant";
 const Report = (Report) => {
-    return (<FormReportMerchan />);
-}
+  return <FormReportMerchant />;
+};
 
 export default Report;

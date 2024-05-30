@@ -30,7 +30,6 @@ const Edit = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log('response', response.data.body);
                 setDataUser(response.data.body);
                 setKtp_number(response.data.body?.ktp_number || '');
                 // setFotoSelfi(`${process.env.NEXT_PUBLIC_URL_STORAGE}${response.data.body?.self_photo || ''}`);
@@ -63,7 +62,7 @@ const Edit = () => {
                 Swal.fire({
                     icon: "error",
                     title: "Oops...",
-                    text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+                    text: "Hanya file PNG, JPG, JPEG dan HEIF yang diizinkan!",
                 });
                 event.target.value = "";
             } else if (file.size > maxSize) {
@@ -74,6 +73,7 @@ const Edit = () => {
                 });
                 event.target.value = "";
             } else {
+                setLoading(false)
                 setFotoSelfi(file);
             }
         }
@@ -91,7 +91,7 @@ const Edit = () => {
                 Swal.fire({
                     icon: "error",
                     title: "Oops...",
-                    text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+                    text: "Hanya file PNG, JPG, JPEG dan HEIF yang diizinkan!",
                 });
                 event.target.value = "";
             } else if (file.size > maxSize) {
@@ -103,6 +103,7 @@ const Edit = () => {
                 event.target.value = "";
             } else {
                 setKtpPhoto(file);
+                setLoading(false)
             }
         }
     };
@@ -124,9 +125,6 @@ const Edit = () => {
         if (ktpPhoto) {
             formData.append('ktp_photo', ktpPhoto);
         }
-        // console.log('formData', formData);
-        console.log('ktpPhoto', ktpPhoto);
-        console.log('fotoSelfi', fotoSelfi);
 
         try {
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_BASE_URL}detonator/update/${dataUser?.id}`, formData, {
@@ -149,7 +147,6 @@ const Edit = () => {
                 Error401(error, router);
 
             }
-            console.log('error', error);
             Swal.fire({
                 icon: "error",
                 title: "Update Detonator Failed!",

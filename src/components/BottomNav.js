@@ -16,6 +16,9 @@ import { useAppState } from "./page/UserContext";
 import Image from "next/image";
 import bottomNav from "../../public/img/icon/BottomNavField.png";
 import { usePathname } from "next/navigation";
+import icon_agnostic from "../../public/img/icon/icon_agnostic.png";
+import axios from "axios";
+import Error401 from "./error401";
 
 const BottomNav = () => {
   const router = useRouter();
@@ -24,8 +27,7 @@ const BottomNav = () => {
   const { state, setDonation } = useAppState();
   const [nominalDonasi, setNominalDonasi] = useState(0);
   const [loading, setLoading] = useState(false);
-
-  console.log(pathname);
+  const [jumlahInbox, setJumlahInbox] = useState(0);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
@@ -35,12 +37,30 @@ const BottomNav = () => {
     }
   }, [token]); // Empty dependency array to run once when the component mounts
 
-  // const btnLogout = () => {
-  //   localStorage.clear();
-  //   localStorage.removeItem('cart');
-  //   localStorage.removeItem('formData');
-  //   router.push('/home');
-  // };
+  useEffect(() => {
+    if (token) {
+      setLoading(true);
+      axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}inbox/list?inbox_type=donator`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          setJumlahInbox(response.data.body.total_unread);
+          // console.log(response.data.body);
+          setLoading(false);
+        })
+        .catch((error) => {
+          Error401(error, router);
+          setLoading(false);
+        });
+    }
+    else {
+      setJumlahInbox(0);
+      // console.log("no token");
+      setLoading(false);
+    }
+  }, [token]);
 
   function formatNominal(value) {
     value = value.replace(/\D/g, "");
@@ -53,6 +73,12 @@ const BottomNav = () => {
         popup: "custom-swal",
         icon: "custom-icon-swal",
         confirmButton: "custom-confirm-button-swal", // Custom class for styling
+      },
+      willOpen: () => {
+        Swal.getPopup().classList.add("swal2-show-swipeup");
+      },
+      willClose: () => {
+        Swal.getPopup().classList.add("swal2-show-swipedown");
       },
       didRender: () => {
         let nominal;
@@ -85,7 +111,7 @@ const BottomNav = () => {
             radio.checked = false;
           });
           nominal = parseInt(nominalInput.value.replace(/\./g, ""));
-          if (nominal == 0 || nominalInput.value === "") {
+          if (nominal < 1000 || nominalInput.value === "") {
             Swal.getConfirmButton().style.backgroundColor = "#a0aec0";
             Swal.disableButtons();
           } else {
@@ -130,7 +156,7 @@ const BottomNav = () => {
                             Nominal Donasi Lainnya
                         </label>
                         <div class="pl-5 gap-4 flex flex-row items-center mt-2 bg-white text-sm rounded-xl focus:ring-blue-500 ">
-                          <label class="w-5">Rp</label>
+                          <label class="w-6">Rp</label>
                           <input type="text" name="nominal" class="p-2.5 focus:border-blue-500 dark:placeholder-gray-400 outline-none w-full rounded-xl" > 
                         </div>
                     </div>
@@ -169,20 +195,19 @@ const BottomNav = () => {
       success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
       detail: {
         campaign_id: "",
-        description: "Donation",
+        description: "Tabungan Donasi",
         donation_type: "agnostic",
       },
     };
     setDonation(data);
     setLoading(false);
-    localStorage.setItem("prevPath", "BottomNav");
+    localStorage.setItem("prevPath", "/mydonation");
     router.push("/metode_pembayaran");
   };
 
   return (
-    <div className="mobile-w bg-transparent fixed flex justify-center h-24 bottom-0 w-full max-w-screen-sm">
+    <div className="mobile-w bg-transparent fixed flex justify-center h-24 bottom-0 w-full max-w-screen-sm ">
       <Image src={bottomNav} className="bg-transparent" layout="fill"></Image>
-      {/* <div className="kotak bg-white"> */}
       <div
         className={`menu1 icon_nav hover:text-primary 
         ${pathname === "/home" ? "text-primary" : "text-gray-400"}
@@ -195,23 +220,37 @@ const BottomNav = () => {
       </div>
       <div
         className={`menu2 icon_nav hover:text-primary 
-        ${pathname === "" ? "text-primary" : "text-gray-400"}
+        ${pathname === "/mydonation" ? "text-primary" : "text-gray-400"}
         `}
       >
-        {/* <Link className="items-center flex flex-col gap-1" href="">
+        <Link
+          href="/mydonation"
+          className="items-center w-20 flex flex-col gap-1"
+        >
           <IconReceipt />
-          <p className="text-xs">Receipt</p>
-        </Link> */}
+          <p className="text-xs">My Donation</p>
+        </Link>
       </div>
       <div
         className={`menu3 icon_nav hover:text-primary 
-        ${pathname === "" ? "text-primary" : "text-gray-400"}
+        ${pathname === "/inbox" ? "text-primary" : "text-gray-400"}
         `}
       >
-        {/* <Link className="items-center flex flex-col gap-1" href="">
+        <Link className="items-center flex flex-col gap-1 static" href="/inbox">
+          {jumlahInbox > 0 ? (
+            <div className="absolute top-0 right-0 w-3 bg-red-500 h-3 rounded-full flex justify-center items-center">
+              <p
+                className="text-center font-semibold text-white"
+                style={{ fontSize: "8px" }}
+              >
+                {jumlahInbox}
+              </p>
+            </div>
+          ) : null}
+
           <IconMail />
           <p className="text-xs">Inbox</p>
-        </Link> */}
+        </Link>
       </div>
       {token ? (
         <div
@@ -238,7 +277,12 @@ const BottomNav = () => {
       )}
       <div className="lingkaran cursor-pointer" onClick={showSweetAlert}>
         <div className="iconQr flex items-stretch p-1">
-          <IconQrcode width={32} height={32} color="white" />
+          <Image
+            src={"/img/icon/icon_agnostic.png"}
+            alt="Girl in a jacket"
+            width={30}
+            height={30}
+          />
         </div>
       </div>
     </div>

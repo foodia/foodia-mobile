@@ -20,7 +20,6 @@ const FormDetonator = () => {
   }, [router.query.step]);
 
   useEffect(() => {
-    console.log("Registrasi Detonator:", registrasiDetonator);
   }, [registrasiDetonator]);
 
   let stepComponent;
@@ -60,7 +59,6 @@ const FormDetonator = () => {
       setTitle = "Default Title";
       break;
   }
-  // console.log('Combined Data:', registrasiDetonator);
 
   return (
     <main className="my-0 mx-auto min-h-full mobile-w">

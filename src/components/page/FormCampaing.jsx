@@ -1,18 +1,16 @@
 // src/components/FormCampaing.jsx
 
-import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import {
+  SingleDonationPayment,
   StepOne,
-  StepTwo,
   StepThree,
-  Stepfour,
+  StepTwo,
   Stepfive,
+  Stepfour,
 } from "../FormCampaing/Step";
-import AddFood from "./AddFoodCamp";
 import Loading from "../Loading";
-// import StepThree from '../FormCampaing/CreateCamp';
 
 const FormCampaing = () => {
   const router = useRouter();
@@ -21,29 +19,10 @@ const FormCampaing = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // useEffect(() => {
-  //     const role = localStorage.getItem('role');
-  //     const token = localStorage.getItem('token');
-  //     const status = localStorage.getItem('status');
-  //     const idDetonator = localStorage.getItem('id');
-
-  //     if (!role || !token || role !== 'detonator' || status !== 'approved' || !idDetonator) {
-  //         // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
-  //         localStorage.clear();
-  //         localStorage.removeItem('cart');
-  //         localStorage.removeItem('formData');
-  //         router.push('/login/detonator');
-  //     } else {
-  //         // Role is 'detonator' and token is present
-  //         setLoading(false); // Set loading to false once the check is complete
-  //     }
-  // }, [router]);
-
   // Retrieve form data from local storage on component mount
   useEffect(() => {
     const storedFormData = localStorage.getItem("formData");
     if (storedFormData) {
-      console.log(JSON.parse(storedFormData));
     }
   }, []);
 
@@ -71,10 +50,10 @@ const FormCampaing = () => {
         setLoading={setLoading}
       />
     );
-    setTitle = "Tanggal Pelaksanaan";
+    setTitle = "Informasi Campaign";
   } else if (step === "2") {
-    stepComponent = <StepTwo />;
-    setTitle = "Lokasi Pelaksanaan";
+    stepComponent = <StepTwo loading={loading} setLoading={setLoading} />;
+    setTitle = "Lokasi Campaign";
   } else if (step === "3") {
     stepComponent = (
       <StepThree
@@ -86,7 +65,18 @@ const FormCampaing = () => {
         setLoading={setLoading}
       />
     );
-    setTitle = "Tambah Menu Makan";
+    setTitle = "Pilih Menu";
+  } else if (step === "Payment") {
+    stepComponent = (
+      <SingleDonationPayment
+        cart={cart}
+        updateCart={updateCart}
+        setUploadedFile={setUploadedFile}
+        uploadedFile={uploadedFile}
+        loading={loading}
+        setLoading={setLoading}
+      />
+    );
   } else if (step === "4") {
     stepComponent = (
       <Stepfour
@@ -99,7 +89,6 @@ const FormCampaing = () => {
         setLoading={setLoading}
       />
     );
-    setTitle = "Tambah Menu Makan";
   } else if (step === "5") {
     stepComponent = (
       <Stepfive

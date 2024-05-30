@@ -70,7 +70,6 @@ const EditMerchant = () => {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-                console.log('response', response.data.body);
                 setDataUser(response.data.body);
                 setMerchantName(response.data.body?.merchant_name || '');
                 setKtpNumber(response.data.body?.ktp_number || '');
@@ -149,7 +148,6 @@ const EditMerchant = () => {
     };
 
     useEffect(() => {
-        console.log('locationInfo', locationInfo);
         if (locationInfo) {
             setAddress(locationInfo.fullAdres);
             setProvince(locationInfo.province);

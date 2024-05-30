@@ -16,7 +16,6 @@ const FormMenu = () => {
   useEffect(() => {
     const storedFormData = localStorage.getItem("formData");
     if (storedFormData) {
-      console.log(JSON.parse(storedFormData));
     }
   }, []);
 

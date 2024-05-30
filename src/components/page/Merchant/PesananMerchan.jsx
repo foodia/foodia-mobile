@@ -1,13 +1,12 @@
 import CardPesanan from "@/components/CardPesanan";
+import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import styles from "@/styles/Home.module.css";
-import { IconBowlFilled, IconCirclePlus } from "@tabler/icons-react";
 import axios from "axios";
 import moment from "moment/moment";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import MenuBarMechant from "./MenuBarMechant";
 
 const PesananMerchan = () => {
   const router = useRouter();
@@ -15,11 +14,6 @@ const PesananMerchan = () => {
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("review");
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const observer = useRef();
-
-  console.log(loading);
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -36,7 +30,7 @@ const PesananMerchan = () => {
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
       localStorage.clear();
-      router.push("/login/merchant");
+      router.push("/login");
     } else {
       // Role is 'detonator' and token is present
       setLoading(false); // Set loading to false once the check is complete
@@ -67,18 +61,13 @@ const PesananMerchan = () => {
         setDataApi(approvedPesanan);
         setFilteredData(approvedPesanan);
         setLoading(false);
-        console.log("data page merchan", approvedPesanan);
 
         if (approvedPesanan.length === 0) {
           setHasMore(false);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
         setLoading(false);
-
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-        }
+        Error401(error, router);
       }
     };
 
@@ -86,10 +75,14 @@ const PesananMerchan = () => {
   }, [loading, selectedStatus]);
 
   const handleFilterChange = (status = "review") => {
+    setLoading(true);
     let filtered = [];
+
+    setLoading(true);
 
     if (status === "review") {
       filtered = dataApi.filter((data) => data.order_status === "review");
+      // console.log(filtered, dataApi);
     } else if (status === "diproses") {
       filtered = dataApi.filter((data) => data.order_status === "diproses");
     } else if (status === "selesai") {
@@ -101,75 +94,10 @@ const PesananMerchan = () => {
 
     setSelectedStatus(status);
   };
-  const formatDate = (inputDate) => {
-    const date = new Date(inputDate);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
   return (
     <>
-      <div className="container mx-auto h-screen">
-        <div className="flex items-center justify-center px-6 pt-16">
-          <div className={`bg-gray-100 rounded-2xl w-full p-3`}>
-            <div className="flex justify-between items-center">
-              {router.pathname === "/merchant" ? (
-                <Link
-                  href="/createmenu?step=1"
-                  className="grid justify-items-center gap-1 w-24"
-                >
-                  <div className={`${styles.iconMenu}`}>
-                    <IconCirclePlus />
-                  </div>
-                  <p className="text-xs font-normal text-black">Tambah Menu</p>
-                </Link>
-              ) : (
-                router.pathname === "/merchant/pesanan" && (
-                  <Link
-                    href="/merchant"
-                    className="grid justify-items-center gap-1 w-24"
-                  >
-                    <div className={`${styles.iconMenu}`}>
-                      <IconBowlFilled />
-                    </div>
-                    <p className="text-xs font-normal text-black">
-                      Daftar Menu
-                    </p>
-                  </Link>
-                )
-              )}
-              <Link
-                href="/merchant/pesanan"
-                className="grid justify-items-center gap-1 w-24 "
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <Image
-                    src={"/icon/pesanan.png"}
-                    alt="Girl in a jacket"
-                    width={30}
-                    height={30}
-                  />
-                </div>
-                <p className="text-xs font-normal text-black">Pesanan</p>
-              </Link>
-              <Link
-                href="/merchant/saldo"
-                className="grid justify-items-center gap-1 w-24 "
-              >
-                <div className={`${styles.iconMenu}`}>
-                  <Image
-                    src={"/icon/saldo.png"}
-                    alt="Girl in a jacket"
-                    width={30}
-                    height={30}
-                  />
-                </div>
-                <p className="text-xs font-normal text-black">Saldo</p>
-              </Link>
-            </div>
-          </div>
-        </div>
+      <div className="container mx-auto overflow-hidden h-screen">
+        <MenuBarMechant />
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
             className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "review"
@@ -209,9 +137,9 @@ const PesananMerchan = () => {
             ))}
           </div>
         ) : (
-          <div className={`${styles.card} `}>
-            {filteredData.length == 0 ? (
-              <p className="text-gray-400">
+          <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
+            {loading || filteredData.length == 0 ? (
+              <p className="text-gray-400  flex justify-center items-center">
                 {selectedStatus === "review"
                   ? "Tidak Ada Pesanan"
                   : selectedStatus === "diproses"
@@ -225,9 +153,8 @@ const PesananMerchan = () => {
                   to={`/merchant/detailpesanan/${data.id}`}
                   idOrder={data.id}
                   img={
-                    data.merchant_product.images.length > 0
-                      ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product.images[0].image_url}`
-                      : "/img/default-image.png"
+                    `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.campaign.image_url}` ||
+                    "/img/default-image.png"
                   }
                   title={data.campaign.event_name}
                   productName={data.merchant_product.name}
@@ -239,7 +166,7 @@ const PesananMerchan = () => {
                   )} ${data.campaign?.event_time}`}
                   qty={data.qty}
                   price={data.merchant_product.price}
-                  status={data.order_status}
+                  status={data.approval_status}
                   total_amount={data.total_amount}
                   setLoading={setLoading}
                 />
@@ -248,10 +175,7 @@ const PesananMerchan = () => {
           </div>
         )}
       </div>
-      {/* <div
-        id="infinite-scroll-trigger"
-        className={`${styles.loadingCard}`}
-      ></div> */}
+      {loading && <Loading />}
     </>
   );
 };
