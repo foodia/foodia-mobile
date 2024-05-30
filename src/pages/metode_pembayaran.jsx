@@ -37,6 +37,8 @@ const MetodePembayaran = () => {
   const admin_fee = 2500;
   const month = moment().format("YYYY-MM");
 
+  // console.log(router);
+
   useEffect(() => {
     axios
       .get(
@@ -151,7 +153,7 @@ const MetodePembayaran = () => {
         },
       })
       .then((response) => {
-        // setLoading(true);
+        setLoading(false);
         const responeUrl = response.data.body.actions.desktop_web_checkout_url;
         localStorage.setItem("external_id", response.data.body.external_id);
         router.push(`${responeUrl}`);

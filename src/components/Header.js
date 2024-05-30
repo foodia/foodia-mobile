@@ -8,6 +8,7 @@ const Header = ({ title = "", backto = "" }) => {
   // Handle the back button click
   const handleBackButtonClick = () => {
     // Navigate back to the previous page
+    localStorage.removeItem("prevPath");
     if (backto) {
       if (localStorage.getItem("prevPath") !== "payment_reciept") {
         localStorage.removeItem("prevPath");

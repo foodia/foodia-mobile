@@ -19,6 +19,9 @@ const BuktiPembayaran = () => {
   console.log("1", prevPath);
   console.log("2", path);
 
+  // const previousPageUrl =
+  //   typeof window !== "undefined" ? new URL(document.referrer).pathname : "";
+
   useEffect(() => {
     const prevPath = localStorage.getItem("prevPath");
     if (prevPath) {

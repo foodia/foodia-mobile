@@ -339,6 +339,28 @@ const DetailCamp = ({ data }) => {
     }
   };
 
+  const formatToRupiah = (amount) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(amount);
+  };
+  let percentageCollected = 0;
+  data.donation_target > 0
+    ? (percentageCollected =
+        (data.donation_collected / data.donation_target) * 100)
+    : (percentageCollected = 0);
+
+  const totalCollected = (percentageCollected) => {
+    if (percentageCollected === undefined || percentageCollected === null) {
+      return 0;
+    } else if (percentageCollected > 100) {
+      return 100;
+    } else {
+      return percentageCollected;
+    }
+  };
+
   const remainingDays = calculateRemainingTime(data.event_date);
   return (
     <>
