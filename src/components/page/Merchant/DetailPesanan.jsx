@@ -255,7 +255,7 @@ const DetailPesanan = () => {
               qty={dataApi?.qty}
               price={dataApi?.merchant_product.price}
               total_amount={dataApi?.total_amount}
-              status={dataApi?.approval_status}
+              status={dataApi?.order_status}
               setLoading={setLoading}
             />
           )}
