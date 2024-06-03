@@ -172,6 +172,19 @@ const mydonation = () => {
                         {moment(bulan, "YYYY-MM").format("MMM YYYY")}
                       </button>
                     ))}
+                    <button
+                      onClick={() => {
+                        onChangeMonth(moment(new Date()).format("YYYY-MM"));
+                      }}
+                      className={`${
+                        moment(new Date(), "YYYY-MM").format("MMM YYYY") ===
+                        moment(month, "YYYY-MM").format("MMM YYYY")
+                          ? "text-primary"
+                          : "text-black"
+                      } text-[12px] w-full text-left font-semibold`}
+                    >
+                      {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
+                    </button>
                   </div>
                 )}
               </div>
