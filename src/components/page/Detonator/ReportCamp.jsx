@@ -218,12 +218,14 @@ const ReportCamp = () => {
                         Buat Laporan
                       </Link>
                     ) : (
-                      <button
+                      <>
+                        {/* <button
                         className="bg-gray-300 text-gray-500 w-full font-bold py-2 px-4 rounded-xl flex items-center justify-center"
                         disabled
                       >
                         Export Report
-                      </button>
+                      </button> */}
+                      </>
                     )}
                   </div>
                 ) : (
