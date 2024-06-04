@@ -123,7 +123,7 @@ const Detonator = () => {
     const id = localStorage.getItem("id");
     axios
       .get(
-        z`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${selectedStatus}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?detonator_id=${id}&campaign_status=${selectedStatus}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
