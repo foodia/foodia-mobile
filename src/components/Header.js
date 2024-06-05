@@ -12,9 +12,10 @@ const Header = ({ title = "", backto = "" }) => {
     if (backto) {
       if (localStorage.getItem("prevPath") !== "payment_reciept") {
         localStorage.removeItem("prevPath");
+      } else if (localStorage.getItem("prevPath") === "order_confirmation") {
+        localStorage.removeItem("prevPath");
       }
       localStorage.removeItem("statusSaldo");
-
       localStorage.removeItem("phone");
       localStorage.removeItem("merchantName");
       localStorage.removeItem("updatedAddress");
