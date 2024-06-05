@@ -51,7 +51,7 @@ const OrderConfirmation = () => {
 
           const affordablePcs = Math.floor(
             response.data.body.campaign.donation_remaining /
-              response.data.body.merchant_product.price
+            response.data.body.merchant_product.price
           );
 
           if (affordablePcs > response.data.body.qty) {
@@ -111,6 +111,7 @@ const OrderConfirmation = () => {
           allowOutsideClick: false,
         }).then((result) => {
           if (result.isConfirmed) {
+            localStorage.setItem("prevPath", "order_confirmation");
             router.push(`/merchant/detailpesanan/${id_order}`);
           }
         });

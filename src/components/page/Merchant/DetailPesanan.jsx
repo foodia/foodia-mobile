@@ -17,6 +17,16 @@ const DetailPesanan = () => {
   const [loading, setLoading] = useState(true);
   const [dataApi, setDataApi] = useState();
   const [confirmedOrder, setConfirmedOrder] = useState(0);
+  const [prevPath, setPrevPath] = useState("");
+
+  useEffect(() => {
+    const prevPath = localStorage.getItem("prevPath");
+    if (prevPath !== "order_confirmation") {
+      setPrevPath(prevPath);
+    } else if (prevPath === "order_confirmation") {
+      setPrevPath("/merchant");
+    }
+  }, [])
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -216,7 +226,7 @@ const DetailPesanan = () => {
   return (
     <>
       <div className="container mx-auto pt-14 bg-white overflow-hidden h-screen">
-        <Header title="Detail Pesanan" />
+        <Header title="Detail Pesanan" backto={prevPath ? prevPath : ""} />
         <div className="place-content-center h-screen overflow-auto pb-14">
           {loading ? (
             <div className="border border-blue-300 shadow rounded-md p-4 max-w-sm w-80 h-28 mx-auto">
@@ -469,11 +479,10 @@ const DetailPesanan = () => {
                           `/merchant/order-confirmation?id=${id_order}`
                         );
                       }}
-                      className={`${
-                        dataApi?.campaign.donation_remaining <= 0
-                          ? "bg-gray-400"
-                          : "bg-primary"
-                      } text-white rounded-md h-10 w-full col-span-2`}
+                      className={`${dataApi?.campaign.donation_remaining <= 0
+                        ? "bg-gray-400"
+                        : "bg-primary"
+                        } text-white rounded-md h-10 w-full col-span-2`}
                     >
                       Konfirmasi Pesanan
                     </button>
