@@ -26,8 +26,8 @@ const ReviewCamp = () => {
           Authorization: `Bearer ${token}`,
         },
       })
+
       .then((response) => {
-        // console.log(response.data.body);
         setnewReport(response.data.body);
 
         // setnewReport(response.data.body);
@@ -137,9 +137,8 @@ const ReviewCamp = () => {
             {[1, 2, 3, 4, 5].map((index) => (
               <svg
                 key={index}
-                className={`w-12 h-12 cursor-pointer ${
-                  index <= star ? "text-yellow-300" : "text-gray-500"
-                }`}
+                className={`w-12 h-12 cursor-pointer ${index <= star ? "text-yellow-300" : "text-gray-500"
+                  }`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"

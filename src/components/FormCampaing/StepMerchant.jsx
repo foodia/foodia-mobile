@@ -95,7 +95,6 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
     if (file.size <= maxSize) {
       setself_photo(file);
       setLoadingSelfi(false);
-      // console.log('file', file);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
@@ -110,7 +109,6 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
             })
           }
           setLoadingSelfi(false);
-          // console.log('hasil compressedFile', compressedFile);
         })
         .catch((error) => {
           Swal.fire({
@@ -143,7 +141,6 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
     if (file.size <= maxSize) {
       setktp_photo(file);
       setLoadingKTP(false);
-      // console.log('file', file);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
@@ -158,7 +155,6 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
             })
           }
           setLoadingKTP(false);
-          console.log('hasil compressedFile', compressedFile);
         })
         .catch((error) => {
           Swal.fire({

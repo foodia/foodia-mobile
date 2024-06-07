@@ -74,8 +74,6 @@ const PesananMerchan = () => {
     fetchData();
   }, [loading, selectedStatus]);
 
-  console.log(filteredData);
-  console.log(dataApi);
 
   const handleFilterChange = (status = "review") => {
     setLoading(true);
@@ -102,41 +100,37 @@ const PesananMerchan = () => {
         <MenuBarMechant />
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium text-center ${
-              selectedStatus === "review"
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium text-center ${selectedStatus === "review"
                 ? "text-primary border-b-2 border-primary"
                 : "text-gray-500"
-            }`}
+              }`}
             onClick={() => handleFilterChange("review")}
           >
             <span>Pesanan Baru</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium text-center ${
-              selectedStatus === "terima"
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium text-center ${selectedStatus === "terima"
                 ? "text-primary border-b-2 border-primary"
                 : "text-gray-500"
-            }`}
+              }`}
             onClick={() => handleFilterChange("terima")}
           >
             <span>Konfirmasi Pesanan</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium text-center ${
-              selectedStatus === "diproses"
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium text-center ${selectedStatus === "diproses"
                 ? "text-primary border-b-2 border-primary"
                 : "text-gray-500"
-            }`}
+              }`}
             onClick={() => handleFilterChange("diproses")}
           >
             <span>Laporan Pesanan</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid items-center pb-2 text-sm font-medium text-center ${
-              selectedStatus === "selesai,tolak"
+            className={`w-full cursor-pointer grid items-center pb-2 text-sm font-medium text-center ${selectedStatus === "selesai,tolak"
                 ? "text-primary border-b-2 border-primary"
                 : "text-gray-500"
-            }`}
+              }`}
             onClick={() => handleFilterChange("selesai")}
           >
             <span>History</span>
@@ -158,8 +152,8 @@ const PesananMerchan = () => {
                 {selectedStatus === "review"
                   ? "Tidak Ada Pesanan"
                   : selectedStatus === "diproses"
-                  ? "Tidak Ada Pesanan Berlangsung"
-                  : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
+                    ? "Tidak Ada Pesanan Berlangsung"
+                    : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
               </p>
             ) : (
               filteredData.map((data) => (

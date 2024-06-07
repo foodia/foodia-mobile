@@ -197,7 +197,6 @@ const DetonatorRating = (DetonatorRating) => {
     if (file.size <= maxSize) {
       setImages(file);
       setLoadingImage(false);
-      // console.log('file', file);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
@@ -212,7 +211,6 @@ const DetonatorRating = (DetonatorRating) => {
             });
           }
           setLoadingImage(false);
-          // console.log('hasil compressedFile', compressedFile);
         })
         .catch((error) => {
           Swal.fire({
@@ -336,9 +334,8 @@ const DetonatorRating = (DetonatorRating) => {
               {[1, 2, 3, 4, 5].map((index) => (
                 <svg
                   key={index}
-                  className={`w-12 h-12 cursor-pointer ${
-                    index <= star ? "text-yellow-300" : "text-gray-500"
-                  }`}
+                  className={`w-12 h-12 cursor-pointer ${index <= star ? "text-yellow-300" : "text-gray-500"
+                    }`}
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
