@@ -24,7 +24,6 @@ const DetailReview = () => {
             .then((res) => {
                 setLoading(false);
                 const filteredData = res.data.body.filter((data) => data.id === parseInt(id));
-                console.log('cek', filteredData[0]);
                 setDataDetail(filteredData[0]);
             })
             .catch((err) => {

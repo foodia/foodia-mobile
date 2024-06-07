@@ -47,7 +47,6 @@ const BottomNav = () => {
       })
         .then((response) => {
           setJumlahInbox(response.data.body.total_unread);
-          // console.log(response.data.body);
           setLoading(false);
         })
         .catch((error) => {
@@ -57,7 +56,6 @@ const BottomNav = () => {
     }
     else {
       setJumlahInbox(0);
-      // console.log("no token");
       setLoading(false);
     }
   }, [token]);

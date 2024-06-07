@@ -146,7 +146,6 @@ export default function PageMerchant() {
             )
             .then((response) => {
                 setJumlah(response.data.body.length);
-                // console.log('not-reviewed', response);
                 setDataApi(response.data.body);
                 // const filtered = response.data.body.filter(
                 //     (data) => data.is_rating === false && data.approval_status === "approved"

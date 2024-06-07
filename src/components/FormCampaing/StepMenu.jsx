@@ -81,7 +81,6 @@ function StepOne({ Menu, setMenu }) {
     if (file.size <= maxSize) {
       setImages(file);
       setLoadingImage(false);
-      // console.log('file', file);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
@@ -96,7 +95,6 @@ function StepOne({ Menu, setMenu }) {
             })
           }
           setLoadingImage(false);
-          // console.log('hasil compressedFile', compressedFile);
         })
         .catch((error) => {
           Swal.fire({

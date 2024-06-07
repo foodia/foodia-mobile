@@ -143,7 +143,6 @@ const ReportCamp = () => {
   }, [id]);
 
   useEffect(() => {
-    console.log('cek data', dataApi);
     const filter = dataApi.filter((data) => data.approval_status === 'approved');
     setJumlahOrder(filter.length);
     setJumlahTrue(dataApi.filter((data) => data.is_report === true).length);

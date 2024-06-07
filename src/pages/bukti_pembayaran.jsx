@@ -16,9 +16,6 @@ const BuktiPembayaran = () => {
   const [prevPath, setPrevPath] = useState("");
   const [path, setPath] = useState("");
 
-  console.log("1", prevPath);
-  console.log("2", path);
-
   // const previousPageUrl =
   //   typeof window !== "undefined" ? new URL(document.referrer).pathname : "";
 
@@ -98,8 +95,8 @@ const BuktiPembayaran = () => {
             <p className="font-semibold text-sm">
               {pembayaran?.transaction_date
                 ? moment(pembayaran?.transaction_date).format(
-                    "DD MMM YYYY hh:mm:ss"
-                  )
+                  "DD MMM YYYY hh:mm:ss"
+                )
                 : "-"}
             </p>
           </div>
@@ -107,7 +104,7 @@ const BuktiPembayaran = () => {
             <h1 className="font-normal text-sm text-[#A1A5C1]">Detail</h1>
             <p className="font-semibold text-sm">
               {pembayaran.description === "Terima Dana Donasi" ||
-              pembayaran.description === "Donation"
+                pembayaran.description === "Donation"
                 ? "Donasi"
                 : pembayaran.description}
               {/* {prevPath !== "/mydonation" ? "Donasi" : "Tabungan Donasi" || "-"} */}
@@ -140,8 +137,8 @@ const BuktiPembayaran = () => {
                   pembayaran.payment_channel === "agnostic_wallet"
                   ? "Tabunganku"
                   : pembayaran.payment_channel
-                  ? pembayaran.payment_channel
-                  : "Mayar"
+                    ? pembayaran.payment_channel
+                    : "Mayar"
                 : "-"}
             </p>
           </div>
