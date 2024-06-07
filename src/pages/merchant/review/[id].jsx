@@ -26,6 +26,7 @@ const ReviewCamp = () => {
           Authorization: `Bearer ${token}`,
         },
       })
+
       .then((response) => {
         setnewReport(response.data.body);
 
