@@ -71,7 +71,7 @@ const CardInbox = ({ DataInbox }) => {
         case "Donasi Campaign Terpenuhi":
           setUrl(`/campaign/${DataInbox.campaign?.id}`);
           break;
-        case "Lihat  Review Campaign":
+        case "Lihat Review Campaign":
           setUrl(`/detonator/review`);
           break;
         default:
