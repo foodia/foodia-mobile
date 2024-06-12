@@ -232,9 +232,10 @@ const DetonatorRating = (DetonatorRating) => {
           <div className=" w-full p-2">
             <div className="flex justify-between items-center w-full p-2 border border-gray-200 rounded-lg">
               <div className="flex items-center">
+                {/* ${process.env.NEXT_PUBLIC_URL_STORAGE} */}
                 <img
-                  src={"/img/card/geprek.jpg"}
-                  alt="sadas"
+                  src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataOrder?.merchant_product?.images[0].image_url}`}
+                  alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataOrder?.merchant_product?.images[0].image_url}`}
                   className="w-20 h-20"
                 />
                 <div className="ml-2">

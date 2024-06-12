@@ -259,7 +259,7 @@ export default function review() {
                                             {filteredData.map((dataFilter) => (
                                                 <CardReview
                                                     key={dataFilter.id}
-                                                    to={`/detonator/rating/${dataFilter?.order_id}?id_mrc=${dataFilter.merchant_id}&id_camp=${dataFilter.campaign_id}`}
+                                                    to={`/detonator/rating/${dataFilter?.order_id}?id_camp=${dataFilter.campaign_id}`}
                                                     img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter?.event_image}`}
                                                     title={dataFilter?.event_name}
                                                     description={"sfsfsf"}
@@ -275,7 +275,7 @@ export default function review() {
                                             {filteredData.map((dataFilter) => (
                                                 <CardReview
                                                     key={dataFilter.id}
-                                                    to={`/detonator/detail-review/${dataFilter.id}`}
+                                                    to={`/detonator/detail-review/${dataFilter?.id}?id_camp=${dataFilter?.order?.campaign?.id}&id_order=${dataFilter?.order_id}`}
                                                     img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.order?.campaign?.image_url}`}
                                                     title={dataFilter?.order?.campaign?.event_name}
                                                     description={"sfsfsf"}
