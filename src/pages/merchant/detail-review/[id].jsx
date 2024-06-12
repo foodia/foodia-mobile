@@ -16,15 +16,14 @@ const DetailReview = () => {
         const id_merchant = localStorage.getItem("id");
         const token = localStorage.getItem("token");
         axios.get(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/filter?relation_id=${id_merchant}&type=merchant`, {
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/fetch/${id}`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
         })
             .then((res) => {
                 setLoading(false);
-                const filteredData = res.data.body.filter((data) => data.id === parseInt(id));
-                setDataDetail(filteredData[0]);
+                setDataDetail(res.data.body);
             })
             .catch((err) => {
                 setLoading(false);
@@ -46,11 +45,11 @@ const DetailReview = () => {
                 <div className=" w-full p-2">
                     <div className="flex justify-between items-center w-full p-2 border border-gray-200 ">
                         <div className="flex items-center">
-                            <img
-                                src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.order?.campaign?.detonator?.self_photo}`}
-                                alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.order?.campaign?.detonator?.self_photo}`}
+                            {dataDetail?.photo == "-" ? <div className="w-20 h-20 object-cover rounded-full bg-gray-200 items-center flex justify-center"><p>no Photo</p></div> : <img
+                                src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.photo}`}
+                                alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.photo}`}
                                 className="w-20 h-20 object-cover rounded-full"
-                            />
+                            />}
                             <div className="ml-2">
                                 <p className="text-[14px] text-primary font-medium">
                                     {dataDetail?.order?.campaign?.detonator?.oauth?.fullname}

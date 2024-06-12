@@ -9,34 +9,61 @@ import { useEffect, useState } from "react";
 const DetailReview = () => {
     const router = useRouter();
     const { id } = router.query;
+    const { id_camp } = router.query;
+    const { id_order } = router.query;
     const [dataDetail, setDataDetail] = useState();
+    const [dataCamp, setDataCamp] = useState();
+    const [dataOrder, setDataOrder] = useState({});
     const [loading, setLoading] = useState(true);
     const getData = () => {
 
         const id_detonator = localStorage.getItem("id");
         const token = localStorage.getItem("token");
         axios.get(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/filter?relation_id=${id_detonator}&type=detonator`, {
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/fetch/${id}`, {
             headers: {
                 "Authorization": `Bearer ${token}`
             }
         })
             .then((res) => {
                 setLoading(false);
-                const filteredData = res.data.body.filter((data) => data.id === parseInt(id));
-                setDataDetail(filteredData[0]);
+
+                setDataDetail(res.data.body);
             })
             .catch((err) => {
                 setLoading(false);
                 Error401(err, router);
             })
     }
+    const getDataCamp = () => {
+        const id_merchant = localStorage.getItem("id");
+        const token = localStorage.getItem("token");
+        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${id_camp}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((res) => {
+                setLoading(false);
+                const filter = res.data.body?.orders.filter((order) => order.id === parseInt(id_order));
+
+                setDataOrder(filter[0]);
+                setDataCamp(res.data.body);
+            })
+            .catch((err) => {
+                setLoading(false);
+                Error401(err, router);
+            })
+    }
+
+
     useEffect(() => {
         if (id) {
+            getDataCamp();
             getData();
 
         }
-    }, [id, router]);
+    }, [id, id_camp, router]);
     return (
         <>
             <div className="container mx-auto pt-14 bg-white h-screen">
@@ -45,19 +72,20 @@ const DetailReview = () => {
                     <div className=" w-full p-2">
                         <div className="flex justify-between items-center w-full p-2 border border-gray-200 rounded-lg">
                             <div className="flex items-center">
+                                {/* {`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataCamp?.merchant_product?.images[0].image_url}`} */}
                                 <img
-                                    src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.order?.merchant_product?.images[0]?.image_url}`}
+                                    src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataOrder?.merchant_product?.images[0].image_url}`}
                                     alt="null"
                                     className="w-20 h-20 rounded-lg"
                                 />
                                 <div className="ml-2">
-                                    <p className="text-sm font-bold">{dataDetail?.order?.qty} x {dataDetail?.order?.merchant_product?.name}</p>
-                                    <p className="text-xs font-normal">{dataDetail?.merchant?.merchant_name}</p>
+                                    <p className="text-sm font-bold">{dataOrder?.qty}x {dataOrder?.merchant_product?.name}</p>
+                                    <p className="text-xs font-normal">{dataOrder?.merchant?.merchant_name}</p>
                                     <p className="text-[11px] font-normal text-gray-400">
-                                        {`${dataDetail?.order?.campaign?.event_date} ${dataDetail?.order?.campaign?.event_time}`}
+                                        {`${dataCamp?.event_date} ${dataCamp?.event_time}`}
                                     </p>
                                     <p className="text-[11px] font-medium">
-                                        {dataDetail?.order?.merchant_product?.note}
+                                        {dataOrder?.order?.merchant_product?.note}
                                     </p>
                                 </div>
                             </div>
