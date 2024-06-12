@@ -94,7 +94,7 @@ const CardInbox = ({ DataInbox }) => {
           setUrl(`/merchant/saldo`);
           break;
         case "Lihat Review Pesanan":
-          setUrl(`/merchant/review`);
+          setUrl(`/merchant/detail-review/${DataInbox.rating?.id}`);
           break;
         default:
           break;
