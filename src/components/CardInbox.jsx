@@ -63,7 +63,7 @@ const CardInbox = ({ DataInbox }) => {
           break;
         case "Pesanan Ditolak Merchant ":
         case "Pesanan Diterima Merchant":
-          setUrl(`/campaign/${DataInbox.campaign?.id}`);
+          setUrl(`/food/${DataInbox.campaign?.id}`);
           break;
         case "Makanan Sudah Diterima":
           setUrl(`/report/${DataInbox.campaign?.id}`);
