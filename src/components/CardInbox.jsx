@@ -72,7 +72,7 @@ const CardInbox = ({ DataInbox }) => {
           setUrl(`/campaign/${DataInbox.campaign?.id}`);
           break;
         case "Lihat Review Campaign":
-          setUrl(`/detonator/review`);
+          setUrl(`/detonator/detail-review/${DataInbox.rating?.id}`);
           break;
         default:
           break;
