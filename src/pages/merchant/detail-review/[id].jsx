@@ -8,11 +8,26 @@ import { useEffect, useState } from "react";
 
 const DetailReview = () => {
     const router = useRouter();
-    const { id } = router.query;
+    const { id, id_camp } = router.query;
     const [dataDetail, setDataDetail] = useState();
+    const [dataCamp, setDataCamp] = useState();
     const [loading, setLoading] = useState(true);
-    const getData = () => {
 
+    useEffect(() => {
+        if (id) {
+            getData();
+            getCampaign();
+        }
+    }, [id, router, id_camp]);
+
+    const getCampaign = async () => {
+        const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${id_camp}`
+        )
+        setDataCamp(response.data.body)
+    }
+
+    const getData = () => {
         const id_merchant = localStorage.getItem("id");
         const token = localStorage.getItem("token");
         axios.get(
@@ -30,12 +45,7 @@ const DetailReview = () => {
                 Error401(err, router);
             })
     }
-    useEffect(() => {
-        if (id) {
-            getData();
 
-        }
-    }, [id, router]);
     return (
         <div className="container mx-auto pt-14 bg-white h-screen">
             <Header
@@ -45,14 +55,14 @@ const DetailReview = () => {
                 <div className=" w-full p-2">
                     <div className="flex justify-between items-center w-full p-2 border border-gray-200 ">
                         <div className="flex items-center">
-                            {dataDetail?.photo == "-" ? <div className="w-20 h-20 object-cover rounded-full bg-gray-200 items-center flex justify-center"><p>no Photo</p></div> : <img
-                                src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.photo}`}
-                                alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.photo}`}
+                            {dataCamp?.detonator?.self_photo == "-" ? <div className="w-20 h-20 object-cover rounded-full bg-gray-200 items-center flex justify-center"><p>no Photo</p></div> : <img
+                                src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataCamp?.detonator?.self_photo}`}
+                                alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataCamp?.detonator?.self_photo}`}
                                 className="w-20 h-20 object-cover rounded-full"
                             />}
                             <div className="ml-2">
                                 <p className="text-[14px] text-primary font-medium">
-                                    {dataDetail?.order?.campaign?.detonator?.oauth?.fullname}
+                                    {dataCamp?.detonator?.oauth?.fullname}
                                 </p>
                                 <p className="text-[10px] font-normal">Verified Campaigner</p>
                             </div>

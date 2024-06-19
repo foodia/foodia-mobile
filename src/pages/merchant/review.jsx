@@ -287,7 +287,7 @@ export default function PageMerchant() {
                                             {filteredData.map((dataFilter) => (
                                                 <CardReview
                                                     key={dataFilter.id}
-                                                    to={`/merchant/detail-review/${dataFilter.id}`}
+                                                    to={`/merchant/detail-review/${dataFilter.id}?id_camp=${dataFilter.order?.campaign_id}`}
                                                     img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.order?.campaign?.image_url}`}
                                                     title={dataFilter?.order?.campaign?.event_name}
                                                     description={"sfsfsf"}
