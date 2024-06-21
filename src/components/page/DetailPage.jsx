@@ -368,7 +368,7 @@ const DetailCamp = ({ data }) => {
             <h1 className="font-extrabold text-[19px]">{data.event_name}</h1>
             <span className="font-sans text-sm font-bold">
               Tanggal Kegiatan :
-              {moment(data.event_date).format(" DD MMM YYYY hh:ss") + " WIB"}
+              {moment(data.event_date).format(" DD MMM YYYY") + " " + data.event_time + " WIB"}
             </span>
             <div className="flex flex-row justify-center items-center mb-1 gap-5">
               <p className="text-sm font-normal">{data.address}</p>
@@ -429,8 +429,8 @@ const DetailCamp = ({ data }) => {
               }
               onClick={showSweetAlert}
               className={`w-full h-14 mt-4 text-white rounded-2xl inline-flex items-center justify-center px-2.5 py-2.5 ${data.campaign_status === "FINISHED" || remainingDays < 1
-                  ? "bg-gray-400"
-                  : "bg-primary"
+                ? "bg-gray-400"
+                : "bg-primary"
                 } font-bold text-lg`}
             >
               Donasi
