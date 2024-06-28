@@ -100,6 +100,7 @@ const Saldo = () => {
 
   const handleFilterChange = async (status) => {
     setLoading(true);
+    localStorage.setItem("statusSaldo", status);
     setSelectedStatus(status);
 
     if (status === "penarikan") {
