@@ -37,13 +37,10 @@ const MetodePembayaran = () => {
   const admin_fee = 2500;
   const month = moment().format("YYYY-MM");
 
-  // console.log(router);
-
   useEffect(() => {
     axios
       .get(
-        `${
-          process.env.NEXT_PUBLIC_API_BASE_URL
+        `${process.env.NEXT_PUBLIC_API_BASE_URL
         }donation/list?start=${month}-01&end=${month}-${new Date(
           moment(month, "YYYY-MM").format("YYYY"),
           moment(month, "YYYY-MM").format("MM"),
@@ -195,9 +192,8 @@ const MetodePembayaran = () => {
           className="flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none"
         >
           <p
-            className={`capitalize font-bold ${
-              selectedMethod === "" ? "text-gray-400" : "text-black"
-            }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
+            className={`capitalize font-bold ${selectedMethod === "" ? "text-gray-400" : "text-black"
+              }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
           >
             {selectedMethod === "" ? "Pilih Salah Satu..." : selectedMethod}
           </p>
@@ -226,14 +222,12 @@ const MetodePembayaran = () => {
                     className="hidden"
                   />
                   <div
-                    className={`w-[10px] h-[10px] ${
-                      data.value === selectedMethod && "bg-primary"
-                    } rounded-full flex justify-center items-center`}
+                    className={`w-[10px] h-[10px] ${data.value === selectedMethod && "bg-primary"
+                      } rounded-full flex justify-center items-center`}
                   >
                     <div
-                      className={`rounded-full p-2 ${
-                        data.value === selectedMethod && "border-primary"
-                      } border-2`}
+                      className={`rounded-full p-2 ${data.value === selectedMethod && "border-primary"
+                        } border-2`}
                     />
                   </div>
                 </button>
@@ -252,11 +246,10 @@ const MetodePembayaran = () => {
                 setIsDropdownChannelOpen(!isDropdownChannelOpen);
                 setIsDropdownMethodOpen(false);
               }}
-              className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${
-                selectedMethod === "agnostic"
+              className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${selectedMethod === "agnostic"
                   ? "bg-[#1D5882] cursor-normal"
                   : ""
-              }`}
+                }`}
             >
               {selectedMethod === "agnostic" ? (
                 <>
@@ -278,9 +271,8 @@ const MetodePembayaran = () => {
               ) : (
                 <>
                   <p
-                    className={`capitalize font-bold ${
-                      selectedChannel === "" ? "text-gray-400" : "text-black"
-                    }  pl-2 cursor-pointer outline-none py-4  focus:border-none`}
+                    className={`capitalize font-bold ${selectedChannel === "" ? "text-gray-400" : "text-black"
+                      }  pl-2 cursor-pointer outline-none py-4  focus:border-none`}
                   >
                     {selectedChannel === "" ? (
                       `Pilih ${selectedMethod}...`
@@ -315,87 +307,83 @@ const MetodePembayaran = () => {
           <div className="flex flex-col px-4 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none">
             {selectedMethod === "ewallet"
               ? eWalletChannelOptions.map((data, index) => (
-                  <>
-                    <button
-                      onClick={() => {
-                        setIsDropdownChannelOpen(false);
-                        setSelectedChannel(data.value);
-                        setSelectedChannelLogo(data.logo);
-                      }}
-                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Image width={30} src={data.logo} />
-                        <label
-                          htmlFor="ewallet"
-                          className="font-bold text-black"
-                        >
-                          {data.value}
-                        </label>
-                      </div>
-                      <input
-                        type="radio"
-                        id={data.value}
-                        name="paymentOption"
-                        value={data.value}
-                        className="hidden"
-                      />
-                      <div
-                        className={`w-[10px] h-[10px] ${
-                          data.value === selectedChannel && "bg-primary"
-                        } rounded-full flex justify-center items-center`}
+                <>
+                  <button
+                    onClick={() => {
+                      setIsDropdownChannelOpen(false);
+                      setSelectedChannel(data.value);
+                      setSelectedChannelLogo(data.logo);
+                    }}
+                    className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Image width={30} src={data.logo} />
+                      <label
+                        htmlFor="ewallet"
+                        className="font-bold text-black"
                       >
-                        <div
-                          className={`rounded-full p-2 ${
-                            data.value === selectedChannel && "border-primary"
+                        {data.value}
+                      </label>
+                    </div>
+                    <input
+                      type="radio"
+                      id={data.value}
+                      name="paymentOption"
+                      value={data.value}
+                      className="hidden"
+                    />
+                    <div
+                      className={`w-[10px] h-[10px] ${data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                    >
+                      <div
+                        className={`rounded-full p-2 ${data.value === selectedChannel && "border-primary"
                           } border-2`}
-                        />
-                      </div>
-                    </button>
-                    {index !== eWalletChannelOptions.length - 1 ? <hr /> : ""}
-                  </>
-                ))
+                      />
+                    </div>
+                  </button>
+                  {index !== eWalletChannelOptions.length - 1 ? <hr /> : ""}
+                </>
+              ))
               : bankChannelOptions.map((data, index) => (
-                  <>
-                    <button
-                      onClick={() => {
-                        setIsDropdownMethodOpen(false);
-                        setSelectedChannel(data.value);
-                        setSelectedChannelLogo(data.logo);
-                      }}
-                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Image width={30} src={data.logo} />
-                        <label
-                          htmlFor="ewallet"
-                          className="font-bold text-black"
-                        >
-                          {data.value}
-                        </label>
-                      </div>
-                      <input
-                        type="radio"
-                        id={data.value}
-                        name="paymentOption"
-                        value={data.value}
-                        className="hidden"
-                      />
-                      <div
-                        className={`w-[10px] h-[10px] ${
-                          data.value === selectedChannel && "bg-primary"
-                        } rounded-full flex justify-center items-center`}
+                <>
+                  <button
+                    onClick={() => {
+                      setIsDropdownMethodOpen(false);
+                      setSelectedChannel(data.value);
+                      setSelectedChannelLogo(data.logo);
+                    }}
+                    className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Image width={30} src={data.logo} />
+                      <label
+                        htmlFor="ewallet"
+                        className="font-bold text-black"
                       >
-                        <div
-                          className={`rounded-full p-2 ${
-                            data.value === selectedChannel && "border-primary"
+                        {data.value}
+                      </label>
+                    </div>
+                    <input
+                      type="radio"
+                      id={data.value}
+                      name="paymentOption"
+                      value={data.value}
+                      className="hidden"
+                    />
+                    <div
+                      className={`w-[10px] h-[10px] ${data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                    >
+                      <div
+                        className={`rounded-full p-2 ${data.value === selectedChannel && "border-primary"
                           } border-2`}
-                        />
-                      </div>
-                    </button>
-                    {index !== bankChannelOptions.length - 1 ? <hr /> : ""}
-                  </>
-                ))}
+                      />
+                    </div>
+                  </button>
+                  {index !== bankChannelOptions.length - 1 ? <hr /> : ""}
+                </>
+              ))}
           </div>
         ) : (
           ""
@@ -437,13 +425,12 @@ const MetodePembayaran = () => {
               (selectedMethod !== "agnostic" && selectedChannel === "") ||
               (selectedMethod === "agnostic" && nominalDonasi > wallet_balance)
             }
-            className={`${
-              selectedMethod === "" ||
-              (selectedMethod !== "agnostic" && selectedChannel === "") ||
-              (selectedMethod === "agnostic" && nominalDonasi > wallet_balance)
+            className={`${selectedMethod === "" ||
+                (selectedMethod !== "agnostic" && selectedChannel === "") ||
+                (selectedMethod === "agnostic" && nominalDonasi > wallet_balance)
                 ? "bg-gray-400"
                 : "bg-primary"
-            } text-white w-full h-12 rounded-xl font-bold`}
+              } text-white w-full h-12 rounded-xl font-bold`}
             onClick={handleBayarSekarang}
           >
             Lanjutkan Pembayaran

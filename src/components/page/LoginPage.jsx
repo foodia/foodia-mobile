@@ -126,6 +126,10 @@ const LoginPage = () => {
             });
         } else {
           setLoading(false);
+          const formData = {
+            email: inputEmail,
+          };
+          setRegistrasi(formData);
           Swal.fire({
             icon: "error",
             title: "Account Inactive",
@@ -133,6 +137,9 @@ const LoginPage = () => {
             showConfirmButton: false,
             timer: 2000,
           });
+          setTimeout(() => {
+            router.push("/otp");
+          }, 2000);
         }
       })
       .catch((error) => {

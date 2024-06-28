@@ -1,5 +1,6 @@
 import styles from "@/styles/Campaign.module.css";
 import { IconCaretDown, IconCaretUp } from "@tabler/icons-react";
+import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -53,9 +54,8 @@ const CardReport = ({ data }) => {
   };
   return (
     <div
-      className={`block m-2  bg-white rounded-lg hover:shadow-md border bg-blue-100 ${
-        buttonStatus ? "cursor-pointer" : ""
-      }`}
+      className={`block m-2  bg-white rounded-lg hover:shadow-md border bg-blue-100 ${buttonStatus ? "cursor-pointer" : ""
+        }`}
     >
       <div className="flex p-2 ">
         <div className="w-1/3 mr-4">
@@ -67,9 +67,8 @@ const CardReport = ({ data }) => {
         </div>
         <div className="w-full">
           <div className="flex justify-between">
-            <h5 className="mb-1 text-sm font-bold tracking-tight text-gray-900 capitalize">{` ${
-              data.order ? data.order.merchant_product.name : data.title
-            }`}</h5>
+            <h5 className="mb-1 text-sm font-bold tracking-tight text-gray-900 capitalize">{` ${data.order ? data.order.merchant_product.name : data.title
+              }`}</h5>
 
             {data.order && data.order.is_rating ? (
               <div className="h-4 p-2 bg-primary text-white rounded items-center flex justify-center">
@@ -81,21 +80,12 @@ const CardReport = ({ data }) => {
             {data.order ? data.order.merchant.merchant_name : ""}{" "}
           </p>
           <p className="text-xs text-gray-900">
-            {new Date(data.created_at)
-              .toLocaleString("en-GB", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-              .replace(",", "")}
+            {moment(data.created_at).add(7, 'hours').format('DD/MM/YYYY HH:mm')}
           </p>
 
           <p
-            className={`font-normal text-gray-700 text-xs  ${
-              showFullText ? "" : styles.report_truncate
-            }`}
+            className={`font-normal text-gray-700 text-xs  ${showFullText ? "" : styles.report_truncate
+              }`}
           >
             {data.description}
           </p>

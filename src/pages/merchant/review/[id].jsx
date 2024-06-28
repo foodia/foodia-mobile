@@ -26,8 +26,8 @@ const ReviewCamp = () => {
           Authorization: `Bearer ${token}`,
         },
       })
+
       .then((response) => {
-        // console.log(response.data.body);
         setnewReport(response.data.body);
 
         // setnewReport(response.data.body);
@@ -70,6 +70,7 @@ const ReviewCamp = () => {
         }
       )
       .then((response) => {
+        setloading(false);
         Swal.fire({
           icon: "success",
           title: "Review Berhasil Disimpan",
@@ -80,8 +81,7 @@ const ReviewCamp = () => {
         }).then(() => {
           setloading(false);
           router.push("/merchant/review");
-        })
-
+        });
       })
       .catch((error) => {
         setloading(false);
@@ -91,9 +91,7 @@ const ReviewCamp = () => {
 
   return (
     <div className="container mx-auto pt-14 bg-white h-screen">
-      <Header
-        title="Review Volunteer"
-      />
+      <Header title="Review Volunteer" />
       <div className="place-content-center">
         <div className=" w-full p-2">
           <div className="flex justify-between items-center w-full p-2 border border-gray-200 ">
@@ -153,13 +151,10 @@ const ReviewCamp = () => {
           </div>
           <div className="grid gap-4 mt-40 content-center">
             <button
-              disabled={!star}
+              disabled={!star || loading}
               onClick={() => handleSubmit()}
               type="submit"
-              className={`${!star
-                ? "bg-gray-300"
-                : "bg-primary"
-                } text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
+              className={`disabled:bg-gray-300 bg-primary text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
             >
               Submit
             </button>

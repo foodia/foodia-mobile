@@ -6,17 +6,17 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const DetailReview = () => {
+const LihatReview = () => {
     const router = useRouter();
     const { id, id_camp } = router.query;
     const [dataDetail, setDataDetail] = useState();
     const [dataCamp, setDataCamp] = useState();
     const [loading, setLoading] = useState(true);
-
     useEffect(() => {
         if (id) {
             getData();
             getCampaign();
+
         }
     }, [id, router, id_camp]);
 
@@ -28,6 +28,7 @@ const DetailReview = () => {
     }
 
     const getData = () => {
+
         const id_merchant = localStorage.getItem("id");
         const token = localStorage.getItem("token");
         axios.get(
@@ -70,6 +71,23 @@ const DetailReview = () => {
                     </div>
                 </div>
                 <hr className="w-full h-0.5 mx-auto mt-2 bg-gray-300 border-0 rounded" />
+                <div className="p-2 mt-2 relative">
+                    <div className="flex items-center justify-center w-full">
+                        <label
+                            htmlFor="images"
+                            className="flex flex-col justify-center w-full h-32 border-2 border-black border-dashed rounded-lg cursor-pointer bg-gray-200 hover:bg-gray-100"
+                        >
+                            {dataDetail?.photo == '-' ? <p className="text-center">No Photo</p> :
+                                <img
+                                    src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataDetail?.photo}`}
+                                    alt={`${dataDetail?.photo}`}
+                                    className="w-full h-full rounded-lg object-cover"
+                                />}
+
+                        </label>
+                    </div>
+
+                </div>
                 <div className="p-2 mt-2 w-full">
                     <div className="py-2">
                         <div className="flex flex-row p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
@@ -104,4 +122,4 @@ const DetailReview = () => {
     );
 }
 
-export default DetailReview;
+export default LihatReview;
