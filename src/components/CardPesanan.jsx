@@ -61,12 +61,26 @@ const CardPesanan = (props) => {
                   </span>
                 </div>
                 <div
-                  className={`flex justify-center items-center rounded-2xl mb-1 w-auto h-5 px-2 py-0 ${
-                    status === "approved" ? "bg-[#1D5882]" : "bg-[#F6BE2D]"
+                  className={`flex justify-center items-center rounded-2xl mb-1 w-auto h-5 px-3 py-0 ${
+                    status === "review"
+                      ? "bg-[#F6BE2D]"
+                      : status === "tolak"
+                      ? "bg-red-500"
+                      : "bg-[#1D5882]"
                   }`}
                 >
                   <p className="text-gray-100 font-medium text-[10px]">
-                    {status === "approved" ? "Approved" : "Confirmation"}
+                    {status === "terima"
+                      ? "Confirmation"
+                      : status === "diproses"
+                      ? "Diproses"
+                      : status === "selesai"
+                      ? "Selesai"
+                      : status === "canceled"
+                      ? "Canceled"
+                      : status === "tolak"
+                      ? "Rejected"
+                      : "Approval"}
                   </p>
                 </div>
               </div>

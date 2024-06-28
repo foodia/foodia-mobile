@@ -43,26 +43,29 @@ const DetonatorRating = (DetonatorRating) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setLoading(false)
-    axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${id_camp}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      }
-    })
+    setLoading(false);
+    axios
+      .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/fetch/${id_camp}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
-        const orderData = response.data.body.orders.filter((order) => order.id === parseInt(id_order));
+        const orderData = response.data.body.orders.filter(
+          (order) => order.id === parseInt(id_order)
+        );
         setDataOrder(orderData[0]);
         setnewReport(response.data.body);
-        setLoading(false)
+        setLoading(false);
       })
       .catch((error) => {
-        setLoading(false)
+        setLoading(false);
         Error401(error, router);
-      })
+      });
   }, [id_camp]);
 
   useEffect(() => {
-    setLoading(false)
+    setLoading(false);
   }, [star]);
 
   const handleStarChange = (index) => {
@@ -74,14 +77,14 @@ const DetonatorRating = (DetonatorRating) => {
   };
   const handleSubmit = (event) => {
     // event.preventDefault();
-    setLoading(false);
+    setLoading(true);
     const id_merchant = localStorage.getItem("id_detonator");
     const token = localStorage.getItem("token");
 
     // Validation checks
     if (!star || !description) {
       window.alert("All fields are required");
-      setLoading(false)
+      setLoading(false);
       return;
     }
 
@@ -101,12 +104,18 @@ const DetonatorRating = (DetonatorRating) => {
         note: description,
       };
 
-      axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/create`, eventData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      axios
+        .post(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}rating/create`,
+          eventData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then((createRatingResponse) => {
+          setLoading(false);
           Swal.fire({
             icon: "success",
             title: "Review Berhasil Disimpan",
@@ -115,42 +124,42 @@ const DetonatorRating = (DetonatorRating) => {
             confirmButtonColor: "#6CB28E",
             confirmButtonText: "OK",
           }).then(() => {
-            setLoading(false)
+            setLoading(false);
             router.push("/detonator/review");
-          })
-
-
+          });
         })
         .catch((error) => {
-          setLoading(false)
+          setLoading(false);
           Error401(error, router);
         });
     };
 
     if (images) {
-      axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      axios
+        .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((response) => {
+          setLoading(false);
           if (response.status === 200) {
             submitRating(response.data.body.file_url);
           } else {
-            submitRating('-');
+            submitRating("-");
           }
         })
         .catch((error) => {
-          setLoading(false)
+          setLoading(false);
           if (error.response && error.response.status === 401) {
             Error401(error, router);
           } else {
-            submitRating('-');
+            submitRating("-");
           }
         });
     } else {
-      submitRating('-');
+      submitRating("-");
     }
   };
 
@@ -164,7 +173,13 @@ const DetonatorRating = (DetonatorRating) => {
 
   const handleImagesChange = (event) => {
     const file = event.target.files[0];
-    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
+    const allowedTypes = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/heif",
+      "image/heic",
+    ];
     const maxSize = 5 * 1024 * 1024;
     if (!file) {
       return;
@@ -182,7 +197,6 @@ const DetonatorRating = (DetonatorRating) => {
     if (file.size <= maxSize) {
       setImages(file);
       setLoadingImage(false);
-      // console.log('file', file);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
@@ -191,13 +205,12 @@ const DetonatorRating = (DetonatorRating) => {
             setImages(compressedFile);
           } else {
             Toast.fire({
-              icon: 'error',
-              title: 'Ukuran gambar melebihi 5MB!',
-              iconColor: 'bg-black',
-            })
+              icon: "error",
+              title: "Ukuran gambar melebihi 5MB!",
+              iconColor: "bg-black",
+            });
           }
           setLoadingImage(false);
-          // console.log('hasil compressedFile', compressedFile);
         })
         .catch((error) => {
           Swal.fire({
@@ -206,7 +219,7 @@ const DetonatorRating = (DetonatorRating) => {
             text: "Ukuran gambar melebihi 5MB!",
           });
           setLoadingImage(false);
-          setLoading(false)
+          setLoading(false);
         });
     }
   };
@@ -219,14 +232,19 @@ const DetonatorRating = (DetonatorRating) => {
           <div className=" w-full p-2">
             <div className="flex justify-between items-center w-full p-2 border border-gray-200 rounded-lg">
               <div className="flex items-center">
+                {/* ${process.env.NEXT_PUBLIC_URL_STORAGE} */}
                 <img
-                  src={"/img/card/geprek.jpg"}
-                  alt="sadas"
+                  src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataOrder?.merchant_product?.images[0].image_url}`}
+                  alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataOrder?.merchant_product?.images[0].image_url}`}
                   className="w-20 h-20"
                 />
                 <div className="ml-2">
-                  <p className="text-sm font-bold">{dataOrder?.qty}x {dataOrder?.merchant_product?.name}</p>
-                  <p className="text-xs font-normal">{dataOrder?.merchant?.merchant_name}</p>
+                  <p className="text-sm font-bold">
+                    {dataOrder?.qty}x {dataOrder?.merchant_product?.name}
+                  </p>
+                  <p className="text-xs font-normal">
+                    {dataOrder?.merchant?.merchant_name}
+                  </p>
                   <p className="text-[11px] font-normal text-gray-400">
                     {`${newReport?.event_date} ${newReport?.event_time}`}
                   </p>
@@ -331,13 +349,10 @@ const DetonatorRating = (DetonatorRating) => {
             </div>
             <div className="grid gap-4 mt-10 content-center">
               <button
-                disabled={!star || !description}
+                disabled={!star || !description || loading}
                 onClick={() => handleSubmit()}
                 type="submit"
-                className={`${!star || !description
-                  ? "bg-gray-300"
-                  : "bg-primary"
-                  } text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
+                className={`disabled:bg-gray-300 bg-primary text-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-xl text-sm w-full sm:w-auto px-5 py-2.5 text-center`}
               >
                 Simpan
               </button>

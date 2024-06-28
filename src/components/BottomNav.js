@@ -47,7 +47,6 @@ const BottomNav = () => {
       })
         .then((response) => {
           setJumlahInbox(response.data.body.total_unread);
-          // console.log(response.data.body);
           setLoading(false);
         })
         .catch((error) => {
@@ -57,7 +56,6 @@ const BottomNav = () => {
     }
     else {
       setJumlahInbox(0);
-      // console.log("no token");
       setLoading(false);
     }
   }, [token]);
@@ -238,12 +236,13 @@ const BottomNav = () => {
       >
         <Link className="items-center flex flex-col gap-1 static" href="/inbox">
           {jumlahInbox > 0 ? (
-            <div className="absolute top-0 right-0 w-3 bg-red-500 h-3 rounded-full flex justify-center items-center">
+            <div className="absolute top-[-5px] right-[-5px] w-3 p-[10px] bg-red-500 h-3 rounded-full flex justify-center items-center">
               <p
                 className="text-center font-semibold text-white"
-                style={{ fontSize: "8px" }}
+                style={{ fontSize: "9px" }}
               >
                 {jumlahInbox}
+
               </p>
             </div>
           ) : null}

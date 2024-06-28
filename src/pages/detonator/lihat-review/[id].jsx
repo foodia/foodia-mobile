@@ -6,7 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-const DetailReview = () => {
+const LihatReview = () => {
     const router = useRouter();
     const { id } = router.query;
     const { id_camp } = router.query;
@@ -94,7 +94,7 @@ const DetailReview = () => {
                     {/* <hr className="w-full h-0.5 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
                     <div className="p-2 mt-2 relative">
                         <div className="flex items-center justify-center w-full">
-                            <label
+                            {/* <label
                                 htmlFor="images"
                                 className="flex flex-col justify-center w-full h-32 border-2 border-black border-dashed rounded-lg cursor-pointer bg-gray-200 hover:bg-gray-100"
                             >
@@ -105,7 +105,7 @@ const DetailReview = () => {
                                         className="w-full h-full rounded-lg object-cover"
                                     />}
 
-                            </label>
+                            </label> */}
                         </div>
 
                     </div>
@@ -156,4 +156,4 @@ const DetailReview = () => {
     );
 }
 
-export default DetailReview;
+export default LihatReview;

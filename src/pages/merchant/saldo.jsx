@@ -22,7 +22,13 @@ const Saldo = () => {
     const status = localStorage.getItem("status");
     const id = localStorage.getItem("id");
 
-    if (!role || !token || role !== "merchant" || status !== "approved" || !id) {
+    if (
+      !role ||
+      !token ||
+      role !== "merchant" ||
+      status !== "approved" ||
+      !id
+    ) {
       localStorage.clear();
       router.push("/login");
     } else {
@@ -43,11 +49,14 @@ const Saldo = () => {
       const token = localStorage.getItem("token");
 
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setBalance(response.data.body.wallet.balance);
       } catch (error) {
         Error401(error, router);
@@ -113,7 +122,6 @@ const Saldo = () => {
         setLoading(false);
       }
     } else {
-
       let filtered = [];
 
       if (status === "review") {
@@ -162,7 +170,9 @@ const Saldo = () => {
         <div className="mx-4 p-3 rounded-lg border-solid border-2 border-gray-300">
           <div>
             <p className="font-medium">Saldo Penghasilan</p>
-            <p className="text-primary font-medium text-3xl">{formatPrice(balance)}</p>
+            <p className="text-primary font-medium text-3xl">
+              {formatPrice(balance)}
+            </p>
           </div>
         </div>
 
@@ -182,15 +192,14 @@ const Saldo = () => {
           {["diproses", "selesai", "penarikan"].map((status) => (
             <div
               key={status}
-              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === status
-                ? "text-primary border-b-2 border-primary"
-                : "text-gray-500"
-                }`}
+              className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${
+                selectedStatus === status
+                  ? "text-primary border-b-2 border-primary"
+                  : "text-gray-500"
+              }`}
               onClick={() => handleFilterChange(status)}
             >
-              <span>
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-              </span>
+              <span>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
             </div>
           ))}
         </div>
@@ -214,7 +223,9 @@ const Saldo = () => {
                 </p>
               ) : (
                 riwayat
-                  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                  .sort(
+                    (a, b) => new Date(b.created_at) - new Date(a.created_at)
+                  )
                   .map((data) => (
                     <div
                       className="mx-4 mt-2 w-80 bg-white shadow-md p-4 rounded-lg"
@@ -223,20 +234,21 @@ const Saldo = () => {
                       <div className="flex justify-between">
                         <p className="font-bold uppercase">{data.bank}</p>
                         <div
-                          className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${data.status === "approved"
-                            ? "bg-primary"
-                            : data.status === "waiting"
+                          className={`flex justify-center items-center w-auto rounded-xl capitalize text-white text-center text-sm px-3 ${
+                            data.status === "approved"
+                              ? "bg-primary"
+                              : data.status === "waiting"
                               ? "bg-blue-500"
                               : "bg-red-500"
-                            }`}
+                          }`}
                         >
                           <p>{data.status}</p>
                         </div>
                       </div>
-                      <p>{formatPrice(data.amount)}</p>
+                      <p>{formatPrice(data.amount - data.admin_fee)}</p>
                       <p className="text-sm">{data.rekening}</p>
                       <p className="text-gray-500 text-xs">
-                        {new Intl.DateTimeFormat("en-ID", {
+                        {new Intl.DateTimeFormat("eun-ID", {
                           year: "numeric",
                           month: "short",
                           day: "2-digit",

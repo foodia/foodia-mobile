@@ -48,7 +48,7 @@ const PesananMerchan = () => {
         }
 
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}order/filter?merchant_id=${id}&order_status=${selectedStatus}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}order/filter?merchant_id=${id}&order_status=${selectedStatus}&per_page=100000`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -74,53 +74,62 @@ const PesananMerchan = () => {
     fetchData();
   }, [loading, selectedStatus]);
 
+
   const handleFilterChange = (status = "review") => {
     setLoading(true);
-    let filtered = [];
 
-    setLoading(true);
-
-    if (status === "review") {
-      filtered = dataApi.filter((data) => data.order_status === "review");
-      // console.log(filtered, dataApi);
-    } else if (status === "diproses") {
-      filtered = dataApi.filter((data) => data.order_status === "diproses");
-    } else if (status === "selesai") {
-      filtered = dataApi.filter(
-        (data) =>
-          data.order_status === "canceled" || data.order_status === "selesai"
-      );
+    // if (status === "review") {
+    //   setFilteredData(dataApi.filter((data) => data.order_status === "review"));
+    // } else if (status === "terima") {
+    //   setFilteredData(dataApi.filter((data) => data.order_status === "terima"));
+    // } else if (status === "diproses") {
+    //   setFilteredData(
+    //     dataApi.filter((data) => data.order_status === "diproses")
+    //   );
+    // }
+    if (status === "selesai") {
+      setSelectedStatus("selesai,tolak");
+    } else {
+      setSelectedStatus(status);
     }
-
-    setSelectedStatus(status);
   };
+
   return (
     <>
       <div className="container mx-auto overflow-hidden h-screen">
         <MenuBarMechant />
         <div className="flex justify-between px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "review"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium text-center ${selectedStatus === "review"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
               }`}
             onClick={() => handleFilterChange("review")}
           >
-            <span>Pesanan</span>
+            <span>Pesanan Baru</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "diproses"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium text-center ${selectedStatus === "terima"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
+              }`}
+            onClick={() => handleFilterChange("terima")}
+          >
+            <span>Konfirmasi Pesanan</span>
+          </div>
+          <div
+            className={`w-full cursor-pointer grid pb-2 text-sm font-medium text-center ${selectedStatus === "diproses"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
               }`}
             onClick={() => handleFilterChange("diproses")}
           >
-            <span>Berlangsung</span>
+            <span>Laporan Pesanan</span>
           </div>
           <div
-            className={`w-full cursor-pointer grid pb-2 text-sm font-medium justify-items-center ${selectedStatus === "selesai"
-              ? "text-primary border-b-2 border-primary"
-              : "text-gray-500"
+            className={`w-full cursor-pointer grid items-center pb-2 text-sm font-medium text-center ${selectedStatus === "selesai,tolak"
+                ? "text-primary border-b-2 border-primary"
+                : "text-gray-500"
               }`}
             onClick={() => handleFilterChange("selesai")}
           >
@@ -166,7 +175,7 @@ const PesananMerchan = () => {
                   )} ${data.campaign?.event_time}`}
                   qty={data.qty}
                   price={data.merchant_product.price}
-                  status={data.approval_status}
+                  status={data.order_status}
                   total_amount={data.total_amount}
                   setLoading={setLoading}
                 />

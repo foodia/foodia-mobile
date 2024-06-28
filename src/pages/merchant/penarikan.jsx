@@ -95,6 +95,7 @@ const penarikan = (penarikan) => {
           bank: bank,
           rekening: rekening,
           amount: parsedAmount + bankFee,
+          admin_fee: bankFee,
           payment_method: method,
         };
         const eWalletMethod = {
@@ -102,6 +103,7 @@ const penarikan = (penarikan) => {
           bank: bank,
           rekening: rekening,
           amount: parsedAmount + parsedAmount * eWalletFee,
+          admin_fee: parsedAmount * eWalletFee,
           payment_method: method,
         };
         {
