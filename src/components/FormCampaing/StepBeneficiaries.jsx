@@ -3,10 +3,13 @@ import {
   IconCircleCheck,
   IconCircleX,
   IconCurrentLocation,
+  IconDeviceMobile,
   IconFile,
+  IconId,
   IconInfoCircle,
   IconMailbox,
   IconMap,
+  IconMapPin,
   IconNote,
   IconShield,
   IconUser,
@@ -25,27 +28,28 @@ import Error401 from "../error401";
 import CompressImage from "../CompressImage";
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
-function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
+function StepOne({ registrasibeneficiaries, setRegistrasibeneficiaries }) {
   // const { stepForm } = props;
   const router = useRouter();
   const [loadingSelfi, setLoadingSelfi] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingKTP, setLoadingKTP] = useState(false);
-  const [merchant_name, setmerchant_name] = useState(
-    registrasiMerchant?.merchant_name ?? ""
+  const phoneNumber = localStorage.getItem("phone") || "";
+  const [beneficiaries_name, setbeneficiaries_name] = useState(
+    registrasibeneficiaries?.beneficiaries_name ?? ""
   );
   const [ktp_number, setktp_number] = useState(
-    registrasiMerchant?.ktp_number ?? ""
+    registrasibeneficiaries?.ktp_number ?? ""
   );
   const [self_photo, setself_photo] = useState(
-    registrasiMerchant?.self_photo || null
+    registrasibeneficiaries?.self_photo || null
   );
   const [ktp_photo, setktp_photo] = useState(
-    registrasiMerchant?.ktp_photo || null
+    registrasibeneficiaries?.ktp_photo || null
   );
-  const [no_link_aja, setno_link_aja] = useState(
-    registrasiMerchant?.no_link_aja ?? ""
-  );
+  // const [no_link_aja, setno_link_aja] = useState(
+  //   registrasibeneficiaries?.no_link_aja ?? ""
+  // );
 
   const Toast = Swal.mixin({
     toast: true,
@@ -59,8 +63,8 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
     timerProgressBar: true,
   });
 
-  const handlemerchant_nameChange = (event) => {
-    setmerchant_name(event.target.value);
+  const handlebeneficiaries_nameChange = (event) => {
+    setbeneficiaries_name(event.target.value);
   };
 
   const handlektp_numberChange = async (event) => {
@@ -168,42 +172,43 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
     }
 
   };
-  const handleNo_link_ajaChange = (event) => {
-    setno_link_aja(event.target.value);
-  };
+  // const handleNo_link_ajaChange = (event) => {
+  //   setno_link_aja(event.target.value);
+  // };
 
   // Function to handle form submission
   const handleSubmit = (event) => {
     // event.preventDefault(); // Prevents the default form submission
 
+
     // Validation checks
-    if (!merchant_name || !ktp_number || !self_photo || !ktp_photo) {
+    if (!beneficiaries_name || !ktp_number || !self_photo || !ktp_photo || !phoneNumber) {
       window.alert("All fields are required");
       return;
     }
 
     // Create an object with the form data
     const formData = {
-      merchant_name,
+      beneficiaries_name,
       ktp_number,
       self_photo,
       ktp_photo,
-      no_link_aja,
+      phoneNumber,
     };
 
-    // Save the form data to the registrasiMerchant state
-    setRegistrasiMerchant(formData);
+    // Save the form data to the registrasibeneficiaries state
+    setRegistrasibeneficiaries(formData);
 
     // clear data after submit
-    setmerchant_name("");
+    setbeneficiaries_name("");
     setktp_number("");
     setself_photo("");
     setktp_photo("");
 
-    router.push("/registrasi/merchant?step=2");
+    router.push("/registrasi/beneficiaries?step=2");
   };
   useEffect(() => {
-  }, [registrasiMerchant]);
+  }, [registrasibeneficiaries]);
 
   const NAME_REGEX = /^[^\r\n]{1,64}$/;
   const PHONE_REGEX = /^(\+62|62|0)8[1-9][0-9]{7,10}$/;
@@ -213,16 +218,16 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
   const [validKTP, setValidKTP] = useState(false);
 
   useEffect(() => {
-    setValidName(NAME_REGEX.test(merchant_name));
-  }, [merchant_name]);
+    setValidName(NAME_REGEX.test(beneficiaries_name));
+  }, [beneficiaries_name]);
 
   useEffect(() => {
-    setValidPhone(PHONE_REGEX.test(no_link_aja));
-  }, [no_link_aja]);
+    setValidPhone(PHONE_REGEX.test(phoneNumber));
+  }, [phoneNumber]);
 
   useEffect(() => {
-    setValidPhone(PHONE_REGEX.test(no_link_aja));
-  }, [no_link_aja]);
+    setValidPhone(PHONE_REGEX.test(phoneNumber));
+  }, [phoneNumber]);
 
   useEffect(() => {
     setValidKTP(KTP_REGEX.test(ktp_number));
@@ -230,79 +235,50 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
 
   return (
     <>
-      <ol className="flex justify-center mb-4 sm:mb-5 w-full p-2">
-        <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-primary`}
-          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
-          iconCss={`w-4 h-4 text-white lg:w-6 lg:h-6 `}
-          iconName={"User"}
-        />
-        <RoutStep
-          liCss={`flex items-center`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-9 lg:w-9 shrink-0 bg-gray-300`}
-          iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-          iconName={"BuildingStore"}
-        />
-      </ol>
-      <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
-      <div className="w-full p-2">
-        <div className="bg-[#80D48F] gap-3 py-4 px-5 flex flex-row items-center rounded-xl">
-          <IconShield color="#348BF2" size={50} />
-          <p className="w-full text-xs font-bold">
-            Semua informasi kamu dijamin kerahasianya dan tidak akan
-            disalahgunakan
-          </p>
-        </div>
-      </div>
-      <div className="p-2 w-full space-y-3 px-7">
+
+
+      <div className="p-2 w-full space-y-3 px-7 mt-[16px]">
         <div>
+          <div className="w-full p-2 ">
+            <p className="w-full text-[14px] font-bold">
+              Data Pribadi
+            </p>
+          </div>
           <div className="flex flex-row p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none pr-2">
             <IconUser className="mt-3.5" />
-            <textarea
-              maxLength={120}
-              onChange={handlemerchant_nameChange}
-              value={merchant_name}
+            <input
+              onChange={handlebeneficiaries_nameChange}
+              value={beneficiaries_name}
               type="text"
-              className="ml-2 w-full text-black min-h-[95px] p-0 py-4 pl-1 bg-transparent focus:border-none outline-none"
-              placeholder="Nama Toko"
+              id="beneficiaries_name"
+              className="ml-2 w-full p-0 py-4 pl-1 text-black bg-transparent focus:border-none  outline-none"
+              placeholder="Nama Lengkap"
               required
-              style={{ resize: "none" }}
             />
-            {/* <IconCircleCheck
-              className={validName ? "text-green-600" : "hidden"}
-            />
-            <IconCircleX
-              className={
-                !merchant_name || validName ? "hidden" : "text-red-600"
-              }
-            /> */}
+
           </div>
-          <p className="text-gray-400 text-end text-xs">
-            <span className={merchant_name.length > 64 && "text-red-400"}>
-              {merchant_name.length}
-            </span>
-            /64
-          </p>
         </div>
-        <div>
-          <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none pr-2">
-            <Image src={LinkAja} width={23} />
+
+        {/* <div>
+          <div className="flex flex-row p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none pr-2">
+            <IconDeviceMobile className="mt-3.5" />
             <input
               value={no_link_aja}
               onChange={handleNo_link_ajaChange}
               type="number"
               id="number"
               className="ml-2 w-full p-0 py-4 pl-1 text-black bg-transparent focus:border-none  outline-none"
-              placeholder="Number Link Aja"
+              placeholder="Nomor HP"
               required
             />
             <IconCircleCheck
-              className={validPhone ? "text-green-600" : "hidden"}
+              className={validPhone ? "text-green-600 mt-3.5" : "hidden"}
             />
             <IconCircleX
-              className={!no_link_aja || validPhone ? "hidden" : "text-red-600"}
+              className={!no_link_aja || validPhone ? "hidden" : "text-red-600 mt-3.5"}
             />
           </div>
+
           <p
             className={
               no_link_aja && !validPhone
@@ -315,7 +291,7 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
               Diawali (08), Minimal 10 dan maksimal 13 angka.
             </span>
           </p>
-        </div>
+        </div> */}
 
         <div className="mb-2">
           <div className="flex items-start justify-center w-full relative">
@@ -396,7 +372,7 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
 
         <div>
           <div className="flex flex-row items-center p-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none pr-2">
-            <IconFile />
+            <IconId />
             <input
               value={ktp_number}
               onChange={handlektp_numberChange}
@@ -430,28 +406,28 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
         <div className="grid gap-4 content-center">
           <button
             disabled={
-              !merchant_name ||
+              !beneficiaries_name ||
               !ktp_number ||
               !self_photo ||
               !ktp_photo ||
               !validPhone ||
               !validKTP ||
               !validName ||
-              merchant_name.length > 64
+              beneficiaries_name.length > 64
             }
             onClick={() => handleSubmit()}
             type="submit"
             className={
-              !merchant_name ||
+              !beneficiaries_name ||
                 !ktp_number ||
                 !self_photo ||
                 !ktp_photo ||
                 !validPhone ||
                 !validKTP ||
                 !validName ||
-                merchant_name.length > 64
-                ? "text-white bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-xl w-full sm:w-auto px-5 py-2.5 text-center"
-                : "text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+                beneficiaries_name.length > 64
+                ? "text-white bg-gray-400 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-xl w-full sm:w-auto px-5 py-2.5 text-center"
+                : "text-white bg-primary hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-xl w-full sm:w-auto px-5 py-2.5 text-center"
             }
           >
             Lanjut
@@ -462,23 +438,24 @@ function StepOne({ registrasiMerchant, setRegistrasiMerchant }) {
   );
 }
 
-function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
+function StepTwo({ registrasibeneficiaries, setRegistrasibeneficiaries }) {
   const router = useRouter();
   const [locationInfo, setLocationInfo] = useState(null);
-  const [address, setAddress] = useState(registrasiMerchant?.location ?? "");
-  const [province, setProvince] = useState(registrasiMerchant?.province ?? "");
-  const [city, setCity] = useState(registrasiMerchant?.city ?? "");
+  const [address, setAddress] = useState(registrasibeneficiaries?.location ?? "");
+  const [province, setProvince] = useState(registrasibeneficiaries?.province ?? "");
+  const [city, setCity] = useState(registrasibeneficiaries?.city ?? "");
   const [sub_district, setSubDistrict] = useState(
-    registrasiMerchant?.subDistrict ?? ""
+    registrasibeneficiaries?.subDistrict ?? ""
   );
+  const [village, setVillage] = useState(registrasibeneficiaries?.village ?? "");
   const [postal_code, setPostalCode] = useState(
-    registrasiMerchant?.postalCode ?? ""
+    registrasibeneficiaries?.postalCode ?? ""
   );
   const [coordinates, setCoordinates] = useState(
-    registrasiMerchant?.coordinates ?? ""
+    registrasibeneficiaries?.coordinates ?? ""
   );
   const [DetaiAlamat, setDetaiAlamat] = useState(
-    registrasiMerchant?.DetaiAlamat ?? ""
+    registrasibeneficiaries?.DetaiAlamat ?? ""
   );
   const [loading, setLoading] = useState(false);
   const [tracking, setTracking] = useState(true);
@@ -505,6 +482,9 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
   const handleSubDistrict = (event) => {
     setSubDistrict(event.target.value);
   };
+  const handleVillage = (event) => {
+    setVillage(event.target.value);
+  }
   const handlePostalCode = (event) => {
     setPostalCode(event.target.value);
   };
@@ -517,13 +497,14 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
 
   useEffect(() => {
     if (locationInfo) {
+      console.log('data', locationInfo);
       setAddress(locationInfo.fullAdres);
       setProvince(locationInfo.province);
       setCity(locationInfo.city);
       setSubDistrict(locationInfo.sub_district);
+      setVillage(locationInfo.response.address.village);
       setPostalCode(locationInfo.postal_code);
       setCoordinates(locationInfo.coordinates);
-      console.log(locationInfo);
       // setJalan(locationInfo.address);
     }
   }, [locationInfo]);
@@ -541,7 +522,7 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
       window.alert("All fields are required");
       return;
     }
-    setRegistrasiMerchant((prevData) => ({
+    setRegistrasibeneficiaries((prevData) => ({
       ...prevData,
       address,
       province,
@@ -551,13 +532,14 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
       latitude: coordinates.lat,
       longitude: coordinates.lng,
       DetaiAlamat,
+      village
     }));
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
       return;
     }
-    if (!coordinates.lng) {
+    if (!coordinates.lat || !coordinates.lng) {
       return Swal.fire({
         icon: "error",
         title: "Error",
@@ -566,22 +548,25 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
         timer: 2000,
       });
     }
+
     const formData = new FormData();
-    formData.append("merchant_name", registrasiMerchant?.merchant_name);
-    formData.append("ktp_number", registrasiMerchant?.ktp_number);
-    formData.append("self_photo", registrasiMerchant?.self_photo);
-    formData.append("ktp_photo", registrasiMerchant?.ktp_photo);
-    formData.append("province", province);
-    formData.append("city", city);
-    formData.append("sub_district", sub_district);
-    formData.append("postal_code", postal_code);
-    formData.append("address", address);
+    formData.append("fullname", registrasibeneficiaries?.beneficiaries_name);
+    formData.append("phone", registrasibeneficiaries?.phoneNumber);
+    formData.append("ktp_photo", registrasibeneficiaries?.ktp_photo);
+    formData.append("self_photo", registrasibeneficiaries?.self_photo);
+    formData.append("ktp_number", registrasibeneficiaries?.ktp_number);
     formData.append("latitude", coordinates.lat);
     formData.append("longitude", coordinates.lng);
-    formData.append("no_link_aja", registrasiMerchant?.no_link_aja);
+    formData.append("province", province);
+    formData.append("city", city);
+    formData.append("village", village);
+    formData.append("sub_district", sub_district);
+    formData.append("address", address);
+
+
     axios
       .post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/registration`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}beneficiaries/registration`,
         formData,
         {
           headers: {
@@ -642,57 +627,29 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
             width: 350,
           });
         }
-        // router.push("/registrasi/merchant?step=3");
+        // router.push("/registrasi/beneficiaries?step=3");
       });
   };
 
   return (
     <>
-      <ol className="flex justify-center mb-4 mt-5 sm:mb-5 w-full p-2">
-        <RoutStep
-          liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block after:border-b after:border-4 after:border-primary`}
-          divCss={`flex items-center justify-center w-10 h-10 rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
-          iconCss={`w-4 h-4 text-white lg:w-6 lg:h-6 `}
-          iconName={"User"}
-        />
-        <RoutStep
-          liCss={`flex items-center`}
-          divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-9 lg:w-9 shrink-0 bg-primary`}
-          iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-          iconName={"BuildingStore"}
-        />
-      </ol>
-      <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
       <div className="py-2 mt-2 w-full px-5 flex flex-row justify-between">
+
         <button
-          disabled={tracking}
           onClick={getCurrentLocation}
-          className={
-            tracking
-              ? "bg-gray-50 border border-primary text-gray-900 text-sm rounded-xl block w-[60%] p-2.5 m-1 outline-none hover:bg-gray-200"
-              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl block w-[60%] p-2.5 m-1 outline-none hover:bg-gray-200"
-          }
+          className="bg-gray-50 border border-primary text-gray-900 text-sm rounded-xl block w-full p-2.5 m-1 outline-none hover:bg-gray-200"
         >
-          <div className="flex items-center justify-center gap-1 p-0">
-            {/* <IconCurrentLocation color="green" /> */}
-            <p>Gunakan Lokasi Saat Ini</p>
-          </div>
-        </button>
-        <button
-          disabled={!tracking}
-          onClick={getCurrentLocation}
-          className={
-            !tracking
-              ? "bg-gray-50 border border-primary text-gray-900 text-sm rounded-xl block w-[40%] p-2.5 m-1 outline-none hover:bg-gray-200"
-              : "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl block w-[40%] p-2.5 m-1 outline-none hover:bg-gray-200"
-          }
-        >
-          <div className="flex items-center justify-center gap-1 p-0">
-            {/* <IconCurrentLocation color="green" /> */}
-            <p>Pilih Lokasi</p>
-          </div>
+          {tracking ? (
+            <p> Custom Location</p>
+          ) : (
+            <p className="flex flex-row items-center justify-center gap-2">
+              <IconMapPin className="text-primary" />
+              Gunakan Lokasi Saat Ini
+            </p>
+          )}
         </button>
       </div>
+
       <div className="w-full space-y-3">
         <div className="flex justify-center border-gray-300 rounded-lg">
           <DynamicMap sendDataToPage={handleDataFromMap} tracking={tracking} />
@@ -713,11 +670,33 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
           <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
             <IconMap />
             <input
+              onChange={handleCity}
+              value={city}
+              type="text"
+              className="ml-2 w-full text-black px-1 p-0 py-4 pl-1 bg-transparent focus:border-none"
+              placeholder="Kota/Kabupaten"
+              required
+            />
+          </div>
+          <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+            <IconMap />
+            <input
               onChange={handleSubDistrict}
               value={sub_district}
               type="text"
               className="ml-2 w-full text-black px-1 p-0 py-4 pl-1 bg-transparent focus:border-none"
               placeholder="Kecamatan"
+              required
+            />
+          </div>
+          <div className="flex flex-row items-center p-4 pr-0 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+            <IconMap />
+            <input
+              onChange={handleVillage}
+              value={village}
+              type="text"
+              className="ml-2 w-full text-black px-1 p-0 py-4 pl-1 bg-transparent focus:border-none"
+              placeholder="kelurahan"
               required
             />
           </div>
@@ -752,7 +731,8 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
                 !city ||
                 !sub_district ||
                 !postal_code ||
-                !coordinates
+                !coordinates ||
+                !village
               }
               type="submit"
               className={
@@ -761,7 +741,8 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
                   !city ||
                   !sub_district ||
                   !postal_code ||
-                  !coordinates
+                  !coordinates ||
+                  !village
                   ? `text-white bg-gray-400 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center`
                   : `text-white bg-primary focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 text-center`
               }

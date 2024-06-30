@@ -120,7 +120,7 @@ const HomePage = () => {
                 </div>
                 <p className=" text-gray-500 dark:text-gray-400">UMKM</p>
               </Link>
-              {/* <Link href={""} className="grid gap-2 justify-items-center w-24">
+              <Link href={"/beneficiaries"} className="grid gap-2 justify-items-center w-24">
                 <div className={`${styles.iconMenu}`}>
                   <Image
                     src={"/img/icon/icon_camp_terdekat.png"}
@@ -129,8 +129,8 @@ const HomePage = () => {
                     height={30}
                   />
                 </div>
-                <p className=" text-gray-500 dark:text-gray-400">Terdekat</p>
-              </Link> */}
+                <p className=" text-gray-500 dark:text-gray-400">Makan Gratis</p>
+              </Link>
             </div>
           </div>
         </div>
