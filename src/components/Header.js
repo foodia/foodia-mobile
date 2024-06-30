@@ -16,11 +16,11 @@ const Header = ({ title = "", backto = "" }) => {
         localStorage.removeItem("prevPath");
       }
       localStorage.removeItem("statusSaldo");
-      localStorage.removeItem("phone");
+      // localStorage.removeItem("phone");
       localStorage.removeItem("merchantName");
       localStorage.removeItem("updatedAddress");
       localStorage.removeItem("uploadedFile");
-      localStorage.removeItem("phone");
+      // localStorage.removeItem("phone");
       localStorage.removeItem("merchantName");
       localStorage.removeItem("updatedAddress");
       localStorage.removeItem("uploadedFile");
