@@ -16,7 +16,6 @@ const LihatReview = () => {
         if (id) {
             getData();
             getCampaign();
-
         }
     }, [id, router, id_camp]);
 

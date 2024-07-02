@@ -73,25 +73,46 @@ const Saldo = () => {
       const id = localStorage.getItem("id");
       const token = localStorage.getItem("token");
 
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}order/filter?merchant_id=${id}&order_status=${selectedStatus}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const approvedPesanan = response.data.body.filter(
-          (pesanan) => pesanan.campaign.status === "approved"
-        );
-        setDataApi(approvedPesanan);
-        setFilteredData(approvedPesanan);
-        setHasMore(approvedPesanan.length > 0);
-      } catch (error) {
-        Error401(error, router);
-      } finally {
-        setLoading(false);
+      if (selectedStatus === "penarikan") {
+        const token = localStorage.getItem("token");
+        const id = localStorage.getItem("id");
+
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}disbursement/filter?merchant_id=${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setRiwayat(response.data.body);
+        } catch (error) {
+          Error401(error, router);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}order/filter?merchant_id=${id}&order_status=${selectedStatus}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const approvedPesanan = response.data.body.filter(
+            (pesanan) => pesanan.campaign.status === "approved"
+          );
+          setDataApi(approvedPesanan);
+          setFilteredData(approvedPesanan);
+          setHasMore(approvedPesanan.length > 0);
+        } catch (error) {
+          Error401(error, router);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
