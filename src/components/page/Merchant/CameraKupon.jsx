@@ -39,7 +39,7 @@ const CameraKupon = () => {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    setCaptureCoordinates(`${latitude}, ${longitude}`);
+                    setCaptureCoordinates(`${latitude}\n${longitude}`);
                 },
                 (error) => {
                     console.error('Error getting geolocation:', error);
@@ -51,7 +51,7 @@ const CameraKupon = () => {
         };
 
         fetchCameraAndLocation();
-    }, []);
+    }, [captureTime, captureCoordinates]);
 
     useEffect(() => {
         const handleResize = () => {
