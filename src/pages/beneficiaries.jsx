@@ -8,7 +8,7 @@ const Beneficiaries = () => {
     const router = useRouter();
     const [selectedStatus, setSelectedStatus] = useState("Aktif");
     const [loading, setLoading] = useState(false);
-    const [jumlahKupon, setJumlahKupon] = useState(100);
+    const [jumlahKupon, setJumlahKupon] = useState(10);
     const handleFilterChange = (status) => {
         let filtered = [];
         const id = localStorage.getItem("id");
