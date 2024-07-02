@@ -20,6 +20,7 @@ const mydonation = () => {
   const [isChecked, setIsChecked] = useState();
   const [isCheckedSuccess, setIsCheckedSuccess] = useState();
   const [isOpenedMonthOptions, setIsOpenedMonthOptions] = useState(false);
+  const [donationType, setDonationType] = useState("donasi");
 
   const toggleSwitch = () => {
     setIsChecked((prevState) => !prevState);
@@ -45,7 +46,8 @@ const mydonation = () => {
     setLoading(true);
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
         }donation/list?start=${month}-01&end=${month}-${new Date(
           moment(month, "YYYY-MM").format("YYYY"),
           moment(month, "YYYY-MM").format("MM"),
@@ -100,6 +102,32 @@ const mydonation = () => {
         {/* <Header title="Donasi Saya" backto="/home" /> */}
         <div className="bg-white h-screen px-4">
           <p className="text-center font-bold text-lg py-4">Donasi Saya</p>
+          <div className="flex flex-row justify-evenly w-full">
+            <button
+              onClick={() => {
+                setDonationType("donasi");
+              }}
+              className={`${
+                donationType === "donasi"
+                  ? "border-b-primary text-primary"
+                  : "border-b-transparent text-gray-400"
+              } pb-2 border-b-2 w-full`}
+            >
+              Donasi
+            </button>
+            <button
+              onClick={() => {
+                setDonationType("kupon");
+              }}
+              className={` ${
+                donationType === "kupon"
+                  ? "border-b-primary text-primary"
+                  : "border-b-transparent text-gray-400"
+              } pb-2 border-b-2 w-full`}
+            >
+              Kupon
+            </button>
+          </div>
           <div className="bg-[#1D5882] w-full px-4 py-2 mt-2 rounded-xl">
             <div className="flex justify-between items-center text-white font-semibold text-base">
               <div className="">
@@ -153,16 +181,17 @@ const mydonation = () => {
                   <IconChevronDown size={"17px"} />
                 </button>
                 {isOpenedMonthOptions && (
-                  <div className="absolute overflow-auto p-1 flex flex-col top-[233px] items-start w-24 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
+                  <div className="absolute overflow-auto p-1 flex flex-col top-[265px] items-start w-24 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
                     <button
                       onClick={() => {
                         onChangeMonth(moment(new Date()).format("YYYY-MM"));
                       }}
-                      className={`${moment(new Date(), "YYYY-MM").format("MMM YYYY") ===
-                          moment(month, "YYYY-MM").format("MMM YYYY")
+                      className={`${
+                        moment(new Date(), "YYYY-MM").format("MMM YYYY") ===
+                        moment(month, "YYYY-MM").format("MMM YYYY")
                           ? "text-primary"
                           : "text-black"
-                        } text-[12px] w-full text-left font-semibold`}
+                      } text-[12px] w-full text-left font-semibold`}
                     >
                       {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
                     </button>
@@ -171,11 +200,12 @@ const mydonation = () => {
                         onClick={() => {
                           onChangeMonth(bulan);
                         }}
-                        className={`${moment(bulan, "YYYY-MM").format("MMM YYYY") ===
-                            moment(month, "YYYY-MM").format("MMM YYYY")
+                        className={`${
+                          moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                          moment(month, "YYYY-MM").format("MMM YYYY")
                             ? "text-primary"
                             : "text-black"
-                          } text-[12px] w-full text-left font-semibold`}
+                        } text-[12px] w-full text-left font-semibold`}
                       >
                         {moment(bulan, "YYYY-MM").format("MMM YYYY")}
                       </button>
@@ -214,10 +244,11 @@ const mydonation = () => {
                       </p>
                     </div>
                     <p
-                      className={`text-[16px] font-bold ${data.type_donation === "booster"
+                      className={`text-[16px] font-bold ${
+                        data.type_donation === "booster"
                           ? "text-[#1D5882]"
                           : "text-primary"
-                        }`}
+                      }`}
                     >
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",

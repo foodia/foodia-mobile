@@ -5,7 +5,12 @@ import styles from "@/styles/Home.module.css";
 import Error401 from "@/components/error401";
 import ProfileDetonator from "@/components/page/Profile/ProfileDetonator";
 import ProfileMerchant from "@/components/page/Profile/ProfileMerchant";
-import { IconChevronRight, IconEdit, IconUser } from "@tabler/icons-react";
+import {
+  IconChevronRight,
+  IconEdit,
+  IconQuestionMark,
+  IconUser,
+} from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -116,8 +121,17 @@ const profile = (profile) => {
     <>
       <div className="bg-white flex flex-col px-5 h-screen pb-20">
         {/* <Header /> */}
-        <div class="pt-4 h-screen overflow-auto pb-32 w-full">
-          <p className="text-center font-bold text-lg">Profile</p>
+        <div classname="h-screen overflow-auto pb-32 w-full">
+          <div className="pt-4 flex flex-row items-center justify-between">
+            <p className="text-center font-bold text-lg"></p>
+            <p className="text-center font-bold text-lg">Profile</p>
+            <button
+              onClick={() => router.push("/contact-us")}
+              className="bg-primary text-end p-0.4 rounded-full"
+            >
+              <IconQuestionMark color="white" size={17} />
+            </button>
+          </div>
           {loading ? (
             <div className={`${styles.card} `}>
               {[...Array(3)].map((_, index) => (
