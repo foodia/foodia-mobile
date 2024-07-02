@@ -131,6 +131,20 @@ const MenuBarMechant = () => {
             </div>
             <p className="text-xs font-normal text-black">Ulasan</p>
           </Link>
+          <Link
+            href="/merchant/kupon"
+            className="grid justify-items-center gap-1 w-24 "
+          >
+            <div className={`${styles.iconMenu}`}>
+              <Image
+                src={"/icon/kupon.png"}
+                alt="Girl in a jacket"
+                width={30}
+                height={30}
+              />
+            </div>
+            <p className=" font-normal text-black">Kupon</p>
+          </Link>
         </div>
       </div>
     </div>

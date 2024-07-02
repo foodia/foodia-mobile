@@ -61,26 +61,25 @@ const CardPesanan = (props) => {
                   </span>
                 </div>
                 <div
-                  className={`flex justify-center items-center rounded-2xl mb-1 w-auto h-5 px-3 py-0 ${
-                    status === "review"
+                  className={`flex justify-center items-center rounded-2xl mb-1 w-auto h-5 px-3 py-0 ${status === "review"
                       ? "bg-[#F6BE2D]"
                       : status === "tolak"
-                      ? "bg-red-500"
-                      : "bg-[#1D5882]"
-                  }`}
+                        ? "bg-red-500"
+                        : "bg-[#1D5882]"
+                    }`}
                 >
                   <p className="text-gray-100 font-medium text-[10px]">
                     {status === "terima"
                       ? "Confirmation"
                       : status === "diproses"
-                      ? "Diproses"
-                      : status === "selesai"
-                      ? "Selesai"
-                      : status === "canceled"
-                      ? "Canceled"
-                      : status === "tolak"
-                      ? "Rejected"
-                      : "Approval"}
+                        ? "Diproses"
+                        : status === "selesai"
+                          ? "Selesai"
+                          : status === "canceled"
+                            ? "Canceled"
+                            : status === "tolak"
+                              ? "Rejected"
+                              : "Approval"}
                   </p>
                 </div>
               </div>
@@ -93,7 +92,7 @@ const CardPesanan = (props) => {
 
   return (
     <div className="flex justify-center mt-1 w-full mb-2 items-center">
-      {router.pathname === "/merchant/pesanan" ? (
+      {router.pathname === "/merchant/pesanan" || router.pathname === "/merchant/kupon" ? (
         <Link
           href={to}
           className={`bg-white flex hover:bg-gray-100 text-black rounded-2xl items-center border-[1.5px] border-primary shadow-lg w-80 p-1`}
