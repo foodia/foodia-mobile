@@ -1,11 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
 import Webcam from 'react-webcam';
 import jsQR from 'jsqr';
-import styles from './WebCam.module.css';
 import axios from 'axios';
 import Error401 from '@/components/error401';
 import { useRouter } from 'next/router';
-import Swal from 'sweetalert2';
 import { IconSquareRoundedX } from '@tabler/icons-react';
 
 const CameraScan = () => {
@@ -20,9 +18,11 @@ const CameraScan = () => {
         const videoDevices = mediaDevices.filter(({ kind }) => kind === "videoinput");
         setDevices(videoDevices);
 
-        // Automatically select the rear camera if available
-        const rearCamera = videoDevices.find(device => device.label.toLowerCase().includes('back')) || videoDevices[0];
-        setSelectedDevice(rearCamera?.deviceId || null);
+        if (videoDevices.length > 0) {
+            // Automatically select the rear camera if available
+            const rearCamera = videoDevices.find(device => device.label.toLowerCase().includes('back')) || videoDevices[0];
+            setSelectedDevice(rearCamera.deviceId);
+        }
     };
 
     useEffect(() => {
@@ -97,6 +97,9 @@ const CameraScan = () => {
         aspectRatio: aspectRatio,
     };
 
+    console.log('selectedDevice', selectedDevice);
+    console.log('devices', devices);
+
     return (
         <div className="w-full flex flex-col items-center">
             <div className="flex justify-between items-center w-full px-2 my-2">
@@ -106,14 +109,16 @@ const CameraScan = () => {
                 </div>
             </div>
             <div className="bg-gray-300 p-2 rounded-md">
-                <Webcam
-                    audio={false}
-                    ref={webcamRef}
-                    width={320}
-                    height={320}
-                    screenshotFormat="image/jpeg"
-                    videoConstraints={videoConstraints}
-                />
+                {selectedDevice && (
+                    <Webcam
+                        audio={false}
+                        ref={webcamRef}
+                        width={320}
+                        height={320}
+                        screenshotFormat="image/jpeg"
+                        videoConstraints={videoConstraints}
+                    />
+                )}
             </div>
             <select
                 className="my-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
