@@ -519,8 +519,13 @@ function StepTwo({ registrasibeneficiaries, setRegistrasibeneficiaries }) {
       !postal_code ||
       !coordinates
     ) {
-      window.alert("All fields are required");
-      return;
+      return Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Please fill in all required fields",
+        showConfirmButton: false,
+        timer: 2000,
+      });
     }
     setRegistrasibeneficiaries((prevData) => ({
       ...prevData,
@@ -560,7 +565,7 @@ function StepTwo({ registrasibeneficiaries, setRegistrasibeneficiaries }) {
     formData.append("province", province);
     formData.append("city", city);
     formData.append("village", village);
-    formData.append("sub_district", sub_district);
+    formData.append("subdistrict", sub_district);
     formData.append("address", address);
 
 
