@@ -16,8 +16,14 @@ const CameraScan = () => {
     const [selectedDevice, setSelectedDevice] = useState(null);
     const [aspectRatio, setAspectRatio] = useState(16 / 9);
 
-    const handleDevices = mediaDevices =>
-        setDevices(mediaDevices.filter(({ kind }) => kind === "videoinput"));
+    const handleDevices = (mediaDevices) => {
+        const videoDevices = mediaDevices.filter(({ kind }) => kind === "videoinput");
+        setDevices(videoDevices);
+
+        // Automatically select the rear camera if available
+        const rearCamera = videoDevices.find(device => device.label.toLowerCase().includes('back')) || videoDevices[0];
+        setSelectedDevice(rearCamera?.deviceId || null);
+    };
 
     useEffect(() => {
         navigator.mediaDevices.enumerateDevices().then(handleDevices);
@@ -74,7 +80,6 @@ const CameraScan = () => {
                     } else {
                         Error401(response, router);
                     }
-
                 } catch (error) {
                     Error401(error, router);
                 }
@@ -93,10 +98,10 @@ const CameraScan = () => {
     };
 
     return (
-        <div className={`w-full flex flex-col items-center`}>
+        <div className="w-full flex flex-col items-center">
             <div className="flex justify-between items-center w-full px-2 my-2">
                 <h1>QR Code Scanner</h1>
-                <div onClick={handleClose} className="p-1 bg-red-500 rounded-md p-1 font-bold flex items-center justify-center cursor-pointer">
+                <div onClick={handleClose} className="bg-[#DE0606] rounded-md p-1 font-bold flex items-center justify-center cursor-pointer">
                     <IconSquareRoundedX size={15} className="text-black" />
                 </div>
             </div>
@@ -112,8 +117,8 @@ const CameraScan = () => {
             </div>
             <select
                 className="my-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onChange={e => setSelectedDevice(devices.find(device => device.deviceId === e.target.value))}
-                value={selectedDevice ? selectedDevice.deviceId : ""}
+                onChange={e => setSelectedDevice(devices.find(device => device.deviceId === e.target.value)?.deviceId)}
+                value={selectedDevice || ""}
             >
                 {devices.map(device => (
                     <option key={device.deviceId} value={device.deviceId}>
