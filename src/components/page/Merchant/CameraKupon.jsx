@@ -135,6 +135,7 @@ const CameraKupon = () => {
         setIsModalOpen(false);
     };
 
+    // Adjust the aspect ratio as needed
     const videoConstraints = {
         deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
         aspectRatio: aspectRatio,
@@ -142,7 +143,6 @@ const CameraKupon = () => {
 
     return (
         <>
-
             <div className={styles['camera-select-container']}>
                 <div className={styles['camera-select-group']}>
                     <label htmlFor="camera-select">Kamera:</label>
