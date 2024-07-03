@@ -3,7 +3,41 @@
 @tailwind utilities;
 @import "~leaflet/dist/leaflet.css";
 
-
+#image {
+  /* box-shadow: 5px 5px 5px 5px gray; */
+  width: 60px;
+  padding: 10px;
+  font-weight: 400;
+  padding-bottom: 0px;
+  height: 40px;
+  user-select: none;
+  text-decoration: line-through;
+  font-style: italic;
+  font-size: x-large;
+}
+#user-input {
+  /* box-shadow: 5px 5px 5px 5px gray; */
+  width: auto;
+  margin-right: 10px;
+  padding: 10px;
+  padding-bottom: 0px;
+  width: 50px;
+  height: 40px;
+  /* border: red 0px solid; */
+}
+input {
+  padding: 5px;
+  border: 1px black solid;
+}
+.inline {
+  display: inline-block;
+}
+#btn {
+  box-shadow: 5px 5px 5px grey;
+  color: aqua;
+  margin: 10px;
+  background-color: brown;
+}
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -59,15 +93,15 @@ input[type="radio"] {
   border-radius: 50%;
 }
 
-input:checked+.slider {
+input:checked + .slider {
   background-color: #3ab74d;
 }
 
-input:focus+.slider {
+input:focus + .slider {
   box-shadow: 0 0 1px #3ab74d;
 }
 
-input:checked+.slider:before {
+input:checked + .slider:before {
   transform: translateX(18px);
 }
 

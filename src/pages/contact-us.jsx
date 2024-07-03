@@ -39,7 +39,7 @@ const contactUs = (profile) => {
           </p>
           <div className="flex flex-col items-start">
             <p>a. Melalui Campaign</p>
-            <p className="">
+            <p className="pl-3">
               Relawan menginisiasi sebuah Campaign yang didalamnya terdapat
               pilihan item dari Mitra UMKM dan kemudian dibantu oleh para
               Donatur untuk menyukseskan kebutuhan dana campaign tersebut.
@@ -51,7 +51,7 @@ const contactUs = (profile) => {
           </div>
           <div className="flex flex-col items-start">
             <p>b. Melalui Kupon Makan Gratis</p>
-            <p>
+            <p className="pl-3">
               Foodia memiliki wadah dana Kupon Makan Gratis yang diambil dari
               dana Tabungan Donasi para donatur (yang telah mendapat izin dapat
               dikelola oleh Foodia). Kupon didistribusikan dengan sistem kupon

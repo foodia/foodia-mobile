@@ -3,11 +3,12 @@ import {
   IconEyeClosed,
   IconLock,
   IconMail,
+  IconRefresh,
 } from "@tabler/icons-react";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
 import Header from "../Header";
 import Loading from "../Loading";
@@ -21,6 +22,10 @@ const LoginPage = () => {
   const router = useRouter();
   const { state, setRegistrasi } = useAppState();
   const [showPassword, setShowPassword] = useState(true);
+  const [captcha, setCaptcha] = useState("");
+  const [message, setMessage] = useState("");
+  const [inputCaptcha, setInputCaptcha] = useState("");
+  const userInputRef = useRef(null);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -85,15 +90,13 @@ const LoginPage = () => {
               if (detonator?.status === "approved" && detonator.detonator_id) {
                 localStorage.setItem("id_detonator", detonator.detonator_id);
               } else {
-                localStorage.setItem("id_detonator", '-');
+                localStorage.setItem("id_detonator", "-");
               }
               if (merchant?.status === "approved" && merchant.merchant_id) {
                 localStorage.setItem("id_merchant", merchant.merchant_id);
               } else {
-                localStorage.setItem("id_merchant", '-');
+                localStorage.setItem("id_merchant", "-");
               }
-
-              localStorage.setItem("Session", "start");
               localStorage.setItem("fullname", responseData.fullname);
               localStorage.setItem("phone", responseData.phone);
               localStorage.setItem("email", responseData.email);
@@ -152,6 +155,37 @@ const LoginPage = () => {
       });
   };
 
+  // Function to generate a new captcha
+  const generateCaptcha = () => {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let generatedCaptcha = "";
+    for (let i = 0; i < 5; i++) {
+      generatedCaptcha += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+    setCaptcha(generatedCaptcha);
+    // Clear the user input field
+    if (userInputRef.current) userInputRef.current.value = "";
+  };
+
+  // Function to check the user input against the generated captcha
+  const checkCaptcha = () => {
+    const userInput = userInputRef.current.value;
+    if (userInput === captcha) {
+      handleSubmit();
+    } else {
+      setMessage("Captcha Tidak Sesuai");
+      // generateCaptcha(); // Generate a new captcha after checking
+    }
+  };
+
+  // Generate captcha when the component mounts
+  useEffect(() => {
+    generateCaptcha();
+  }, []);
+
   return (
     <div className="container mx-auto mt-24 overflow-hidden">
       <Header backto="/" />
@@ -194,13 +228,38 @@ const LoginPage = () => {
             Lupa Kata Sandi?
           </Link>
         </div>
-        <div className=" grid gap-6 content-center">
+        <div className="grid gap-6 content-center">
+          <div className="flex flex-col gap-1">
+            <div className="flex flex-row gap-2">
+              <div id="captcha-container">
+                <span id="image">{captcha}</span>
+              </div>
+              <div className="flex flex-col w-[50%]">
+                <input
+                  type="text"
+                  ref={userInputRef}
+                  id="submit"
+                  placeholder="Input Captcha"
+                  onChange={(e) => setInputCaptcha(e.target.value)}
+                />
+                <div className="text-red-500 text-sm">
+                  {message !== "Matched" && message}
+                </div>
+              </div>
+              <button onClick={() => generateCaptcha()}>
+                <IconRefresh size={20} color="green" />
+              </button>
+            </div>
+          </div>
           <button
-            disabled={!inputEmail || !inputPassword}
-            onClick={handleSubmit}
+            disabled={!inputEmail || !inputPassword || !inputCaptcha}
+            onClick={checkCaptcha}
             type="submit"
-            className={`text-white ${!inputEmail || !inputPassword ? "bg-slate-400" : "bg-primary"
-              } outline-none focus:ring-gray-300 font-bold rounded-xl text-md w-full sm:w-auto py-2 text-center `}
+            className={`text-white ${
+              !inputEmail || !inputPassword || !inputCaptcha
+                ? "bg-slate-400"
+                : "bg-primary"
+            } outline-none focus:ring-gray-300 font-bold rounded-xl text-md w-full sm:w-auto py-2 text-center `}
           >
             Masuk
           </button>
