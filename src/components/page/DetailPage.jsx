@@ -351,6 +351,14 @@ const DetailCamp = ({ data }) => {
     }
   };
 
+  function censorName(name) {
+    return name
+      .split(' ')
+      .map(segment => segment[0] + '*'.repeat(segment.length - 1))
+      .join(' ');
+  }
+
+
   const remainingDays = calculateRemainingTime(data.event_date);
   return (
     <>
@@ -581,7 +589,7 @@ const DetailCamp = ({ data }) => {
                     <div className="text-left place-items-start">
                       <div className="text-primary text-sm font-bold">
                         {" "}
-                        {item.transaction.sender_name}
+                        {censorName(item.transaction.sender_name)}
                       </div>
                       <div className="font-sans text-xs text-gray-500">
                         Berdonasi Sebesar{" "}
