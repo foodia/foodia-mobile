@@ -39,7 +39,7 @@ const CameraKupon = () => {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    setCaptureCoordinates(`${latitude}, ${longitude}`);
+                    setCaptureCoordinates(`${latitude}\n${longitude}`);
                 },
                 (error) => {
                     console.error('Error getting geolocation:', error);
@@ -51,7 +51,7 @@ const CameraKupon = () => {
         };
 
         fetchCameraAndLocation();
-    }, []);
+    }, [captureTime, captureCoordinates]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -135,6 +135,7 @@ const CameraKupon = () => {
         setIsModalOpen(false);
     };
 
+    // Adjust the aspect ratio as needed
     const videoConstraints = {
         deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
         aspectRatio: aspectRatio,
@@ -142,7 +143,6 @@ const CameraKupon = () => {
 
     return (
         <>
-
             <div className={styles['camera-select-container']}>
                 <div className={styles['camera-select-group']}>
                     <label htmlFor="camera-select">Kamera:</label>

@@ -244,7 +244,8 @@ function StepTwo({ DataOrder, setDataOrder, loading, setLoading }) {
                 },
             }).then((result) => {
                 if (result.isConfirmed) {
-                    router.push("/beneficiaries");
+                    const urlPrev = localStorage.setItem('prevUrl', 'klimeKupon');
+                    router.push(`/beneficiaries/qr-kupon/${id_product}`);
                 }
             });
 

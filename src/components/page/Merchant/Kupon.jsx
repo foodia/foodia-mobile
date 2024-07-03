@@ -150,7 +150,7 @@ const Kupon = () => {
               filteredData.map((data) => (
                 <CardPesanan
                   key={data.id}
-                  to={`/merchant/klaim-kupon/${data.id}`}
+                  to={`/merchant/scan-kupon/${data.id}`}
                   idOrder={data.id}
                   img={
                     `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.campaign.image_url}` ||
