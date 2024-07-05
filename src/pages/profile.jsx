@@ -119,9 +119,9 @@ const profile = (profile) => {
 
   return (
     <>
-      <div className="bg-white flex flex-col px-5 h-screen pb-20">
+      <div className="bg-white flex flex-col px-5 pb-40">
         {/* <Header /> */}
-        <div classname="h-screen overflow-auto pb-32 w-full">
+        <div classname="h-screen overflow-auto w-full">
           <div className="pt-4 flex flex-row items-center justify-between">
             <p className="text-center font-bold text-lg"></p>
             <p className="text-center font-bold text-lg">Profile</p>
