@@ -1,4 +1,4 @@
-import CardPesanan from "@/components/CardPesanan";
+
 import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import styles from "@/styles/Home.module.css";
@@ -7,6 +7,7 @@ import moment from "moment/moment";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import MenuBarMechant from "./MenuBarMechant";
+import CardKupon from "./CardKupon";
 
 const Kupon = () => {
   const router = useRouter();
@@ -138,6 +139,7 @@ const Kupon = () => {
           </div>
         ) : (
           <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
+
             {loading || filteredData.length == 0 ? (
               <p className="text-gray-400  flex justify-center items-center">
                 {selectedStatus === "review"
@@ -148,9 +150,10 @@ const Kupon = () => {
               </p>
             ) : (
               filteredData.map((data) => (
-                <CardPesanan
+                <CardKupon
                   key={data.id}
-                  to={`/merchant/scan-kupon/${data.id}`}
+                  // to={data.order_status === "review" ? `/merchant/scan-kupon/${data.id}` : data.order_status === "approved" ? `/merchant/pesanan/${data.id}` : "/"}
+
                   idOrder={data.id}
                   img={
                     `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.campaign.image_url}` ||
@@ -166,7 +169,8 @@ const Kupon = () => {
                   )} ${data.campaign?.event_time}`}
                   qty={data.qty}
                   price={data.merchant_product.price}
-                  status={data.order_status}
+                  status={'claimed'}
+                  // status={data.order_status}
                   total_amount={data.total_amount}
                   setLoading={setLoading}
                 />

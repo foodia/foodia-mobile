@@ -101,7 +101,7 @@ const CameraScan = () => {
     console.log('devices', devices);
 
     return (
-        <div className="w-full flex flex-col items-center">
+        <div className="w-full flex flex-col items-center bg-white h-screen">
             <div className="flex justify-between items-center w-full px-2 my-2">
                 <h1>QR Code Scanner</h1>
                 <div onClick={handleClose} className="bg-[#DE0606] rounded-md p-1 font-bold flex items-center justify-center cursor-pointer">
