@@ -2,8 +2,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import styles from "@/styles/Home.module.css";
 import Loading from "@/components/Loading";
+import Error401 from "@/components/error401";
+import { useRouter } from "next/navigation";
 
 const ProfileDetonator = ({ id }) => {
+  const router = useRouter();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
 

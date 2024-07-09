@@ -419,14 +419,14 @@ function StepOne({
           </select>
         </div>
 
-        <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full focus:border-none">
+        <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full border-none">
           <IconCalendar />
           <input
             onChange={handleTanggalChange}
             value={Tanggal}
             name="Tanggal"
-            type={`${onFocusDate ? "date" : "text"}`}
-            className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent focus:border-none"
+            type="date"
+            className="text-black ml-2 w-full p-0 py-4 pl-1 bg-transparent border-none"
             placeholder="Tanggal Pelaksanaan"
             onFocus={() => {
               setOnFocusTime(false);
