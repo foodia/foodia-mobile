@@ -63,7 +63,7 @@ const FormDetonator = () => {
   return (
     <main className="my-0 mx-auto min-h-full mobile-w">
       <div className="my-0 mx-auto min-h-screen max-w-480 overflow-x-hidden bg-white flex flex-col">
-        <Header backto="/home" title="Registrasi Detonator" />
+        <Header backto="/home" title="Registrasi Volunteer" />
         <div className="grid justify-items-center w-full mt-24">
           {stepComponent}
         </div>

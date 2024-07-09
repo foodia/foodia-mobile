@@ -163,6 +163,18 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
   const handleStepTwoSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
+    const sizeFotoSelfi = (fotoSelfi.size / (1024 * 1024)).toFixed(2);
+    const sizeFotoKTP = (fotoKTP.size / (1024 * 1024)).toFixed(2);
+    const totalSize = parseFloat(sizeFotoSelfi) + parseFloat(sizeFotoKTP);
+    if (totalSize > 5) {
+      await Toast.fire({
+        icon: 'error',
+        title: 'Ukuran gambar melebihi 5MB!',
+        iconColor: 'bg-black',
+      })
+      setLoading(false);
+      return;
+    }
 
     // Ensure all required fields are filled
     if (!fotoSelfi || !fotoKTP || !noKTP) {
@@ -375,6 +387,9 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
   );
   const [fotoKTP, setFotoKTP] = useState(registrasiDetonator?.fotoKTP ?? null);
   const [noKTP, setNoKTP] = useState(registrasiDetonator?.noKTP ?? "");
+  const [loading, setLoading] = useState(false);
+  const [loadingFotoSelfi, setLoadingFotoSelfi] = useState(false);
+  const [loadingFotoKTP, setLoadingFotoKTP] = useState(false);
 
 
   useEffect(() => {
@@ -385,27 +400,98 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
 
   // Handle input file change Foto Selfi
   const handleFotoSelfiChange = (event) => {
-    // setFotoSelfi(event.target.files[0]);
     const file = event.target.files[0];
+    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
+    const maxSize = 5 * 1024 * 1024;
     if (!file) {
       return;
     }
-    if (file.size <= 3 * 1024 * 1024) {
+    setLoadingFotoSelfi(true);
+    if (!allowedTypes.includes(file.type)) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Hanya file PNG, JPG, JPEG dan HEIF yang diizinkan!",
+      });
+      setLoadingFotoSelfi(false);
+      return;
+    }
+    if (file.size <= maxSize) {
       setFotoSelfi(file);
-      setUkuran((file.size / (1024 * 1024)).toFixed(2));
+      setLoadingFotoSelfi(false);
     } else {
       CompressImage(file)
         .then((compressedFile) => {
-          setFotoSelfi(compressedFile);
+          const size = (compressedFile.size / (1024 * 1024)).toFixed(2);
+          if (size <= maxSize) {
+            setFotoSelfi(compressedFile);
+          } else {
+            Toast.fire({
+              icon: 'error',
+              title: 'Ukuran gambar melebihi 5MB!',
+              iconColor: 'bg-black',
+            })
+          }
+          setLoadingFotoSelfi(false);
         })
         .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Ukuran gambar melebihi 5MB!",
+          });
+          setLoadingFotoSelfi(false);
+          setLoading(false)
         });
     }
   };
 
   // Handle input file change Foto KTP
   const handleFotoKTPChange = (event) => {
-    setFotoKTP(event.target.files[0]);
+    const file = event.target.files[0];
+    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
+    const maxSize = 5 * 1024 * 1024;
+    if (!file) {
+      return;
+    }
+    setLoadingFotoKTP(true);
+    if (!allowedTypes.includes(file.type)) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Hanya file PNG, JPG, JPEG dan HEIF yang diizinkan!",
+      });
+      setLoadingFotoKTP(false);
+      return;
+    }
+    if (file.size <= maxSize) {
+      setFotoKTP(file);
+      setLoadingFotoKTP(false);
+    } else {
+      CompressImage(file)
+        .then((compressedFile) => {
+          const size = (compressedFile.size / (1024 * 1024)).toFixed(2);
+          if (size <= maxSize) {
+            setFotoKTP(compressedFile);
+          } else {
+            Toast.fire({
+              icon: 'error',
+              title: 'Ukuran gambar melebihi 5MB!',
+              iconColor: 'bg-black',
+            })
+          }
+          setLoadingFotoKTP(false);
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Ukuran gambar melebihi 5MB!",
+          });
+          setLoadingFotoKTP(false);
+          setLoading(false)
+        });
+    }
   };
 
   // Handle input number change Foto Selfi
@@ -415,7 +501,6 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
 
   const handleStepTwoSubmit = async (event) => {
     event.preventDefault();
-
     // setRegistrasiDetonator((prevData) => ({
     //     ...prevData,
     //     fotoSelfi,
@@ -557,10 +642,7 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
       </ol>
       <form className="p-2 mt-6 w-full" onSubmit={handleStepTwoSubmit}>
         <div className="mb-2">
-          <label
-            htmlFor="fotoSelfi"
-            className="text-sm font-medium text-gray-900"
-          >
+          <label htmlFor="fotoSelfi" className="text-sm font-medium text-gray-900">
             Foto Selfi
           </label>
           <div className="flex items-center justify-center w-full">
@@ -568,7 +650,11 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
               htmlFor="fotoSelfi"
               className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100"
             >
-              {fotoSelfi ? (
+              {loadingFotoSelfi ? (
+                <div className="flex items-center justify-center w-full h-full">
+                  <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
+                </div>
+              ) : fotoSelfi ? (
                 <img
                   src={URL.createObjectURL(fotoSelfi)}
                   alt="Foto Selfi"
