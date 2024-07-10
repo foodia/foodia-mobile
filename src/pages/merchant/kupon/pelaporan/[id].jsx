@@ -5,9 +5,14 @@ import CardKupon from "@/components/page/Merchant/CardKupon";
 import { IconCamera, IconMapPin } from "@tabler/icons-react";
 import axios from "axios";
 import moment from "moment";
+import 'moment/locale/id';
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, } from "react";
+import { Carousel } from "react-responsive-carousel";
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import Modal from 'react-modal';
+
 
 const pelaporan = () => {
     const router = useRouter();
@@ -16,6 +21,22 @@ const pelaporan = () => {
     const [dataApi, setDataApi] = useState();
     const [confirmedOrder, setConfirmedOrder] = useState(0);
     const [prevPath, setPrevPath] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [imgMakan, setImgMakan] = useState([]);
+    const [imgPenerima, setImgPenerima] = useState([]);
+    const [dataCarousel, setDataCarousel] = useState('');
+
+    useEffect(() => {
+        const FotoMakan = localStorage.getItem("imgMakanan");
+        const FotoPenerima = localStorage.getItem("imgPenerima");
+        if (FotoMakan) {
+            setImgMakan(JSON.parse(FotoMakan));
+        }
+        if (FotoPenerima) {
+            setImgPenerima(JSON.parse(FotoPenerima));
+        }
+    }, [])
 
     useEffect(() => {
         const prevPath = localStorage.getItem("prevPath");
@@ -67,77 +88,28 @@ const pelaporan = () => {
                 });
         }
     }, [id_order]);
-    const handleRejectButtonClick = async (e) => {
-        e.preventDefault();
 
-        // Show SweetAlert confirmation dialog
-        Swal.fire({
-            title: "Apakah Anda Yakin?",
-            text: "Anda akan menolak pesanan. Tindakan ini tidak dapat dibatalkan.",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Ya, Tolak Pesanan",
-            cancelButtonText: "Batal",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const id = localStorage.getItem("id");
-                const token = localStorage.getItem("token");
+    const openModal = (identifier, event) => {
+        event.preventDefault(); // Menghentikan propagasi event
+        event.stopPropagation(); // Menghentikan propagasi event
 
-                if (!id || !token) {
-                    throw new Error("Missing required session data");
-                }
+        const index = parseInt(identifier.split('_')[1]);
 
-                axios
-                    .put(
-                        `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
-                        {
-                            order_status: "tolak",
-                        },
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    )
-                    .then(() => {
-                        setLoading(false);
-                        Swal.fire({
-                            position: "bottom",
-                            customClass: {
-                                popup: "custom-swal",
-                                icon: "custom-icon-swal",
-                                title: "custom-title-swal",
-                                confirmButton: "custom-confirm-button-swal",
-                            },
-                            icon: "success",
-                            title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menolak Pesanan</p>`,
-                            html: `
-                  <div class="absolute px-28 ml-4 top-0 mt-4">
-                    <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-                  </div>
-                `,
-                            width: "375px",
-                            showConfirmButton: true,
-                            confirmButtonText: "Kembali",
-                            confirmButtonColor: "#3FB648",
-                            allowOutsideClick: false,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                router.reload();
-                            }
-                        });
-                    })
-                    .catch((error) => {
-                        setLoading(false);
-                        Error401(error, router);
-                    });
-            }
-        });
-
-        // If the user confirms, call the handleReject function
+        if (identifier.startsWith('makan')) {
+            setDataCarousel('makan');
+            setCurrentImageIndex(index);
+            setIsModalOpen(true);
+        } else if (identifier.startsWith('penerima')) {
+            setDataCarousel('penerima');
+            setCurrentImageIndex(index);
+            setIsModalOpen(true);
+        }
     };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
     const handleAprovButtonClick = () => {
         Swal.fire({
             title: "Apakah Anda Yakin?",
@@ -181,10 +153,10 @@ const pelaporan = () => {
                                 confirmButton: "custom-confirm-button-swal",
                             },
                             icon: "success",
-                            title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menerima Pesanan</p><p class="w-auto pl-1 font-bold text-[15px] text-gray-400">Terima kasih telah membantu campaign kami</p>`,
+                            title: `<p className="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menerima Pesanan</p><p className="w-auto pl-1 font-bold text-[15px] text-gray-400">Terima kasih telah membantu campaign kami</p>`,
                             html: `
-                  <div class="absolute px-28 ml-4 top-0 mt-4">
-                    <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                  <div className="absolute px-28 ml-4 top-0 mt-4">
+                    <hr className="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
                   </div>
                 `,
                             width: "375px",
@@ -204,21 +176,6 @@ const pelaporan = () => {
                     });
             }
         });
-    };
-
-    const calculateRemainingTime = (eventDate) => {
-        const currentDate = new Date();
-        const eventDateObject = new Date(eventDate);
-        const timeDifference = eventDateObject - currentDate;
-
-        // Calculate remaining time in days
-        let remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
-
-        if (remainingDays < 0) {
-            remainingDays = 0;
-        }
-
-        return remainingDays;
     };
 
     return (
@@ -270,50 +227,50 @@ const pelaporan = () => {
 
                     {loading ? (
                         <>
-                            <div class="p-2 rounded-md mt-2 px-4 animate-pulse">
-                                {/* <h5 class="text-xs mb-1 font-bold">Rangkuman Pesanan</h5> */}
-                                <div class="justify-between grid grid-cols-2 gap-2 ">
-                                    <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
-                                    <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
-                                    <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
-                                    <div class="text-right text-sm text-primary bg-gray-300 h-4 rounded"></div>
-                                    <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
-                                    <div class="text-right text-sm text-primary bg-gray-300 h-4 rounded"></div>
+                            <div className="p-2 rounded-md mt-2 px-4 animate-pulse">
+                                {/* <h5 className="text-xs mb-1 font-bold">Rangkuman Pesanan</h5> */}
+                                <div className="justify-between grid grid-cols-2 gap-2 ">
+                                    <div className="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                                    <div className="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                                    <div className="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                                    <div className="text-right text-sm text-primary bg-gray-300 h-4 rounded"></div>
+                                    <div className="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                                    <div className="text-right text-sm text-primary bg-gray-300 h-4 rounded"></div>
                                 </div>
 
-                                <hr class="h-px bg-gray-200 border-0 mt-2" />
-                                <div class="justify-between grid grid-cols-2 gap-2 py-4">
-                                    <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
-                                    <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
-                                    <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
-                                    <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                                <hr className="h-px bg-gray-200 border-0 mt-2" />
+                                <div className="justify-between grid grid-cols-2 gap-2 py-4">
+                                    <div className="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                                    <div className="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                                    <div className="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                                    <div className="text-right text-sm bg-gray-300 h-4 rounded"></div>
                                 </div>
 
-                                <hr class="h-px bg-gray-200 border-0" />
-                                <div class="justify-between grid grid-cols-2 gap-2 py-4">
-                                    <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
-                                    <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                                <hr className="h-px bg-gray-200 border-0" />
+                                <div className="justify-between grid grid-cols-2 gap-2 py-4">
+                                    <div className="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                                    <div className="text-right text-sm bg-gray-300 h-4 rounded"></div>
                                 </div>
-                                <hr class="h-px bg-gray-200 border-0" />
-                                <div class="justify-between grid grid-cols-2 gap-2 py-4">
-                                    <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
-                                    <div class="flex gap-4">
-                                        <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                                <hr className="h-px bg-gray-200 border-0" />
+                                <div className="justify-between grid grid-cols-2 gap-2 py-4">
+                                    <div className="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                                    <div className="flex gap-4">
+                                        <div className="text-right text-sm bg-gray-300 h-4 rounded"></div>
                                         <a
                                             href="#"
-                                            class="text-sm font-normal mb-12 text-red-500 bg-gray-300 h-4 rounded"
+                                            className="text-sm font-normal mb-12 text-red-500 bg-gray-300 h-4 rounded"
                                         ></a>
                                     </div>
                                 </div>
-                                <hr class="h-px bg-gray-200 border-0" />
-                                <div class="justify-between grid grid-cols-2 gap-2 py-4">
-                                    <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
-                                    <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
+                                <hr className="h-px bg-gray-200 border-0" />
+                                <div className="justify-between grid grid-cols-2 gap-2 py-4">
+                                    <div className="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                                    <div className="text-right text-sm bg-gray-300 h-4 rounded"></div>
                                 </div>
-                                <hr class="h-px bg-gray-200 border-0" />
-                                <div class="py-4">
-                                    <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
-                                    <div class="font-normal mt-2 text-sm bg-gray-300 h-6 rounded"></div>
+                                <hr className="h-px bg-gray-200 border-0" />
+                                <div className="py-4">
+                                    <div className="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
+                                    <div className="font-normal mt-2 text-sm bg-gray-300 h-6 rounded"></div>
                                 </div>
                             </div>
                             <div className=" h-20 bottom-0 my-0 p-2rounded-md mt-2 mx-2 grid grid-cols-2 gap-4 place-content-center">
@@ -328,22 +285,64 @@ const pelaporan = () => {
                         <div className="px-[16px]">
                             {dataApi?.order_status === "review" ? (
                                 <>
-                                    <div className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between my-[16px]">
+                                    <Link href="/merchant/kupon/upload-bukti?makanan" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between my-2">
                                         <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
-                                        <div className=" bg-red-500 rounded-md flex justify-center items-center">
-                                            <div className="w-[52px] h-[52px] bg-primary rounded-md mx-2"></div>
-                                            <div className="w-[52px] h-[52px] bg-primary rounded-md"></div>
-                                        </div>
+                                        {imgMakan.length > 0 ? (
+                                            <div className=" bg-red-500 rounded-md my-auto flex">
+                                                {imgMakan.slice(0, imgMakan.length).map((item, index) => (
 
-                                    </div>
-                                    <div className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between">
+                                                    <img key={index} onClick={(event) => openModal(`makan_${index}`, event)} className="w-[52px] h-[52px] object-cover rounded-md mx-1"
+                                                        src={item}
+                                                    />
+                                                ))}
+                                            </div>
+                                        ) :
+                                            <div className="flex flex-col items- my-auto w-[234px]">
+                                                <p className="text-black text-[12px] font-bold ">Foto Makanan yang Disajikan </p>
+                                                <p className="text-primary text-[10px] font-bold">Minimal 1 foto</p>
+                                            </div>
+                                        }
+                                    </Link>
+
+                                    <Link href="/merchant/kupon/upload-bukti?penerima" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between">
                                         <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
-                                        <div className=" bg-red-500 rounded-md flex justify-center items-center">
-                                            <div className="w-[52px] h-[52px] bg-primary rounded-md mx-2"></div>
-                                            <div className="w-[52px] h-[52px] bg-primary rounded-md"></div>
-                                        </div>
+                                        {imgPenerima.length > 0 ? (
+                                            <div className=" bg-red-500 rounded-md my-auto flex">
+                                                {imgPenerima.slice(0, imgPenerima.length).map((item, index) => (
 
-                                    </div>
+                                                    <img key={index} onClick={(event) => openModal(`penerima_${index}`, event)} className="w-[52px] h-[52px] object-cover rounded-md mx-1"
+                                                        src={item}
+                                                    />
+                                                ))}
+                                            </div>
+                                        ) :
+                                            <div className="flex flex-col items- my-auto w-[234px]">
+                                                <p className="text-black text-[12px] font-bold ">Foto Makanan dengan Penerima Manfaat </p>
+                                                <p className="text-primary text-[10px] font-bold">Minimal 2 foto</p>
+                                            </div>
+                                        }
+                                    </Link>
+
+                                    {/* <Link href="/merchant/kupon/upload-bukti?penerima" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between">
+                                        <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
+                                        {imgPenerima.length > 0 ? (
+                                            <div className=" bg-red-500 rounded-md my-auto">
+                                                {imgPenerima.slice(0, imgPenerima.length).map((item, index) => (
+
+                                                    <img key={index} onClick={() => openModal(`penerima_${index}`)} className="w-[52px] h-[52px] object-cover rounded-md"
+                                                        src={item}
+                                                    />
+                                                ))}
+                                            </div>
+                                        ) :
+                                            <div className="flex flex-col items- my-auto w-[234px]">
+                                                <p className="text-black text-[12px] font-bold ">Foto Makanan dengan Penerima Manfaat </p>
+                                                <p className="text-primary text-[10px] font-bold">Minimal 2 foto</p>
+                                            </div>
+                                        }
+                                    </Link> */}
+
+
                                 </>
                             ) : dataApi?.order_status === "claimed" ? (
                                 <>
@@ -362,9 +361,71 @@ const pelaporan = () => {
 
                 </div>
                 {loading && <Loading />}
+                <Modal
+                    isOpen={isModalOpen}
+                    onRequestClose={closeModal}
+                    contentLabel="Image Carousel"
+                    className='modal'
+                    overlayClassName='overlay'
+                >
+                    <button className='close-modal-button' onClick={closeModal}>Close</button>
+                    <Carousel selectedItem={currentImageIndex}>
+                        {dataCarousel === "makan" ? imgMakan.map((src, index) => (
+                            <div key={index}>
+                                <img
+                                    className='img-carousel'
+                                    src={src}
+                                    alt={`Captured ${index + 1}`}
+                                />
+                            </div>
+                        )) : imgPenerima.map((src, index) => (
+                            <div key={index}>
+                                <img
+                                    className='img-carousel'
+                                    src={src}
+                                    alt={`Captured ${index + 1}`}
+                                />
+                            </div>
+                        ))}
+
+                    </Carousel>
+                </Modal>
             </div>
+
         </>
     );
 };
 
 export default pelaporan;
+
+// {imgSrc.map((src, index) => (
+//     <div key={index}>
+//         <img
+//             className={styles['img-carousel']}
+//             src={src}
+//             alt={`Captured ${index + 1}`}
+//         />
+//     </div>
+// ))}
+
+// {imgMakan.length > 0 ? (
+//     imgMakan.map((src, index) => (
+//         <div key={index}>
+//             <img
+//                 className='img-carousel'
+//                 src={src}
+//                 alt={`Captured ${index + 1}`}
+//             />
+//         </div>
+//     ))
+// ) : imgPenerima.length > 0 ? (
+//     imgPenerima.map((src, index) => (
+//         <div key={index}>
+//             <img
+//                 className='img-carousel'
+//                 src={src}
+//                 alt={`Captured ${index + 1}`}
+//             />
+//         </div>
+//     ))
+// ) : null}
