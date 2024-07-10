@@ -15,6 +15,7 @@
   font-style: italic;
   font-size: x-large;
 }
+
 #user-input {
   /* box-shadow: 5px 5px 5px 5px gray; */
   width: auto;
@@ -25,13 +26,16 @@
   height: 40px;
   /* border: red 0px solid; */
 }
+
 input {
   padding: 5px;
   border: 1px black solid;
 }
+
 .inline {
   display: inline-block;
 }
+
 #btn {
   box-shadow: 5px 5px 5px grey;
   color: aqua;
@@ -93,15 +97,15 @@ input[type="radio"] {
   border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: #3ab74d;
 }
 
-input:focus + .slider {
+input:focus+.slider {
   box-shadow: 0 0 1px #3ab74d;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(18px);
 }
 
@@ -452,4 +456,50 @@ option[value="mandiri"].with-image {
 /* ==================Alert ==================== */
 .colored-toast {
   background-color: #f87171;
+}
+
+/* ==================Modal ==================== */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 800px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 999;
+}
+
+.close-modal-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+}
+
+.img-carousel {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  /* Ensure the image fits within the viewport */
+  object-fit: contain;
+  /* Maintain aspect ratio */
 }

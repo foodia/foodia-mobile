@@ -21,6 +21,8 @@ const Kupon = () => {
     const token = localStorage.getItem("token");
     const status = localStorage.getItem("status");
     const id = localStorage.getItem("id");
+    localStorage.removeItem("imgPenerima");
+    localStorage.removeItem("imgMakanan");
 
     if (
       !role ||
@@ -169,7 +171,7 @@ const Kupon = () => {
                   )} ${data.campaign?.event_time}`}
                   qty={data.qty}
                   price={data.merchant_product.price}
-                  status={'claimed'}
+                  status={'active'}
                   // status={data.order_status}
                   total_amount={data.total_amount}
                   setLoading={setLoading}
