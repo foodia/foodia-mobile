@@ -7,13 +7,13 @@ const MainLayout = (props) => {
 
   useEffect(() => {
     const userAgent = navigator.userAgent;
-    // const isSafariBrowser =
-    //   /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
-    const isChromeBrowser =
-      /Chrome/.test(userAgent) &&
-      !/Edge/.test(userAgent) &&
-      !/OPR/.test(userAgent);
-    setIsSafari(isChromeBrowser);
+    const isSafariBrowser =
+      /Safari/.test(userAgent) && !/Chrome/.test(userAgent);
+    // const isChromeBrowser =
+    //   /Chrome/.test(userAgent) &&
+    //   !/Edge/.test(userAgent) &&
+    //   !/OPR/.test(userAgent);
+    setIsSafari(isSafariBrowser);
   }, []);
 
   if (isSafari) {
