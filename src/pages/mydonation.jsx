@@ -128,127 +128,281 @@ const mydonation = () => {
               Kupon
             </button>
           </div>
-          <div className="bg-[#1D5882] w-full px-4 py-2 mt-2 rounded-xl">
-            <div className="flex justify-between items-center text-white font-semibold text-base">
-              <div className="">
-                <p className="font-bold">Tabunganku</p>
-              </div>
 
-              <p className="">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                  minimumFractionDigits: 0,
-                }).format(data?.agnostic_balance || 0)}
-              </p>
-            </div>
-          </div>
-          <div className="bg-transparent w-full px-4 pb-2 mt-2 rounded-xl">
-            <div className="flex justify-between items-center text-base">
-              <p className="text-sm font-bold">Izinkan Dikelola Foodia</p>
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={isCheckedSuccess}
-                  onChange={toggleSwitch}
-                />
-                <span className="slider round"></span>
-              </label>
-            </div>
-          </div>
-          <hr className="h-[2px] border-0 bg-gray-400 rounded-xl" />
-          <div className="bg-primary w-full mt-2 px-4 py-2 flex flex-col gap-1 min-h-[22px] rounded-xl">
-            <div className="flex justify-between text-white font-semibold text-base">
-              <p>Total Donasi</p>
-              <p>
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                  minimumFractionDigits: 0,
-                }).format(data?.total_donation || 0)}
-              </p>
-            </div>
-            <hr className="mt-2 h-[1px] bg-white" />
-            <div className="flex flex-row justify-between items-center">
-              <div className="flex flex-col gap-1 text-white font-semibold text-base">
-                <p>Donasi Bulan Ini</p>
-
-                <button
-                  onClick={() => setIsOpenedMonthOptions(!isOpenedMonthOptions)}
-                  className="flex flex-row text-[12px] font-semibold text-white custom-select w-20 h-[25px] rounded-md bg-transparent border-[1px] border-white outline-none justify-between items-center px-[3.5px]"
-                >
-                  <p>{moment(month, "YYYY-MM").format("MMM YYYY")}</p>
-                  <IconChevronDown size={"17px"} />
-                </button>
-                {isOpenedMonthOptions && (
-                  <div className="absolute overflow-auto p-1 flex flex-col top-[265px] items-start w-24 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
-                    <button
-                      onClick={() => {
-                        onChangeMonth(moment(new Date()).format("YYYY-MM"));
-                      }}
-                      className={`${
-                        moment(new Date(), "YYYY-MM").format("MMM YYYY") ===
-                        moment(month, "YYYY-MM").format("MMM YYYY")
-                          ? "text-primary"
-                          : "text-black"
-                      } text-[12px] w-full text-left font-semibold`}
-                    >
-                      {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
-                    </button>
-                    {data?.year_filters?.map((bulan, index) => (
-                      <button
-                        onClick={() => {
-                          onChangeMonth(bulan);
-                        }}
-                        className={`${
-                          moment(bulan, "YYYY-MM").format("MMM YYYY") ===
-                          moment(month, "YYYY-MM").format("MMM YYYY")
-                            ? "text-primary"
-                            : "text-black"
-                        } text-[12px] w-full text-left font-semibold`}
-                      >
-                        {moment(bulan, "YYYY-MM").format("MMM YYYY")}
-                      </button>
-                    ))}
+          {donationType === "donasi" && (
+            <>
+              <div className="bg-[#1D5882] w-full px-4 py-2 mt-2 rounded-xl">
+                <div className="flex justify-between items-center text-white font-semibold text-base">
+                  <div className="">
+                    <p className="font-bold">Tabunganku</p>
                   </div>
-                )}
-              </div>
-              <p className="text-white font-semibold">
-                {new Intl.NumberFormat("id-ID", {
-                  style: "currency",
-                  currency: "IDR",
-                  minimumFractionDigits: 0,
-                }).format(data?.donation_this_month || 0)}
-              </p>
-            </div>
-          </div>
 
-          {loading ? (
-            <div className={`${styles.card} `}>
-              {[...Array(4)].map((_, index) => (
-                <div key={index} className={`${styles.loadingCard}`}>
-                  <div className={`${styles.shimmer}`}></div>
+                  <p className="">
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(data?.agnostic_balance || 0)}
+                  </p>
                 </div>
-              ))}
-            </div>
-          ) : data?.donation_history ? (
-            <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
-              {history.map((data) => (
+              </div>
+              <div className="bg-transparent w-full px-4 pb-2 mt-2 rounded-xl">
+                <div className="flex justify-between items-center text-base">
+                  <p className="text-sm font-bold">Izinkan Dikelola Foodia</p>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={isCheckedSuccess}
+                      onChange={toggleSwitch}
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                </div>
+              </div>
+              <hr className="h-[2px] border-0 bg-gray-400 rounded-xl" />
+              <div className="bg-primary w-full mt-2 px-4 py-2 flex flex-col gap-1 min-h-[22px] rounded-xl">
+                <div className="flex justify-between text-white font-semibold text-base">
+                  <p>Total Donasi</p>
+                  <p>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(data?.total_donation || 0)}
+                  </p>
+                </div>
+                <hr className="mt-2 h-[1px] bg-white" />
+                <div className="flex flex-row justify-between items-center">
+                  <div className="flex flex-col gap-1 text-white font-semibold text-base">
+                    <p>Donasi Bulan Ini</p>
+
+                    <button
+                      onClick={() =>
+                        setIsOpenedMonthOptions(!isOpenedMonthOptions)
+                      }
+                      className="flex flex-row text-[12px] font-semibold text-white custom-select w-20 h-[25px] rounded-md bg-transparent border-[1px] border-white outline-none justify-between items-center px-[3.5px]"
+                    >
+                      <p>{moment(month, "YYYY-MM").format("MMM YYYY")}</p>
+                      <IconChevronDown size={"17px"} />
+                    </button>
+                    {isOpenedMonthOptions && (
+                      <div className="absolute overflow-auto p-1 flex flex-col top-[265px] items-start w-24 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
+                        <button
+                          onClick={() => {
+                            onChangeMonth(moment(new Date()).format("YYYY-MM"));
+                          }}
+                          className={`${
+                            moment(new Date(), "YYYY-MM").format("MMM YYYY") ===
+                            moment(month, "YYYY-MM").format("MMM YYYY")
+                              ? "text-primary"
+                              : "text-black"
+                          } text-[12px] w-full text-left font-semibold`}
+                        >
+                          {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
+                        </button>
+                        {data?.year_filters?.map((bulan, index) => (
+                          <button
+                            onClick={() => {
+                              onChangeMonth(bulan);
+                            }}
+                            className={`${
+                              moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                              moment(month, "YYYY-MM").format("MMM YYYY")
+                                ? "text-primary"
+                                : "text-black"
+                            } text-[12px] w-full text-left font-semibold`}
+                          >
+                            {moment(bulan, "YYYY-MM").format("MMM YYYY")}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-white font-semibold">
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(data?.donation_this_month || 0)}
+                  </p>
+                </div>
+              </div>
+
+              {loading ? (
+                <div className={`${styles.card} `}>
+                  {[...Array(4)].map((_, index) => (
+                    <div key={index} className={`${styles.loadingCard}`}>
+                      <div className={`${styles.shimmer}`}></div>
+                    </div>
+                  ))}
+                </div>
+              ) : data?.donation_history ? (
+                <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
+                  {history.map((data) => (
+                    <div className="w-full px-2 py-2 mt-2.5 rounded-lg shadow-[0px_0px_8px_0px_#00000024]">
+                      <div className="flex justify-between items-center font-semibold text-[10px]">
+                        <div className="">
+                          <p className="font-bold">Tanggal Donasi</p>
+                          <p className="italic">
+                            {moment(data?.date).format("DD MMM YYYY HH:mm") +
+                              " WIB"}
+                          </p>
+                        </div>
+                        <p
+                          className={`text-[16px] font-bold ${
+                            data.type_donation === "booster"
+                              ? "text-[#1D5882]"
+                              : "text-primary"
+                          }`}
+                        >
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data?.total || 0)}
+                        </p>
+                      </div>
+                      <hr className="mt-2 h-[1px] bg-gray-100" />
+                      <div className="py-1">
+                        <h1 className=" font-bold text-sm">
+                          {data?.campaign?.event_name}
+                        </h1>
+                        <p className=" font-normal text-xs">
+                          {data?.campaign?.address}
+                        </p>
+                      </div>
+                      <hr className="mt-2 h-[1px] bg-gray-100" />
+                      <div class="flex justify-between items-center font-semibold text-xs mt-1 text-primary">
+                        <button
+                          onClick={() => {
+                            localStorage.setItem("prevPath", "/mydonation");
+                            router.push(
+                              `/bukti_pembayaran?external_id=${data?.transaction?.external_id}`
+                            );
+                          }}
+                          class="text-xs font-semibold w-full focus:outline-none"
+                        >
+                          Detail Donasi
+                        </button>
+                        <hr class="w-1 h-5 bg-gray-100 mx-2" />
+                        <button
+                          onClick={() => {
+                            localStorage.setItem("prevPath", "/mydonation");
+                            router.push(`/campaign/${data?.campaign?.id}`);
+                          }}
+                          class="text-xs font-semibold w-full focus:outline-none"
+                        >
+                          Campaign
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p
+                  className={`mt-26 text-sm text-[#A1A5C1] items-center justify-center flex flex-col h-[50%]`}
+                >
+                  Yuk bantu saudara kita dengan
+                  <p> berdonasi :&#41;</p>
+                </p>
+              )}
+            </>
+          )}
+
+          {donationType === "kupon" && (
+            <>
+              <div className="bg-gradient-to-b from-[#FF2F2F] to-[#FFBD5B] w-full mt-2 px-4 py-2 flex flex-col gap-1 min-h-[22px] rounded-xl">
+                <div className="flex justify-between text-white font-semibold text-base">
+                  <p>Donasi Kupon</p>
+                  <p>
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(data?.total_donation || 0)}
+                  </p>
+                </div>
+                <hr className="mt-2 h-[1px] bg-white" />
+                <div className="flex flex-row justify-between items-center">
+                  <div className="flex flex-col gap-1 text-white font-semibold text-base">
+                    <p>Diklaim Bulan Ini</p>
+
+                    <button
+                      onClick={() =>
+                        setIsOpenedMonthOptions(!isOpenedMonthOptions)
+                      }
+                      className="flex flex-row text-[12px] font-semibold text-white custom-select w-20 h-[25px] rounded-md bg-transparent border-[1px] border-white outline-none justify-between items-center px-[3.5px]"
+                    >
+                      <p>{moment(month, "YYYY-MM").format("MMM YYYY")}</p>
+                      <IconChevronDown size={"17px"} />
+                    </button>
+                    {isOpenedMonthOptions && (
+                      <div className="absolute overflow-auto p-1 flex flex-col top-[178px] items-start w-24 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
+                        <button
+                          onClick={() => {
+                            onChangeMonth(moment(new Date()).format("YYYY-MM"));
+                          }}
+                          className={`${
+                            moment(new Date(), "YYYY-MM").format("MMM YYYY") ===
+                            moment(month, "YYYY-MM").format("MMM YYYY")
+                              ? "text-primary"
+                              : "text-black"
+                          } text-[12px] w-full text-left font-semibold`}
+                        >
+                          {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
+                        </button>
+                        {data?.year_filters?.map((bulan, index) => (
+                          <button
+                            onClick={() => {
+                              onChangeMonth(bulan);
+                            }}
+                            className={`${
+                              moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                              moment(month, "YYYY-MM").format("MMM YYYY")
+                                ? "text-primary"
+                                : "text-black"
+                            } text-[12px] w-full text-left font-semibold`}
+                          >
+                            {moment(bulan, "YYYY-MM").format("MMM YYYY")}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-white font-semibold">
+                    {new Intl.NumberFormat("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                      minimumFractionDigits: 0,
+                    }).format(data?.donation_this_month || 0)}
+                  </p>
+                </div>
+              </div>
+
+              {/* {loading ? (
+                <div className={`${styles.card} `}>
+                  {[...Array(4)].map((_, index) => (
+                    <div key={index} className={`${styles.loadingCard}`}>
+                      <div className={`${styles.shimmer}`}></div>
+                    </div>
+                  ))}
+                </div>
+              ) : data?.donation_history ? ( */}
+              <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
+                {/* {history.map((data) => ( */}
                 <div className="w-full px-2 py-2 mt-2.5 rounded-lg shadow-[0px_0px_8px_0px_#00000024]">
                   <div className="flex justify-between items-center font-semibold text-[10px]">
                     <div className="">
-                      <p className="font-bold">Tanggal Donasi</p>
+                      <p className="font-bold">Tanggal Transaksi</p>
                       <p className="italic">
-                        {moment(data?.date).format("DD MMM YYYY HH:mm") +
+                        {/* {moment(data?.date).format("DD MMM YYYY HH:mm") +
+                          " WIB"} */}
+                        {moment(new Date()).format("DD MMM YYYY HH:mm") +
                           " WIB"}
                       </p>
                     </div>
                     <p
-                      className={`text-[16px] font-bold ${
-                        data.type_donation === "booster"
-                          ? "text-[#1D5882]"
-                          : "text-primary"
-                      }`}
+                      className={`text-[16px] font-bold bg-gradient-to-b from-[#FF2F2F] to-[#FFBD5B] inline-block text-transparent bg-clip-text`}
                     >
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",
@@ -270,36 +424,26 @@ const mydonation = () => {
                   <div class="flex justify-between items-center font-semibold text-xs mt-1 text-primary">
                     <button
                       onClick={() => {
-                        localStorage.setItem("prevPath", "/mydonation");
-                        router.push(
-                          `/bukti_pembayaran?external_id=${data?.transaction?.external_id}`
-                        );
+                        // localStorage.setItem("prevPath", "/mydonation");
+                        router.push(`/merchant/kupon/claimed/336`);
                       }}
                       class="text-xs font-semibold w-full focus:outline-none"
                     >
-                      Detail Donasi
-                    </button>
-                    <hr class="w-1 h-5 bg-gray-100 mx-2" />
-                    <button
-                      onClick={() => {
-                        localStorage.setItem("prevPath", "/mydonation");
-                        router.push(`/campaign/${data?.campaign?.id}`);
-                      }}
-                      class="text-xs font-semibold w-full focus:outline-none"
-                    >
-                      Campaign
+                      Laporan Transaksi Klaim Kupon
                     </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p
-              className={`mt-26 text-sm text-[#A1A5C1] items-center justify-center flex flex-col h-[50%]`}
-            >
-              Yuk bantu saudara kita dengan
-              <p> berdonasi :&#41;</p>
-            </p>
+                {/* ))} */}
+              </div>
+              {/* // ) : (
+              //   <p
+              //     className={`mt-26 text-sm text-[#A1A5C1] items-center justify-center flex flex-col h-[50%]`}
+              //   >
+              //     Yuk bantu saudara kita dengan
+              //     <p> berdonasi :&#41;</p>
+              //   </p>
+              // )} */}
+            </>
           )}
         </div>
       </div>

@@ -187,7 +187,7 @@ const LoginPage = () => {
   }, []);
 
   return (
-    <div className="container mx-auto mt-24 overflow-hidden">
+    <div className="container mx-auto mt-24">
       <Header backto="/" />
       <div className="flex justify-center ">
         <h1 className="text-4xl text-primary font-bold">FOODIA</h1>

@@ -422,7 +422,7 @@ function StepOne({
         <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full border-none">
           <IconCalendar />
           <input
-            onChange={handleTanggalChange}
+            onChange={() => handleTanggalChange()}
             value={Tanggal}
             name="Tanggal"
             type="date"
