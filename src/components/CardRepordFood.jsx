@@ -136,15 +136,13 @@ const CardRepordFood = (props) => {
               className={`grid grid-cols-3 gap-4 place-items-end text-gray-500 w-14 h-14 object-cover rounded-full`}
               alt=""
             />
-            <div className={`text-left ml-2`}>
-              <p className="w-full max-w-[150px] text-primary font-sans font-bold text-[15px] capitalize">
+            <div className={`text-left ml-2 max-w-[172px]`}>
+              <p className="w-full mb-1 text-primary font-sans font-bold text-[15px] capitalize">
                 {title}
               </p>
-              <p className="mb-1 font-sans font-bold text-xs truncate">
-                {nameMerchant}
-              </p>
+              <p className="mb-2 font-sans font-bold text-xs">{nameMerchant}</p>
               <div className="flex items-end">
-                <p className="font-bold text-xs mr-2">{`Jumlah :${qty}`}</p>
+                <p className="font-bold text-xs mr-2">{`Jumlah : ${qty}`}</p>
                 <div
                   className={`font-sans text-[10px] capitalize text-white rounded-xl w-16 flex justify-center items-center py-0.5 px-2 ${
                     approval_status === "waiting"
@@ -232,7 +230,7 @@ const CardRepordFood = (props) => {
                   <p className="mr-1">
                     {order_status === "tolak" ? "" : getorder_status()}
                   </p>
-                  <p className="w-[79px] break-words text-xs font-bold">{`${
+                  <p className="w-[56px] break-words text-xs font-bold">{`${
                     order_status === "review"
                       ? "Review Merchant"
                       : order_status === "incoming"

@@ -20,7 +20,7 @@ const MainLayout = (props) => {
     return (
       <div>
         <h1>Foodia Belum Mendukung Browser Ini</h1>
-        <p>Silahkan Coba Browser Lain</p>
+        <p>Silahkan Coba Browser Lain (Chrome)</p>
       </div>
     );
   }
