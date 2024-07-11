@@ -46,10 +46,11 @@ input {
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
+  outline: none !important;
 }
 
 input {
-  outline: none;
+  outline: none !important;
 }
 
 input[type="checkbox"] {
@@ -97,15 +98,15 @@ input[type="radio"] {
   border-radius: 50%;
 }
 
-input:checked+.slider {
+input:checked + .slider {
   background-color: #3ab74d;
 }
 
-input:focus+.slider {
+input:focus + .slider {
   box-shadow: 0 0 1px #3ab74d;
 }
 
-input:checked+.slider:before {
+input:checked + .slider:before {
   transform: translateX(18px);
 }
 
