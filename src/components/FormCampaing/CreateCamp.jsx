@@ -69,7 +69,6 @@ function StepThree({ cart, updateCart, stepForm = 0 }) {
 
             };
 
-            console.log('Combined Event Data:', eventData);
 
             const formData = new FormData();
             formData.append('destination', 'campaign');
@@ -83,7 +82,6 @@ function StepThree({ cart, updateCart, stepForm = 0 }) {
                 },
             });
 
-            console.log('API Response:', response.data);
 
             // Handle success, e.g., show a success message or navigate to another page
         } catch (error) {

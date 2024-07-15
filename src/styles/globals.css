@@ -3,15 +3,106 @@
 @tailwind utilities;
 @import "~leaflet/dist/leaflet.css";
 
+#image {
+  /* box-shadow: 5px 5px 5px 5px gray; */
+  width: 60px;
+  padding: 10px;
+  font-weight: 400;
+  padding-bottom: 0px;
+  height: 40px;
+  user-select: none;
+  text-decoration: line-through;
+  font-style: italic;
+  font-size: x-large;
+}
+#user-input {
+  /* box-shadow: 5px 5px 5px 5px gray; */
+  width: auto;
+  margin-right: 10px;
+  padding: 10px;
+  padding-bottom: 0px;
+  width: 50px;
+  height: 40px;
+  /* border: red 0px solid; */
+}
+input {
+  padding: 5px;
+  border: 1px black solid;
+}
+.inline {
+  display: inline-block;
+}
+#btn {
+  box-shadow: 5px 5px 5px grey;
+  color: aqua;
+  margin: 10px;
+  background-color: brown;
+}
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
 }
+
 input {
   outline: none;
 }
+
 input[type="checkbox"] {
   accent-color: #3ab74d;
+}
+
+input[type="radio"] {
+  accent-color: #3ab74d;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 1px;
+  bottom: 1px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #3ab74d;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #3ab74d;
+}
+
+input:checked + .slider:before {
+  transform: translateX(18px);
 }
 
 .custom-swal {
@@ -58,12 +149,44 @@ input[type="checkbox"] {
   /* Adjust border radius as needed */
 }
 
+.swal2-popup.swal2-show-swipeup {
+  animation: swipeup 0.5s ease forwards;
+}
+
+.swal2-popup.swal2-show-swipedown {
+  animation: swipedown 0.5s ease forwards;
+}
+
+@keyframes swipeup {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+@keyframes swipedown {
+  from {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 0;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #d8d8d8;
+  background-color: #6b6a6a;
   border-radius: 40px;
 }
 
@@ -110,13 +233,13 @@ input[type="checkbox"] {
 
 /* menu ke 1 */
 .menu1 {
-  left: 37px;
+  left: 30px;
   top: 28px;
 }
 
 /* meneu ke 2 */
 .menu2 {
-  left: 105px;
+  left: 75px;
   top: 28px;
 }
 
@@ -187,34 +310,11 @@ input[type="checkbox"] {
   background-color: #3490dc;
 }
 
-/* ----------------------------------------------------------- */
-.your-custom-container-class {
-  /* width: 375px; */
-
-  /* CSS untuk kontainer SweetAlert */
-}
-
 .your-custom-popup-class {
   width: 372px;
   position: absolute;
   bottom: 10px;
   margin: auto;
-}
-
-.your-custom-title-class {
-  /* CSS untuk judul SweetAlert */
-}
-
-.your-custom-content-class {
-  /* CSS untuk konten SweetAlert */
-}
-
-.your-custom-confirm-button-class {
-  /* CSS untuk tombol konfirmasi SweetAlert */
-}
-
-.your-custom-cancel-button-class {
-  /* CSS untuk tombol pembatalan SweetAlert */
 }
 
 /* ----------------------------------------------------- animation */

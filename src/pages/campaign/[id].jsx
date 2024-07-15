@@ -1,16 +1,27 @@
 import Header from "@/components/Header";
+import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import DetailCamp from "@/components/page/DetailPage";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import styles from "@/styles/Home.module.css";
 
 const Campaign = () => {
   const router = useRouter();
   const { id } = router.query;
+  const [loading, setLoading] = useState(true);
   const [campaignData, setCampaignData] = useState(null);
+  const [prevPath, setPrevPath] = useState("");
 
   useEffect(() => {
+    const prevPath = localStorage.getItem("prevPath");
+    if (prevPath !== "payment_reciept") {
+      setPrevPath(prevPath);
+    } else if (prevPath === "payment_reciept") {
+      setPrevPath("/home");
+    }
+
     const token = localStorage.getItem("token");
     const fetchData = async () => {
       try {
@@ -23,11 +34,10 @@ const Campaign = () => {
           }
         );
         setCampaignData(response.data.body);
+        setLoading(false);
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-
-          Error401(error, router);
-        }
+        setLoading(false);
+        Error401(error, router);
       }
     };
 
@@ -38,9 +48,21 @@ const Campaign = () => {
 
   return (
     <div className="h-full max-w-480 bg-white flex flex-col">
-      <Header title="Informasi" backto="/home" />
-      {campaignData && <DetailCamp data={campaignData} />}
-      {/* <BottomNav /> */}
+      <Header title="Informasi" backto={prevPath ? prevPath : ""} />
+      {loading ? (
+        <div className={`${styles.card}`}>
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className={`${styles.loadingCard}`}>
+              <div className={`${styles.shimmer}`}></div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          <DetailCamp data={campaignData} />
+        </>
+      )}
+      {loading && <Loading />}
     </div>
   );
 };

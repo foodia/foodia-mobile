@@ -19,8 +19,6 @@ const MerchantReting = (MerchantReting) => {
   // const [imgReport, setImgReport] = useState(newReport?.imgReport ?? null);
 
   useEffect(() => {
-    console.log(star);
-    console.log("dara state", state.reportMechant);
     setloading(false);
   }, [star]);
 
@@ -54,7 +52,6 @@ const MerchantReting = (MerchantReting) => {
       note: description,
     };
     setnewReport(eventData);
-    console.log("cek data", eventData);
 
     axios
       .post(`${process.env.NEXT_PUBLIC_API_BASE_URL}rating/create`, eventData, {
@@ -63,7 +60,6 @@ const MerchantReting = (MerchantReting) => {
         },
       })
       .then((creatretingmerchant) => {
-        console.log("API Response create rating:", creatretingmerchant.data);
 
         Swal.fire({
           icon: "success",
@@ -84,7 +80,6 @@ const MerchantReting = (MerchantReting) => {
           Error401(error, router);
 
         }
-        console.log("2Error creating reting:", error.response.status);
         if (error.response.status === 401) {
           Swal.fire({
             icon: "error",

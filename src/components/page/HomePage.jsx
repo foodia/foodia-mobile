@@ -1,112 +1,96 @@
 import styles from "@/styles/Home.module.css";
+import axios from "axios";
 import Image from "next/image";
-import { IconBuildingStore, IconCirclePlus } from "@tabler/icons-react";
-import CardCampaign from "../CardCampaign";
-import SlideCard from "../SlideCard";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
-import SearchBar from "../SearchBar";
+import CardCampaign from "../CardCampaign";
+import Error401 from "../error401";
 
 const HomePage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [dataApi, setDataApi] = useState([]);
   const [DataCamp, setDataCamp] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState(null);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const observer = useRef();
+  const [selectedStatus, setSelectedStatus] = useState("OPEN");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=OPEN`,
-          {
-            headers: {
-              Authorization: `Bearer`,
-            },
-          }
-        );
+    if (localStorage.getItem("prevPath") === "payment_reciept") {
+      localStorage.removeItem("prevPath");
+    }
+  });
 
+  useEffect(() => {
+    axios
+      .get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=OPEN&pagesize=10000000`,
+        {
+          headers: {
+            Authorization: `Bearer`,
+          },
+        }
+      )
+      .then((response) => {
+        setLoading(false);
         const approvedCampaigns = response.data.body.filter(
           (campaign) => campaign.status === "approved"
         );
-        console.log("page home data", approvedCampaigns);
-        setSelectedStatus("OPEN");
-        setDataApi(approvedCampaigns);
         setDataCamp(approvedCampaigns);
+      })
+      .catch((error) => {
         setLoading(false);
-
-        if (approvedCampaigns.length === 0) {
-          setHasMore(false);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
+        Error401(error, router);
+      });
   }, []);
 
   const handleFilterChange = (status) => {
-    let filtered = [];
-
     setLoading(true);
+    setSelectedStatus(status);
     if (status === "OPEN") {
       axios
         .get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}&pagesize=10000000`
         )
         .then((response) => {
-          setDataApi(response.data.body);
           setDataCamp(response.data.body);
           setLoading(false);
         })
         .catch((error) => {
-          console.error("Error fetching data:", error);
+          Error401(error, router);
         });
     } else if (status === "INPROGRESS") {
       axios
         .get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}&pagesize=10000000`
         )
         .then((response) => {
-          setDataApi(response.data.body);
           setDataCamp(response.data.body);
           setLoading(false);
         })
         .catch((error) => {
-          console.error("Error fetching data:", error);
+          Error401(error, router);
         });
     } else if (status === "FINISHED") {
       axios
         .get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}campaign/filter?campaign_status=${status}&pagesize=10000000`
         )
         .then((response) => {
-          setDataApi(response.data.body);
           setDataCamp(response.data.body);
           setLoading(false);
         })
         .catch((error) => {
-          console.error("Error fetching data:", error);
+          Error401(error, router);
         });
     }
-
-    setSelectedStatus(status);
-    // setFilteredData(filtered);
   };
 
   return (
     <>
-      <div className="bg-white h-screen">
+      <div className="bg-white overflow-hidden">
         {/* <SearchBar /> */}
         <div className="flex items-center justify-center px-6 my-2">
-          <div className="bg-gray-100 rounded-xl py-2">
-            <div className="flex justify-between gap-5 px-1 py-3">
+          <div className="bg-gray-100 rounded-xl py-2 w-full">
+            <div className="flex justify-around gap-5 px-1 py-3 text-[12px] font-lato">
               <Link
                 href={"/detonator"}
                 className="grid gap-2 justify-items-center w-24"
@@ -119,20 +103,24 @@ const HomePage = () => {
                     height={30}
                   />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Relawan
-                </p>
+                <p className=" text-gray-500 dark:text-gray-400">Relawan</p>
               </Link>
               <Link
                 href={"/merchant"}
                 className="grid gap-2 justify-items-center w-24"
               >
                 <div className={`${styles.iconMenu}`}>
-                  <IconBuildingStore />
+                  <Image
+                    sizes="100%"
+                    src={"/img/icon/store.png"}
+                    alt="Girl in a jacket"
+                    width={30}
+                    height={30}
+                  />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">UMKM</p>
+                <p className=" text-gray-500 dark:text-gray-400">UMKM</p>
               </Link>
-              <Link href={""} className="grid gap-2 justify-items-center w-24">
+              <Link href={"/beneficiaries"} className="grid gap-2 justify-items-center w-24">
                 <div className={`${styles.iconMenu}`}>
                   <Image
                     src={"/img/icon/icon_camp_terdekat.png"}
@@ -141,9 +129,7 @@ const HomePage = () => {
                     height={30}
                   />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Terdekat
-                </p>
+                <p className=" text-gray-500 dark:text-gray-400">Makan Gratis</p>
               </Link>
             </div>
           </div>
@@ -184,68 +170,34 @@ const HomePage = () => {
             status="Approved"
           />
         </div> */}
-        <div className="flex flex-row px-6 py-4 justify-between items-end">
+        <div className="flex flex-row px-6 py-4 justify-between items-end w-full">
           <div
-            className={`cursor-pointer px-0 pb-3 w-36 ${
-              selectedStatus === "OPEN"
-                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "text-gray-500"
-            }`}
+            className={`cursor-pointer px-0 pb-3 w-36 ${selectedStatus === "OPEN"
+              ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
+              : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
+              }`}
             onClick={() => handleFilterChange("OPEN")}
           >
             <span>Yuk Berdonasi</span>
-            {/* <div
-                className={`w-12 h-0.5 ${
-                  selectedStatus === "OPEN"
-                    ? "bg-blue-500 bg-blue-500 w-32 "
-                    : "bg-black"
-                }`}
-              ></div> */}
           </div>
           <div
-            className={`cursor-pointer text-center${
-              selectedStatus === "INPROGRESS"
-                ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "cursor-pointer text-center text-gray-500"
-            }`}
+            className={`cursor-pointer text-center${selectedStatus === "INPROGRESS"
+              ? " text-primary text-center border border-t-0 border-x-0 border-b-primary"
+              : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
+              }`}
             onClick={() => handleFilterChange("INPROGRESS")}
           >
             <span>Campaign Berjalan</span>
-            {/* <div
-                className={`w-32 h-0.5 ${
-                  selectedStatus === "INPROGRESS"
-                    ? "bg-blue-500 bg-blue-500 w-32 "
-                    : "bg-black"
-                }`}
-              ></div> */}
           </div>
           <div
-            className={`cursor-pointer text-center ${
-              selectedStatus === "FINISHED"
-                ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
-                : "cursor-pointer text-center text-gray-500"
-            }`}
+            className={`cursor-pointer text-center ${selectedStatus === "FINISHED"
+              ? "text-primary text-center border border-t-0 border-x-0 border-b-primary"
+              : "cursor-pointer text-center text-gray-500 border border-t-0 border-x-0 border-b-transparent"
+              }`}
             onClick={() => handleFilterChange("FINISHED")}
           >
             <span>Campaign Selesai</span>
-            {/* <div
-                className={`w-32 h-0.5 ${
-                  selectedStatus === "FINISHED"
-                    ? "bg-blue-500 bg-blue-500 w-32 "
-                    : "bg-black"
-                }`}
-              ></div> */}
           </div>
-
-          {/* <div className="mr-2 grid justify-items-center"><span className="text-blue-500">Yuk Berdonasi</span>
-                            <div className="bg-blue-500 w-32 h-0.5 mt-2"></div>
-                        </div>
-                        <div className="mr-2 grid justify-items-center"><span className="e25_212">Campaign Berjalan </span>
-                            <div className="bg-black w-32 h-0.5 mt-2"></div>
-                        </div>
-                        <div className="mr-2 grid justify-items-center"><span className="e25_212">Campaign Selesai </span>
-                            <div className="bg-black w-32 h-0.5 mt-2"></div>
-                        </div> */}
         </div>
 
         {loading ? (
@@ -257,11 +209,11 @@ const HomePage = () => {
             ))}
           </div>
         ) : (
-          <div className={`pb-28 ${styles.card}`}>
+          <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
             {DataCamp.map((campData) => {
-              // console.log(`Key: ${dataFilter.id}`);
               return (
                 <CardCampaign
+                  from={"home"}
                   to={`/campaign/${campData.id}`}
                   img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${campData.image_url}`}
                   title={campData.event_name}
