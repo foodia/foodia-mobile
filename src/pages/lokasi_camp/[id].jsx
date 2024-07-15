@@ -37,7 +37,6 @@ const LokasiCamp = () => {
           {}
         );
         setCampaignData(response.data.body);
-        // console.log('data1', campaignData);
       } catch (error) {
         console.error(error);
       }
@@ -69,8 +68,6 @@ const LokasiCamp = () => {
   useEffect(() => {
     if (campaignData && campaignData.latitude && campaignData.longitude) {
       setMarkerPosition([campaignData.latitude, campaignData.longitude]);
-      console.log("markerPosition", markerPosition);
-      console.log("campaignData", campaignData);
     }
   }, [campaignData]);
 

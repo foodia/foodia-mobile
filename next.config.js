@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["api.foodia-dev.nuncorp.id"],
+    domains: ["api-foodia-staging.cmtdepok.xyz"],
   },
   reactStrictMode: true,
   devIndicators: {

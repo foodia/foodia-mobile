@@ -28,7 +28,7 @@ const FormMenu = () => {
       localStorage.clear();
       localStorage.removeItem("cart");
       localStorage.removeItem("formData");
-      router.push("/login/merchant");
+      router.push("/login");
     }
   }, [router]);
 
@@ -37,7 +37,6 @@ const FormMenu = () => {
   }, [router.query.step]);
 
   // useEffect(() => {
-  //     console.log(':', Menu);
   // }, [Menu]);
 
   let stepComponent;

@@ -30,7 +30,6 @@ const ReportCamp = () => {
                     }
                 );
 
-                console.log('data', response);
                 setDataApi(response.data.body);
                 setFilteredData(response.data.body);
                 setLoading(false);

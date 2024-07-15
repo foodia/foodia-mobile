@@ -17,7 +17,6 @@ const OTP = () => {
   const registrasi = state.registrasi;
 
   useEffect(() => {
-    console.log(registrasi);
     if (!registrasi || !registrasi.email) {
       Swal.fire({
         icon: "error",
@@ -50,10 +49,7 @@ const OTP = () => {
   const renderer = ({ minutes, seconds }) => {
     if (minutes === 0 && seconds === 0) {
       return (
-        <div
-          onClick={handleResend}
-          className="text-xs text-gray-400 "
-        >
+        <div onClick={handleResend} className="text-xs text-gray-400 ">
           Tidak menerima email? Kirim ulang OTP dalam waktu:
           <br />
           <span className="text-blue-500 hover:underline cursor-pointer">
@@ -64,8 +60,10 @@ const OTP = () => {
     } else {
       return (
         <>
-          <p className="text-xs text-gray-400">Tidak menerima email? Kirim ulang OTP dalam waktu: {minutes}:{seconds}</p>
-
+          <p className="text-xs text-gray-400">
+            Tidak menerima email? Kirim ulang OTP dalam waktu: {minutes}:
+            {seconds}
+          </p>
         </>
       );
     }
@@ -90,7 +88,7 @@ const OTP = () => {
     axios
       .post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/resend-otp`,
-        { email: registrasi.email },
+        { email: registrasi.email, flag: "register" },
         {
           headers: {
             "Content-Type": "application/json",
@@ -132,7 +130,11 @@ const OTP = () => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`,
-        otp,
+        {
+          email: registrasi.email,
+          code: otp.code,
+          flag: "register",
+        },
         {
           headers: {
             "Content-Type": "application/json",
@@ -151,10 +153,10 @@ const OTP = () => {
           confirmButton: "custom-confirm-button-swal",
         },
         icon: "success",
-        title: `<p class="w-auto pl-1 font-bold text-md">Akun Berhasil Di Buat</p><p class="text-sm w-auto pl-1 font-light">Terima kasih telah mendaftar untuk menjadi penolong sesama</p>`,
+        title: `<p className="w-auto pl-1 font-bold text-md">Akun Berhasil Di Buat</p><p className="text-sm w-auto pl-1 font-light">Terima kasih telah mendaftar untuk menjadi penolong sesama</p>`,
         html: `
-          <div class="absolute px-28 ml-4 top-0 mt-4">
-            <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+          <div className="absolute px-28 ml-4 top-0 mt-4">
+            <hr className="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
           </div>
         `,
         width: "375px",

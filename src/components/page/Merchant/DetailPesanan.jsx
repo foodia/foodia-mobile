@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { IconMapPin } from "@tabler/icons-react";
+import { IconInfoCircle, IconMapPin } from "@tabler/icons-react";
 import CardPesanan from "@/components/CardPesanan";
 import Header from "@/components/Header";
 import moment from "moment/moment";
@@ -9,18 +9,24 @@ import Link from "next/link";
 import Swal from "sweetalert2";
 import { useAppState } from "../UserContext";
 import Error401 from "@/components/error401";
+import Loading from "@/components/Loading";
 
 const DetailPesanan = () => {
   const router = useRouter();
-  const { state, setReportMechant } = useAppState();
   const id_order = router.query.id;
   const [loading, setLoading] = useState(true);
-  const [showFullText, setShowFullText] = useState(false);
   const [dataApi, setDataApi] = useState();
+  const [confirmedOrder, setConfirmedOrder] = useState(0);
+  const [prevPath, setPrevPath] = useState("");
 
-  const toggleReadMore = () => {
-    setShowFullText((prevShowFullText) => !prevShowFullText);
-  };
+  useEffect(() => {
+    const prevPath = localStorage.getItem("prevPath");
+    if (prevPath !== "order_confirmation") {
+      setPrevPath(prevPath);
+    } else if (prevPath === "order_confirmation") {
+      setPrevPath("/merchant");
+    }
+  }, [])
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -37,42 +43,37 @@ const DetailPesanan = () => {
     ) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
       localStorage.clear();
-      router.push("/login/merchant");
-    } else {
-      // Role is 'detonator' and token is present
-      setLoading(false); // Set loading to false once the check is complete
+      router.push("/login");
     }
   }, [router]);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     setLoading(true);
-    const ressponse = axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-      .then((response) => {
-        setDataApi(response.data.body);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-        if (401 === error.response.status) {
+    if (id_order) {
+      axios
+        .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setDataApi(response.data.body);
+          setLoading(false);
+
+          setConfirmedOrder(response.data.body.qty);
+        })
+        .catch((error) => {
+          setLoading(false);
           Error401(error, router);
-        }
-        console.error("Error fetching data:", error);
-      })
-
-
+        });
+    }
   }, [id_order]);
   const handleRejectButtonClick = async (e) => {
     e.preventDefault();
 
     // Show SweetAlert confirmation dialog
-    const result = await Swal.fire({
+    Swal.fire({
       title: "Apakah Anda Yakin?",
       text: "Anda akan menolak pesanan. Tindakan ini tidak dapat dibatalkan.",
       icon: "question",
@@ -81,12 +82,8 @@ const DetailPesanan = () => {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Ya, Tolak Pesanan",
       cancelButtonText: "Batal",
-    });
-
-    // If the user confirms, call the handleReject function
-    if (result.isConfirmed) {
-      setLoading(false);
-      try {
+    }).then((result) => {
+      if (result.isConfirmed) {
         const id = localStorage.getItem("id");
         const token = localStorage.getItem("token");
 
@@ -94,34 +91,57 @@ const DetailPesanan = () => {
           throw new Error("Missing required session data");
         }
 
-        const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
-          {
-            order_status: "tolak",
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
+        axios
+          .put(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
+            {
+              order_status: "tolak",
             },
-          }
-        );
-        setLoading(true);
-
-        console.log(response.data);
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          Error401(error, router);
-
-        }
-        console.error(error);
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then(() => {
+            setLoading(false);
+            Swal.fire({
+              position: "bottom",
+              customClass: {
+                popup: "custom-swal",
+                icon: "custom-icon-swal",
+                title: "custom-title-swal",
+                confirmButton: "custom-confirm-button-swal",
+              },
+              icon: "success",
+              title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menolak Pesanan</p>`,
+              html: `
+                  <div class="absolute px-28 ml-4 top-0 mt-4">
+                    <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                  </div>
+                `,
+              width: "375px",
+              showConfirmButton: true,
+              confirmButtonText: "Kembali",
+              confirmButtonColor: "#3FB648",
+              allowOutsideClick: false,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                router.reload();
+              }
+            });
+          })
+          .catch((error) => {
+            setLoading(false);
+            Error401(error, router);
+          });
       }
-    }
-  };
-  const handleAprovButtonClick = async (e) => {
-    e.preventDefault();
+    });
 
-    // Show SweetAlert confirmation dialog
-    const result = await Swal.fire({
+    // If the user confirms, call the handleReject function
+  };
+  const handleAprovButtonClick = () => {
+    Swal.fire({
       title: "Apakah Anda Yakin?",
       text: "Anda akan menyetujui pesanan. Tindakan ini tidak dapat dibatalkan.",
       icon: "question",
@@ -130,12 +150,9 @@ const DetailPesanan = () => {
       cancelButtonColor: "#3085d6",
       confirmButtonText: "Ya, Setujui Pesanan!",
       cancelButtonText: "Batal",
-    });
-
-    // If the user confirms, call the handleReject function
-    if (result.isConfirmed) {
-      setLoading(false);
-      try {
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setLoading(true);
         const id = localStorage.getItem("id");
         const token = localStorage.getItem("token");
 
@@ -143,57 +160,52 @@ const DetailPesanan = () => {
           throw new Error("Missing required session data");
         }
 
-        const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
-          {
-            order_status: "diproses",
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
+        axios
+          .put(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
+            {
+              order_status: "terima",
             },
-          }
-        );
-        setLoading(true);
-        console.log(response.data);
-      } catch (error) {
-        if (error.response.status === 401) {
-          Error401(error, router);
-
-        }
-        console.error(error);
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then(() => {
+            setLoading(false);
+            Swal.fire({
+              position: "bottom",
+              customClass: {
+                popup: "custom-swal",
+                icon: "custom-icon-swal",
+                title: "custom-title-swal",
+                confirmButton: "custom-confirm-button-swal",
+              },
+              icon: "success",
+              title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menerima Pesanan</p><p class="w-auto pl-1 font-bold text-[15px] text-gray-400">Terima kasih telah membantu campaign kami</p>`,
+              html: `
+                  <div class="absolute px-28 ml-4 top-0 mt-4">
+                    <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+                  </div>
+                `,
+              width: "375px",
+              showConfirmButton: true,
+              confirmButtonText: "Kembali",
+              confirmButtonColor: "#3FB648",
+              allowOutsideClick: false,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                router.reload();
+              }
+            });
+          })
+          .catch((error) => {
+            setLoading(false);
+            Error401(error, router);
+          });
       }
-      // await handleAprov();
-    }
-  };
-  const handleBuktiPengiriman = async (e) => {
-    setLoading(true);
-    // setReportMechant(dataApi);
-    try {
-      // Menggunakan setReportMechant untuk menyimpan data
-      setReportMechant(dataApi);
-
-      // Arahkan pengguna ke '/merchant/report'
-      router.push("/merchant/report");
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      if (error.response && error.response.status === 401) {
-        Error401(error, router);
-      }
-    }
-  };
-  const getStatusIcon = () => {
-    switch (dataApi?.order_status) {
-      case "review":
-        return "Review";
-      case "diproses":
-        return "Diproses";
-      case "tolak":
-        return "DiTolak";
-      default:
-        return null;
-    }
+    });
   };
 
   const calculateRemainingTime = (eventDate) => {
@@ -211,19 +223,12 @@ const DetailPesanan = () => {
     return remainingDays;
   };
 
-  console.log(
-    "remainingDays",
-    calculateRemainingTime(dataApi?.campaign?.event_date)
-  );
-
   return (
     <>
-      <div className="container mx-auto pt-14 bg-white h-full">
-        <Header title="Detail Pesanan" />
-        <div className="place-content-center">
-
-
-          {loading ?
+      <div className="container mx-auto pt-14 bg-white overflow-hidden h-screen">
+        <Header title="Detail Pesanan" backto={prevPath ? prevPath : ""} />
+        <div className="place-content-center h-screen overflow-auto pb-14">
+          {loading ? (
             <div className="border border-blue-300 shadow rounded-md p-4 max-w-sm w-80 h-28 mx-auto">
               <div className="animate-pulse flex space-x-4">
                 <div className="rounded-md bg-slate-200 h-16 w-16"></div>
@@ -238,7 +243,9 @@ const DetailPesanan = () => {
                   </div>
                 </div>
               </div>
-            </div> : <CardPesanan
+            </div>
+          ) : (
+            <CardPesanan
               key={dataApi?.id}
               to={""}
               idOrder={dataApi?.id}
@@ -260,13 +267,13 @@ const DetailPesanan = () => {
               total_amount={dataApi?.total_amount}
               status={dataApi?.order_status}
               setLoading={setLoading}
-            />}
+            />
+          )}
 
-          {loading ?
+          {loading ? (
             <>
               <div class="p-2 rounded-md mt-2 px-4 animate-pulse">
-                <h5 class="text-xs mb-1 font-bold">Rangkuman Pesanan</h5>
-
+                {/* <h5 class="text-xs mb-1 font-bold">Rangkuman Pesanan</h5> */}
                 <div class="justify-between grid grid-cols-2 gap-2 ">
                   <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
                   <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
@@ -294,7 +301,10 @@ const DetailPesanan = () => {
                   <div class="text-sm text-gray-400 bg-gray-300 h-4 rounded"></div>
                   <div class="flex gap-4">
                     <div class="text-right text-sm bg-gray-300 h-4 rounded"></div>
-                    <a href="#" class="text-sm font-normal mb-12 text-red-500 bg-gray-300 h-4 rounded"></a>
+                    <a
+                      href="#"
+                      class="text-sm font-normal mb-12 text-red-500 bg-gray-300 h-4 rounded"
+                    ></a>
                   </div>
                 </div>
                 <hr class="h-px bg-gray-200 border-0" />
@@ -316,32 +326,41 @@ const DetailPesanan = () => {
                 </div>
               </div>
             </>
-            : <div className="p-2 rounded-md mt-2 px-4">
-              <h5 className="text-xs mb-1 font-bold">Rangkuman Pesanan</h5>
-
-              <div className="justify-between grid grid-cols-2 gap-2 ">
+          ) : (
+            <div className="p-2 rounded-md mt-2 px-4">
+              {/* <h5 className="text-xs mb-1 font-bold">Rangkuman Pesanan</h5> */}
+              <div className="flex justify-between py-3">
                 <p className="text-sm text-gray-400">Campaign</p>
                 <p className="text-right text-sm">
                   {dataApi?.campaign.event_name}
                 </p>
-                <p className="text-sm text-gray-400">Donation Target</p>
+              </div>
+              <hr />
+              <div className="justify-between grid grid-cols-2 gap-2 py-3 ">
+                <p className="text-sm text-gray-400">Target Donasi</p>
                 <p className="text-right text-sm text-primary">
-                  Rp. {dataApi?.campaign.donation_target.toLocaleString("id-ID")}
+                  Rp.{" "}
+                  {dataApi?.campaign.donation_target.toLocaleString("id-ID")}
                 </p>
-                <p className="text-sm text-gray-400">Donation Collected</p>
+                <p className="text-sm text-gray-400">Donasi Terkumpul</p>
                 <p className="text-right text-sm text-primary">
                   Rp.{" "}
                   {dataApi?.campaign.donation_collected.toLocaleString("id-ID")}
                 </p>
+                <p className="text-sm text-gray-400">Sisa Donasi</p>
+                <p className="text-right text-sm text-primary">
+                  Rp.{" "}
+                  {dataApi?.campaign.donation_remaining.toLocaleString("id-ID")}
+                </p>
               </div>
 
-              <hr className="h-px bg-gray-200 border-0 mt-2" />
+              <hr className="h-px bg-gray-200 border-0" />
               <div className="justify-between grid grid-cols-2 gap-2 py-4">
                 <p className="text-sm text-gray-400">PIC</p>
                 <p className="text-right text-sm">
                   {dataApi?.campaign.detonator.oauth.fullname}
                 </p>
-                <p className="text-sm text-gray-400">No Telp.</p>
+                <p className="text-sm text-gray-400"></p>
                 <p className="text-right text-sm">
                   {dataApi?.campaign.detonator.oauth.phone}{" "}
                 </p>
@@ -373,16 +392,24 @@ const DetailPesanan = () => {
               </div>
               <hr className="h-px bg-gray-200 border-0" />
               <div className="justify-between grid grid-cols-2 gap-2 py-4">
-                <p className="text-sm text-gray-400">Pesanan</p>
-                <p className="text-right text-sm">
-                  {dataApi?.qty} x {dataApi?.merchant_product.name}
+                <p className="text-sm text-primary">Pesanan Terkonfirmasi</p>
+                <p className="text-right text-sm text-primary">
+                  {dataApi?.order_status === "diproses" ? confirmedOrder : 0}
                 </p>
               </div>
               <hr className="h-px bg-gray-200 border-0" />
               <div className="justify-between grid grid-cols-2 gap-2 py-4">
-                <p className="text-sm text-gray-400">Total</p>
+                <p className="text-sm text-primary">Total</p>
                 <p className="text-right text-sm text-primary">
-                  Rp. {dataApi?.total_amount.toLocaleString("id-ID")}
+                  {new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0,
+                  }).format(
+                    dataApi?.order_status === "diproses"
+                      ? dataApi?.total_amount
+                      : 0
+                  )}
                 </p>
               </div>
               <hr className="h-px bg-gray-200 border-0" />
@@ -392,8 +419,8 @@ const DetailPesanan = () => {
                   {dataApi?.campaign.description}
                 </p>
               </div>
-            </div>}
-
+            </div>
+          )}
 
           <div className=" h-20 bottom-0 my-0 p-2rounded-md mt-2 mx-2 grid grid-cols-2 gap-4 place-content-center">
             {dataApi?.order_status === "review" ? (
@@ -411,11 +438,66 @@ const DetailPesanan = () => {
                   Terima
                 </button>
               </>
+            ) : dataApi?.order_status === "terima" ? (
+              calculateRemainingTime(dataApi?.campaign?.event_date) > 1 ? (
+                <div className="w-full col-span-2 flex flex-col gap-1">
+                  <p className="instructions italic text-[10px] flex items-center">
+                    <IconInfoCircle size={15} className="mr-1 text-red-600" />
+
+                    <span className="text-red-600">
+                      Konfirmasi pesanan dapat dibuat pada H-1 pelaksanaan
+                      campaign
+                    </span>
+                  </p>
+                  <button
+                    disabled
+                    className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
+                  >
+                    Konfirmasi Pesanan
+                  </button>
+                </div>
+              ) : (
+                calculateRemainingTime(dataApi?.campaign?.event_date) <= 1 && (
+                  <div className="w-full col-span-2 flex flex-col gap-1">
+                    {dataApi?.campaign.donation_remaining <= 0 && (
+                      <p className="instructions italic text-[10px] flex items-center">
+                        <IconInfoCircle
+                          size={15}
+                          className="mr-1 text-red-600"
+                        />
+
+                        <span className="text-red-600">
+                          Tidak ada sisa donasi yang tersisa
+                        </span>
+                      </p>
+                    )}
+                    <button
+                      disabled={dataApi?.campaign.donation_remaining <= 0}
+                      onClick={() => {
+                        setLoading(true);
+                        router.push(
+                          `/merchant/order-confirmation?id=${id_order}`
+                        );
+                      }}
+                      className={`${dataApi?.campaign.donation_remaining <= 0
+                        ? "bg-gray-400"
+                        : "bg-primary"
+                        } text-white rounded-md h-10 w-full col-span-2`}
+                    >
+                      Konfirmasi Pesanan
+                    </button>
+                  </div>
+                )
+              )
             ) : dataApi?.order_status === "diproses" ? (
               calculateRemainingTime(dataApi?.campaign?.event_date) > 0 ? (
                 <div className="w-full col-span-2 flex flex-col gap-1">
-                  <p className="text-xs text-red-500">
-                    Bukti pengiriman dapat dibuat saat tanggal pelaksanaan
+                  <p className="instructions italic text-[10px] flex items-center">
+                    <IconInfoCircle size={15} className="mr-1 text-red-600" />
+
+                    <span className="text-red-600">
+                      Bukti pengiriman dapat dibuat saat tanggal pelaksanaan
+                    </span>
                   </p>
                   <button
                     disabled
@@ -426,21 +508,27 @@ const DetailPesanan = () => {
                 </div>
               ) : (
                 <button
-                  onClick={handleBuktiPengiriman}
+                  onClick={() => {
+                    setLoading(true);
+                    router.push(`/merchant/report?id=${id_order}`);
+                  }}
                   className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
                 >
                   Buat Bukti Pegiriman
                 </button>
               )
             ) : dataApi?.order_status === "tolak" ? (
-              <button className="bg-red-500 text-white rounded-md h-10 col-span-2">
+              <button
+                disabled
+                className="bg-red-500 text-white rounded-md h-10 col-span-2"
+              >
                 Pesanan Ditolak
               </button>
             ) : (
               dataApi?.order_status === "selesai" && (
                 <button
                   disabled
-                  className="bg-blue-400 text-white rounded-md h-10 col-span-2"
+                  className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
                 >
                   Pesanan Selesai
                 </button>
@@ -448,6 +536,7 @@ const DetailPesanan = () => {
             )}
           </div>
         </div>
+        {loading && <Loading />}
       </div>
     </>
   );

@@ -14,7 +14,6 @@ const CardReportDetonator = ({ data }) => {
 
     useEffect(() => {
         const role = localStorage.getItem('role');
-        console.log('data res', data);
         if (data.order == null) {
             setButtonStatus(false)
         } else {
@@ -31,7 +30,6 @@ const CardReportDetonator = ({ data }) => {
     })
     const hendleButton = () => {
         const role = localStorage.getItem('role');
-        // console.log('data res', data);
         if (data.order == null) {
             return
         } else {

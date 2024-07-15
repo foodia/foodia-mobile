@@ -17,25 +17,19 @@ import SweetAlert from "../SweetAlert";
 import Swal from "sweetalert2";
 import Loading from "../Loading";
 import Error401 from "../error401";
+import CompressImage from "../CompressImage";
 
 function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [loadingSelfi, setLoadingSelfi] = useState(false);
+  const [loadingKTP, setLoadingKTP] = useState(false);
   const [fotoSelfi, setFotoSelfi] = useState(
     registrasiDetonator?.fotoSelfi || null
   );
   const [fotoKTP, setFotoKTP] = useState(registrasiDetonator?.fotoKTP || null);
   const [noKTP, setNoKTP] = useState(registrasiDetonator?.noKTP || "");
 
-  useEffect(() => {
-    // Debug
-    if (registrasiDetonator && registrasiDetonator.fotoSelfi) {
-      console.log("Step2 - Foto Selfi:", registrasiDetonator.fotoSelfi);
-    }
-    if (registrasiDetonator && registrasiDetonator.fotoKTP) {
-      console.log("Step2 - Foto KTP:", registrasiDetonator.fotoKTP);
-    }
-  }, [registrasiDetonator]);
 
   useEffect(() => {
     // Ensure the user is logged in
@@ -59,55 +53,97 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
 
   const handleFotoSelfiChange = (event) => {
     const file = event.target.files[0];
-
-    if (file) {
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
-      const maxSize = 5 * 1024 * 1024; // 2.5MB
-
-      if (!allowedTypes.includes(file.type)) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
+    const maxSize = 5 * 1024 * 1024;
+    setLoadingSelfi(true);
+    if (!file) {
+      setLoadingSelfi(false);
+      return;
+    }
+    if (!allowedTypes.includes(file.type)) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Hanya file PNG, JPG, JPEG dan HEIF yang diizinkan!",
+      });
+      setLoadingSelfi(false);
+      return;
+    }
+    if (file.size <= maxSize) {
+      setFotoSelfi(file);
+      setLoadingSelfi(false);
+    } else {
+      CompressImage(file)
+        .then((compressedFile) => {
+          const size = (compressedFile.size / (1024 * 1024)).toFixed(2);
+          if (size <= maxSize) {
+            setFotoSelfi(compressedFile);
+          } else {
+            Toast.fire({
+              icon: 'error',
+              title: 'Ukuran gambar melebihi 5MB!',
+              iconColor: 'bg-black',
+            })
+          }
+          setLoadingSelfi(false);
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Ukuran gambar melebihi 5MB!",
+          });
+          setLoadingSelfi(false);
+          setLoading(false)
         });
-        event.target.value = "";
-      } else if (file.size > maxSize) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Ukuran gambar melebihi 5MB!",
-        });
-        event.target.value = "";
-      } else {
-        setFotoSelfi(file);
-      }
     }
   };
 
   const handleFotoKTPChange = (event) => {
     const file = event.target.files[0];
-
-    if (file) {
-      const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
-      const maxSize = 5 * 1024 * 1024; // 5MB
-
-      if (!allowedTypes.includes(file.type)) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Hanya file PNG, JPG, dan JPEG yang diizinkan!",
+    const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/heif", "image/heic"];
+    const maxSize = 5 * 1024 * 1024;
+    setLoadingKTP(true);
+    if (!file) {
+      setLoadingKTP(false);
+      return;
+    }
+    if (!allowedTypes.includes(file.type)) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Hanya file PNG, JPG, JPEG dan HEIF yang diizinkan!",
+      });
+      setLoadingKTP(false);
+      return;
+    }
+    if (file.size <= maxSize) {
+      setFotoKTP(file);
+      setLoadingKTP(false);
+    } else {
+      CompressImage(file)
+        .then((compressedFile) => {
+          const size = (compressedFile.size / (1024 * 1024)).toFixed(2);
+          if (size <= maxSize) {
+            setFotoKTP(compressedFile);
+          } else {
+            Toast.fire({
+              icon: 'error',
+              title: 'Ukuran gambar melebihi 5MB!',
+              iconColor: 'bg-black',
+            })
+          }
+          setLoadingKTP(false);
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Ukuran gambar melebihi 5MB!",
+          });
+          setLoadingKTP(false);
+          setLoading(false)
         });
-        event.target.value = "";
-      } else if (file.size > maxSize) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Ukuran gambar melebihi 5MB!",
-        });
-        event.target.value = "";
-      } else {
-        setFotoKTP(file);
-      }
     }
   };
 
@@ -157,9 +193,6 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
           },
         }
       );
-
-      console.log("token:", token);
-      console.log("API Response:", response.data);
       setLoading(false);
       Swal.fire({
         icon: "success",
@@ -171,6 +204,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
       setTimeout(() => {
         router.push("/home");
       }, 2000);
+
 
       // Handle the response accordingly, e.g., redirect to the next step
       // router.push('/registrasi/detonator?step=3');
@@ -207,26 +241,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
 
   return (
     <>
-      {/* <ol className="flex justify-center mb-4 sm:mb-5 w-full p-2">
-        <RoutStep
-            liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block  after:border-b after:border-4 after:border-primary`}
-            divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-primary`}
-            iconCss={`w-4 h-4 text-white lg:w-6 lg:h-6 `}
-            iconName={"User"}
-        />
-        <RoutStep
-            liCss={`flex w-20 items-center after:content-[''] after:w-full after:h-1 after:inline-block   after:border-b after:border-4 after:border-primary`}
-            divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-primary`}
-            iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-            iconName={"Scan"}
-        />
-        <RoutStep
-            liCss={`flex items-center`}
-            divCss={`flex items-center justify-center w-10 h-10  rounded-full lg:h-12 lg:w-12 shrink-0 bg-gray-700`}
-            iconCss={`w-4 h-4 lg:w-6 lg:h-6 text-white`}
-            iconName={"Password"}
-        />
-    </ol> */}
+
       <form className="p-2 mt-2 w-full" onSubmit={handleStepTwoSubmit}>
         <div className="mb-2 px-4">
           <label
@@ -238,8 +253,18 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
           <div className="flex items-center justify-center w-full ">
             <label
               htmlFor="fotoSelfi"
-              className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100 px-4"
+              className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100 relative"
             >
+              {/* Tampilkan loading jika loadingImg bernilai true */}
+              {loadingSelfi && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 rounded-lg">
+                  <svg aria-hidden="true" className="w-12 h-12 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                  </svg>
+                </div>
+              )}
+
               {fotoSelfi ? (
                 <img
                   src={URL.createObjectURL(fotoSelfi)}
@@ -266,6 +291,7 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
           </div>
           <p className="text-xs text-primary font-semibold">*file yang diperbolehkan jpg, jpeg, png dan max 5mb</p>
         </div>
+
         <div className="mb-2 px-4">
           <label
             htmlFor="fotoKTP"
@@ -273,15 +299,25 @@ function StepOne({ registrasiDetonator, setRegistrasiDetonator, }) {
           >
             Foto KTP
           </label>
-          <div className="flex items-center justify-center w-full">
+          <div className="flex items-center justify-center w-full ">
             <label
               htmlFor="fotoKTP"
-              className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100 px-4"
+              className="flex flex-col items-center justify-center w-full h-36 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-200 dark:hover:bg-gray-800 hover:bg-gray-100 relative"
             >
+              {/* Tampilkan loading jika loadingImg bernilai true */}
+              {loadingKTP && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50 rounded-lg">
+                  <svg aria-hidden="true" className="w-12 h-12 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                  </svg>
+                </div>
+              )}
+
               {fotoKTP ? (
                 <img
                   src={URL.createObjectURL(fotoKTP)}
-                  alt="Foto KTP"
+                  alt="Foto Selfi"
                   className="w-full h-full rounded-lg object-cover"
                 />
               ) : (
@@ -340,15 +376,6 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
   const [fotoKTP, setFotoKTP] = useState(registrasiDetonator?.fotoKTP ?? null);
   const [noKTP, setNoKTP] = useState(registrasiDetonator?.noKTP ?? "");
 
-  // Debug
-  useEffect(() => {
-    if (registrasiDetonator && registrasiDetonator.fotoSelfi) {
-      console.log("Step2 - Foto Selfi:", registrasiDetonator.fotoSelfi);
-    }
-    if (registrasiDetonator && registrasiDetonator.fotoKTP) {
-      console.log("Step2 - Foto KTP:", registrasiDetonator.fotoKTP);
-    }
-  }, [registrasiDetonator]);
 
   useEffect(() => {
     if (!registrasiDetonator || Object.keys(registrasiDetonator).length === 0) {
@@ -358,7 +385,22 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
 
   // Handle input file change Foto Selfi
   const handleFotoSelfiChange = (event) => {
-    setFotoSelfi(event.target.files[0]);
+    // setFotoSelfi(event.target.files[0]);
+    const file = event.target.files[0];
+    if (!file) {
+      return;
+    }
+    if (file.size <= 3 * 1024 * 1024) {
+      setFotoSelfi(file);
+      setUkuran((file.size / (1024 * 1024)).toFixed(2));
+    } else {
+      CompressImage(file)
+        .then((compressedFile) => {
+          setFotoSelfi(compressedFile);
+        })
+        .catch((error) => {
+        });
+    }
   };
 
   // Handle input file change Foto KTP
@@ -463,8 +505,6 @@ function StepTwo({ registrasiDetonator, setRegistrasiDetonator }) {
         }
       );
 
-      // Log the API response
-      console.log("API Response:", response.data);
 
       // Redirect to the next step after successful registration
       router.push("/registrasi/detonator?step=3");
@@ -642,7 +682,6 @@ function StepThree({ registrasiDetonator, setRegistrasiDetonator }) {
 
     if (newCodes.join("").length === 6) {
       // Perform any action you want when the OTP is complete
-      console.log("OTP is complete! Handling submit...");
 
       // Example: Handle submit here
       handleSubmit(otp);
@@ -650,7 +689,6 @@ function StepThree({ registrasiDetonator, setRegistrasiDetonator }) {
   };
 
   const handleSubmit = async (otp) => {
-    console.log("OTP:", otp);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}auth/verify-otp`,
@@ -662,7 +700,6 @@ function StepThree({ registrasiDetonator, setRegistrasiDetonator }) {
           },
         }
       );
-      console.log("API Response:", response.data);
       const imageUrl = "/img/illustration/checklist.png";
       SweetAlert({
         title: "",

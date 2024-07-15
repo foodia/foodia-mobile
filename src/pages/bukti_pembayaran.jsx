@@ -11,18 +11,27 @@ import { useEffect, useState } from "react";
 
 const BuktiPembayaran = () => {
   const router = useRouter();
-  const external_id = router.query.external_id;
   const [pembayaran, setPembayaran] = useState("");
   const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //     setExternal_id(router.query.external_id);
-  // }, [router]);
+  const [prevPath, setPrevPath] = useState("");
+  const [path, setPath] = useState("");
 
   // const previousPageUrl =
   //   typeof window !== "undefined" ? new URL(document.referrer).pathname : "";
 
   useEffect(() => {
+    const prevPath = localStorage.getItem("prevPath");
+    if (prevPath) {
+      setPrevPath(prevPath);
+    }
+    let external_id;
+
+    if (router.query.external_id) {
+      external_id = router.query.external_id;
+    } else {
+      external_id = localStorage.getItem("external_id");
+    }
+
     if (external_id) {
       axios
         .get(
@@ -30,6 +39,22 @@ const BuktiPembayaran = () => {
         )
         .then((response) => {
           setPembayaran(response.data.body);
+          if (
+            prevPath !== "/mydonation" &&
+            response.data.body.donation_type !== "agnostic"
+          ) {
+            setPrevPath(
+              `/campaign/${response.data.body.campaign_donation.campaign_id}`
+            );
+          }
+
+          if (
+            prevPath !== "/mydonation" &&
+            response.data.body.donation_type === "agnostic"
+          ) {
+            setPrevPath("/mydonation");
+          }
+
           setLoading(false);
         })
         .catch((error) => {
@@ -41,7 +66,7 @@ const BuktiPembayaran = () => {
 
   return (
     <div className="my-0 h-screen max-w-480 bg-white flex flex-col">
-      <Header title="Detail Donasi" backto={"/home"} />
+      <Header title="Detail Donasi" backto={prevPath} />
       <div className="mt-10 p-4 overflow-hidden">
         <div className="p-4 py-8 w-full mb-4 bg-white shadow-[rgba(0,0,2,0.5)_0px_0px_6px_0px] rounded-lg">
           <div className="flex justify-center items-center mb-4 animate-zoom">
@@ -58,7 +83,7 @@ const BuktiPembayaran = () => {
                 style: "currency",
                 currency: "IDR",
                 minimumFractionDigits: 0,
-              }).format(pembayaran.total_amount || 0)}
+              }).format(pembayaran.amount || 0)}
             </p>
           </div>
           <hr className="w-full mx-auto my-4 bg-gray-300" />
@@ -70,15 +95,19 @@ const BuktiPembayaran = () => {
             <p className="font-semibold text-sm">
               {pembayaran?.transaction_date
                 ? moment(pembayaran?.transaction_date).format(
-                    "DD MMM YYYY hh:mm:ss"
-                  )
+                  "DD MMM YYYY hh:mm:ss"
+                )
                 : "-"}
             </p>
           </div>
           <div className="flex justify-between mb-2">
             <h1 className="font-normal text-sm text-[#A1A5C1]">Detail</h1>
             <p className="font-semibold text-sm">
-              {pembayaran ? "Donasi" : "-"}
+              {pembayaran.description === "Terima Dana Donasi" ||
+                pembayaran.description === "Donation"
+                ? "Donasi"
+                : pembayaran.description}
+              {/* {prevPath !== "/mydonation" ? "Donasi" : "Tabungan Donasi" || "-"} */}
             </p>
           </div>
           <div className="flex justify-between mb-2">
@@ -103,7 +132,14 @@ const BuktiPembayaran = () => {
               Metode Pembayaran
             </h1>
             <p className="font-semibold text-sm">
-              {pembayaran ? "Mayar" : "-"}
+              {pembayaran
+                ? pembayaran.payment_channel === "campaign_wallet" ||
+                  pembayaran.payment_channel === "agnostic_wallet"
+                  ? "Tabunganku"
+                  : pembayaran.payment_channel
+                    ? pembayaran.payment_channel
+                    : "Mayar"
+                : "-"}
             </p>
           </div>
           <div className="flex justify-between mb-2">
@@ -115,10 +151,10 @@ const BuktiPembayaran = () => {
                 style: "currency",
                 currency: "IDR",
                 minimumFractionDigits: 0,
-              }).format(pembayaran.total_amount || 0)}
+              }).format(pembayaran.amount || 0)}
             </p>
           </div>
-          <div className="flex justify-between">
+          {/* <div className="flex justify-between">
             <h1 className="font-normal text-sm text-[#A1A5C1]">
               Biaya Transaksi
             </h1>
@@ -129,7 +165,7 @@ const BuktiPembayaran = () => {
                 minimumFractionDigits: 0,
               }).format(pembayaran.admin_fee || 0)}
             </p>
-          </div>
+          </div> */}
 
           <hr className="w-full mx-auto my-4 bg-gray-300" />
           <div className="flex justify-between">
@@ -139,13 +175,17 @@ const BuktiPembayaran = () => {
                 style: "currency",
                 currency: "IDR",
                 minimumFractionDigits: 0,
-              }).format(pembayaran.total_amount || 0)}
+              }).format(pembayaran.amount || 0)}
             </p>
           </div>
         </div>
 
         <Link
-          href={"/home"}
+          href={prevPath}
+          onClick={() => {
+            localStorage.removeItem("external_id");
+            // localStorage.setItem("prevPath", "/home");
+          }}
           className="bg-slate-200 flex justify-center items-center bg-transparent border-2 h-10 border-primary p-3 rounded-xl outline-none"
         >
           <p className="font-bold text-primary">Kembali</p>

@@ -14,7 +14,18 @@ module.exports = {
       },
       colors: {
         primary: '#3FB648', // Replace with your desired primary color
+        green: '#6CB28E',
+        menu: '#d6f0cb',
+
       },
+      fontWeight: {
+        // fontc: ['Briem Hand', 'cursive'],
+        // curtom: ['Noto Sans KR', 'sans-serif'],
+      },
+      fontFamily: {
+        'sans': ['Poppins', 'sans-serif'],
+        lato: ['Lato', 'sans-serif'],
+      }
     },
   },
   plugins: [],
