@@ -143,10 +143,12 @@ const CameraKupon = () => {
             minPhotos = 1;
             maxPhotos = 3;
             storageKey = 'imgPenerima';
+            router.back();
         } else if (router.asPath === '/merchant/kupon/upload-bukti?makanan') {
             minPhotos = 2;
             maxPhotos = 4;
             storageKey = 'imgMakanan';
+            router.back();
         }
 
         if (imgSrc.length >= minPhotos && imgSrc.length <= maxPhotos) {

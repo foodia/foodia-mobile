@@ -180,9 +180,9 @@ const pelaporan = () => {
 
     return (
         <>
-            <div className="container mx-auto pt-14 bg-white overflow-hidden h-screen">
+            <div className="container mx-auto pt-14 bg-white overflow-hidden max-h-screen" >
                 <Header title="Detail Pesanan" backto={prevPath ? prevPath : ""} />
-                <div className=" h-screen ">
+                <div className="">
                     {loading ? (
                         <div className="border border-blue-300 shadow rounded-md p-4 max-w-sm w-80 h-28 mx-auto">
                             <div className="animate-pulse flex space-x-4">
@@ -282,46 +282,57 @@ const pelaporan = () => {
                             </div>
                         </>
                     ) : (
-                        <div className="px-[16px]">
+                        <div className="px-[16px] flex flex-col h-screen justify-between">
                             {dataApi?.order_status === "review" ? (
                                 <>
-                                    <Link href="/merchant/kupon/upload-bukti?makanan" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between my-2">
-                                        <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
-                                        {imgMakan.length > 0 ? (
-                                            <div className=" bg-red-500 rounded-md my-auto flex">
-                                                {imgMakan.slice(0, imgMakan.length).map((item, index) => (
+                                    <div className="">
+                                        <Link href="/merchant/kupon/upload-bukti?makanan" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between my-2">
+                                            <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
+                                            {imgMakan.length > 0 ? (
+                                                <div className="  rounded-md my-auto flex">
+                                                    {imgMakan.slice(0, imgMakan.length).map((item, index) => (
 
-                                                    <img key={index} onClick={(event) => openModal(`makan_${index}`, event)} className="w-[52px] h-[52px] object-cover rounded-md mx-1"
-                                                        src={item}
-                                                    />
-                                                ))}
-                                            </div>
-                                        ) :
-                                            <div className="flex flex-col items- my-auto w-[234px]">
-                                                <p className="text-black text-[12px] font-bold ">Foto Makanan yang Disajikan </p>
-                                                <p className="text-primary text-[10px] font-bold">Minimal 1 foto</p>
-                                            </div>
-                                        }
-                                    </Link>
+                                                        <img key={index} onClick={(event) => openModal(`makan_${index}`, event)} className="w-[52px] h-[52px] object-cover rounded-md mx-1"
+                                                            src={item}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            ) :
+                                                <div className="flex flex-col items- my-auto w-[234px]">
+                                                    <p className="text-black text-[12px] font-bold ">Foto Makanan yang Disajikan </p>
+                                                    <p className="text-primary text-[10px] font-bold">Minimal 1 foto</p>
+                                                </div>
+                                            }
+                                        </Link>
 
-                                    <Link href="/merchant/kupon/upload-bukti?penerima" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between">
-                                        <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
-                                        {imgPenerima.length > 0 ? (
-                                            <div className=" bg-red-500 rounded-md my-auto flex">
-                                                {imgPenerima.slice(0, imgPenerima.length).map((item, index) => (
+                                        <Link href="/merchant/kupon/upload-bukti?penerima" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between">
+                                            <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
+                                            {imgPenerima.length > 0 ? (
+                                                <div className=" rounded-md my-auto flex">
+                                                    {imgPenerima.slice(0, imgPenerima.length).map((item, index) => (
 
-                                                    <img key={index} onClick={(event) => openModal(`penerima_${index}`, event)} className="w-[52px] h-[52px] object-cover rounded-md mx-1"
-                                                        src={item}
-                                                    />
-                                                ))}
-                                            </div>
-                                        ) :
-                                            <div className="flex flex-col items- my-auto w-[234px]">
-                                                <p className="text-black text-[12px] font-bold ">Foto Makanan dengan Penerima Manfaat </p>
-                                                <p className="text-primary text-[10px] font-bold">Minimal 2 foto</p>
-                                            </div>
-                                        }
-                                    </Link>
+                                                        <img key={index} onClick={(event) => openModal(`penerima_${index}`, event)} className="w-[52px] h-[52px] object-cover rounded-md mx-1"
+                                                            src={item}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            ) :
+                                                <div className="flex flex-col items- my-auto w-[234px]">
+                                                    <p className="text-black text-[12px] font-bold ">Foto Makanan dengan Penerima Manfaat </p>
+                                                    <p className="text-primary text-[10px] font-bold">Minimal 2 foto</p>
+                                                </div>
+                                            }
+                                        </Link>
+                                    </div>
+                                    <div className="w-full text-center my-2 mb-52">
+                                        <button
+                                            onClick={handleAprovButtonClick}
+                                            className="bg-primary border-2 border-primary text-white font-medium rounded-lg h-10 px-2"
+                                        >
+                                            Pesana  Telah Selesai
+                                        </button>
+                                    </div>
+
 
                                     {/* <Link href="/merchant/kupon/upload-bukti?penerima" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between">
                                         <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
