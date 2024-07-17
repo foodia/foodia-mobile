@@ -49,7 +49,6 @@ import mandiri from "../../../public/bank/mandiri.png";
 import bri from "../../../public/bank/bri.png";
 import CompressImage from "../CompressImage";
 import moment from "moment/moment";
-import getDistance from "../page/getDistance";
 
 const DynamicMap = dynamic(() => import("../page/GeoMap"), { ssr: false });
 
@@ -1073,8 +1072,8 @@ function StepThree({
           <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
             <div
               className={`flex ${Object.keys(groupedCart).length > 0
-                ? "justify-between"
-                : "justify-center"
+                  ? "justify-between"
+                  : "justify-center"
                 } w-full`}
             >
               <div className="flex">
@@ -1122,8 +1121,8 @@ function StepThree({
                       <img
                         className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
                         src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0
-                          ? item.images[0].image_url
-                          : ""
+                            ? item.images[0].image_url
+                            : ""
                           }`}
                         alt=""
                       />
@@ -1507,8 +1506,8 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                 setIsDropdownMethodOpen(false);
               }}
               className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${selectedMethod === "agnostic"
-                ? "bg-[#1D5882] cursor-normal"
-                : ""
+                  ? "bg-[#1D5882] cursor-normal"
+                  : ""
                 }`}
             >
               {selectedMethod === "agnostic" ? (
@@ -1900,100 +1899,78 @@ function Stepfive({
   const router = useRouter();
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [location, setLocation] = useState('');
-  const [coordinates, setCoordinates] = useState({});
-  const detonatorId = localStorage.getItem('id');
-  const token = localStorage.getItem('token');
+  const [location, setLocation] = useState("");
+  const detonator_id = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const storedFormData = localStorage.getItem('formData');
+    // Check local storage for existing form data
+    const storedFormData = localStorage.getItem("formData");
     if (storedFormData) {
       const parsedFormData = JSON.parse(storedFormData);
       if (parsedFormData) {
-        setLocation(parsedFormData.location || '');
-        setCoordinates(parsedFormData.coordinates || {});
+        // Merge the existing data with the new data
+        setLocation(parsedFormData.location || "");
       }
     }
   }, []);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!detonator_id || !token) {
+          throw new Error("Missing required session data");
+        }
+        setLoading(true);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/filter?per_page=100000`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const approvedMerchants = response.data.body.filter((merchant) => {
+          return (
+            merchant.status === "approved" &&
+            merchant.products.some((product) => product.status === "approved")
+          );
+        });
+        setDataApi(approvedMerchants);
+        setFilteredData(approvedMerchants);
+        setLoading(false);
+      } catch (error) {
+        Error401(error, router);
+        setLoading(false);
+      }
+    };
 
     fetchData();
-  }, [detonatorId, coordinates, router, token]);
-
-  useEffect(() => {
-    if (dataApi.length > 0) {
-      setLoading(false);
-    } else {
-      setLoading(true);
-      fetchData();
-    }
-  }, [dataApi]);
-
-  const fetchData = async () => {
-    try {
-      if (!detonatorId || !token) {
-        throw new Error('Missing required session data');
-      }
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/filter?per_page=100000`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const approvedMerchants = response.data.body.filter((merchant) => {
-        return (
-          merchant.status === 'approved' &&
-          merchant.products.some((product) => product.status === 'approved')
-        );
-      });
-
-      const merchantsWithDistance = approvedMerchants.map((merchant) => {
-        const distance = getDistance(coordinates.lat, coordinates.lng, merchant.latitude, merchant.longitude);
-        return { ...merchant, distance };
-      });
-
-      const validMerchants = await merchantsWithDistance.filter((merchant) => !isNaN(merchant.distance) && merchant.distance >= 0);
-
-      const sortedMerchants = validMerchants.sort((a, b) => a.distance - b.distance);
-
-      setDataApi(sortedMerchants);
-      setFilteredData(sortedMerchants);
-
-    } catch (error) {
-      console.error('Error fetching merchant data:', error);
-      Error401(error, router);
-    }
-  };
+  }, [detonator_id]);
 
   const handleLink = () => {
-    router.push('/createcampaign?step=3');
+    router.push("/createcampaign?step=3");
   };
 
+  // Calculate total price and total quantity
   const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(2);
   const jumlahMakanan = cart.reduce((acc, item) => acc + item.quantity, 0);
 
-  // Function to categorize distance
-  const categorizeDistance = (distance) => {
-    if (isNaN(distance) || distance < 0) {
-      return 'Unknown'; // or handle as needed
-    }
-    if (distance < 1000) {
-      return '< 1 km';
-    } else {
-      const lowerBound = Math.floor(distance / 1000);
-      const upperBound = lowerBound + 1;
-      return `${lowerBound} - ${upperBound} km`;
-    }
-  };
-
   return (
     <div className="container mx-auto px-4 bg-white">
-      <Header title={'Pilih Merchant'} />
+      <Header title={"Pilih Merchant"} />
+      {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
 
+      {/* <div className="items-center justify-center mt-2 w-full h-full ">
+        {loading && <p>Loading...</p>}
+
+        {dataApi.map((item) => (
+          <>
+            <CardListMerchan key={item.id} data={item} />
+          </>
+        ))}
+      </div> */}
       <p className="text-black font-light text-xs mb-5 flex flex-row items-center justify-center gap-1">
         <IconMapPin color="red" />
         {location}
@@ -2001,32 +1978,18 @@ function Stepfive({
       <div className="flex justify-center">
         <Image src={Market} alt="" />
       </div>
-      <p className="py-[16px] text-gray-700 font-medium text-xl">
+      <p className="py-2 pb-7 text-gray-700 font-medium text-xl">
         Merchant Terdekat
       </p>
 
       <div className="items-center justify-center w-full">
-        {filteredData.map((item, index) => {
-          const distanceText = categorizeDistance(item.distance);
-
-          if (distanceText === 'Unknown') {
-            return null; // Skip rendering invalid distance
-          }
-
-          const shouldAddSeparator =
-            index > 0 &&
-            categorizeDistance(item.distance) !== categorizeDistance(filteredData[index - 1].distance);
-
-          return (
-            <div key={item.id}>
-              {/* {shouldAddSeparator && <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />} */}
-              <p className="text-black text-[14px] font-medium mt-2">
-                Jarak {distanceText}
-              </p>
-              <CardListMerchan data={item} />
-            </div>
-          );
-        })}
+        <div className="items-center justify-center w-full">
+          {dataApi.map((item) => (
+            <>
+              <CardListMerchan key={item.id} data={item} />
+            </>
+          ))}
+        </div>
       </div>
     </div>
   );
