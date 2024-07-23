@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import Error401 from "@/components/error401";
 import axios from "axios";
+import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -10,9 +11,10 @@ import Swal from "sweetalert2";
 
 const Beneficiaries = () => {
     const router = useRouter();
-    const [selectedStatus, setSelectedStatus] = useState("Aktif");
+    const [selectedStatus, setSelectedStatus] = useState("Booking");
+    const [DataOrder, setDataOrder] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [jumlahKupon, setJumlahKupon] = useState(10);
+    const [jumlahKupon, setJumlahKupon] = useState(0);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -107,11 +109,13 @@ const Beneficiaries = () => {
                                 router.push("/beneficiaries/edit");
                             }, 2000);
                         } else {
+                            console.log('berhasil');
                             localStorage.setItem("id", cekData.beneficiaries.beneficiaries_id);
                             localStorage.setItem("role", "beneficiaries");
                             localStorage.setItem("status", cekData.beneficiaries.status);
                             localStorage.setItem("note", cekData.beneficiaries.note);
                             getDetail(cekData.beneficiaries.beneficiaries_id, token);
+                            ChectCupon(cekData.beneficiaries.beneficiaries_id, token);
                         }
                     }
                 })
@@ -120,6 +124,7 @@ const Beneficiaries = () => {
                 });
         }
     }, []);
+
 
     const getDetail = (id, token) => {
         axios
@@ -133,7 +138,7 @@ const Beneficiaries = () => {
                 }
             )
             .then((response) => {
-                console.log(response.data.body);
+                console.log('data Beneficiaries', response.data.body);
                 return;
                 setDataApi(response.data.body);
                 // const filtered = response.data.body.filter(
@@ -153,23 +158,115 @@ const Beneficiaries = () => {
             });
     };
 
+    const ChectCupon = (id, token) => {
+        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/check-available`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                setJumlahKupon(response.data.body.qouta_available);
+
+            })
+            .catch((error) => {
+                Error401(error, router);
+            });
+
+    };
+
+
     const handleFilterChange = (status) => {
+        setLoading(true);
+        setSelectedStatus(status);
+
+    };
+
+    useEffect(() => {
         let filtered = [];
         const id = localStorage.getItem("id");
         const token = localStorage.getItem("token");
 
-        setLoading(true);
-        setSelectedStatus(status);
-        if (status === "Booking") {
-            setLoading(false);
-        } else if (status === "Hangus") {
-            setLoading(false);
-        } else if (status === "Aktif") {
-            setLoading(false);
-        } else if (status === "Selesai") {
-            setLoading(false);
+        if (selectedStatus === "Booking") {
+            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?beneficiary_id=${id}&status=reserved`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }).then((response) => {
+                setDataOrder(response.data.body);
+                setLoading(false);
+            }).catch((error) => {
+                Error401(error, router);
+            })
+        } else if (selectedStatus === "Hangus") {
+            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?beneficiary_id=${id}&status=expired`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }).then((response) => {
+                setDataOrder(response.data.body);
+                setLoading(false);
+            }).catch((error) => {
+                Error401(error, router);
+            })
+        } else if (selectedStatus === "Aktif") {
+            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?beneficiary_id=${id}&status=active`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }).then((response) => {
+                setDataOrder(response.data.body);
+                setLoading(false);
+            }).catch((error) => {
+                Error401(error, router);
+            })
+        } else if (selectedStatus === "Selesai") {
+            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?beneficiary_id=${id}&status=claimed`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }).then((response) => {
+                setDataOrder(response.data.body);
+                setLoading(false);
+            }).catch((error) => {
+                Error401(error, router);
+            })
         }
-    };
+        console.log(' DataOrder', DataOrder);
+    }, [selectedStatus]);
+
+    const HandleRout = (status, coupon, mrc, prd) => {
+        if (status === "reserved") {
+            router.push(`/beneficiaries/qr-kupon/${coupon}?mrc=${mrc}&prd=${prd}`);
+        } else if (status === "active") {
+            router.push(`/beneficiaries/qr-kupon/${coupon}?mrc=${mrc}&prd=${prd}`);
+        }
+        else if (status === "expired") {
+            Swal.fire({
+                position: "bottom",
+                customClass: {
+                    popup: "custom-swal",
+                    icon: "custom-icon-swal",
+                    title: "custom-title-swal",
+                    confirmButton: "custom-confirm-button-swal",
+                },
+                icon: "error",
+                title: `<p class="w-auto pl-1 font-bold text-md">Kupon Telah Hangus</p><p class="text-sm w-auto pl-1 font-light">Mohon maaf kamu waktu transaksi kupon anda telah hangus, silahkan ajukan kupon baru</p>`,
+                html: `
+            <div class="absolute px-28 ml-4 top-0 mt-4">
+              <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
+            </div>
+          `,
+                width: "375px",
+                showConfirmButton: true,
+                confirmButtonText: "Tutup",
+                confirmButtonColor: "#3FB648",
+            });
+        }
+        else if (status === "claimed") {
+            // router.push(`/beneficiaries/qr-kupon/${coupon}?mrc=${mrc}&prd=${prd}`);
+        }
+
+    }
     return (
         <>
             <div className="container mx-auto h-screen max-w-480 bg-white flex flex-col">
@@ -240,24 +337,61 @@ const Beneficiaries = () => {
                         </div>
                     </div>
 
-                    <Link href="/beneficiaries/qr-kupon/1" className="w-full items-center justify-center flex">
-                        <div className="w-[328px]  bg-white border border-gray-300 rounded-lg flex p-2">
-                            <img className="w-[100px] h-[100px] rounded-md object-cover" src="https://via.placeholder.com/100" alt="Nasi Kuning" />
-                            <div className="ml-2 flex flex-col justify-between w-full">
-                                <div className="flex justify-between items-center">
-                                    <h2 className="text-[14px] font-bold text-green-600">Nasi Kuning</h2>
-                                    <button className="bg-blue-500 text-white text-[8px] font-bold px-2 rounded-full">Request</button>
-                                </div>
-                                <p className="text-[8px] text-gray-600 overflow-hidden line-clamp-3">Paket nasi kuning lezat dengan lauk ayam suwir, telur dadar dan kering tempe manis pedas. Sudah termasuk sambal</p>
-                                <div className="text-[8px] text-right flex flex-col items-end">
-                                    <p className="italic text-gray-600">Permintaan oleh</p>
-                                    <p className="font-semibold italic text-gray-600">ASEP MULYANA</p>
-                                    <p className="italic text-gray-600">Masa berlaku hingga</p>
-                                    <p className="font-semibold italic text-gray-600">20 Juni 2024 15:31:00 WIB</p>
+                    {DataOrder.length > 0 ? (
+                        DataOrder.map((data, index) => (
+                            <div
+                                key={index}
+                                onClick={() =>
+                                    HandleRout(
+                                        data.status,
+                                        data.qr_code,
+                                        data.merchant_id,
+                                        data.merchant_product_id
+                                    )
+                                }
+                                className="w-full items-center justify-center flex cursor-pointer"
+                            >
+                                <div className="w-[328px] bg-white border border-gray-300 rounded-lg flex p-2">
+                                    <img
+                                        className="w-[100px] h-[100px] rounded-md object-cover"
+                                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product?.images[0]}`}
+                                        alt="Nasi Kuning"
+                                    />
+                                    <div className="ml-2 flex flex-col justify-between w-full">
+                                        <div className="flex justify-between items-center">
+                                            <h2 className="text-[14px] font-bold text-green-600">{data.merchant_product?.name}</h2>
+                                            <button
+                                                className={`${data.status === 'reserved' ? 'bg-blue-500'
+                                                    : data.status === 'expired' ? 'bg-red-500'
+                                                        : 'bg-primary'
+                                                    } text-white text-[8px] font-bold px-2 rounded-full`}
+                                            >
+                                                {data.status}
+                                            </button>
+                                        </div>
+                                        <p className="text-[8px] text-gray-600 overflow-hidden line-clamp-3">
+                                            {data.merchant_product?.description}
+                                        </p>
+                                        <div className="text-[8px] text-right flex flex-col items-end">
+                                            <p className="italic text-gray-600">Permintaan oleh</p>
+                                            <p className="font-semibold italic text-gray-600">{localStorage.getItem('fullname')}</p>
+                                            <p className="italic text-gray-600">Masa berlaku hingga</p>
+                                            <p className="font-semibold italic text-gray-600">
+                                                {moment(data.expired_at).format('DD MMMM YYYY HH:mm:ss [WIB]')}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                        ))
+                    ) : (
+                        <div className="w-full items-center justify-center flex">
+                            <p className="text-center text-gray-400">Belum ada data</p>
                         </div>
-                    </Link>
+                    )}
+
+
+
 
 
                     {loading && <Loading />}

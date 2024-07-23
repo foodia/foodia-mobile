@@ -1,4 +1,5 @@
 import CardPesanan from "@/components/CardPesanan";
+import Error401 from "@/components/error401";
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import CardKupon from "@/components/page/Merchant/CardKupon";
@@ -8,6 +9,9 @@ import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { Carousel } from "react-responsive-carousel";
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import Modal from 'react-modal';
 
 const claimed = () => {
     const router = useRouter();
@@ -15,16 +19,12 @@ const claimed = () => {
     const [loading, setLoading] = useState(true);
     const [dataApi, setDataApi] = useState();
     const [confirmedOrder, setConfirmedOrder] = useState(0);
-    // const [prevPath, setPrevPath] = useState("");
-
-    // useEffect(() => {
-    //     const prevPath = localStorage.getItem("prevPath");
-    //     if (prevPath !== "order_confirmation") {
-    //         setPrevPath(prevPath);
-    //     } else if (prevPath === "order_confirmation") {
-    //         setPrevPath("/merchant");
-    //     }
-    // }, [])
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [imgMakan, setImgMakan] = useState([]);
+    const [imgPenerima, setImgPenerima] = useState([]);
+    const [dataCarousel, setDataCarousel] = useState('');
+    const [prevPath, setPrevPath] = useState("");
 
     useEffect(() => {
         const role = localStorage.getItem("role");
@@ -50,13 +50,15 @@ const claimed = () => {
         setLoading(true);
         if (id_order) {
             axios
-                .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}order/fetch/${id_order}`, {
+                .get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/fetch/${id_order}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 })
                 .then((response) => {
                     setDataApi(response.data.body);
+                    setImgMakan(response.data.body.report.image_food);
+                    setImgPenerima(response.data.body.report.image_transaction);
                     setLoading(false);
 
                     setConfirmedOrder(response.data.body.qty);
@@ -67,158 +69,35 @@ const claimed = () => {
                 });
         }
     }, [id_order]);
-    const handleRejectButtonClick = async (e) => {
-        e.preventDefault();
 
-        // Show SweetAlert confirmation dialog
-        Swal.fire({
-            title: "Apakah Anda Yakin?",
-            text: "Anda akan menolak pesanan. Tindakan ini tidak dapat dibatalkan.",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Ya, Tolak Pesanan",
-            cancelButtonText: "Batal",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const id = localStorage.getItem("id");
-                const token = localStorage.getItem("token");
-
-                if (!id || !token) {
-                    throw new Error("Missing required session data");
-                }
-
-                axios
-                    .put(
-                        `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
-                        {
-                            order_status: "tolak",
-                        },
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    )
-                    .then(() => {
-                        setLoading(false);
-                        Swal.fire({
-                            position: "bottom",
-                            customClass: {
-                                popup: "custom-swal",
-                                icon: "custom-icon-swal",
-                                title: "custom-title-swal",
-                                confirmButton: "custom-confirm-button-swal",
-                            },
-                            icon: "success",
-                            title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menolak Pesanan</p>`,
-                            html: `
-                  <div class="absolute px-28 ml-4 top-0 mt-4">
-                    <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-                  </div>
-                `,
-                            width: "375px",
-                            showConfirmButton: true,
-                            confirmButtonText: "Kembali",
-                            confirmButtonColor: "#3FB648",
-                            allowOutsideClick: false,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                router.reload();
-                            }
-                        });
-                    })
-                    .catch((error) => {
-                        setLoading(false);
-                        Error401(error, router);
-                    });
-            }
-        });
-
-        // If the user confirms, call the handleReject function
+    const censorKTPNumber = (ktpNumber) => {
+        if (!ktpNumber) return '';
+        return `${ktpNumber.slice(0, 2)}${'*'.repeat(ktpNumber.length - 4)}${ktpNumber.slice(-2)}`;
     };
-    const handleAprovButtonClick = () => {
-        Swal.fire({
-            title: "Apakah Anda Yakin?",
-            text: "Anda akan menyetujui pesanan. Tindakan ini tidak dapat dibatalkan.",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3FB648",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Ya, Setujui Pesanan!",
-            cancelButtonText: "Batal",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                setLoading(true);
-                const id = localStorage.getItem("id");
-                const token = localStorage.getItem("token");
-
-                if (!id || !token) {
-                    throw new Error("Missing required session data");
-                }
-
-                axios
-                    .put(
-                        `${process.env.NEXT_PUBLIC_API_BASE_URL}order/update/${id_order}`,
-                        {
-                            order_status: "terima",
-                        },
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    )
-                    .then(() => {
-                        setLoading(false);
-                        Swal.fire({
-                            position: "bottom",
-                            customClass: {
-                                popup: "custom-swal",
-                                icon: "custom-icon-swal",
-                                title: "custom-title-swal",
-                                confirmButton: "custom-confirm-button-swal",
-                            },
-                            icon: "success",
-                            title: `<p class="w-auto pl-1 font-bold text-[25px]">Anda Berhasil Menerima Pesanan</p><p class="w-auto pl-1 font-bold text-[15px] text-gray-400">Terima kasih telah membantu campaign kami</p>`,
-                            html: `
-                  <div class="absolute px-28 ml-4 top-0 mt-4">
-                    <hr class="border border-black w-16 h-1 bg-slate-700 rounded-lg "/>
-                  </div>
-                `,
-                            width: "375px",
-                            showConfirmButton: true,
-                            confirmButtonText: "Kembali",
-                            confirmButtonColor: "#3FB648",
-                            allowOutsideClick: false,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                router.reload();
-                            }
-                        });
-                    })
-                    .catch((error) => {
-                        setLoading(false);
-                        Error401(error, router);
-                    });
-            }
-        });
+    const censorPhoneNumber = (ktpNumber) => {
+        if (!ktpNumber) return '';
+        return `${ktpNumber.slice(0, 3)}${'*'.repeat(ktpNumber.length - 4)}${ktpNumber.slice(-3)}`;
     };
 
-    const calculateRemainingTime = (eventDate) => {
-        const currentDate = new Date();
-        const eventDateObject = new Date(eventDate);
-        const timeDifference = eventDateObject - currentDate;
+    const openModal = (identifier, event) => {
+        event.preventDefault(); // Menghentikan propagasi event
+        event.stopPropagation(); // Menghentikan propagasi event
 
-        // Calculate remaining time in days
-        let remainingDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+        const index = parseInt(identifier.split('_')[1]);
 
-        if (remainingDays < 0) {
-            remainingDays = 0;
+        if (identifier.startsWith('makan')) {
+            setDataCarousel('makan');
+            setCurrentImageIndex(index);
+            setIsModalOpen(true);
+        } else if (identifier.startsWith('penerima')) {
+            setDataCarousel('penerima');
+            setCurrentImageIndex(index);
+            setIsModalOpen(true);
         }
+    };
 
-        return remainingDays;
+    const closeModal = () => {
+        setIsModalOpen(false);
     };
 
     return (
@@ -248,24 +127,15 @@ const claimed = () => {
                             key={dataApi?.id}
                             to={""}
                             idOrder={dataApi?.id}
-                            img={
-                                dataApi?.merchant_product.images.length > 0
-                                    ? `${process.env.NEXT_PUBLIC_URL_STORAGE}${dataApi?.merchant_product.images[0].image_url}`
-                                    : "/img/default-image.png"
-                            }
-                            title={dataApi?.campaign.event_name}
-                            productName={dataApi?.merchant_product.name}
-                            created_at={moment(dataApi?.campaign?.created_at).format(
+                            img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataApi?.merchant_product.images[0]}`}
+                            title={dataApi?.merchant_product?.name}
+                            desc={dataApi?.merchant_product.description}
+                            date={moment(dataApi?.expired_at).format(
                                 "DD MMM YYYY hh:mm"
                             )}
-                            date={`${moment(dataApi?.campaign?.event_date).format(
-                                "DD MMM YYYY"
-                            )} ${dataApi?.campaign?.event_time}`}
-                            qty={dataApi?.qty}
-                            price={dataApi?.merchant_product.price}
                             total_amount={dataApi?.total_amount}
-                            status={dataApi?.order_status}
-                            setLoading={setLoading}
+                            status={dataApi?.status}
+                            name_beneficiary={dataApi?.beneficiary?.fullname}
                         />
                     )}
 
@@ -338,29 +208,29 @@ const claimed = () => {
                             <div className="justify-between grid grid-cols-2 gap-2 py-3 ">
                                 <p className="text-sm text-gray-400">PIC Merchant</p>
                                 <p className="text-right text-sm text-black">
-                                    MUHAMMAD SUKRON
+                                    {dataApi.merchant?.fullname}
                                 </p>
                                 <p className="text-sm text-gray-400">Toko Merchant</p>
                                 <p className="text-right text-sm text-black">
-                                    Warung Makan Amar
+                                    {dataApi.merchant?.merchant_name}
                                 </p>
                                 <p className="text-sm text-gray-400">KTP Merchant</p>
                                 <p className="text-right text-sm text-black">
-                                    36************82
+                                    {censorKTPNumber(dataApi.merchant?.ktp_number)}
                                 </p>
                                 <p className="text-sm text-gray-400">Kontak Merchant</p>
                                 <p className="text-right text-sm text-black">
-                                    081*******671
+                                    {censorPhoneNumber(dataApi.merchant?.phone)}
                                 </p>
                             </div>
                             <div className="justify-between grid grid-cols-2 gap-2 ">
                                 <p className="text-sm text-gray-400">Alamat Merchant</p>
                                 <div className="flex gap-4">
                                     <p className="text-right text-sm">
-                                        {dataApi?.campaign.address}
+                                        {dataApi.merchant?.address}
                                     </p>
                                     <Link
-                                        href={`/lokasi_camp/${dataApi?.campaign_id}`}
+                                        href={`https://www.google.com/maps?q=${dataApi.merchant?.latitude},${dataApi.merchant?.longitude}`}
                                         className="text-sm font-normal mb-12 text-red-500"
                                     >
                                         <IconMapPin />
@@ -371,15 +241,15 @@ const claimed = () => {
                             <div className="justify-between grid grid-cols-2 gap-2 py-3 ">
                                 <p className="text-sm text-gray-400">Beneficiaries</p>
                                 <p className="text-right text-sm text-black">
-                                    ASEP MULYANA
+                                    {dataApi?.beneficiary?.fullname}
                                 </p>
                                 <p className="text-sm text-gray-400">KTP Beneficiaries</p>
                                 <p className="text-right text-sm text-black">
-                                    37************19
+                                    {censorKTPNumber(dataApi?.beneficiary?.ktp_number)}
                                 </p>
                                 <p className="text-sm text-gray-400">Kontak Beneficiaries</p>
                                 <p className="text-right text-sm text-black">
-                                    081*******212
+                                    {censorPhoneNumber(dataApi?.beneficiary?.phone)}
                                 </p>
 
                             </div>
@@ -387,10 +257,10 @@ const claimed = () => {
                                 <p className="text-sm text-gray-400">Alamat Beneficiaries</p>
                                 <div className="flex gap-4">
                                     <p className="text-right text-sm">
-                                        {dataApi?.campaign.address}
+                                        {dataApi?.beneficiary?.address}
                                     </p>
                                     <Link
-                                        href={`/lokasi_camp/${dataApi?.campaign_id}`}
+                                        href={`https://www.google.com/maps?q=${dataApi?.beneficiary?.latitude},${dataApi?.beneficiary?.longitude}`}
                                         className="text-sm font-normal mb-12 text-red-500"
                                     >
                                         <IconMapPin />
@@ -401,16 +271,30 @@ const claimed = () => {
                             <hr class="h-px bg-gray-200 border-0" />
                             <div className="flex justify-between ">
                                 <p className="text-sm text-gray-400 m-2">Foto Makanan </p>
+                                <div className="flex justify-end min-w-[200px]">
+                                    {imgMakan?.length > 0 && imgMakan.map((item, index) => (
+                                        <img
+                                            key={index}
+                                            onClick={(event) => openModal(`makan_${index}`, event)}
+                                            src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item?.image_url}`}
+                                            alt={`Image ${index}`} // Menambahkan atribut alt untuk aksesibilitas
+                                            className="w-[48px] h-[48px] bg-gray-300 m-1 cursor-pointer" // Menambahkan cursor-pointer
+                                        />
+                                    ))}
+                                </div>
 
-                                <div className="w-[48px] h-[48px] bg-gray-300 m-2"></div>
                             </div>
 
                             <hr class="h-px bg-gray-200 border-0" />
                             <div className="flex justify-between ">
-                                <p className="text-sm text-gray-400 m-2">Foto Makanan </p>
-                                <div className="flex ">
-                                    <div className="w-[48px] h-[48px] bg-gray-300  my-2 mx-1"></div>
-                                    <div className="w-[48px] h-[48px] bg-gray-300 my-2 mx-1"></div>
+                                <p className="text-sm text-gray-400 m-2">Foto Penerima </p>
+                                <div className="flex justify-end min-w-[200px]">
+                                    {imgPenerima?.length > 0 && imgPenerima?.map((item, index) => {
+                                        return (
+
+                                            <img key={index} onClick={(event) => openModal(`penerima_${index}`, event)} src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item?.image_url}`} className="w-[48px] h-[48px] bg-gray-300 m-1" />
+                                        )
+                                    })}
 
                                 </div>
                             </div>
@@ -421,121 +305,53 @@ const claimed = () => {
                         </div>
                     )}
 
-                    {/* <div className=" h-20 bottom-0 my-0 p-2rounded-md mt-2 mx-2 grid grid-cols-2 gap-4 place-content-center">
-                        {dataApi?.order_status === "review" ? (
-                            <>
-                                <button
-                                    onClick={handleRejectButtonClick}
-                                    className="bg-white border-2 border-primary text-primary font-medium rounded-xl h-10"
-                                >
-                                    Tolak
-                                </button>
-                                <button
-                                    onClick={handleAprovButtonClick}
-                                    className="bg-primary border-2 border-primary text-white font-medium rounded-xl h-10"
-                                >
-                                    Terima
-                                </button>
-                            </>
-                        ) : dataApi?.order_status === "terima" ? (
-                            calculateRemainingTime(dataApi?.campaign?.event_date) > 1 ? (
-                                <div className="w-full col-span-2 flex flex-col gap-1">
-                                    <p className="instructions italic text-[10px] flex items-center">
-                                        <IconInfoCircle size={15} className="mr-1 text-red-600" />
-
-                                        <span className="text-red-600">
-                                            Konfirmasi pesanan dapat dibuat pada H-1 pelaksanaan
-                                            campaign
-                                        </span>
-                                    </p>
-                                    <button
-                                        disabled
-                                        className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
-                                    >
-                                        Konfirmasi Pesanan
-                                    </button>
-                                </div>
-                            ) : (
-                                calculateRemainingTime(dataApi?.campaign?.event_date) <= 1 && (
-                                    <div className="w-full col-span-2 flex flex-col gap-1">
-                                        {dataApi?.campaign.donation_remaining <= 0 && (
-                                            <p className="instructions italic text-[10px] flex items-center">
-                                                <IconInfoCircle
-                                                    size={15}
-                                                    className="mr-1 text-red-600"
-                                                />
-
-                                                <span className="text-red-600">
-                                                    Tidak ada sisa donasi yang tersisa
-                                                </span>
-                                            </p>
-                                        )}
-                                        <button
-                                            disabled={dataApi?.campaign.donation_remaining <= 0}
-                                            onClick={() => {
-                                                setLoading(true);
-                                                router.push(
-                                                    `/merchant/order-confirmation?id=${id_order}`
-                                                );
-                                            }}
-                                            className={`${dataApi?.campaign.donation_remaining <= 0
-                                                ? "bg-gray-400"
-                                                : "bg-primary"
-                                                } text-white rounded-md h-10 w-full col-span-2`}
-                                        >
-                                            Konfirmasi Pesanan
-                                        </button>
-                                    </div>
-                                )
-                            )
-                        ) : dataApi?.order_status === "diproses" ? (
-                            calculateRemainingTime(dataApi?.campaign?.event_date) > 0 ? (
-                                <div className="w-full col-span-2 flex flex-col gap-1">
-                                    <p className="instructions italic text-[10px] flex items-center">
-                                        <IconInfoCircle size={15} className="mr-1 text-red-600" />
-
-                                        <span className="text-red-600">
-                                            Bukti pengiriman dapat dibuat saat tanggal pelaksanaan
-                                        </span>
-                                    </p>
-                                    <button
-                                        disabled
-                                        className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
-                                    >
-                                        Buat Bukti Pegiriman
-                                    </button>
-                                </div>
-                            ) : (
-                                <button
-                                    onClick={() => {
-                                        setLoading(true);
-                                        router.push(`/merchant/report?id=${id_order}`);
-                                    }}
-                                    className={`bg-primary text-white rounded-md h-10 w-full col-span-2`}
-                                >
-                                    Buat Bukti Pegiriman
-                                </button>
-                            )
-                        ) : dataApi?.order_status === "tolak" ? (
-                            <button
-                                disabled
-                                className="bg-red-500 text-white rounded-md h-10 col-span-2"
-                            >
-                                Pesanan Ditolak
-                            </button>
-                        ) : (
-                            dataApi?.order_status === "selesai" && (
-                                <button
-                                    disabled
-                                    className={`bg-gray-400 text-white rounded-md h-10 w-full col-span-2`}
-                                >
-                                    Pesanan Selesai
-                                </button>
-                            )
-                        )}
-                    </div> */}
                 </div>
                 {loading && <Loading />}
+                <Modal
+                    isOpen={isModalOpen}
+                    onRequestClose={closeModal}
+                    contentLabel="Image Carousel"
+                    className='modal'
+                    overlayClassName='overlay'
+                >
+                    <button className='close-modal-button' onClick={closeModal}>Close</button>
+                    <Carousel selectedItem={currentImageIndex}>
+                        {dataCarousel === "makan" ? (
+                            (imgMakan && imgMakan.length > 0) ? (
+                                imgMakan.map((src, index) => (
+                                    <div key={index}>
+                                        <img
+                                            className='img-carousel'
+                                            src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${src?.image_url}`}
+                                            alt={`Makan ${index + 1}`}
+                                        />
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="placeholder-message">
+                                    No images available for "makan"
+                                </div>
+                            )
+                        ) : (
+                            (imgPenerima && imgPenerima.length > 0) ? (
+                                imgPenerima.map((src, index) => (
+                                    <div key={index}>
+                                        <img
+                                            className='img-carousel'
+                                            src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${src?.image_url}`}
+                                            alt={`Penerima ${index + 1}`}
+                                        />
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="placeholder-message">
+                                    No images available for "penerima"
+                                </div>
+                            )
+                        )}
+                    </Carousel>
+
+                </Modal>
             </div>
         </>
     );

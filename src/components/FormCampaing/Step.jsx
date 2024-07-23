@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import "react-clock/dist/Clock.css";
 import "react-time-picker/dist/TimePicker.css";
 import RoutStep from "../RoutStep";
+const LokasiMerchant = dynamic(() => import("../page/Detonator/LokasiMerchant"), { ssr: false });
 
 import {
   Icon123,
@@ -1917,7 +1918,6 @@ function Stepfive({
   }, []);
 
   useEffect(() => {
-
     fetchData();
   }, [detonatorId, coordinates, router, token]);
 
@@ -1951,16 +1951,18 @@ function Stepfive({
         );
       });
 
+
       const merchantsWithDistance = approvedMerchants.map((merchant) => {
         const distance = getDistance(coordinates.lat, coordinates.lng, merchant.latitude, merchant.longitude);
+        // console.log({ ...merchant, distance }); 
         return { ...merchant, distance };
       });
 
-      const validMerchants = await merchantsWithDistance.filter((merchant) => !isNaN(merchant.distance) && merchant.distance >= 0);
+      const validMerchants = merchantsWithDistance.filter((merchant) => !isNaN(merchant.distance) && merchant.distance >= 0);
 
       const sortedMerchants = validMerchants.sort((a, b) => a.distance - b.distance);
-
       setDataApi(sortedMerchants);
+
       setFilteredData(sortedMerchants);
 
     } catch (error) {
@@ -1989,6 +1991,12 @@ function Stepfive({
       return `${lowerBound} - ${upperBound} km`;
     }
   };
+  const convertDistance = (distance) => {
+    if (distance > 999) {
+      return (distance / 1000).toFixed(1) + ' km';
+    }
+    return distance + ' meter';
+  };
 
   return (
     <div className="container mx-auto px-4 bg-white">
@@ -1999,23 +2007,31 @@ function Stepfive({
         {location}
       </p>
       <div className="flex justify-center">
-        <Image src={Market} alt="" />
+        {coordinates ? (
+
+          <LokasiMerchant getMylocation={coordinates} zoom={11} merchants={dataApi} />
+
+        ) : null}
+
+        {/* <Image src={Market} alt="" /> */}
       </div>
       <p className="py-[16px] text-gray-700 font-medium text-xl">
         Merchant Terdekat
       </p>
 
       <div className="items-center justify-center w-full">
-        {filteredData.map((item, index) => {
+        {filteredData.slice(0, 3).map((item, index) => {
           const distanceText = categorizeDistance(item.distance);
 
-          if (distanceText === 'Unknown') {
-            return null; // Skip rendering invalid distance
+          if (index === 3) {
+            console.log('grp', distanceText);
+
           }
 
           const shouldAddSeparator =
             index > 0 &&
             categorizeDistance(item.distance) !== categorizeDistance(filteredData[index - 1].distance);
+
 
           return (
             <div key={item.id}>
@@ -2023,6 +2039,23 @@ function Stepfive({
               <p className="text-black text-[14px] font-medium mt-2">
                 Jarak {distanceText}
               </p>
+              <CardListMerchan data={item} />
+            </div>
+          );
+        })}
+
+        {filteredData.length > 3 && (
+          <>
+            {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
+            <p className="text-black text-[14px] font-medium mt-2">
+              Jarak diatas {convertDistance(filteredData[3].distance)}
+            </p>
+          </>
+        )}
+
+        {filteredData.slice(3).map((item) => {
+          return (
+            <div key={item.id}>
               <CardListMerchan data={item} />
             </div>
           );

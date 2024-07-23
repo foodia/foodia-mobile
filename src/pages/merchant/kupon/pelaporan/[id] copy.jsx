@@ -14,8 +14,6 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Modal from 'react-modal';
 import Error401 from "@/components/error401";
 import dataURItoBlob from "@/components/page/Merchant/dataURItoBlob";
-import Swal from "sweetalert2";
-import { IconX } from "@tabler/icons-react";
 
 
 const pelaporan = () => {
@@ -30,8 +28,6 @@ const pelaporan = () => {
     const [imgMakan, setImgMakan] = useState([]);
     const [imgPenerima, setImgPenerima] = useState([]);
     const [dataCarousel, setDataCarousel] = useState('');
-    const [uploadMakanan, setUploadMakanan] = useState([]);
-    const [uploadPenerima, setUploadPenerima] = useState([]);
 
     useEffect(() => {
         const FotoMakan = localStorage.getItem("imgMakanan");
@@ -116,147 +112,116 @@ const pelaporan = () => {
         setIsModalOpen(false);
     };
 
-
-
-    const URIImgMakanan = async (imageDataURIs) => {
-        try {
-            const uploadPromises = imageDataURIs.map(async (imageURI, index) => {
-                const formData = new FormData();
-                formData.append('destination', 'report');
-                const blobImage = dataURItoBlob(imageURI);
-                formData.append('file', blobImage, `photo_${index + 1}.jpg`);
-
-                return axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-            });
-
-            const responses = await Promise.all(uploadPromises);
-            const imgMakan = responses.map(response => response.data.body.file_url);
-            return imgMakan;
-
-        } catch (error) {
-            console.error('Error uploading images:', error);
-            throw error;
+    const dataURItoBlob = (dataURI) => {
+        const byteString = atob(dataURI.split(',')[1]);
+        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
         }
+        return new Blob([ab], { type: mimeString });
     };
 
-    // Fungsi untuk mengunggah gambar penerima
-    const URIImgPenerima = async (imageDataURIs) => {
-        try {
-            const uploadPromises = imageDataURIs.map(async (imageURI, index) => {
-                const formData = new FormData();
-                formData.append('destination', 'report');
-                const blobImage = dataURItoBlob(imageURI);
-                formData.append('file', blobImage, `photo_${index + 1}.jpg`);
+    const URIImgMakanan = (dataURIs) => {
+        const formData = new FormData();
+        formData.append('destination', 'report');
 
-                return axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
-            });
+        dataURIs.forEach((image, index) => {
+            const blobImage = dataURItoBlob(image);
+            formData.append('file', blobImage, `photo_${index + 1}.jpg`);
+        });
 
-            const responses = await Promise.all(uploadPromises);
-            const imgPenerima = responses.map(response => response.data.body.file_url);
-            return imgPenerima;
+        return formData;
+    };
 
-        } catch (error) {
-            console.error('Error uploading images:', error);
-            throw error;
-        }
+    const URIImgPenerima = (dataURIs) => {
+        const formData = new FormData();
+        formData.append('destination', 'report');
+
+        dataURIs.forEach((image, index) => {
+            const blobImage = dataURItoBlob(image);
+            formData.append('file', blobImage, `photo_${index + 1}.jpg`);
+        });
+
+        return formData;
     };
 
     const handleAprovButtonClick = async () => {
-        let images = [];
-        setLoading(true);
+        const FormMakanan = URIImgMakanan(imgMakan);
+        const FormPenerima = URIImgPenerima(imgPenerima);
+        const images = [];
+
         try {
-            const FormMakanan = await URIImgMakanan(imgMakan);
-            setUploadMakanan(FormMakanan);
-            FormMakanan.forEach(url => {
-                images.push({
-                    type: 'food',
-                    image_url: url
-                });
-            });
-
-            const FormPenerima = await URIImgPenerima(imgPenerima);
-            setUploadPenerima(FormPenerima);
-            FormPenerima.forEach(url => {
-                images.push({
-                    type: 'transaction',
-                    image_url: url
-                });
-            });
-
-            console.log('Images uploaded: ', images);
-
-            const reportBody = {
-                coupon_transaction_id: parseInt(id_order),
-                images: images
-            };
-
-            // Post the report to the coupon/report endpoint
-            const responseReport = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/report`, reportBody, {
+            const responseMakanan = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, FormMakanan, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             });
-            if (responseReport.data.code === 200) {
-                setLoading(false);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Report submitted successfully',
-                    showConfirmButton: false,
-                    timer: 1500
+
+            console.log('Makanan upload response:', responseMakanan.data);
+
+            if (responseMakanan.data.code === 200) {
+                if (responseMakanan.data && responseMakanan.data.body && responseMakanan.data.body.file_urls) {
+                    responseMakanan.data.body.file_urls.forEach(url => {
+                        images.push({
+                            type: 'food',
+                            image_url: url
+                        });
+                    });
+                }
+
+                const responsePenerima = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}media/upload`, FormPenerima, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
                 });
-                setTimeout(() => {
-                    router.push('/merchant/kupon');
-                }, 1500);
+
+                console.log('Penerima upload response:', responsePenerima.data);
+
+                if (responsePenerima.data.code === 200) {
+                    // Collect all the image URLs dynamically
+
+                    if (responsePenerima.data && responsePenerima.data.body && responsePenerima.data.body.file_urls) {
+                        responsePenerima.data.body.file_urls.forEach(url => {
+                            images.push({
+                                type: 'receiver',
+                                image_url: url
+                            });
+                        });
+                    }
+
+                    const reportBody = {
+                        coupon_transaction_id: parseInt(id_order), // replace with the actual transaction ID
+                        images: images
+                    };
+                    console.log('Report body:', reportBody);
+
+
+                    // const responseReport = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/report`, reportBody, {
+                    //     headers: {
+                    //         'Content-Type': 'application/json',
+                    //         Authorization: `Bearer ${localStorage.getItem('token')}`
+                    //     }
+                    // });
+
+                    console.log('Report response:', responseReport.data);
+                } else {
+                    console.error('Error in the Penerima upload process:', responsePenerima.data);
+                }
             } else {
-                setLoading(false);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to submit report',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                console.error('Error in the Makanan upload process:', responseMakanan.data);
             }
 
-            // Jika diperlukan, lakukan sesuatu dengan `images`, misalnya mengirimnya ke server
         } catch (error) {
-            setLoading(false);
-            Error401(error, router);
+            console.error('Error in the upload process:', error);
+            if (error.response) {
+                console.error('Response data:', error.response.data);
+                console.error('Response status:', error.response.status);
+            }
         }
-    };
-    const RemoveImageMakanan = (index, event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        const updatedImgMakan = imgMakan.filter((_, i) => i !== index);
-        const updatedUploadMakanan = uploadMakanan.filter((_, i) => i !== index);
-
-        // Update state
-        setImgMakan(updatedImgMakan);
-        setUploadMakanan(updatedUploadMakanan);
-
-        // Update localStorage 
-        localStorage.setItem('imgMakanan', JSON.stringify(updatedImgMakan));
-    };
-    const RemoveImagePenerima = (index, event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        const updatedImgPenerima = imgPenerima.filter((_, i) => i !== index);
-        const updatedUploadPenerima = uploadPenerima.filter((_, i) => i !== index);
-        setImgPenerima(updatedImgPenerima);
-        setUploadPenerima(updatedUploadPenerima);
-        localStorage.setItem('imgPenerima', JSON.stringify(updatedImgPenerima));
     };
     return (
         <>
@@ -357,77 +322,36 @@ const pelaporan = () => {
                             {dataApi?.status === "active" ? (
                                 <>
                                     <div className="">
-                                        <Link href="/merchant/kupon/upload-bukti?makanan" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between mb-2">
+                                        <Link href="/merchant/kupon/upload-bukti?makanan" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between my-2">
                                             <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
                                             {imgMakan.length > 0 ? (
-                                                <>
-                                                    {imgMakan.length < 2 && (
-                                                        <div className="flex flex-col items-center my-auto w-[100px]">
-                                                            <p className="text-red-500 text-[10px] font-bold">Minimal 2 foto</p>
-                                                        </div>
-                                                    )}
-                                                    <div className="rounded-md flex justify-end my-auto min-w-[134px]">
+                                                <div className="  rounded-md my-auto flex">
+                                                    {imgMakan.slice(0, imgMakan.length).map((item, index) => (
 
-                                                        <div className="relative rounded-md my-auto flex">
-                                                            {imgMakan.map((item, index) => (
-                                                                <div key={index} className="relative">
-                                                                    <img
-                                                                        onClick={(event) => openModal(`makan_${index}`, event)}
-                                                                        className="w-[52px] h-[52px] object-cover rounded-md mx-1"
-                                                                        src={item}
-                                                                        alt={`Makanan ${index + 1}`}
-                                                                    />
-                                                                    <button
-                                                                        className="absolute top-0 right-0 m-1 p-1 bg-white rounded-full cursor-pointer"
-                                                                        onClick={(event) => RemoveImageMakanan(index, event)}
-                                                                    >
-                                                                        <IconX size={10} color="red" />
-                                                                    </button>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                </>
-                                            ) : (
-                                                <div className="flex flex-col items- my-auto w-[234px]">
-                                                    <p className="text-black text-[12px] font-bold">Foto Makanan yang Disajikan</p>
-                                                    <p className="text-primary text-[10px] font-bold">Minimal 2 foto</p>
+                                                        <img key={index} onClick={(event) => openModal(`makan_${index}`, event)} className="w-[52px] h-[52px] object-cover rounded-md mx-1"
+                                                            src={item}
+                                                        />
+                                                    ))}
                                                 </div>
-                                            )}
+                                            ) :
+                                                <div className="flex flex-col items- my-auto w-[234px]">
+                                                    <p className="text-black text-[12px] font-bold ">Foto Makanan yang Disajikan </p>
+                                                    <p className="text-primary text-[10px] font-bold">Minimal 1 foto</p>
+                                                </div>
+                                            }
                                         </Link>
 
-                                        <Link href="/merchant/kupon/upload-bukti?penerima" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between mb-2">
+                                        <Link href="/merchant/kupon/upload-bukti?penerima" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between">
                                             <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
                                             {imgPenerima.length > 0 ? (
-                                                <>
-                                                    {imgPenerima.length < 2 && (
-                                                        <div className="flex flex-col items-center my-auto w-[100px]">
-                                                            <p className="text-red-500 text-[10px] font-bold">Minimal 2 foto</p>
-                                                        </div>
-                                                    )}
-                                                    <div className=" rounded-md flex justify-end my-auto min-w-[134px]">
+                                                <div className=" rounded-md my-auto flex">
+                                                    {imgPenerima.slice(0, imgPenerima.length).map((item, index) => (
 
-                                                        <div className="relative rounded-md my-auto flex">
-                                                            {imgPenerima.map((item, index) => (
-                                                                <div key={index} className="relative">
-                                                                    <img
-                                                                        onClick={(event) => openModal(`penerima_${index}`, event)}
-                                                                        className="w-[52px] h-[52px] object-cover rounded-md mx-1"
-                                                                        src={item}
-                                                                        alt={`Penerima ${index + 1}`}
-                                                                    />
-                                                                    <button
-                                                                        className="absolute top-0 right-0 m-1 p-1 bg-white rounded-full cursor-pointer"
-                                                                        onClick={(event) => RemoveImagePenerima(index, event)}
-                                                                    >
-                                                                        <IconX size={10} color="red" />
-                                                                    </button>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-
-                                                </>
+                                                        <img key={index} onClick={(event) => openModal(`penerima_${index}`, event)} className="w-[52px] h-[52px] object-cover rounded-md mx-1"
+                                                            src={item}
+                                                        />
+                                                    ))}
+                                                </div>
                                             ) :
                                                 <div className="flex flex-col items- my-auto w-[234px]">
                                                     <p className="text-black text-[12px] font-bold ">Foto Makanan dengan Penerima Manfaat </p>
@@ -438,13 +362,32 @@ const pelaporan = () => {
                                     </div>
                                     <div className="w-full text-center my-2 mb-52">
                                         <button
-                                            disabled={imgMakan.length < 2 || imgPenerima.length < 2}
                                             onClick={handleAprovButtonClick}
-                                            className={`${imgMakan.length < 2 || imgPenerima.length < 2 ? "bg-gray-300" : "bg-primary"}  text-white font-medium rounded-lg h-10 px-2`}
+                                            className="bg-primary border-2 border-primary text-white font-medium rounded-lg h-10 px-2"
                                         >
                                             Pesana  Telah Selesai
                                         </button>
                                     </div>
+
+
+                                    {/* <Link href="/merchant/kupon/upload-bukti?penerima" className="bg-gray-200 text-white rounded-md p-[16px] w-full border-2 border-primary flex justify-between">
+                                        <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
+                                        {imgPenerima.length > 0 ? (
+                                            <div className=" bg-red-500 rounded-md my-auto">
+                                                {imgPenerima.slice(0, imgPenerima.length).map((item, index) => (
+
+                                                    <img key={index} onClick={() => openModal(`penerima_${index}`)} className="w-[52px] h-[52px] object-cover rounded-md"
+                                                        src={item}
+                                                    />
+                                                ))}
+                                            </div>
+                                        ) :
+                                            <div className="flex flex-col items- my-auto w-[234px]">
+                                                <p className="text-black text-[12px] font-bold ">Foto Makanan dengan Penerima Manfaat </p>
+                                                <p className="text-primary text-[10px] font-bold">Minimal 2 foto</p>
+                                            </div>
+                                        }
+                                    </Link> */}
 
 
                                 </>

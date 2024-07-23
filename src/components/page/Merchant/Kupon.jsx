@@ -14,7 +14,7 @@ const Kupon = () => {
   const [loading, setLoading] = useState(true);
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("review");
+  const [selectedStatus, setSelectedStatus] = useState("reserved");
 
   useEffect(() => {
     const role = localStorage.getItem("role");
@@ -41,60 +41,61 @@ const Kupon = () => {
   }, [router]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const id = localStorage.getItem("id");
-        const token = localStorage.getItem("token");
-
-        if (!id || !token) {
-          throw new Error("Missing required session data");
-        }
-
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}order/filter?merchant_id=${id}&order_status=${selectedStatus}&per_page=100000`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const approvedPesanan = response.data.body.filter(
-          (pesanan) => pesanan.campaign.status === "approved"
-        );
-        setDataApi(approvedPesanan);
-        setFilteredData(approvedPesanan);
+    const merchant_id = localStorage.getItem("id");
+    console.log("merchant_id", merchant_id);
+    if (selectedStatus === "reserved") {
+      axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?merchant_id=${merchant_id}&status=reserved`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }).then((response) => {
+        setFilteredData(response.data.body);
+        setDataApi(response.data.body);
         setLoading(false);
+      })
+        .catch((error) => {
+          Error401(error, router);
+        });
 
-        if (approvedPesanan.length === 0) {
-          setHasMore(false);
-        }
-      } catch (error) {
+    } else if (selectedStatus === "active") {
+      axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?merchant_id=${merchant_id}&status=active`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }).then((response) => {
+        setFilteredData(response.data.body);
+        setDataApi(response.data.body);
         setLoading(false);
-        Error401(error, router);
-      }
-    };
+      })
+        .catch((error) => {
+          Error401(error, router);
+        });
 
-    fetchData();
-  }, [loading, selectedStatus]);
+    } else if (selectedStatus === "claimed") {
+      axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?merchant_id=${merchant_id}&status=claimed`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }).then((response) => {
+        setFilteredData(response.data.body);
+        setDataApi(response.data.body);
+        setLoading(false);
+      })
+        .catch((error) => {
+          Error401(error, router);
+        });
 
-
-  const handleFilterChange = (status = "review") => {
-    setLoading(true);
-
-    // if (status === "review") {
-    //   setFilteredData(dataApi.filter((data) => data.order_status === "review"));
-    // } else if (status === "terima") {
-    //   setFilteredData(dataApi.filter((data) => data.order_status === "terima"));
-    // } else if (status === "diproses") {
-    //   setFilteredData(
-    //     dataApi.filter((data) => data.order_status === "diproses")
-    //   );
-    // }
-    if (status === "selesai") {
-      setSelectedStatus("selesai,tolak");
     } else {
-      setSelectedStatus(status);
+
     }
+
+  }, [selectedStatus]);
+
+
+  const handleFilterChange = (status = "reserved") => {
+    setLoading(true);
+    console.log(status);
+    setSelectedStatus(status);
   };
 
   return (
@@ -103,29 +104,29 @@ const Kupon = () => {
         <MenuBarMechant />
         <div className="grid grid-cols-3 gap-2 px-7 pt-4 pb-2">
           <div
-            className={`w-full cursor-pointer pb-2 text-sm font-medium text-center ${selectedStatus === "review"
+            className={`w-full cursor-pointer pb-2 text-sm font-medium text-center ${selectedStatus === "reserved"
               ? "text-primary border-b-2 border-primary"
               : "text-gray-500"
               }`}
-            onClick={() => handleFilterChange("review")}
+            onClick={() => handleFilterChange("reserved")}
           >
             <span>Permintaan Klaim</span>
           </div>
           <div
-            className={`w-full cursor-pointer pb-2 text-sm font-medium text-center ${selectedStatus === "terima"
+            className={`w-full cursor-pointer pb-2 text-sm font-medium text-center ${selectedStatus === "active"
               ? "text-primary border-b-2 border-primary"
               : "text-gray-500"
               }`}
-            onClick={() => handleFilterChange("terima")}
+            onClick={() => handleFilterChange("active")}
           >
             <span>Laporkan Kupon</span>
           </div>
           <div
-            className={`w-full cursor-pointer pb-2 text-sm font-medium text-center ${selectedStatus === "diproses"
+            className={`w-full cursor-pointer pb-2 text-sm font-medium text-center ${selectedStatus === "claimed"
               ? "text-primary border-b-2 border-primary"
               : "text-gray-500"
               }`}
-            onClick={() => handleFilterChange("diproses")}
+            onClick={() => handleFilterChange("claimed")}
           >
             <span>Kupon <br />Selesai</span>
           </div>
@@ -144,36 +145,32 @@ const Kupon = () => {
 
             {loading || filteredData.length == 0 ? (
               <p className="text-gray-400  flex justify-center items-center">
-                {selectedStatus === "review"
+                {selectedStatus === "reserved"
                   ? "Tidak Ada Pesanan"
                   : selectedStatus === "diproses"
                     ? "Tidak Ada Pesanan Berlangsung"
-                    : selectedStatus === "selesai" && "Tidak Ada Pesanan Selesai"}
+                    : selectedStatus === "active" && "Tidak Ada Pesanan Selesai"}
               </p>
             ) : (
               filteredData.map((data) => (
                 <CardKupon
                   key={data.id}
-                  // to={data.order_status === "review" ? `/merchant/scan-kupon/${data.id}` : data.order_status === "approved" ? `/merchant/pesanan/${data.id}` : "/"}
+                  // to={data.order_status === "reserved" ? `/merchant/scan-kupon/${data.id}` : data.order_status === "approved" ? `/merchant/pesanan/${data.id}` : "/"}
 
                   idOrder={data.id}
                   img={
-                    `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.campaign.image_url}` ||
-                    "/img/default-image.png"
+                    `${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product?.images[0]}`
+
                   }
-                  title={data.campaign.event_name}
-                  productName={data.merchant_product.name}
-                  created_at={moment(data.campaign?.created_at).format(
-                    "DD MMM YYYY hh:mm"
-                  )}
-                  date={`${moment(data.campaign?.event_date).format(
-                    "DD MMM YYYY"
-                  )} ${data.campaign?.event_time}`}
+                  title={data.merchant_product?.name}
+                  desc={data.merchant_product?.description}
+                  date={moment(data.expired_at).format('DD MMMM YYYY HH:mm:ss [WIB]')}
+                  name_beneficiary={data.beneficiary?.fullname}
                   qty={data.qty}
-                  price={data.merchant_product.price}
-                  status={'active'}
+                  price={data.merchant_product?.price}
+                  status={data.status}
                   // status={data.order_status}
-                  total_amount={data.total_amount}
+                  total_amount={data?.total_amount}
                   setLoading={setLoading}
                 />
               ))

@@ -8,7 +8,8 @@ import dataURItoBlob from "./dataURItoBlob";
 import { Carousel } from "react-responsive-carousel";
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Webcam from "react-webcam";
-import { IconCamera, IconSquareRoundedX } from "@tabler/icons-react";
+import { IconCamera, IconSquareRoundedX, IconX } from "@tabler/icons-react";
+import Swal from "sweetalert2";
 
 const CameraKupon = () => {
     const router = useRouter();
@@ -143,20 +144,25 @@ const CameraKupon = () => {
             minPhotos = 1;
             maxPhotos = 3;
             storageKey = 'imgPenerima';
-            router.back();
         } else if (router.asPath === '/merchant/kupon/upload-bukti?makanan') {
             minPhotos = 2;
             maxPhotos = 4;
             storageKey = 'imgMakanan';
-            router.back();
+
         }
 
         if (imgSrc.length >= minPhotos && imgSrc.length <= maxPhotos) {
             localStorage.setItem(storageKey, JSON.stringify(imgSrc));
+            router.back();
             console.log(`Images uploaded and saved to ${storageKey}`);
             setErrorMessage('');
         } else {
-            setErrorMessage(`You need to upload between ${minPhotos} and ${maxPhotos} photos.`);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please capture at least ' + minPhotos,
+            });
+            return;
         }
     };
 
@@ -172,6 +178,17 @@ const CameraKupon = () => {
     const videoConstraints = {
         deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
         aspectRatio: aspectRatio,
+    };
+
+    const RemoveImage = (index) => {
+        const newImages = [...imgSrc];
+        newImages.splice(index, 1);
+        setImgSrc(newImages);
+        if (router.asPath === '/merchant/kupon/upload-bukti?makanan') {
+            localStorage.setItem('imgMakanan', JSON.stringify(newImages));
+        } else if (router.asPath === '/merchant/kupon/upload-bukti?penerima') {
+            localStorage.setItem('imgPenerima', JSON.stringify(newImages));
+        }
     };
 
     return (
@@ -204,12 +221,21 @@ const CameraKupon = () => {
             <div className={`${styles['upload-image-container']} ${imgSrc.length > 0 ? styles['has-images'] : ''}`}>
                 <div className={styles.previewImages}>
                     {imgSrc.slice(0, 4).map((src, index) => (
-                        <div key={index} onClick={() => openModal(index)}>
+                        <div key={index} className="relative" onClick={() => openModal(index)}>
                             <img
                                 className={styles['img-preview']}
                                 src={src}
                                 alt={`Captured ${index + 1}`}
                             />
+                            <button
+                                className="absolute top-0 right-0 m-1 p-1 bg-white rounded-full cursor-pointer"
+                                onClick={(event) => {
+                                    event.stopPropagation(); // Prevents triggering the onClick for the image
+                                    RemoveImage(index);
+                                }}
+                            >
+                                <IconX size={16} color="red" />
+                            </button>
                         </div>
                     ))}
                 </div>
