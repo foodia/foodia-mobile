@@ -244,8 +244,26 @@ function StepTwo({ DataOrder, setDataOrder, loading, setLoading }) {
                 },
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const urlPrev = localStorage.setItem('prevUrl', '/beneficiaries');
-                    router.push(`/beneficiaries/qr-kupon/${id_product}`);
+                    setLoading(true);
+                    axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/claim`,
+                        { merchant_product_id: parseInt(order.id_product) }, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    }).then((response) => {
+                        if (response.status === 200) {
+                            setLoading(false);
+                            console.log('data Order', response.data.body.qr_code);
+                            // setDataOrder({ ...DataOrder, order: response.data.body });
+
+                            const urlPrev = localStorage.setItem('prevUrl', '/beneficiaries');
+                            router.push(`/beneficiaries/qr-kupon/${response.data.body.qr_code}?mrc=${response.data.body.merchant_id}&prd=${response.data.body.merchant_product_id}`);
+                        }
+                    }
+                    ).catch((error) => {
+                        setLoading(false);
+                        Error401(error, router);
+                    });
                 }
             });
 

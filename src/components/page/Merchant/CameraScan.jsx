@@ -5,6 +5,7 @@ import axios from 'axios';
 import Error401 from '@/components/error401';
 import { useRouter } from 'next/router';
 import { IconSquareRoundedX } from '@tabler/icons-react';
+import Swal from 'sweetalert2';
 
 const CameraScan = () => {
     const router = useRouter();
@@ -44,7 +45,32 @@ const CameraScan = () => {
                         const imageData = context.getImageData(0, 0, img.width, img.height);
                         const code = jsQR(imageData.data, img.width, img.height);
                         if (code) {
+                            console.log(code.data);
                             setData(code.data);
+                            axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/scan`, {
+                                qr_code: code.data,
+                            }, {
+                                headers: {
+                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                                },
+                            })
+                                .then((response) => {
+                                    if (response.status === 200) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Success',
+                                            text: 'QR Code Scanned Successfully',
+                                            timer: 2000,
+                                        }).then(() => {
+                                            router.push('/merchant/kupon');
+                                        })
+                                    } else {
+                                        Error401(response, router);
+                                    }
+                                })
+                                .catch((error) => {
+                                    Error401(error, router);
+                                });
                         }
                     };
                     img.src = imageSrc;
