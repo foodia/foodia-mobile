@@ -236,6 +236,7 @@ const LoginPage = () => {
               </div>
               <div className="flex flex-col w-[50%]">
                 <input
+                  className="border-[1px] border-black rounded-sm"
                   type="text"
                   ref={userInputRef}
                   id="submit"

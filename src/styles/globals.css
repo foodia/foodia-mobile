@@ -29,7 +29,8 @@
 
 input {
   padding: 5px;
-  border: 1px black solid;
+  /* border: 1px black solid; */
+  outline: none !important;
 }
 
 .inline {
