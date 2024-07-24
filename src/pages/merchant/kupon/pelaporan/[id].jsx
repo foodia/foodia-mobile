@@ -193,7 +193,6 @@ const pelaporan = () => {
                 });
             });
 
-            console.log('Images uploaded: ', images);
 
             const reportBody = {
                 coupon_transaction_id: parseInt(id_order),

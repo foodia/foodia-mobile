@@ -45,7 +45,6 @@ const CameraScan = () => {
                         const imageData = context.getImageData(0, 0, img.width, img.height);
                         const code = jsQR(imageData.data, img.width, img.height);
                         if (code) {
-                            console.log(code.data);
                             setData(code.data);
                             axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/scan`, {
                                 qr_code: code.data,
@@ -102,7 +101,6 @@ const CameraScan = () => {
                         qr_code: data,
                     });
                     if (response.status === 200) {
-                        console.log('Data posted successfully');
                     } else {
                         Error401(response, router);
                     }
@@ -123,8 +121,6 @@ const CameraScan = () => {
         aspectRatio: aspectRatio,
     };
 
-    console.log('selectedDevice', selectedDevice);
-    console.log('devices', devices);
 
     return (
         <div className="w-full flex flex-col items-center bg-white h-screen">

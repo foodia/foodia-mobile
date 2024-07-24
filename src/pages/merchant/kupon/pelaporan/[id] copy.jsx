@@ -160,7 +160,6 @@ const pelaporan = () => {
                 }
             });
 
-            console.log('Makanan upload response:', responseMakanan.data);
 
             if (responseMakanan.data.code === 200) {
                 if (responseMakanan.data && responseMakanan.data.body && responseMakanan.data.body.file_urls) {
@@ -179,7 +178,6 @@ const pelaporan = () => {
                     }
                 });
 
-                console.log('Penerima upload response:', responsePenerima.data);
 
                 if (responsePenerima.data.code === 200) {
                     // Collect all the image URLs dynamically
@@ -197,7 +195,6 @@ const pelaporan = () => {
                         coupon_transaction_id: parseInt(id_order), // replace with the actual transaction ID
                         images: images
                     };
-                    console.log('Report body:', reportBody);
 
 
                     // const responseReport = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/report`, reportBody, {
@@ -207,7 +204,6 @@ const pelaporan = () => {
                     //     }
                     // });
 
-                    console.log('Report response:', responseReport.data);
                 } else {
                     console.error('Error in the Penerima upload process:', responsePenerima.data);
                 }

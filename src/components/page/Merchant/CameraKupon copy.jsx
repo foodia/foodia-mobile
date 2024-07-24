@@ -118,7 +118,6 @@ const CameraKupon = () => {
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Upload berhasil:', data);
                 setImgSrc([]);
             })
             .catch(error => {

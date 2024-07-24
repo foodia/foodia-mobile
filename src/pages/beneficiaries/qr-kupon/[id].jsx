@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 const QrKupon = (QrKupon) => {
     const router = useRouter();
     const { id, mrc, prd } = router.query;
-    console.log(mrc, prd);
     const [loading, setLoading] = useState(false);
     const [urlPrev, setUrlPrev] = useState(null);
     const [merchant, setMerchant] = useState();
@@ -37,10 +36,8 @@ const QrKupon = (QrKupon) => {
                 },
             });
             if (response.status === 200) {
-                console.log(response.data.body);
                 setMerchant(response.data.body);
 
-                console.log('list Product', response.data.body.products);
 
                 const getProduct = response.data.body.products.find((product) => product.id === parseInt(prd));
                 setProduct(getProduct);
@@ -67,7 +64,7 @@ const QrKupon = (QrKupon) => {
                     </Link >
                     <div className="text-center">
                         <p className="text-[14px] font-semibold">{merchant?.merchant_name} </p>
-                        <p className="text-[14px] font-regular">Nasi Kuning</p>
+                        <p className="text-[14px] font-regular">{product?.name}</p>
                     </div>
 
                 </div>

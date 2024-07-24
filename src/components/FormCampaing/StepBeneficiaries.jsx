@@ -497,7 +497,6 @@ function StepTwo({ registrasibeneficiaries, setRegistrasibeneficiaries }) {
 
   useEffect(() => {
     if (locationInfo) {
-      console.log('data', locationInfo);
       setAddress(locationInfo.fullAdres);
       setProvince(locationInfo.province);
       setCity(locationInfo.city);

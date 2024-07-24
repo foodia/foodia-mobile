@@ -54,7 +54,6 @@ const LokasiMerchant = ({ getMylocation, zoom, merchants }) => {
                 merchantId: merchant.id,
             };
 
-            console.log('updatedDataOrder', updatedDataOrder);
             // return;
 
             // await setDataOrder(updatedDataOrder);
