@@ -213,6 +213,7 @@ const HomePage = () => {
             {DataCamp.map((campData) => {
               return (
                 <CardCampaign
+                  key={campData.id}
                   from={"home"}
                   to={`/campaign/${campData.id}`}
                   img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${campData.image_url}`}

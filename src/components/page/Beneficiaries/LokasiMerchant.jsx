@@ -25,7 +25,6 @@ const haversineDistance = (coords1, coords2) => {
 };
 
 const LokasiMerchant = ({ getMylocation, zoom, merchants, DataOrder, setDataOrder }) => {
-    console.log('lokasi', getMylocation);
     const router = useRouter();
     const [myLocation, setMyLocation] = useState(null);
     const [loading, setLoading] = useState(false);

@@ -15,10 +15,15 @@ const Beneficiaries = () => {
     const [DataOrder, setDataOrder] = useState([]);
     const [loading, setLoading] = useState(false);
     const [jumlahKupon, setJumlahKupon] = useState(0);
+    const [statusClaimed, setStatusClaimed] = useState(false);
+    const [price_coupon, setPrice_coupon] = useState(0);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
         const id_ = localStorage.getItem("token");
+        localStorage.removeItem("DataCupon");
+        localStorage.removeItem("DataOrder");
+        setLoading(true);
         if (!token) {
             Swal.fire({
                 icon: "error",
@@ -51,7 +56,6 @@ const Beneficiaries = () => {
                 .then((response) => {
                     const cekData = response.data.body;
 
-                    console.log(cekData.beneficiaries);
                     // return;
                     if (!cekData.beneficiaries) {
                         Swal.fire({
@@ -109,13 +113,13 @@ const Beneficiaries = () => {
                                 router.push("/beneficiaries/edit");
                             }, 2000);
                         } else {
-                            console.log('berhasil');
                             localStorage.setItem("id", cekData.beneficiaries.beneficiaries_id);
                             localStorage.setItem("role", "beneficiaries");
                             localStorage.setItem("status", cekData.beneficiaries.status);
                             localStorage.setItem("note", cekData.beneficiaries.note);
                             getDetail(cekData.beneficiaries.beneficiaries_id, token);
                             ChectCupon(cekData.beneficiaries.beneficiaries_id, token);
+                            setLoading(false);
                         }
                     }
                 })
@@ -138,7 +142,6 @@ const Beneficiaries = () => {
                 }
             )
             .then((response) => {
-                console.log('data Beneficiaries', response.data.body);
                 return;
                 setDataApi(response.data.body);
                 // const filtered = response.data.body.filter(
@@ -166,6 +169,8 @@ const Beneficiaries = () => {
         })
             .then((response) => {
                 setJumlahKupon(response.data.body.qouta_available);
+                setStatusClaimed(response.data.body.claimed);
+                setPrice_coupon(response.data.body.price_coupon);
 
             })
             .catch((error) => {
@@ -231,7 +236,6 @@ const Beneficiaries = () => {
                 Error401(error, router);
             })
         }
-        console.log(' DataOrder', DataOrder);
     }, [selectedStatus]);
 
     const HandleRout = (status, coupon, mrc, prd) => {
@@ -267,6 +271,17 @@ const Beneficiaries = () => {
         }
 
     }
+
+    const ButtonKlaim = () => {
+
+        const DataCupon = {
+            jumlahKupon, statusClaimed, price_coupon
+        }
+        localStorage.setItem('DataCupon', JSON.stringify(DataCupon));
+        router.push("/beneficiaries/order-merchant?step=1")
+
+    }
+
     return (
         <>
             <div className="container mx-auto h-screen max-w-480 bg-white flex flex-col">
@@ -288,12 +303,16 @@ const Beneficiaries = () => {
                         </div>
                     </div>
                     <div className="px-6 my-2">
-                        <button onClick={() => router.push("/beneficiaries/order-merchant?step=1")}
+                        <button
+                            onClick={ButtonKlaim}
                             disabled={
                                 loading ||
-                                jumlahKupon === 0
+                                jumlahKupon === 0 ||
+                                statusClaimed === false ||
+                                price_coupon === 0
                             }
-                            className={`w-full h-14 ${loading || jumlahKupon === 0 ? "text-[#A1A5C1] bg-[#F5F4F8]" : "text-white bg-primary hover:bg-blue-500"} rounded-2xl px-2 font-semibold text-[18px]`}>
+                            className={`w-full h-14 ${loading || jumlahKupon === 0 || statusClaimed === false || price_coupon === 0 ? "text-[#A1A5C1] bg-[#F5F4F8]" : "text-white bg-primary hover:bg-blue-500"} rounded-2xl px-2 font-semibold text-[18px]`}
+                        >
                             Klaim Kupon
                         </button>
                     </div>
@@ -355,7 +374,7 @@ const Beneficiaries = () => {
                                     <img
                                         className="w-[100px] h-[100px] rounded-md object-cover"
                                         src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product?.images[0]}`}
-                                        alt="Nasi Kuning"
+                                        alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product?.images[0]}`}
                                     />
                                     <div className="ml-2 flex flex-col justify-between w-full">
                                         <div className="flex justify-between items-center">
@@ -396,7 +415,7 @@ const Beneficiaries = () => {
 
                     {loading && <Loading />}
                 </div>
-            </div>
+            </div >
             <BottomNav />
         </>
     );

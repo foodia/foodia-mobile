@@ -42,7 +42,6 @@ const Kupon = () => {
 
   useEffect(() => {
     const merchant_id = localStorage.getItem("id");
-    console.log("merchant_id", merchant_id);
     if (selectedStatus === "reserved") {
       axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?merchant_id=${merchant_id}&status=reserved`, {
         headers: {
@@ -94,7 +93,6 @@ const Kupon = () => {
 
   const handleFilterChange = (status = "reserved") => {
     setLoading(true);
-    console.log(status);
     setSelectedStatus(status);
   };
 

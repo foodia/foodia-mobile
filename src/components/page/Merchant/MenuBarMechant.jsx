@@ -78,7 +78,7 @@ const MenuBarMechant = () => {
               <div className={`${styles.iconMenu}`}>
                 <IconCirclePlus />
               </div>
-              <p className=" font-normal text-black">Tambah Menu</p>
+              <p className=" font-normal text-black">Buat Menu</p>
             </Link>
           )}
 

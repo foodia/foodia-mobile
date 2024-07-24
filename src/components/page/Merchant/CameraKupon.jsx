@@ -154,7 +154,6 @@ const CameraKupon = () => {
         if (imgSrc.length >= minPhotos && imgSrc.length <= maxPhotos) {
             localStorage.setItem(storageKey, JSON.stringify(imgSrc));
             router.back();
-            console.log(`Images uploaded and saved to ${storageKey}`);
             setErrorMessage('');
         } else {
             Swal.fire({

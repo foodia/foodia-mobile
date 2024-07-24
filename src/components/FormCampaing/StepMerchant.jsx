@@ -523,7 +523,6 @@ function StepTwo({ registrasiMerchant, setRegistrasiMerchant }) {
       setSubDistrict(locationInfo.sub_district);
       setPostalCode(locationInfo.postal_code);
       setCoordinates(locationInfo.coordinates);
-      console.log(locationInfo);
       // setJalan(locationInfo.address);
     }
   }, [locationInfo]);
