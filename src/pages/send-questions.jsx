@@ -1,11 +1,63 @@
 import BottomNav from "@/components/BottomNav";
+import Error401 from "@/components/error401";
 import Header from "@/components/Header";
-import { useRouter } from "next/router";
+import Loading from "@/components/Loading";
+import SweetAlert from "@/components/SweetAlert";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 const sendQuestions = (profile) => {
   const router = useRouter();
   const [questions, setQuestions] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = () => {
+    setLoading(true); // Set loading to true when starting authentication
+
+    // if (inputPassword.length < 8) {
+    // Toast.fire({
+    //   icon: "error",
+    //   title: "Password must be at least 8 characters",
+    //   iconColor: "bg-black",
+    // });
+    //   setLoading(false);
+    //   return;
+    // }
+
+    const token = localStorage.getItem("token");
+
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}media/send-question`,
+        {
+          question: questions,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        setLoading(false);
+        Swal.fire({
+          icon: "success",
+          title: "Pertanyaan telah terkirim",
+          text: "Kami akan segera membalas pertanyaanmu melalui Email",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        router.push("/contact-us");
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Token:", token); // Debugging the token
+        console.error("Error:", error); // Debugging the error
+        Error401(error, router);
+      });
+  };
 
   return (
     <>
@@ -29,7 +81,7 @@ const sendQuestions = (profile) => {
           </p>
           <button
             disabled={!questions}
-            // onClick={() => handleSubmit()}
+            onClick={() => handleSubmit()}
             type="submit"
             className={
               !questions
@@ -40,6 +92,7 @@ const sendQuestions = (profile) => {
             Kirim
           </button>
         </div>
+        {loading && <Loading />}
       </div>
       <BottomNav />
     </>
