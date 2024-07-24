@@ -182,13 +182,13 @@ function StepOne({ DataOrder, setDataOrder, loading, setLoading }) {
                     <div>
                         {ListMerchant.slice(0, 3).map((merchant, index) => {
                             const distanceText = categorizeDistance(merchant.distance);
-                            const shouldAddSeparator =
-                                index > 0 &&
-                                categorizeDistance(merchant.distance) !== categorizeDistance(ListMerchant[index - 1].distance);
+                            // const shouldAddSeparator =
+                            //     index > 0 &&
+                            //     categorizeDistance(merchant.distance) !== categorizeDistance(ListMerchant[index - 1].distance);
 
                             return (
                                 <div key={merchant.id}>
-                                    {shouldAddSeparator && <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />}
+                                    {/* {shouldAddSeparator && <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />} */}
                                     <p className="text-black text-[14px] font-medium mt-2">
                                         Jarak {distanceText}
                                     </p>
@@ -219,7 +219,7 @@ function StepOne({ DataOrder, setDataOrder, loading, setLoading }) {
 
                         {ListMerchant.length > 3 && (
                             <>
-                                <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />
+                                {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
                                 <p className="text-black text-[14px] font-medium mt-2">
                                     Jarak diatas {convertDistance(ListMerchant[3].distance)}
                                 </p>
