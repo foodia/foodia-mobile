@@ -15,7 +15,6 @@ const CameraScan = () => {
     const [devices, setDevices] = useState([]);
     const [selectedDevice, setSelectedDevice] = useState(null);
     const [aspectRatio, setAspectRatio] = useState(16 / 9);
-    const [loading, setLoading] = useState(true);
 
     const handleDevices = (mediaDevices) => {
         const videoDevices = mediaDevices.filter(({ kind }) => kind === "videoinput");
@@ -26,7 +25,6 @@ const CameraScan = () => {
             const rearCamera = videoDevices.find(device => device.label.toLowerCase().includes('back')) || videoDevices[0];
             setSelectedDevice(rearCamera.deviceId);
         }
-        setLoading(false);
     };
 
     useEffect(() => {
@@ -124,6 +122,7 @@ const CameraScan = () => {
         aspectRatio: aspectRatio,
     };
 
+
     return (
         <div className="w-full flex flex-col items-center bg-white h-screen">
             <div className="flex justify-between items-center w-full px-2 my-2">
@@ -133,19 +132,15 @@ const CameraScan = () => {
                 </div>
             </div>
             <div className="bg-gray-300 p-2 rounded-md">
-                {loading ? (
-                    <Loading />
-                ) : (
-                    selectedDevice && (
-                        <Webcam
-                            audio={false}
-                            ref={webcamRef}
-                            width={320}
-                            height={320}
-                            screenshotFormat="image/jpeg"
-                            videoConstraints={videoConstraints}
-                        />
-                    )
+                {selectedDevice && (
+                    <Webcam
+                        audio={false}
+                        ref={webcamRef}
+                        width={320}
+                        height={320}
+                        screenshotFormat="image/jpeg"
+                        videoConstraints={videoConstraints}
+                    />
                 )}
             </div>
             <select
@@ -166,9 +161,11 @@ const CameraScan = () => {
                     <span className="text-green-500 font-semibold">{data}</span>
                 )}
             </p>
+
+            {/* jika kamera belum terbuka tampilkan loadini ini */}
+            {/* <Loading /> */}
         </div>
     );
 };
-
 
 export default CameraScan;
