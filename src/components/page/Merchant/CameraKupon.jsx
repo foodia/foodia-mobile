@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import styles from './WebCam.module.css';
+import dataURItoBlob from "./dataURItoBlob";
 import { Carousel } from "react-responsive-carousel";
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Webcam from "react-webcam";
