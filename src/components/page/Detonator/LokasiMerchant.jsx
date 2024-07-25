@@ -18,40 +18,24 @@ const haversineDistance = (coords1, coords2) => {
     const dLon = toRad(lon2 - lon1);
     const a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.cos(lat1) * Math.cos(lat2) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in kilometers
+    const distance = R * c;
+    return distance; // Distance in kilometers
 };
 
-const LokasiMerchant = ({ getMylocation, zoom, merchants, DataOrder, setDataOrder }) => {
+
+
+const LokasiMerchant = ({ getMylocation, zoom, merchants }) => {
+    const myLocation = [
+        getMylocation.lat, getMylocation.lng
+    ]
+
     const router = useRouter();
-    const [myLocation, setMyLocation] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        if (typeof window !== 'undefined' && navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setMyLocation([latitude, longitude]);
-                },
-                (error) => {
-                    console.error('Error getting user location:', error);
-                }
-            );
-        } else {
-            console.error('Geolocation is not supported by this browser.');
-        }
-    }, []);
-
-    useEffect(() => {
-        if (myLocation && getMylocation) {
-            getMylocation(myLocation);
-        }
-    }, [myLocation]);
-
-    const handleSubmit = async (merchantId) => {
+    const handleSubmit = async (merchant) => {
         try {
             setLoading(true);
 
@@ -62,17 +46,20 @@ const LokasiMerchant = ({ getMylocation, zoom, merchants, DataOrder, setDataOrde
             }
 
             const updatedDataOrder = {
-                ...DataOrder,
+
                 myLocation: {
                     latitude: myLocation[0],
                     longitude: myLocation[1],
                 },
-                merchantId,
+                merchantId: merchant.id,
             };
 
-            await setDataOrder(updatedDataOrder);
+            // return;
 
-            router.push("/beneficiaries/order-merchant?step=2");
+            // await setDataOrder(updatedDataOrder);
+            router.push(`/createcampaign?step=4&id=${merchant.id}&name=${merchant.merchant_name}`);
+
+            // router.push("/beneficiaries/order-merchant?step=2");
         } catch (error) {
             console.error('Error updating DataOrder:', error);
         } finally {
@@ -133,7 +120,7 @@ const LokasiMerchant = ({ getMylocation, zoom, merchants, DataOrder, setDataOrde
                                     {merchant.merchant_name}<br />
                                     Distance: {distance.toFixed(2)} km
                                 </div>
-                                <button className="btn btn-sm bg-primary w-full items-center rounded-lg hover:bg-blue-500 hover:font-bold" onClick={() => handleSubmit(merchant.id)}>Pilih</button>
+                                <button className="btn btn-sm bg-primary w-full items-center rounded-lg hover:bg-blue-500 hover:font-bold" onClick={() => handleSubmit(merchant)}>Pilih</button>
                             </Popup>
                         </Marker>
                     );

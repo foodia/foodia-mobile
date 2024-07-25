@@ -4,8 +4,9 @@ import Loading from "@/components/Loading";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Error401 from "@/components/error401";
-import { IconMapPin } from "@tabler/icons-react";
+import { IconBuildingStore, IconMapPin } from "@tabler/icons-react";
 import Swal from "sweetalert2";
+import Link from "next/link";
 
 const LokasiMerchant = dynamic(() => import("./LokasiMerchant"), { ssr: false });
 
@@ -21,6 +22,7 @@ const Toast = Swal.mixin({
     timerProgressBar: true,
 });
 
+
 function StepOne({ DataOrder, setDataOrder, loading, setLoading }) {
     const router = useRouter();
     const { step } = router.query;
@@ -28,15 +30,17 @@ function StepOne({ DataOrder, setDataOrder, loading, setLoading }) {
     const [token] = useState(localStorage.getItem("token"));
     const [myLocation, setMyLocation] = useState(null);
 
-    useEffect(() => {
-        getMerchant();
-    }, [token]);
+    const dataCupon = localStorage.getItem("DataCupon");
+    const jsonDataCupon = dataCupon ? JSON.parse(dataCupon) : null;
+    const priceCoupon = jsonDataCupon ? jsonDataCupon.price_coupon : null;
+
 
     useEffect(() => {
         if (myLocation) {
+            getMerchant();
             sortMerchantsByDistance();
         }
-    }, [myLocation]);
+    }, [myLocation, token, priceCoupon]);
 
     const getMerchant = async () => {
         try {
@@ -45,8 +49,25 @@ function StepOne({ DataOrder, setDataOrder, loading, setLoading }) {
                     Authorization: `Bearer ${token}`,
                 },
             });
+
             if (response.status === 200) {
-                setListMerchant(response.data.body);
+                // Filter data merchant
+                const filteredMerchants = response.data.body.filter(merchant =>
+                    merchant.products.some(product => product.status === "approved" && product.price < priceCoupon)
+                );
+
+                if (myLocation) {
+                    // Menghitung jarak untuk masing-masing merchant jika myLocation sudah tersedia
+                    const merchantsWithDistance = filteredMerchants.map(merchant => {
+                        const distance = haversineDistance(myLocation, { latitude: merchant.latitude, longitude: merchant.longitude });
+                        return { ...merchant, distance };
+                    });
+
+                    // Mengurutkan merchant berdasarkan jarak
+                    const sortedMerchants = merchantsWithDistance.sort((a, b) => a.distance - b.distance);
+
+                    setListMerchant(sortedMerchants);
+                }
             } else {
                 Error401(response, router);
             }
@@ -64,7 +85,6 @@ function StepOne({ DataOrder, setDataOrder, loading, setLoading }) {
     };
 
     const handleSubmit = async (merchantId) => {
-
         setLoading(true);
         if (!myLocation) {
             Toast.fire({
@@ -77,6 +97,7 @@ function StepOne({ DataOrder, setDataOrder, loading, setLoading }) {
 
         const updatedDataOrder = {
             ...DataOrder,
+            merchant: [],
             myLocation,
             merchantId: merchantId,
         };
@@ -108,59 +129,129 @@ function StepOne({ DataOrder, setDataOrder, loading, setLoading }) {
     };
 
     const sortMerchantsByDistance = () => {
-        const sortedMerchants = [...ListMerchant].sort((a, b) => {
-            const distanceA = haversineDistance(myLocation, { latitude: a.latitude, longitude: a.longitude });
-            const distanceB = haversineDistance(myLocation, { latitude: b.latitude, longitude: b.longitude });
+        if (myLocation) {
+            const sortedMerchants = [...ListMerchant].sort((a, b) => {
+                const distanceA = haversineDistance(myLocation, { latitude: a.latitude, longitude: a.longitude });
+                const distanceB = haversineDistance(myLocation, { latitude: b.latitude, longitude: b.longitude });
 
-            return distanceA - distanceB; // Mengurutkan dari yang terdekat ke yang terjauh
-        });
-        setListMerchant(sortedMerchants);
+                return distanceA - distanceB; // Mengurutkan dari yang terdekat ke yang terjauh
+            });
+            setListMerchant(sortedMerchants);
+        }
+    };
+
+    // Fungsi untuk mengkategorikan jarak
+    const categorizeDistance = (distance) => {
+
+        if (isNaN(distance) || distance < 0) {
+            return 'Unknown'; // or handle as needed
+        }
+        if (distance < 1000) {
+            return '< 1 km';
+        } else {
+            const lowerBound = Math.floor(distance / 1000);
+            const upperBound = lowerBound + 1;
+            return `${lowerBound} - ${upperBound} km`;
+        }
+    };
+
+    // Fungsi untuk mengonversi jarak
+    const convertDistance = (distance) => {
+        if (distance > 999) {
+            return (distance / 1000).toFixed(1) + ' km';
+        }
+        return distance + ' meter';
     };
 
     return (
         <div className="p-2 mt-2 w-full px-5 space-y-3">
             <div className="grid gap-4 content-center">
-                {!ListMerchant.length ? (
+                {loading ? (
                     <Loading />
                 ) : (
                     <div>
-                        <h1>Map with Markers</h1>
                         <LokasiMerchant getMylocation={getMylocation} zoom={11} merchants={ListMerchant} DataOrder={DataOrder} setDataOrder={setDataOrder} loading={loading} setLoading={setLoading} />
                     </div>
                 )}
                 <div className="text-black font-medium">
                     <h1 className="text-[18px] font-semibold">Merchant Terdekat</h1>
-                    <p className="text-[14px]">{'Jarak < 1 km'}</p>
+
                 </div>
 
-                {ListMerchant.length ? (
-                    ListMerchant
-                        .filter((merchant) => merchant.products.length > 0)
-                        .map((merchant) => {
-                            const distance = myLocation ? haversineDistance(myLocation, { latitude: merchant.latitude, longitude: merchant.longitude }) : null;
+                {!loading ? (
+                    <div>
+                        {ListMerchant.slice(0, 3).map((merchant, index) => {
+                            const distanceText = categorizeDistance(merchant.distance);
+                            // const shouldAddSeparator =
+                            //     index > 0 &&
+                            //     categorizeDistance(merchant.distance) !== categorizeDistance(ListMerchant[index - 1].distance);
+
                             return (
-                                <div key={merchant.id} onClick={() => handleSubmit(merchant.id)} className="flex items-center px-[10px] w-full h-28 mx-auto bg-white rounded-xl cursor-pointer shadow-md overflow-hidden border border-green-500">
+                                <div key={merchant.id}>
+                                    {/* {shouldAddSeparator && <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" />} */}
+                                    <p className="text-black text-[14px] font-medium mt-2">
+                                        Jarak {distanceText}
+                                    </p>
+                                    <div onClick={() => handleSubmit(merchant.id)} className="flex items-center px-[10px] w-full h-28 mx-auto bg-white rounded-xl cursor-pointer shadow-md overflow-hidden border border-green-500">
+                                        <div className="flex justify-between">
+                                            <div className="flex-shrink-0 h-[90px]">
+                                                <IconBuildingStore
+                                                    size="70px"
+                                                    className="flex items-center justify-center  rounded-lg p-2 text-black"
+                                                />
+                                            </div>
+                                            <div className="px-4 h-[90px] w-[208px]">
+                                                <div className="uppercase tracking-wide text-[14px] text-primary font-bold overflow-hidden line-clamp-2">
+                                                    {merchant.merchant_name}
+                                                </div>
+                                                <p className="mt-0 text-[8px] text-gray-500">
+                                                    Jarak: {merchant.distance !== null ? (merchant.distance < 1000 ? `${merchant.distance.toFixed(2)} m` : `${(merchant.distance / 1000).toFixed(2)} km`) : 'Calculating...'}
+                                                </p>
+                                                <p className="mt-2 text-[8px] text-gray-500 overflow-hidden line-clamp-4">
+                                                    {merchant.products[0].description}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+
+                        {ListMerchant.length > 3 && (
+                            <>
+                                {/* <hr className="w-full h-1 mx-auto mt-2 bg-gray-300 border-0 rounded" /> */}
+                                <p className="text-black text-[14px] font-medium mt-2">
+                                    Jarak diatas {convertDistance(ListMerchant[3].distance)}
+                                </p>
+                            </>
+                        )}
+
+                        {ListMerchant.slice(3).map((merchant) => {
+                            return (
+                                <div key={merchant.id} onClick={() => handleSubmit(merchant.id)} className="flex items-center px-[10px] w-full h-28 mx-auto bg-white rounded-xl cursor-pointer shadow-md overflow-hidden border border-green-500 mt-4">
                                     <div className="flex justify-between">
                                         <div className="flex-shrink-0 h-[90px]">
-                                            <div className="h-full w-28 object-cover bg-blue-500 rounded-lg"></div>
+                                            <IconBuildingStore
+                                                size="70px"
+                                                className="flex items-center justify-center rounded-lg p-2 text-black"
+                                            />
                                         </div>
                                         <div className="px-4 h-[90px] w-[208px]">
                                             <div className="uppercase tracking-wide text-[14px] text-primary font-bold overflow-hidden line-clamp-2">
                                                 {merchant.merchant_name}
                                             </div>
                                             <p className="mt-0 text-[8px] text-gray-500">
-                                                Jarak: {distance !== null ? (distance < 1000 ? `${distance.toFixed(2)} m` : `${(distance / 1000).toFixed(2)} km`) : 'Calculating...'}
+                                                Jarak: {merchant.distance !== null ? (merchant.distance < 1000 ? `${merchant.distance.toFixed(2)} m` : `${(merchant.distance / 1000).toFixed(2)} km`) : 'Calculating...'}
                                             </p>
                                             <p className="mt-2 text-[8px] text-gray-500 overflow-hidden line-clamp-4">
                                                 {merchant.products[0].description}
                                             </p>
                                         </div>
-
-
                                     </div>
                                 </div>
                             );
-                        })
+                        })}
+                    </div>
                 ) : (
                     <Loading />
                 )}
@@ -171,6 +262,11 @@ function StepOne({ DataOrder, setDataOrder, loading, setLoading }) {
 
 function StepTwo({ DataOrder, setDataOrder, loading, setLoading }) {
     const router = useRouter();
+    const dataCupon = localStorage.getItem("DataCupon");
+    const jsonDataCupon = dataCupon ? JSON.parse(dataCupon) : null;
+    const priceCoupon = jsonDataCupon ? jsonDataCupon.price_coupon : null;
+    const [productData, setProductData] = useState();
+
 
     useEffect(() => {
         if (DataOrder.merchantId) {
@@ -178,13 +274,15 @@ function StepTwo({ DataOrder, setDataOrder, loading, setLoading }) {
         } else {
             router.push('/beneficiaries/order-merchant?step=1');
         }
-    }, [DataOrder.merchantId]); // Menambahkan DataOrder.merchantId sebagai dependency useEffect
+    }, [DataOrder.merchantId]);
 
     const getMerchants = async () => {
+        setLoading(true); // Mulai proses loading
         try {
             const token = localStorage.getItem('token');
+
             const response = await axios.get(
-                `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/fetch/${DataOrder.merchantId}`,
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant-product/filter?merchant_id=${DataOrder.merchantId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -192,8 +290,22 @@ function StepTwo({ DataOrder, setDataOrder, loading, setLoading }) {
                 }
             );
             if (response.status === 200) {
-                console.log('data merchant', response.data.body);
-                setDataOrder({ ...DataOrder, merchant: response.data.body });
+                const merchant = response.data.body;
+                // && product.price < priceCoupon
+                // Filter produk
+                const filteredProducts = merchant.filter(merchant => merchant.status === "approved" && merchant.price < priceCoupon);
+                setProductData(filteredProducts);
+
+                // Perbarui merchant dengan produk yang sudah difilter
+                // const filteredMerchant = {
+                //     products: filteredProducts,
+                // };
+
+
+                // Perbarui state DataOrder dengan merchant yang sudah difilter
+                // localStorage.setItem('DataOrder', JSON.stringify(...DataOrder, filteredMerchant));
+                // setDataOrder(...DataOrder, filteredMerchant);
+                // setProductData(...DataOrder, filteredMerchant);
             } else {
                 Error401(response, router);
             }
@@ -244,8 +356,26 @@ function StepTwo({ DataOrder, setDataOrder, loading, setLoading }) {
                 },
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const urlPrev = localStorage.setItem('prevUrl', 'klimeKupon');
-                    router.push(`/beneficiaries/qr-kupon/${id_product}`);
+                    setLoading(true);
+                    axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/claim`,
+                        { merchant_product_id: parseInt(order.id_product) }, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    }).then((response) => {
+                        if (response.status === 200) {
+                            localStorage.removeItem('DataOrder');
+                            setLoading(false);
+                            // setDataOrder({ ...DataOrder, order: response.data.body });
+
+                            const urlPrev = localStorage.setItem('prevUrl', '/beneficiaries');
+                            router.push(`/beneficiaries/qr-kupon/${response.data.body.qr_code}?mrc=${response.data.body.id}&prd=${response.data.body.merchant_product_id}`);
+                        }
+                    }
+                    ).catch((error) => {
+                        setLoading(false);
+                        Error401(error, router);
+                    });
                 }
             });
 
@@ -279,9 +409,13 @@ function StepTwo({ DataOrder, setDataOrder, loading, setLoading }) {
     // Fungsi untuk menampilkan jarak dalam format yang diinginkan
     const displayDistance = () => {
         if (DataOrder.myLocation && DataOrder.myLocation.latitude &&
-            DataOrder.myLocation.longitude && DataOrder.merchant &&
-            DataOrder.merchant.latitude && DataOrder.merchant.longitude) {
-            const distance = calculateDistance(DataOrder.myLocation.latitude, DataOrder.myLocation.longitude, DataOrder.merchant.latitude, DataOrder.merchant.longitude);
+            DataOrder.myLocation.longitude && productData[0].merchant &&
+            productData[0].merchant.latitude && productData[0].merchant.longitude) {
+            const distance = calculateDistance(
+                DataOrder.myLocation.latitude,
+                DataOrder.myLocation.longitude,
+                productData[0].merchant.latitude,
+                productData[0].merchant.longitude);
             if (distance < 1000) {
                 return `${distance.toFixed(0)} m`; // Tampilkan dalam meter
             } else {
@@ -296,9 +430,15 @@ function StepTwo({ DataOrder, setDataOrder, loading, setLoading }) {
         <>
             <div className="flex justify-between items-center w-full px-[16px]">
                 <h1 className="text-[14px] font-semibold text-black">
-                    {`${DataOrder.merchant ? DataOrder.merchant.merchant_name : 'Loading...'} (${displayDistance()})`}
+                    {productData?.length > 0 ? `${productData[0].merchant.merchant_name} (${displayDistance()})` : 'Loading...'}
+
                 </h1>
-                <IconMapPin color="red" />
+                <Link
+                    href={`https://www.google.com/maps?q=${productData?.length > 0 ? productData[0].merchant.latitude : '0'},${productData?.length > 0 ? productData[0].merchant.longitude : '0'}`}
+
+                >
+                    <IconMapPin color="red" />
+                </Link>
             </div>
             <div className="p-2 mt-2 w-full px-5 space-y-3">
                 <div className="grid gap-4 content-center">
@@ -306,12 +446,13 @@ function StepTwo({ DataOrder, setDataOrder, loading, setLoading }) {
                         <Loading />
                     ) : (
                         <div className="space-y-4">
-                            {DataOrder.merchant && DataOrder.merchant.products.length > 0 ? (
-                                DataOrder.merchant.products.map((product) => (
+                            {/* DataOrder.DataPorduct.products[0].merchant.longitude */}
+                            {productData && productData.length > 0 ? (
+                                productData.map((product) => (
                                     <div key={product.id} onClick={() => CreatOrde(product.id)} className="flex items-center px-[10px] w-full h-28 mx-auto cursor-pointer bg-white rounded-xl shadow-md overflow-hidden border border-green-500">
                                         <div className="flex justify-between w-full">
                                             <div className="flex-shrink-0 h-[90px]">
-                                                <div className="h-full w-28 object-cover bg-blue-500 rounded-lg"></div>
+                                                <img src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${product?.images[0]?.image_url}`} alt={`${product?.images[0]?.image_url}`} className="h-full w-28 object-cover bg-blue-500 rounded-lg" />
                                             </div>
                                             <div className="px-4 h-[90px] w-[208px]">
                                                 <div>

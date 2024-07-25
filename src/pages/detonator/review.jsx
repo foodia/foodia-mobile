@@ -272,9 +272,9 @@ export default function review() {
                                     )}
                                     {selectedStatus === "UlasanSelesai" && filteredData.length > 0 && (
                                         <>
-                                            {filteredData.map((dataFilter) => (
+                                            {filteredData.map((dataFilter, index) => (
                                                 <CardReview
-                                                    key={dataFilter.id}
+                                                    key={index}
                                                     to={`/detonator/detail-review/${dataFilter?.id}?id_camp=${dataFilter?.order?.campaign?.id}&id_order=${dataFilter?.order_id}`}
                                                     img={`${process.env.NEXT_PUBLIC_URL_STORAGE}${dataFilter.order?.campaign?.image_url}`}
                                                     title={dataFilter?.order?.campaign?.event_name}

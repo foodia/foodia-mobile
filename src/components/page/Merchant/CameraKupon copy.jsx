@@ -1,6 +1,6 @@
 import moment from "moment";
 import 'moment/locale/id';
-import Modal from 'react-modal';
+import Modal from 'react-modal'
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import styles from './WebCam.module.css';
@@ -8,8 +8,7 @@ import dataURItoBlob from "./dataURItoBlob";
 import { Carousel } from "react-responsive-carousel";
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Webcam from "react-webcam";
-import { IconCamera, IconSquareRoundedX, IconX } from "@tabler/icons-react";
-import Swal from "sweetalert2";
+import { IconCamera, IconSquareRoundedX } from "@tabler/icons-react";
 
 const CameraKupon = () => {
     const router = useRouter();
@@ -22,7 +21,6 @@ const CameraKupon = () => {
     const [aspectRatio, setAspectRatio] = useState(16 / 9);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         const fetchCameraAndLocation = async () => {
@@ -68,64 +66,34 @@ const CameraKupon = () => {
         };
     }, []);
 
-    useEffect(() => {
-        // Load images from local storage when the component mounts
-        let storedImages = [];
-        if (router.asPath === '/merchant/kupon/upload-bukti?penerima') {
-            storedImages = JSON.parse(localStorage.getItem('imgPenerima')) || [];
-        } else if (router.asPath === '/merchant/kupon/upload-bukti?makanan') {
-            storedImages = JSON.parse(localStorage.getItem('imgMakanan')) || [];
-        }
-        setImgSrc(storedImages);
-    }, []);
-
     const capture = React.useCallback(() => {
-        let minPhotos = 0;
-        let maxPhotos = 0;
+        if (webcamRef.current) {
+            const imageSrc = webcamRef.current.getScreenshot();
 
-        if (router.asPath === '/merchant/kupon/upload-bukti?penerima') {
-            minPhotos = 1;
-            maxPhotos = 3;
-        } else if (router.asPath === '/merchant/kupon/upload-bukti?makanan') {
-            minPhotos = 2;
-            maxPhotos = 4;
-        }
+            if (imageSrc) {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
 
-        if (imgSrc.length < maxPhotos) {
-            if (webcamRef.current) {
-                const imageSrc = webcamRef.current.getScreenshot();
+                const img = new Image();
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
 
-                if (imageSrc) {
-                    const canvas = document.createElement('canvas');
-                    const context = canvas.getContext('2d');
+                    context.drawImage(img, 0, 0);
 
-                    const img = new Image();
-                    img.onload = () => {
-                        canvas.width = img.width;
-                        canvas.height = img.height;
+                    context.font = '24px Arial';
+                    context.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                    context.fillText(`Time: ${captureTime}`, 10, canvas.height - 60);
+                    context.fillText(`Coordinates: ${captureCoordinates}`, 10, canvas.height - 20);
 
-                        context.drawImage(img, 0, 0);
+                    const imageWithWatermark = canvas.toDataURL('image/jpeg');
+                    setImgSrc(prevImgSrc => [...prevImgSrc, imageWithWatermark]);
+                };
 
-                        context.font = '24px Arial';
-                        context.fillStyle = 'rgba(255, 255, 255, 0.5)';
-                        context.fillText(`Time: ${captureTime}`, 10, canvas.height - 60);
-                        context.fillText(`Coordinates: ${captureCoordinates}`, 10, canvas.height - 20);
-
-                        const imageWithWatermark = canvas.toDataURL('image/jpeg');
-                        setImgSrc(prevImgSrc => {
-                            const newImgSrc = [...prevImgSrc, imageWithWatermark];
-                            // localStorage.setItem('capturedImages', JSON.stringify(newImgSrc));
-                            return newImgSrc;
-                        });
-                    };
-
-                    img.src = imageSrc;
-                }
+                img.src = imageSrc;
             }
-        } else {
-            setErrorMessage(`You can only capture up to ${maxPhotos} photos.`);
         }
-    }, [webcamRef, setImgSrc, captureTime, captureCoordinates, router.asPath, imgSrc.length]);
+    }, [webcamRef, setImgSrc, captureTime, captureCoordinates]);
 
     const handleClose = () => {
         router.back();
@@ -136,33 +104,25 @@ const CameraKupon = () => {
     };
 
     const handleUpload = () => {
-        let minPhotos = 0;
-        let maxPhotos = 0;
-        let storageKey = '';
+        const formData = new FormData();
+        formData.append('userId', '1');
 
-        if (router.asPath === '/merchant/kupon/upload-bukti?penerima') {
-            minPhotos = 2;
-            maxPhotos = 4;
-            storageKey = 'imgPenerima';
-        } else if (router.asPath === '/merchant/kupon/upload-bukti?makanan') {
-            minPhotos = 1;
-            maxPhotos = 4;
-            storageKey = 'imgMakanan';
+        imgSrc.forEach((image, index) => {
+            const blobImage = dataURItoBlob(image);
+            formData.append("image", blobImage, `photo_${index + 1}.jpg`);
+        });
 
-        }
-
-        if (imgSrc.length >= minPhotos && imgSrc.length <= maxPhotos) {
-            localStorage.setItem(storageKey, JSON.stringify(imgSrc));
-            router.back();
-            setErrorMessage('');
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please capture at least ' + minPhotos,
+        fetch('URL_ENDPOINT', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                setImgSrc([]);
+            })
+            .catch(error => {
+                console.error('Error saat upload:', error);
             });
-            return;
-        }
     };
 
     const openModal = (index) => {
@@ -174,20 +134,10 @@ const CameraKupon = () => {
         setIsModalOpen(false);
     };
 
+    // Adjust the aspect ratio as needed
     const videoConstraints = {
         deviceId: selectedCamera ? { exact: selectedCamera } : undefined,
         aspectRatio: aspectRatio,
-    };
-
-    const RemoveImage = (index) => {
-        const newImages = [...imgSrc];
-        newImages.splice(index, 1);
-        setImgSrc(newImages);
-        if (router.asPath === '/merchant/kupon/upload-bukti?makanan') {
-            localStorage.setItem('imgMakanan', JSON.stringify(newImages));
-        } else if (router.asPath === '/merchant/kupon/upload-bukti?penerima') {
-            localStorage.setItem('imgPenerima', JSON.stringify(newImages));
-        }
     };
 
     return (
@@ -217,24 +167,16 @@ const CameraKupon = () => {
                 <button className={styles['capture-button']} onClick={capture}><IconCamera /></button>
             </div>
 
+            {/* bg-gradient-to-b from-[#C1C1C1] to-[#707070] */}
             <div className={`${styles['upload-image-container']} ${imgSrc.length > 0 ? styles['has-images'] : ''}`}>
                 <div className={styles.previewImages}>
                     {imgSrc.slice(0, 4).map((src, index) => (
-                        <div key={index} className="relative" onClick={() => openModal(index)}>
+                        <div key={index} onClick={() => openModal(index)}>
                             <img
                                 className={styles['img-preview']}
                                 src={src}
                                 alt={`Captured ${index + 1}`}
                             />
-                            <button
-                                className="absolute top-0 right-0 m-1 p-1 bg-white rounded-full cursor-pointer"
-                                onClick={(event) => {
-                                    event.stopPropagation(); // Prevents triggering the onClick for the image
-                                    RemoveImage(index);
-                                }}
-                            >
-                                <IconX size={16} color="red" />
-                            </button>
                         </div>
                     ))}
                 </div>
@@ -246,11 +188,6 @@ const CameraKupon = () => {
                 )}
 
                 <button className={styles['upload-button']} onClick={handleUpload}>Upload</button>
-                {errorMessage && (
-                    <div className={styles['error-message']}>
-                        <p>{errorMessage}</p>
-                    </div>
-                )}
             </div>
 
             <Modal
@@ -275,6 +212,6 @@ const CameraKupon = () => {
             </Modal>
         </>
     );
-};
+}
 
 export default CameraKupon;

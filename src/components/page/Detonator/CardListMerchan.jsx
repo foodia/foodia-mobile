@@ -32,6 +32,15 @@ const CardListMerchan = ({ data }) => {
   // Count the number of approved products
   const numberOfApprovedProducts = approvedProducts.length;
 
+  const formatDistance = (distance) => {
+    if (distance >= 1000) {
+      const distanceInKm = (distance / 1000).toFixed(1); // Convert to kilometers with one decimal place
+      return `${distanceInKm} km`;
+    } else {
+      return `${distance} m`;
+    }
+  };
+
 
   return (
     <div className="flex justify-center mt-1 w-full mb-2 ">
@@ -64,31 +73,41 @@ const CardListMerchan = ({ data }) => {
                   {address}
                 </p>
               </div>
-              {showFullText ? (
-                <button
-                  className="justify-end items-center text-xs py-1 text-primary w-full flex flex-row"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleReadMore();
-                  }}
-                >
-                  <p>Lebih Sedikit</p>
-                  <IconChevronUp size={20} />
-                </button>
-              ) : address.length > 80 ? (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleReadMore();
-                  }}
-                  className="justify-end items-center text-xs py-1 text-primary w-full flex flex-row"
-                >
-                  Selengkapnya{" "}
-                  <IconChevronDown className="mt-0.5" size="15px" />
-                </button>
-              ) : (
-                ""
-              )}
+              <div className="flex justify-between py-1">
+                {data.distance !== undefined && !isNaN(data.distance) ? (
+                  <p className="font-sans text-xs text-gray-500 whitespace-nowrap">
+                    {formatDistance(data.distance)}
+                  </p>
+                ) : (
+                  null
+                )}
+
+                {showFullText ? (
+                  <button
+                    className="justify-end items-center text-xs py-1 text-primary w-full flex flex-row"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleReadMore();
+                    }}
+                  >
+                    <p>Lebih Sedikit</p>
+                    <IconChevronUp size={20} />
+                  </button>
+                ) : address.length > 80 ? (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleReadMore();
+                    }}
+                    className="justify-end items-center text-xs  text-primary  flex "
+                  >
+                    Selengkapnya{" "}
+                    <IconChevronDown className="mt-0.5" size="15px" />
+                  </button>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
           </div>
         </div>
