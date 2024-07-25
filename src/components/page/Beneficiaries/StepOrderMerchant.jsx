@@ -369,7 +369,7 @@ function StepTwo({ DataOrder, setDataOrder, loading, setLoading }) {
                             // setDataOrder({ ...DataOrder, order: response.data.body });
 
                             const urlPrev = localStorage.setItem('prevUrl', '/beneficiaries');
-                            router.push(`/beneficiaries/qr-kupon/${response.data.body.qr_code}?mrc=${response.data.body.merchant_id}&prd=${response.data.body.merchant_product_id}`);
+                            router.push(`/beneficiaries/qr-kupon/${response.data.body.qr_code}?mrc=${response.data.body.id}&prd=${response.data.body.merchant_product_id}`);
                         }
                     }
                     ).catch((error) => {
