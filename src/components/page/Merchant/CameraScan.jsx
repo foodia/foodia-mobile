@@ -16,6 +16,7 @@ const CameraScan = () => {
     const [selectedDevice, setSelectedDevice] = useState(null);
     const [aspectRatio, setAspectRatio] = useState(16 / 9);
     const [loading, setLoading] = useState(true);
+    const [processedCodes, setProcessedCodes] = useState(new Set());
 
     const handleDevices = (mediaDevices) => {
         const videoDevices = mediaDevices.filter(({ kind }) => kind === "videoinput");
@@ -48,39 +49,51 @@ const CameraScan = () => {
                         const imageData = context.getImageData(0, 0, img.width, img.height);
                         const code = jsQR(imageData.data, img.width, img.height);
                         if (code) {
-                            setData(code.data);
-                            axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/scan`, {
-                                qr_code: code.data,
-                            }, {
-                                headers: {
-                                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                                },
-                            })
-                                .then((response) => {
-                                    if (response.status === 200) {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: 'Success',
-                                            text: 'QR Code Scanned Successfully',
-                                            timer: 2000,
-                                        }).then(() => {
-                                            router.push('/merchant/kupon');
-                                        })
-                                    } else {
-                                        Error401(response, router);
-                                    }
-                                })
-                                .catch((error) => {
-                                    Error401(error, router);
-                                });
+                            const qrCode = code.data;
+                            if (!processedCodes.has(qrCode)) {
+                                setProcessedCodes(prev => new Set(prev).add(qrCode));
+                                PostCode(qrCode);
+                            }
                         }
                     };
                     img.src = imageSrc;
                 }
             }
-        }, 500); // Adjust the interval as needed
+        }, 1000); // Check every second
+
         return () => clearInterval(interval);
-    }, [webcamRef]);
+    }, [webcamRef, processedCodes]);
+
+    const PostCode = (code) => {
+        console.log('post code', code);
+
+        if (code) {
+            axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/scan`, {
+                qr_code: code,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            })
+                .then((response) => {
+                    if (response.status === 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'QR Code Scanned Successfully',
+                            timer: 2000,
+                        }).then(() => {
+                            router.push('/merchant/kupon');
+                        });
+                    } else {
+                        Error401(response, router);
+                    }
+                })
+                .catch((error) => {
+                    Error401(error, router);
+                });
+        }
+    };
 
     useEffect(() => {
         const handleResize = () => {
@@ -95,25 +108,7 @@ const CameraScan = () => {
         };
     }, []);
 
-    // Post QR data to API when data changes
-    useEffect(() => {
-        if (data !== 'No result') {
-            const postData = async () => {
-                try {
-                    const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/scan`, {
-                        qr_code: data,
-                    });
-                    if (response.status === 200) {
-                    } else {
-                        Error401(response, router);
-                    }
-                } catch (error) {
-                    Error401(error, router);
-                }
-            };
-            postData();
-        }
-    }, [data]);
+
 
     const handleClose = () => {
         router.back();
