@@ -268,6 +268,7 @@ const Beneficiaries = () => {
         }
         else if (status === "claimed") {
             // router.push(`/beneficiaries/qr-kupon/${coupon}?mrc=${mrc}&prd=${prd}`);
+            router.push(`/beneficiaries/kupon/${mrc}`);
         }
 
     }
@@ -364,7 +365,7 @@ const Beneficiaries = () => {
                                     HandleRout(
                                         data.status,
                                         data.qr_code,
-                                        data.merchant_id,
+                                        data.id,
                                         data.merchant_product_id
                                     )
                                 }
