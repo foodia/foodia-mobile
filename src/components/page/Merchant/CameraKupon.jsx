@@ -24,48 +24,51 @@ const CameraKupon = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchCameraAndLocation = async () => {
-            try {
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                setCameraDevices(videoDevices);
+    const fetchCameraAndLocation = async () => {
+        try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter(device => device.kind === 'videoinput');
+            setCameraDevices(videoDevices);
 
-                const backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back'));
-                const frontCamera = videoDevices.find(device => device.label.toLowerCase().includes('front')) || videoDevices[0];
-                setSelectedCamera((backCamera || frontCamera).deviceId);
-            } catch (error) {
-                console.error('Error enumerating devices:', error);
+            const backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back'));
+            const frontCamera = videoDevices.find(device => device.label.toLowerCase().includes('front')) || videoDevices[0];
+            setSelectedCamera((backCamera || frontCamera).deviceId);
+        } catch (error) {
+            console.error('Error enumerating devices:', error);
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                setCaptureCoordinates(`${latitude}, ${longitude}`);
+            },
+            (error) => {
+                console.error('Error getting geolocation:', error);
+                setCaptureCoordinates('Default Coordinates');
             }
+        );
 
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setCaptureCoordinates(`${latitude}, ${longitude}`);
-                },
-                (error) => {
-                    console.error('Error getting geolocation:', error);
-                    setCaptureCoordinates('Default Coordinates');
-                }
-            );
+        setCaptureTime(moment().format('YYYY-MM-DD HH:mm:ss'));
+        setLoading(false);
+    };
 
-            setCaptureTime(moment().format('YYYY-MM-DD HH:mm:ss'));
-            setLoading(false);
-        };
-
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(() => {
-                fetchCameraAndLocation();
-            })
-            .catch((error) => {
-                console.error('Error accessing camera:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Please allow camera access to use this feature.',
-                });
-                setLoading(false);
+    const requestCameraAccess = async () => {
+        try {
+            await navigator.mediaDevices.getUserMedia({ video: true });
+            fetchCameraAndLocation();
+        } catch (error) {
+            console.error('Error accessing camera:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please allow camera access to use this feature.',
             });
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        requestCameraAccess();
     }, []);
 
     useEffect(() => {
