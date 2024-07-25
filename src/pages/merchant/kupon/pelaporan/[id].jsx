@@ -360,7 +360,7 @@ const pelaporan = () => {
                                             <div className="w-[52px] h-[52px] bg-primary rounded-md flex justify-center items-center"><IconCamera size={20} /></div>
                                             {imgMakan.length > 0 ? (
                                                 <>
-                                                    {imgMakan.length < 2 && (
+                                                    {imgMakan.length < 1 && (
                                                         <div className="flex flex-col items-center my-auto w-[100px]">
                                                             <p className="text-red-500 text-[10px] font-bold">Minimal 2 foto</p>
                                                         </div>
@@ -437,9 +437,9 @@ const pelaporan = () => {
                                     </div>
                                     <div className="w-full text-center my-2 mb-52">
                                         <button
-                                            disabled={imgMakan.length < 2 || imgPenerima.length < 2}
+                                            disabled={imgMakan.length < 1 || imgPenerima.length < 2}
                                             onClick={handleAprovButtonClick}
-                                            className={`${imgMakan.length < 2 || imgPenerima.length < 2 ? "bg-gray-300" : "bg-primary"}  text-white font-medium rounded-lg h-10 px-2`}
+                                            className={`${imgMakan.length < 1 || imgPenerima.length < 2 ? "bg-gray-300" : "bg-primary"}  text-white font-medium rounded-lg h-10 px-2`}
                                         >
                                             Pesana  Telah Selesai
                                         </button>
@@ -447,17 +447,19 @@ const pelaporan = () => {
 
 
                                 </>
-                            ) : dataApi?.order_status === "claimed" ? (
-                                <>
-                                    <button
-                                        onClick={handleAprovButtonClick}
-                                        className="bg-primary border-2 border-primary text-white font-medium rounded-xl h-10"
-                                    >
-                                        Pesana  Telah Selesai
-                                    </button>
-                                </>
+                            )
+                                // : dataApi?.order_status === "claimed" ? (
+                                //     <>
+                                //         <button
+                                //             onClick={handleAprovButtonClick}
+                                //             className="bg-primary border-2 border-primary text-white font-medium rounded-xl h-10"
+                                //         >
+                                //             Pesana  Telah Selesai
+                                //         </button>
+                                //     </>
 
-                            ) : null}
+                                // ) 
+                                : null}
                         </div>
                     )}
 

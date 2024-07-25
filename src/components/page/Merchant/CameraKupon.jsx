@@ -141,11 +141,11 @@ const CameraKupon = () => {
         let storageKey = '';
 
         if (router.asPath === '/merchant/kupon/upload-bukti?penerima') {
-            minPhotos = 1;
-            maxPhotos = 3;
+            minPhotos = 2;
+            maxPhotos = 4;
             storageKey = 'imgPenerima';
         } else if (router.asPath === '/merchant/kupon/upload-bukti?makanan') {
-            minPhotos = 2;
+            minPhotos = 1;
             maxPhotos = 4;
             storageKey = 'imgMakanan';
 
