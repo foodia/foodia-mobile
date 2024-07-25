@@ -30,9 +30,15 @@ const CameraKupon = () => {
                 const videoDevices = devices.filter(device => device.kind === 'videoinput');
                 setCameraDevices(videoDevices);
 
-                const backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back'));
+                // Prioritize rear camera, fallback to front camera if rear is not found
+                const rearCamera = videoDevices.find(device => device.label.toLowerCase().includes('rear'));
                 const frontCamera = videoDevices.find(device => device.label.toLowerCase().includes('front')) || videoDevices[0];
-                setSelectedCamera((backCamera || frontCamera).deviceId);
+
+                if (rearCamera) {
+                    setSelectedCamera(rearCamera.deviceId);
+                } else {
+                    setSelectedCamera(frontCamera.deviceId);
+                }
             } catch (error) {
                 console.error('Error enumerating devices:', error);
             }
@@ -68,7 +74,6 @@ const CameraKupon = () => {
     }, []);
 
     useEffect(() => {
-        // Load images from local storage when the component mounts
         let storedImages = [];
         if (router.asPath === '/merchant/kupon/upload-bukti?penerima') {
             storedImages = JSON.parse(localStorage.getItem('imgPenerima')) || [];
@@ -113,7 +118,6 @@ const CameraKupon = () => {
                         const imageWithWatermark = canvas.toDataURL('image/jpeg');
                         setImgSrc(prevImgSrc => {
                             const newImgSrc = [...prevImgSrc, imageWithWatermark];
-                            // localStorage.setItem('capturedImages', JSON.stringify(newImgSrc));
                             return newImgSrc;
                         });
                     };
@@ -147,7 +151,6 @@ const CameraKupon = () => {
             minPhotos = 1;
             maxPhotos = 4;
             storageKey = 'imgMakanan';
-
         }
 
         if (imgSrc.length >= minPhotos && imgSrc.length <= maxPhotos) {
@@ -158,7 +161,7 @@ const CameraKupon = () => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Please capture at least ' + minPhotos,
+                text: 'Please capture at least ' + minPhotos + ' photos.',
             });
             return;
         }
