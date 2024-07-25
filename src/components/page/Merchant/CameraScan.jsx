@@ -170,4 +170,5 @@ const CameraScan = () => {
     );
 };
 
+
 export default CameraScan;

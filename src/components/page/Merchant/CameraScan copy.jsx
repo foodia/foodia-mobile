@@ -163,7 +163,7 @@ const CameraScan = () => {
             </p>
 
             {/* jika kamera belum terbuka tampilkan loadini ini */}
-            {/* <Loading /> */}
+            <Loading />
         </div>
     );
 };
