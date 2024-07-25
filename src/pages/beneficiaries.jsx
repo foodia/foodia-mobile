@@ -242,7 +242,7 @@ const Beneficiaries = () => {
         if (status === "reserved") {
             router.push(`/beneficiaries/qr-kupon/${coupon}?mrc=${mrc}&prd=${prd}`);
         } else if (status === "active") {
-            router.push(`/beneficiaries/qr-kupon/${coupon}?mrc=${mrc}&prd=${prd}`);
+            router.push(`/beneficiaries/kupon/${mrc}`);
         }
         else if (status === "expired") {
             Swal.fire({
@@ -267,6 +267,7 @@ const Beneficiaries = () => {
             });
         }
         else if (status === "claimed") {
+
             // router.push(`/beneficiaries/qr-kupon/${coupon}?mrc=${mrc}&prd=${prd}`);
             router.push(`/beneficiaries/kupon/${mrc}`);
         }
@@ -369,7 +370,7 @@ const Beneficiaries = () => {
                                         data.merchant_product_id
                                     )
                                 }
-                                className="w-full items-center justify-center flex cursor-pointer"
+                                className="w-full items-center justify-center flex cursor-pointer my-2"
                             >
                                 <div className="w-[328px] bg-white border border-gray-300 rounded-lg flex p-2">
                                     <img
