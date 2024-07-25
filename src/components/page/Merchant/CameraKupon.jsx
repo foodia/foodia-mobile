@@ -4,7 +4,6 @@ import Modal from 'react-modal';
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import styles from './WebCam.module.css';
-import dataURItoBlob from "./dataURItoBlob";
 import { Carousel } from "react-responsive-carousel";
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Webcam from "react-webcam";
@@ -23,54 +22,37 @@ const CameraKupon = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [errorMessage, setErrorMessage] = useState('');
-    const [loading, setLoading] = useState(true);
-
-    const fetchCameraAndLocation = async () => {
-        try {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            const videoDevices = devices.filter(device => device.kind === 'videoinput');
-            setCameraDevices(videoDevices);
-
-            const backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back'));
-            const frontCamera = videoDevices.find(device => device.label.toLowerCase().includes('front')) || videoDevices[0];
-            setSelectedCamera((backCamera || frontCamera).deviceId);
-        } catch (error) {
-            console.error('Error enumerating devices:', error);
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                setCaptureCoordinates(`${latitude}, ${longitude}`);
-            },
-            (error) => {
-                console.error('Error getting geolocation:', error);
-                setCaptureCoordinates('Default Coordinates');
-            }
-        );
-
-        setCaptureTime(moment().format('YYYY-MM-DD HH:mm:ss'));
-        setLoading(false);
-    };
-
-    const requestCameraAccess = async () => {
-        try {
-            await navigator.mediaDevices.getUserMedia({ video: true });
-            fetchCameraAndLocation();
-        } catch (error) {
-            console.error('Error accessing camera:', error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Please allow camera access to use this feature.',
-            });
-            setLoading(false);
-        }
-    };
 
     useEffect(() => {
-        requestCameraAccess();
-    }, []);
+        const fetchCameraAndLocation = async () => {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                setCameraDevices(videoDevices);
+
+                const backCamera = videoDevices.find(device => device.label.toLowerCase().includes('back'));
+                const frontCamera = videoDevices.find(device => device.label.toLowerCase().includes('front')) || videoDevices[0];
+                setSelectedCamera((backCamera || frontCamera).deviceId);
+            } catch (error) {
+                console.error('Error enumerating devices:', error);
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setCaptureCoordinates(`${latitude}\n${longitude}`);
+                },
+                (error) => {
+                    console.error('Error getting geolocation:', error);
+                    setCaptureCoordinates('Default Coordinates');
+                }
+            );
+
+            setCaptureTime(moment().format('YYYY-MM-DD HH:mm:ss'));
+        };
+
+        fetchCameraAndLocation();
+    }, [captureTime, captureCoordinates]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -86,6 +68,7 @@ const CameraKupon = () => {
     }, []);
 
     useEffect(() => {
+        // Load images from local storage when the component mounts
         let storedImages = [];
         if (router.asPath === '/merchant/kupon/upload-bukti?penerima') {
             storedImages = JSON.parse(localStorage.getItem('imgPenerima')) || [];
@@ -93,7 +76,7 @@ const CameraKupon = () => {
             storedImages = JSON.parse(localStorage.getItem('imgMakanan')) || [];
         }
         setImgSrc(storedImages);
-    }, [router.asPath]);
+    }, []);
 
     const capture = React.useCallback(() => {
         let minPhotos = 0;
@@ -130,6 +113,7 @@ const CameraKupon = () => {
                         const imageWithWatermark = canvas.toDataURL('image/jpeg');
                         setImgSrc(prevImgSrc => {
                             const newImgSrc = [...prevImgSrc, imageWithWatermark];
+                            // localStorage.setItem('capturedImages', JSON.stringify(newImgSrc));
                             return newImgSrc;
                         });
                     };
@@ -163,6 +147,7 @@ const CameraKupon = () => {
             minPhotos = 1;
             maxPhotos = 4;
             storageKey = 'imgMakanan';
+
         }
 
         if (imgSrc.length >= minPhotos && imgSrc.length <= maxPhotos) {
@@ -173,7 +158,7 @@ const CameraKupon = () => {
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
-                text: 'Please capture at least ' + minPhotos + ' photos.',
+                text: 'Please capture at least ' + minPhotos,
             });
             return;
         }
@@ -193,7 +178,7 @@ const CameraKupon = () => {
         aspectRatio: aspectRatio,
     };
 
-    const removeImage = (index) => {
+    const RemoveImage = (index) => {
         const newImages = [...imgSrc];
         newImages.splice(index, 1);
         setImgSrc(newImages);
@@ -219,19 +204,15 @@ const CameraKupon = () => {
             </div>
 
             <div className={styles.cameraPreview}>
-                {loading ? (
-                    <div>Loading...</div>
-                ) : (
-                    <Webcam
-                        audio={false}
-                        ref={webcamRef}
-                        screenshotFormat="image/jpeg"
-                        width={360}
-                        height={600}
-                        videoConstraints={videoConstraints}
-                        key={selectedCamera}
-                    />
-                )}
+                <Webcam
+                    audio={false}
+                    ref={webcamRef}
+                    screenshotFormat="image/jpeg"
+                    width={360}
+                    height={600}
+                    videoConstraints={videoConstraints}
+                    key={selectedCamera}
+                />
                 <button className={styles['capture-button']} onClick={capture}><IconCamera /></button>
             </div>
 
@@ -248,7 +229,7 @@ const CameraKupon = () => {
                                 className="absolute top-0 right-0 m-1 p-1 bg-white rounded-full cursor-pointer"
                                 onClick={(event) => {
                                     event.stopPropagation(); // Prevents triggering the onClick for the image
-                                    removeImage(index);
+                                    RemoveImage(index);
                                 }}
                             >
                                 <IconX size={16} color="red" />
