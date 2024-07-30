@@ -31,7 +31,7 @@ const CardKupon = (props) => {
                     <div className="ml-2 flex flex-col justify-between w-full">
                         <div className="flex justify-between items-center">
                             <h2 className="text-[14px] font-bold text-primary">{title}</h2>
-                            <button className={`${status === 'claimed' ? 'bg-primary' : 'bg-blue-500'} text-white text-[8px] font-bold px-2 rounded-full`}>{status}</button>
+                            <button className={`${status === 'claimed' ? 'bg-primary' : 'bg-blue-500'} capitalize text-white text-[8px] font-bold px-2 rounded-full`}>{status}</button>
                         </div>
                         <p className="text-[8px] text-gray-600 overflow-hidden line-clamp-3">{desc}</p>
                         <div className="flex justify-between items-center">
