@@ -193,41 +193,54 @@ const pelaporan = () => {
                 });
             });
 
-
-            const reportBody = {
-                coupon_transaction_id: parseInt(id_order),
-                images: images
-            };
-
-            // Post the report to the coupon/report endpoint
-            const responseReport = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/report`, reportBody, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            if (responseReport.data.code === 200) {
-                setLoading(false);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Report submitted successfully',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                setTimeout(() => {
-                    router.push('/merchant/kupon');
-                }, 1500);
-            } else {
-                setLoading(false);
+            if (images.length < 3) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Failed to submit report',
+                    text: 'file gagal diunggah mohon coba lagi',
                     showConfirmButton: false,
                     timer: 1500
                 });
+                setLoading(false);
+                return;
+            } else {
+                const reportBody = {
+                    coupon_transaction_id: parseInt(id_order),
+                    images: images
+                };
+
+                // Post the report to the coupon/report endpoint
+                const responseReport = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/report`, reportBody, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                if (responseReport.data.code === 200) {
+                    setLoading(false);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Report submitted successfully',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    setTimeout(() => {
+                        router.push('/merchant/kupon');
+                    }, 1500);
+                } else {
+                    setLoading(false);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to submit report',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
             }
+
+
 
             // Jika diperlukan, lakukan sesuatu dengan `images`, misalnya mengirimnya ke server
         } catch (error) {
