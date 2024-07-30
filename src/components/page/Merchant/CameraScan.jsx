@@ -31,7 +31,22 @@ const CameraScan = () => {
     };
 
     useEffect(() => {
-        navigator.mediaDevices.enumerateDevices().then(handleDevices);
+        // Request camera access permission when the component is mounted
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(() => {
+                navigator.mediaDevices.enumerateDevices().then(handleDevices);
+            })
+            .catch((error) => {
+                console.error('Permission denied or not supported:', error);
+                setLoading(false);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'akses kamera ditolak',
+                    text: 'Mohon aktifkan akses kamera browser anda.',
+                }).then(() => {
+                    router.back(); // Navigate back if permission is denied
+                });
+            });
     }, []);
 
     useEffect(() => {
@@ -108,8 +123,6 @@ const CameraScan = () => {
         };
     }, []);
 
-
-
     const handleClose = () => {
         router.back();
     };
@@ -164,6 +177,5 @@ const CameraScan = () => {
         </div>
     );
 };
-
 
 export default CameraScan;
