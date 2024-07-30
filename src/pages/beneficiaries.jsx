@@ -385,7 +385,7 @@ const Beneficiaries = () => {
                                                 className={`${data.status === 'reserved' ? 'bg-blue-500'
                                                     : data.status === 'expired' ? 'bg-red-500'
                                                         : 'bg-primary'
-                                                    } text-white text-[8px] font-bold px-2 rounded-full`}
+                                                    } capitalize text-white text-[8px] font-bold px-2 rounded-full`}
                                             >
                                                 {data.status}
                                             </button>
