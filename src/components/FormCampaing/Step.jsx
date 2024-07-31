@@ -5,7 +5,10 @@ import { useEffect, useState } from "react";
 import "react-clock/dist/Clock.css";
 import "react-time-picker/dist/TimePicker.css";
 import RoutStep from "../RoutStep";
-const LokasiMerchant = dynamic(() => import("../page/Detonator/LokasiMerchant"), { ssr: false });
+const LokasiMerchant = dynamic(
+  () => import("../page/Detonator/LokasiMerchant"),
+  { ssr: false }
+);
 
 import {
   Icon123,
@@ -405,8 +408,9 @@ function StepOne({
             value={TypeEvent}
             id="TypeEvent"
             onChange={handleTypeEventChange}
-            className={` ${TypeEvent === "" ? "text-gray-400" : "text-black"
-              } ml-1 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none`}
+            className={` ${
+              TypeEvent === "" ? "text-gray-400" : "text-black"
+            } ml-1 w-full p-0 py-4 pl-1 bg-transparent focus:border-none outline-none`}
           >
             <option disabled value="">
               Tipe Campaign
@@ -423,7 +427,7 @@ function StepOne({
         <div className="flex flex-row items-center p-4 pr-4 py-0 bg-gray-100 text-gray-400 text-sm rounded-lg focus:ring-blue-500 w-full border-none">
           <IconCalendar />
           <input
-            onChange={() => handleTanggalChange()}
+            onChange={handleTanggalChange}
             value={Tanggal}
             name="Tanggal"
             type="date"
@@ -1073,10 +1077,11 @@ function StepThree({
         <div className="items-center justify-center mt-1 w-full">
           <div className="w-full bg-white  text-black rounded-lg inline-flex items-center px-4 py-2.5 ">
             <div
-              className={`flex ${Object.keys(groupedCart).length > 0
-                ? "justify-between"
-                : "justify-center"
-                } w-full`}
+              className={`flex ${
+                Object.keys(groupedCart).length > 0
+                  ? "justify-between"
+                  : "justify-center"
+              } w-full`}
             >
               <div className="flex">
                 {Object.keys(groupedCart).length > 0 ? (
@@ -1113,81 +1118,82 @@ function StepThree({
         <div className="items-center justify-center w-full">
           {Object.keys(groupedCart).length > 0
             ? Object.keys(groupedCart).map((IdMerchan, storeIndex) => (
-              <div key={storeIndex} className="mb-4 p-2">
-                {groupedCart[IdMerchan].map((item, itemIndex) => (
-                  <div
-                    key={itemIndex}
-                    className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
-                  >
-                    <div className="flex h-30 w-full">
-                      <img
-                        className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
-                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${item.images.length > 0
-                          ? item.images[0].image_url
-                          : ""
+                <div key={storeIndex} className="mb-4 p-2">
+                  {groupedCart[IdMerchan].map((item, itemIndex) => (
+                    <div
+                      key={itemIndex}
+                      className="bg-white text-black rounded-lg inline-flex items-center px-2 py-2 mb-2 w-full border border-primary"
+                    >
+                      <div className="flex h-30 w-full">
+                        <img
+                          className="w-28 h-28 rounded-xl bg-blue-100 mr-2 text-blue-600"
+                          src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${
+                            item.images.length > 0
+                              ? item.images[0].image_url
+                              : ""
                           }`}
-                        alt=""
-                      />
-                      <div className="flex flex-col justify-between w-full">
-                        <div className="text-left place-items-start">
-                          <div className="text-primary font-bold capitalize">
-                            {item.name}
-                            {/* {item.imageUrl} */}
+                          alt=""
+                        />
+                        <div className="flex flex-col justify-between w-full">
+                          <div className="text-left place-items-start">
+                            <div className="text-primary font-bold capitalize">
+                              {item.name}
+                              {/* {item.imageUrl} */}
+                            </div>
+                            <div className="mb-1 font-sans text-[11px]">
+                              {/* terjual | Disukai oleh: 20 | */}
+                              Max Quota: {item.capacity}
+                            </div>
+                            <div className="mb-1 font-sans text-[11px]">
+                              {item.description}
+                            </div>
                           </div>
-                          <div className="mb-1 font-sans text-[11px]">
-                            {/* terjual | Disukai oleh: 20 | */}
-                            Max Quota: {item.capacity}
-                          </div>
-                          <div className="mb-1 font-sans text-[11px]">
-                            {item.description}
-                          </div>
-                        </div>
-                        <div className="mt-2 flex flex-row gap-4 justify-between">
-                          <p className="font-bold text-primary">
-                            {new Intl.NumberFormat("id-ID", {
-                              style: "currency",
-                              currency: "IDR",
-                              minimumFractionDigits: 0,
-                            }).format(item.price * item.quantity || 0)}
-                          </p>
-                          <div className="grid place-items-center">
-                            <div className="flex items-center">
-                              <button
-                                className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                onClick={() =>
-                                  handleDecrease(
-                                    IdMerchan,
-                                    item.id,
-                                    item.capacity
-                                  )
-                                }
-                              >
-                                <IconMinus size={15} />
-                              </button>
-                              <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
-                                {item.quantity}
-                              </span>
-                              <button
-                                className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
-                                onClick={() =>
-                                  handleIncrease(
-                                    IdMerchan,
-                                    item.id,
-                                    item.capacity
-                                  )
-                                }
-                              >
-                                <IconPlus size={15} />
-                              </button>
+                          <div className="mt-2 flex flex-row gap-4 justify-between">
+                            <p className="font-bold text-primary">
+                              {new Intl.NumberFormat("id-ID", {
+                                style: "currency",
+                                currency: "IDR",
+                                minimumFractionDigits: 0,
+                              }).format(item.price * item.quantity || 0)}
+                            </p>
+                            <div className="grid place-items-center">
+                              <div className="flex items-center">
+                                <button
+                                  className=" text-black px-2 py-1 rounded-l hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                  onClick={() =>
+                                    handleDecrease(
+                                      IdMerchan,
+                                      item.id,
+                                      item.capacity
+                                    )
+                                  }
+                                >
+                                  <IconMinus size={15} />
+                                </button>
+                                <span className="px-4 text-blue-700 font-bold border rounded-md border-blue-900">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  className=" text-black px-2 py-1 rounded-r hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+                                  onClick={() =>
+                                    handleIncrease(
+                                      IdMerchan,
+                                      item.id,
+                                      item.capacity
+                                    )
+                                  }
+                                >
+                                  <IconPlus size={15} />
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ))
+                  ))}
+                </div>
+              ))
             : ""}
         </div>
         {/* </div> */}
@@ -1227,7 +1233,8 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
   useEffect(() => {
     axios
       .get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
         }donation/list?start=${month}-01&end=${month}-${new Date(
           moment(month, "YYYY-MM").format("YYYY"),
           moment(month, "YYYY-MM").format("MM"),
@@ -1319,8 +1326,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             amount: parseFloat(donationRequired),
             admin_fee: 0,
             total_amount: parseFloat(donationRequired),
-            payment_channel: `${selectedMethod === "agnostic" ? "Tabunganku" : selectedChannel
-              }`,
+            payment_channel: `${
+              selectedMethod === "agnostic" ? "Tabunganku" : selectedChannel
+            }`,
             success_url: `${process.env.NEXT_PUBLIC_URL_PAYMEN}`,
           },
         };
@@ -1453,8 +1461,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
           className="flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none"
         >
           <p
-            className={`capitalize font-bold ${selectedMethod === "" ? "text-gray-400" : "text-black"
-              }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
+            className={`capitalize font-bold ${
+              selectedMethod === "" ? "text-gray-400" : "text-black"
+            }  pl-2 cursor-pointer outline-none py-4 bg-transparent focus:border-none`}
           >
             {selectedMethod === "" ? "Pilih Salah Satu..." : selectedMethod}
           </p>
@@ -1483,12 +1492,14 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                     className="hidden"
                   />
                   <div
-                    className={`w-[10px] h-[10px] ${data.value === selectedMethod && "bg-primary"
-                      } rounded-full flex justify-center items-center`}
+                    className={`w-[10px] h-[10px] ${
+                      data.value === selectedMethod && "bg-primary"
+                    } rounded-full flex justify-center items-center`}
                   >
                     <div
-                      className={`rounded-full p-2 ${data.value === selectedMethod && "border-primary"
-                        } border-2`}
+                      className={`rounded-full p-2 ${
+                        data.value === selectedMethod && "border-primary"
+                      } border-2`}
                     />
                   </div>
                 </button>
@@ -1507,10 +1518,11 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
                 setIsDropdownChannelOpen(!isDropdownChannelOpen);
                 setIsDropdownMethodOpen(false);
               }}
-              className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${selectedMethod === "agnostic"
-                ? "bg-[#1D5882] cursor-normal"
-                : ""
-                }`}
+              className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${
+                selectedMethod === "agnostic"
+                  ? "bg-[#1D5882] cursor-normal"
+                  : ""
+              }`}
             >
               {selectedMethod === "agnostic" ? (
                 <>
@@ -1532,8 +1544,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
               ) : (
                 <>
                   <p
-                    className={`capitalize font-bold ${selectedChannel === "" ? "text-gray-400" : "text-black"
-                      }  pl-2 cursor-pointer outline-none py-4  focus:border-none`}
+                    className={`capitalize font-bold ${
+                      selectedChannel === "" ? "text-gray-400" : "text-black"
+                    }  pl-2 cursor-pointer outline-none py-4  focus:border-none`}
                   >
                     {selectedChannel === "" ? (
                       `Pilih ${selectedMethod}...`
@@ -1555,7 +1568,7 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             <p
               className={
                 selectedMethod === "agnostic" &&
-                  donationRequired + admin_fee > wallet_balance
+                donationRequired + admin_fee > wallet_balance
                   ? "instructions italic text-[10px] flex items-center"
                   : "hidden"
               }
@@ -1569,83 +1582,87 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
           <div className="flex flex-col px-4 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none">
             {selectedMethod === "ewallet"
               ? eWalletChannelOptions.map((data, index) => (
-                <>
-                  <button
-                    onClick={() => {
-                      setIsDropdownChannelOpen(false);
-                      setSelectedChannel(data.value);
-                      setSelectedChannelLogo(data.logo);
-                    }}
-                    className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Image width={30} src={data.logo} />
-                      <label
-                        htmlFor="ewallet"
-                        className="font-bold text-black"
-                      >
-                        {data.value}
-                      </label>
-                    </div>
-                    <input
-                      type="radio"
-                      id={data.value}
-                      name="paymentOption"
-                      value={data.value}
-                      className="hidden"
-                    />
-                    <div
-                      className={`w-[10px] h-[10px] ${data.value === selectedChannel && "bg-primary"
-                        } rounded-full flex justify-center items-center`}
+                  <>
+                    <button
+                      onClick={() => {
+                        setIsDropdownChannelOpen(false);
+                        setSelectedChannel(data.value);
+                        setSelectedChannelLogo(data.logo);
+                      }}
+                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
                     >
-                      <div
-                        className={`rounded-full p-2 ${data.value === selectedChannel && "border-primary"
-                          } border-2`}
+                      <div className="flex items-center gap-2">
+                        <Image width={30} src={data.logo} />
+                        <label
+                          htmlFor="ewallet"
+                          className="font-bold text-black"
+                        >
+                          {data.value}
+                        </label>
+                      </div>
+                      <input
+                        type="radio"
+                        id={data.value}
+                        name="paymentOption"
+                        value={data.value}
+                        className="hidden"
                       />
-                    </div>
-                  </button>
-                  {index !== eWalletChannelOptions.length - 1 ? <hr /> : ""}
-                </>
-              ))
+                      <div
+                        className={`w-[10px] h-[10px] ${
+                          data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                      >
+                        <div
+                          className={`rounded-full p-2 ${
+                            data.value === selectedChannel && "border-primary"
+                          } border-2`}
+                        />
+                      </div>
+                    </button>
+                    {index !== eWalletChannelOptions.length - 1 ? <hr /> : ""}
+                  </>
+                ))
               : bankChannelOptions.map((data, index) => (
-                <>
-                  <button
-                    onClick={() => {
-                      setIsDropdownChannelOpen(false);
-                      setSelectedChannel(data.value);
-                      setSelectedChannelLogo(data.logo);
-                    }}
-                    className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Image width={30} src={data.logo} />
-                      <label
-                        htmlFor="ewallet"
-                        className="font-bold text-black"
-                      >
-                        {data.value}
-                      </label>
-                    </div>
-                    <input
-                      type="radio"
-                      id={data.value}
-                      name="paymentOption"
-                      value={data.value}
-                      className="hidden"
-                    />
-                    <div
-                      className={`w-[10px] h-[10px] ${data.value === selectedChannel && "bg-primary"
-                        } rounded-full flex justify-center items-center`}
+                  <>
+                    <button
+                      onClick={() => {
+                        setIsDropdownChannelOpen(false);
+                        setSelectedChannel(data.value);
+                        setSelectedChannelLogo(data.logo);
+                      }}
+                      className="flex flex-row justify-between items-center cursor-pointer py-3 w-full"
                     >
-                      <div
-                        className={`rounded-full p-2 ${data.value === selectedChannel && "border-primary"
-                          } border-2`}
+                      <div className="flex items-center gap-2">
+                        <Image width={30} src={data.logo} />
+                        <label
+                          htmlFor="ewallet"
+                          className="font-bold text-black"
+                        >
+                          {data.value}
+                        </label>
+                      </div>
+                      <input
+                        type="radio"
+                        id={data.value}
+                        name="paymentOption"
+                        value={data.value}
+                        className="hidden"
                       />
-                    </div>
-                  </button>
-                  {index !== bankChannelOptions.length - 1 ? <hr /> : ""}
-                </>
-              ))}
+                      <div
+                        className={`w-[10px] h-[10px] ${
+                          data.value === selectedChannel && "bg-primary"
+                        } rounded-full flex justify-center items-center`}
+                      >
+                        <div
+                          className={`rounded-full p-2 ${
+                            data.value === selectedChannel && "border-primary"
+                          } border-2`}
+                        />
+                      </div>
+                    </button>
+                    {index !== bankChannelOptions.length - 1 ? <hr /> : ""}
+                  </>
+                ))}
           </div>
         ) : (
           ""
@@ -1706,9 +1723,9 @@ function SingleDonationPayment({ setLoading, cart, uploadedFile }) {
             type="submit"
             className={
               selectedMethod === "" ||
-                (selectedMethod !== "agnostic" && selectedChannel === "") ||
-                (selectedMethod === "agnostic" &&
-                  donationRequired > wallet_balance)
+              (selectedMethod !== "agnostic" && selectedChannel === "") ||
+              (selectedMethod === "agnostic" &&
+                donationRequired > wallet_balance)
                 ? "text-white bg-gray-400 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
                 : "text-white bg-primary hover:bg-blue-800 outline-none font-medium rounded-xl text-xl w-full sm:w-auto px-5 py-2.5 text-center"
             }
@@ -1781,11 +1798,11 @@ function Stepfour({
       const updatedCart = cart.map((item, index) =>
         index === existingItemIndex
           ? {
-            ...item,
-            quantity: item.quantity + food.quantity,
-            total: (item.quantity + food.quantity) * item.price,
-            capacity: food.qty,
-          }
+              ...item,
+              quantity: item.quantity + food.quantity,
+              total: (item.quantity + food.quantity) * item.price,
+              capacity: food.qty,
+            }
           : item
       );
       setCart(updatedCart);
@@ -1901,17 +1918,17 @@ function Stepfive({
   const router = useRouter();
   const [dataApi, setDataApi] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState("");
   const [coordinates, setCoordinates] = useState({});
-  const detonatorId = localStorage.getItem('id');
-  const token = localStorage.getItem('token');
+  const detonatorId = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const storedFormData = localStorage.getItem('formData');
+    const storedFormData = localStorage.getItem("formData");
     if (storedFormData) {
       const parsedFormData = JSON.parse(storedFormData);
       if (parsedFormData) {
-        setLocation(parsedFormData.location || '');
+        setLocation(parsedFormData.location || "");
         setCoordinates(parsedFormData.coordinates || {});
       }
     }
@@ -1937,7 +1954,7 @@ function Stepfive({
   const fetchData = async () => {
     try {
       if (!detonatorId || !token) {
-        throw new Error('Missing required session data');
+        throw new Error("Missing required session data");
       }
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}merchant/filter?per_page=100000`,
@@ -1950,30 +1967,38 @@ function Stepfive({
 
       const approvedMerchants = response.data.body.filter((merchant) => {
         return (
-          merchant.status === 'approved' &&
-          merchant.products.some((product) => product.status === 'approved')
+          merchant.status === "approved" &&
+          merchant.products.some((product) => product.status === "approved")
         );
       });
 
       const merchantsWithDistance = approvedMerchants.map((merchant) => {
-        const distance = getDistance(coordinates.lat, coordinates.lng, merchant.latitude, merchant.longitude);
+        const distance = getDistance(
+          coordinates.lat,
+          coordinates.lng,
+          merchant.latitude,
+          merchant.longitude
+        );
         return { ...merchant, distance };
       });
 
-      const validMerchants = merchantsWithDistance.filter((merchant) => !isNaN(merchant.distance) && merchant.distance >= 0);
+      const validMerchants = merchantsWithDistance.filter(
+        (merchant) => !isNaN(merchant.distance) && merchant.distance >= 0
+      );
 
-      const sortedMerchants = validMerchants.sort((a, b) => a.distance - b.distance);
+      const sortedMerchants = validMerchants.sort(
+        (a, b) => a.distance - b.distance
+      );
       setDataApi(sortedMerchants);
       setFilteredData(sortedMerchants);
-
     } catch (error) {
-      console.error('Error fetching merchant data:', error);
+      console.error("Error fetching merchant data:", error);
       Error401(error, router);
     }
   };
 
   const handleLink = () => {
-    router.push('/createcampaign?step=3');
+    router.push("/createcampaign?step=3");
   };
 
   const totalHarga = cart.reduce((acc, item) => acc + item.total, 0).toFixed(2);
@@ -1981,10 +2006,10 @@ function Stepfive({
 
   const categorizeDistance = (distance) => {
     if (isNaN(distance) || distance < 0) {
-      return 'Unknown';
+      return "Unknown";
     }
     if (distance < 1000) {
-      return '< 1 km';
+      return "< 1 km";
     } else {
       const lowerBound = Math.floor(distance / 1000);
       const upperBound = lowerBound + 1;
@@ -1994,14 +2019,14 @@ function Stepfive({
 
   const convertDistance = (distance) => {
     if (distance > 999) {
-      return (distance / 1000).toFixed(1) + ' km';
+      return (distance / 1000).toFixed(1) + " km";
     }
-    return distance + ' meter';
+    return distance + " meter";
   };
 
   return (
     <div className="container mx-auto px-4 bg-white">
-      <Header title={'Pilih Merchant'} />
+      <Header title={"Pilih Merchant"} />
 
       <p className="text-black font-light text-xs mb-5 flex flex-row items-center justify-center gap-1">
         <IconMapPin color="red" />
@@ -2009,7 +2034,11 @@ function Stepfive({
       </p>
       <div className="flex justify-center">
         {coordinates.lat && coordinates.lng ? (
-          <LokasiMerchant getMylocation={coordinates} zoom={11} merchants={dataApi} />
+          <LokasiMerchant
+            getMylocation={coordinates}
+            zoom={11}
+            merchants={dataApi}
+          />
         ) : null}
       </div>
       <p className="py-[16px] text-gray-700 font-medium text-xl">
@@ -2021,7 +2050,8 @@ function Stepfive({
           const distanceText = categorizeDistance(item.distance);
           const shouldAddSeparator =
             index > 0 &&
-            categorizeDistance(item.distance) !== categorizeDistance(filteredData[index - 1].distance);
+            categorizeDistance(item.distance) !==
+              categorizeDistance(filteredData[index - 1].distance);
 
           return (
             <div key={item.id}>
