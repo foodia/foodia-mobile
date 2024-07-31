@@ -110,7 +110,7 @@ const Beneficiaries = () => {
                                 timer: 2000,
                             });
                             setTimeout(() => {
-                                router.push("/beneficiaries/edit");
+                                router.push("/home");
                             }, 2000);
                         } else {
                             localStorage.setItem("id", cekData.beneficiaries.beneficiaries_id);
