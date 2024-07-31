@@ -6,7 +6,7 @@ import axios from "axios";
 import Link from "next/link";
 import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import moment from "moment/moment";
 import { IconChevronDown } from "@tabler/icons-react";
 
@@ -42,7 +42,7 @@ const mydonation = () => {
       });
   };
 
-  const getHistory = (month) => {
+  const getHistoryDonations = (month) => {
     setLoading(true);
     axios
       .get(
@@ -86,13 +86,61 @@ const mydonation = () => {
       });
   };
 
+  const getHistoryCoupons = (month) => {
+    setLoading(true);
+    axios
+      .get(
+        `${
+          process.env.NEXT_PUBLIC_API_BASE_URL
+        }donation/coupon?start=${month}-01&end=${month}-${new Date(
+          moment(month, "YYYY-MM").format("YYYY"),
+          moment(month, "YYYY-MM").format("MM"),
+          0
+        ).getDate()}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        setLoading(false);
+        setData(response.data.body);
+        if (response.data.body.is_permission_manage === 1) {
+          setIsChecked(true);
+          setIsCheckedSuccess(true);
+        } else {
+          setIsCheckedSuccess(false);
+        }
+
+        setMonthOptions(
+          response.data.body.year_filters.sort(
+            (a, b) => new Date(b) - new Date(a)
+          )
+        );
+        const sortedData = response.data.body.donation_history.sort(
+          (a, b) => b.transaction.id - a.transaction.id
+        );
+
+        setHistory(sortedData);
+      })
+      .catch((error) => {
+        setLoading(false);
+        Error401(error, router);
+      });
+  };
+
   useEffect(() => {
-    getHistory(month);
+    getHistoryDonations(month);
   }, []);
 
   const onChangeMonth = (bulan) => {
     setMonth(bulan);
-    getHistory(bulan);
+    if (donationType === "donasi") {
+      getHistoryDonations(bulan);
+    } else {
+      getHistoryCoupons(bulan);
+    }
     setIsOpenedMonthOptions(!isOpenedMonthOptions);
   };
 
@@ -106,6 +154,7 @@ const mydonation = () => {
             <button
               onClick={() => {
                 setDonationType("donasi");
+                getHistoryDonations(month);
               }}
               className={`${
                 donationType === "donasi"
@@ -118,6 +167,7 @@ const mydonation = () => {
             <button
               onClick={() => {
                 setDonationType("kupon");
+                getHistoryCoupons(month);
               }}
               className={` ${
                 donationType === "kupon"
@@ -177,6 +227,7 @@ const mydonation = () => {
                     <p>Donasi Bulan Ini</p>
 
                     <button
+                      // ref={buttonRef}
                       onClick={() =>
                         setIsOpenedMonthOptions(!isOpenedMonthOptions)
                       }
@@ -186,22 +237,30 @@ const mydonation = () => {
                       <IconChevronDown size={"17px"} />
                     </button>
                     {isOpenedMonthOptions && (
-                      <div className="absolute overflow-auto p-1 flex flex-col top-[265px] items-start w-24 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
-                        <button
-                          onClick={() => {
-                            onChangeMonth(moment(new Date()).format("YYYY-MM"));
-                          }}
-                          className={`${
-                            moment(new Date(), "YYYY-MM").format("MMM YYYY") ===
-                            moment(month, "YYYY-MM").format("MMM YYYY")
-                              ? "text-primary"
-                              : "text-black"
-                          } text-[12px] w-full text-left font-semibold`}
-                        >
-                          {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
-                        </button>
+                      <div className="absolute overflow-auto flex flex-col top-[267px] items-start w-20 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
+                        {!data?.year_filters.includes(
+                          moment(new Date()).format("YYYY-MM")
+                        ) && (
+                          <button
+                            onClick={() => {
+                              onChangeMonth(
+                                moment(new Date()).format("YYYY-MM")
+                              );
+                            }}
+                            className={`${
+                              moment(new Date(), "YYYY-MM").format(
+                                "MMM YYYY"
+                              ) === moment(month, "YYYY-MM").format("MMM YYYY")
+                                ? "text-primary"
+                                : "text-black"
+                            } text-[12px] w-full text-left font-semibold`}
+                          >
+                            {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
+                          </button>
+                        )}
                         {data?.year_filters?.map((bulan, index) => (
                           <button
+                            // ref={buttonRef}
                             onClick={() => {
                               onChangeMonth(bulan);
                             }}
@@ -337,20 +396,28 @@ const mydonation = () => {
                       <IconChevronDown size={"17px"} />
                     </button>
                     {isOpenedMonthOptions && (
-                      <div className="absolute overflow-auto p-1 flex flex-col top-[178px] items-start w-24 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
-                        <button
-                          onClick={() => {
-                            onChangeMonth(moment(new Date()).format("YYYY-MM"));
-                          }}
-                          className={`${
-                            moment(new Date(), "YYYY-MM").format("MMM YYYY") ===
-                            moment(month, "YYYY-MM").format("MMM YYYY")
-                              ? "text-primary"
-                              : "text-black"
-                          } text-[12px] w-full text-left font-semibold`}
-                        >
-                          {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
-                        </button>
+                      <div className="absolute overflow-auto flex flex-col top-[179px] items-start h-[25px] w-20 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
+                        {!data?.year_filters?.includes(
+                          moment(new Date()).format("YYYY-MM")
+                        ) && (
+                          <button
+                            ref={buttonRef}
+                            onClick={() => {
+                              onChangeMonth(
+                                moment(new Date()).format("YYYY-MM")
+                              );
+                            }}
+                            className={`${
+                              moment(new Date(), "YYYY-MM").format(
+                                "MMM YYYY"
+                              ) === moment(month, "YYYY-MM").format("MMM YYYY")
+                                ? "text-primary"
+                                : "text-black"
+                            } text-[12px] w-full text-left font-semibold`}
+                          >
+                            {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
+                          </button>
+                        )}
                         {data?.year_filters?.map((bulan, index) => (
                           <button
                             onClick={() => {
@@ -379,7 +446,7 @@ const mydonation = () => {
                 </div>
               </div>
 
-              {/* {loading ? (
+              {loading ? (
                 <div className={`${styles.card} `}>
                   {[...Array(4)].map((_, index) => (
                     <div key={index} className={`${styles.loadingCard}`}>
@@ -387,62 +454,61 @@ const mydonation = () => {
                     </div>
                   ))}
                 </div>
-              ) : data?.donation_history ? ( */}
-              <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
-                {/* {history.map((data) => ( */}
-                <div className="w-full px-2 py-2 mt-2.5 rounded-lg shadow-[0px_0px_8px_0px_#00000024]">
-                  <div className="flex justify-between items-center font-semibold text-[10px]">
-                    <div className="">
-                      <p className="font-bold">Tanggal Transaksi</p>
-                      <p className="italic">
-                        {/* {moment(data?.date).format("DD MMM YYYY HH:mm") +
+              ) : data?.donation_history ? (
+                <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
+                  {history.map((data) => (
+                    <div className="w-full px-2 py-2 mt-2.5 rounded-lg shadow-[0px_0px_8px_0px_#00000024]">
+                      <div className="flex justify-between items-center font-semibold text-[10px]">
+                        <div className="">
+                          <p className="font-bold">Tanggal Transaksi</p>
+                          <p className="italic">
+                            {/* {moment(data?.date).format("DD MMM YYYY HH:mm") +
                           " WIB"} */}
-                        {moment(new Date()).format("DD MMM YYYY HH:mm") +
-                          " WIB"}
-                      </p>
+                            {moment(data.date).format("DD MMM YYYY HH:mm") +
+                              " WIB"}
+                          </p>
+                        </div>
+                        <p
+                          className={`text-[16px] font-bold bg-gradient-to-b from-[#FF2F2F] to-[#FFBD5B] inline-block text-transparent bg-clip-text`}
+                        >
+                          {new Intl.NumberFormat("id-ID", {
+                            style: "currency",
+                            currency: "IDR",
+                            minimumFractionDigits: 0,
+                          }).format(data?.total || 0)}
+                        </p>
+                      </div>
+                      <hr className="mt-2 h-[1px] bg-gray-100" />
+                      <div className="py-1">
+                        <h1 className=" font-bold text-sm">
+                          {data?.description}
+                        </h1>
+                        <p className=" font-normal text-xs">{data?.address}</p>
+                      </div>
+                      <hr className="mt-2 h-[1px] bg-gray-100" />
+                      <div class="flex justify-between items-center font-semibold text-xs mt-1 text-primary">
+                        <button
+                          onClick={() => {
+                            // localStorage.setItem("prevPath", "/mydonation");
+                            router.push(
+                              `/merchant/kupon/claimed/${data.coupon_transaction_id}`
+                            );
+                          }}
+                          class="text-xs font-semibold w-full focus:outline-none"
+                        >
+                          Laporan Transaksi Klaim Kupon
+                        </button>
+                      </div>
                     </div>
-                    <p
-                      className={`text-[16px] font-bold bg-gradient-to-b from-[#FF2F2F] to-[#FFBD5B] inline-block text-transparent bg-clip-text`}
-                    >
-                      {new Intl.NumberFormat("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                        minimumFractionDigits: 0,
-                      }).format(data?.total || 0)}
-                    </p>
-                  </div>
-                  <hr className="mt-2 h-[1px] bg-gray-100" />
-                  <div className="py-1">
-                    <h1 className=" font-bold text-sm">
-                      {data?.campaign?.event_name}
-                    </h1>
-                    <p className=" font-normal text-xs">
-                      {data?.campaign?.address}
-                    </p>
-                  </div>
-                  <hr className="mt-2 h-[1px] bg-gray-100" />
-                  <div class="flex justify-between items-center font-semibold text-xs mt-1 text-primary">
-                    <button
-                      onClick={() => {
-                        // localStorage.setItem("prevPath", "/mydonation");
-                        router.push(`/merchant/kupon/claimed/336`);
-                      }}
-                      class="text-xs font-semibold w-full focus:outline-none"
-                    >
-                      Laporan Transaksi Klaim Kupon
-                    </button>
-                  </div>
+                  ))}
                 </div>
-                {/* ))} */}
-              </div>
-              {/* // ) : (
-              //   <p
-              //     className={`mt-26 text-sm text-[#A1A5C1] items-center justify-center flex flex-col h-[50%]`}
-              //   >
-              //     Yuk bantu saudara kita dengan
-              //     <p> berdonasi :&#41;</p>
-              //   </p>
-              // )} */}
+              ) : (
+                <p
+                  className={`mt-26 text-sm text-[#A1A5C1] items-center justify-center flex flex-col h-[50%]`}
+                >
+                  Belum ada transaksi kupon
+                </p>
+              )}
             </>
           )}
         </div>
