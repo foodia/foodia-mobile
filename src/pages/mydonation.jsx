@@ -227,7 +227,6 @@ const mydonation = () => {
                     <p>Donasi Bulan Ini</p>
 
                     <button
-                      // ref={buttonRef}
                       onClick={() =>
                         setIsOpenedMonthOptions(!isOpenedMonthOptions)
                       }
@@ -401,7 +400,6 @@ const mydonation = () => {
                           moment(new Date()).format("YYYY-MM")
                         ) && (
                           <button
-                            ref={buttonRef}
                             onClick={() => {
                               onChangeMonth(
                                 moment(new Date()).format("YYYY-MM")
