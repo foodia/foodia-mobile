@@ -445,7 +445,9 @@ const mydonation = () => {
                             } text-[12px] w-full text-left font-semibold flex flex-row items-center justify-between`}
                           >
                             {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
-                            {moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                            {moment(new Date(), "YYYY-MM").format(
+                              "MMM YYYY"
+                            ) ===
                             moment(month, "YYYY-MM").format("MMM YYYY") ? (
                               <IconCircleFilled
                                 className="mb-0.5 mr-0.5"
