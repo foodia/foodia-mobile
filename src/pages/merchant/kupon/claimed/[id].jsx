@@ -27,18 +27,8 @@ const claimed = () => {
   const [prevPath, setPrevPath] = useState("");
 
   useEffect(() => {
-    const role = localStorage.getItem("role");
     const token = localStorage.getItem("token");
-    const status = localStorage.getItem("status");
-    const id = localStorage.getItem("id");
-
-    if (
-      !role ||
-      !token ||
-      role !== "merchant" ||
-      status !== "approved" ||
-      !id
-    ) {
+    if (!token) {
       // Redirect to login if either role or token is missing or role is not 'detonator' or status is not 'approved'
       localStorage.clear();
       router.push("/login");

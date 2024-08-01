@@ -8,7 +8,12 @@ import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import moment from "moment/moment";
-import { IconChevronDown } from "@tabler/icons-react";
+import {
+  IconChevronDown,
+  IconCircle,
+  IconCircle0Filled,
+  IconCircleFilled,
+} from "@tabler/icons-react";
 
 const mydonation = () => {
   const router = useRouter();
@@ -131,7 +136,11 @@ const mydonation = () => {
   };
 
   useEffect(() => {
-    getHistoryDonations(month);
+    if (donationType === "donasi") {
+      getHistoryDonations(month);
+    } else {
+      getHistoryCoupons(month);
+    }
   }, []);
 
   const onChangeMonth = (bulan) => {
@@ -236,8 +245,8 @@ const mydonation = () => {
                       <IconChevronDown size={"17px"} />
                     </button>
                     {isOpenedMonthOptions && (
-                      <div className="absolute overflow-auto flex flex-col top-[267px] items-start w-20 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
-                        {!data?.year_filters.includes(
+                      <div className="absolute overflow-auto flex flex-col top-[267px] items-start w-20 px-[3.5px] rounded-md bg-transparent border-[1px] bg-white outline-none">
+                        {!monthOptions.includes(
                           moment(new Date()).format("YYYY-MM")
                         ) && (
                           <button
@@ -252,14 +261,26 @@ const mydonation = () => {
                               ) === moment(month, "YYYY-MM").format("MMM YYYY")
                                 ? "text-primary"
                                 : "text-black"
-                            } text-[12px] w-full text-left font-semibold`}
+                            } text-[12px] w-full text-left font-semibold flex flex-row items-center justify-between`}
                           >
                             {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
+                            {moment(new Date(), "YYYY-MM").format(
+                              "MMM YYYY"
+                            ) ===
+                            moment(month, "YYYY-MM").format("MMM YYYY") ? (
+                              <IconCircleFilled
+                                className="mb-0.5 mr-0.5"
+                                color="green"
+                                size={"10px"}
+                              />
+                            ) : (
+                              ""
+                            )}
                           </button>
                         )}
-                        {data?.year_filters?.map((bulan, index) => (
+                        {monthOptions.map((bulan, index) => (
                           <button
-                            // ref={buttonRef}
+                            key={index}
                             onClick={() => {
                               onChangeMonth(bulan);
                             }}
@@ -268,9 +289,19 @@ const mydonation = () => {
                               moment(month, "YYYY-MM").format("MMM YYYY")
                                 ? "text-primary"
                                 : "text-black"
-                            } text-[12px] w-full text-left font-semibold`}
+                            } text-[12px] w-full text-left font-semibold flex flex-row items-center justify-between`}
                           >
                             {moment(bulan, "YYYY-MM").format("MMM YYYY")}
+                            {moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                            moment(month, "YYYY-MM").format("MMM YYYY") ? (
+                              <IconCircleFilled
+                                className="mb-0.5 mr-0.5"
+                                color="green"
+                                size={"10px"}
+                              />
+                            ) : (
+                              ""
+                            )}
                           </button>
                         ))}
                       </div>
@@ -395,8 +426,8 @@ const mydonation = () => {
                       <IconChevronDown size={"17px"} />
                     </button>
                     {isOpenedMonthOptions && (
-                      <div className="absolute overflow-auto flex flex-col top-[179px] items-start h-[25px] w-20 pl-2 rounded-md bg-transparent border-[1px] bg-white outline-none">
-                        {!data?.year_filters?.includes(
+                      <div className="absolute overflow-auto flex flex-col top-[179px] items-start w-20 px-[3.5px] rounded-md bg-transparent border-[1px] bg-white outline-none">
+                        {!monthOptions?.includes(
                           moment(new Date()).format("YYYY-MM")
                         ) && (
                           <button
@@ -411,13 +442,24 @@ const mydonation = () => {
                               ) === moment(month, "YYYY-MM").format("MMM YYYY")
                                 ? "text-primary"
                                 : "text-black"
-                            } text-[12px] w-full text-left font-semibold`}
+                            } text-[12px] w-full text-left font-semibold flex flex-row items-center justify-between`}
                           >
                             {moment(new Date(), "YYYY-MM").format("MMM YYYY")}
+                            {moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                            moment(month, "YYYY-MM").format("MMM YYYY") ? (
+                              <IconCircleFilled
+                                className="mb-0.5 mr-0.5"
+                                color="green"
+                                size={"10px"}
+                              />
+                            ) : (
+                              ""
+                            )}
                           </button>
                         )}
-                        {data?.year_filters?.map((bulan, index) => (
+                        {monthOptions?.map((bulan, index) => (
                           <button
+                            key={index}
                             onClick={() => {
                               onChangeMonth(bulan);
                             }}
@@ -426,9 +468,19 @@ const mydonation = () => {
                               moment(month, "YYYY-MM").format("MMM YYYY")
                                 ? "text-primary"
                                 : "text-black"
-                            } text-[12px] w-full text-left font-semibold`}
+                            } text-[12px] w-full text-left font-semibold flex flex-row items-center justify-between`}
                           >
                             {moment(bulan, "YYYY-MM").format("MMM YYYY")}
+                            {moment(bulan, "YYYY-MM").format("MMM YYYY") ===
+                            moment(month, "YYYY-MM").format("MMM YYYY") ? (
+                              <IconCircleFilled
+                                className="mb-0.5 mr-0.5"
+                                color="green"
+                                size={"10px"}
+                              />
+                            ) : (
+                              ""
+                            )}
                           </button>
                         ))}
                       </div>
