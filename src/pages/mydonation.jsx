@@ -20,6 +20,7 @@ const mydonation = () => {
   const [data, setData] = useState();
   const [history, setHistory] = useState();
   const [month, setMonth] = useState(moment().format("YYYY-MM"));
+  const [couponMonthOptions, setCouponMonthOptions] = useState([]);
   const [monthOptions, setMonthOptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isChecked, setIsChecked] = useState();
@@ -118,7 +119,7 @@ const mydonation = () => {
           setIsCheckedSuccess(false);
         }
 
-        setMonthOptions(
+        setCouponMonthOptions(
           response.data.body.year_filters.sort(
             (a, b) => new Date(b) - new Date(a)
           )
@@ -427,7 +428,7 @@ const mydonation = () => {
                     </button>
                     {isOpenedMonthOptions && (
                       <div className="absolute overflow-auto flex flex-col top-[179px] items-start w-20 px-[3.5px] rounded-md bg-transparent border-[1px] bg-white outline-none">
-                        {!monthOptions?.includes(
+                        {!couponMonthOptions?.includes(
                           moment(new Date()).format("YYYY-MM")
                         ) && (
                           <button
@@ -459,7 +460,7 @@ const mydonation = () => {
                             )}
                           </button>
                         )}
-                        {monthOptions?.map((bulan, index) => (
+                        {couponMonthOptions?.map((bulan, index) => (
                           <button
                             key={index}
                             onClick={() => {
@@ -508,7 +509,7 @@ const mydonation = () => {
                 </div>
               ) : data?.donation_history ? (
                 <div className={`overflow-auto h-screen px-1 pb-[400px]`}>
-                  {history.map((data) => (
+                  {history?.map((data) => (
                     <div className="w-full px-2 py-2 mt-2.5 rounded-lg shadow-[0px_0px_8px_0px_#00000024]">
                       <div className="flex justify-between items-center font-semibold text-[10px]">
                         <div className="">
