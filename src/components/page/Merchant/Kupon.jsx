@@ -42,50 +42,37 @@ const Kupon = () => {
 
   useEffect(() => {
     const merchant_id = localStorage.getItem("id");
-    if (selectedStatus === "reserved") {
-      axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?merchant_id=${merchant_id}&status=reserved`, {
+    const token = localStorage.getItem("token");
+    let statusUrl = "";
+
+    switch (selectedStatus) {
+      case "reserved":
+        statusUrl = "reserved";
+        break;
+      case "active":
+        statusUrl = "active";
+        break;
+      case "claimed":
+        statusUrl = "claimed";
+        break;
+      default:
+        break;
+    }
+
+    if (statusUrl) {
+      axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?merchant_id=${merchant_id}&status=${statusUrl}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       }).then((response) => {
-        setFilteredData(response.data.body);
-        setDataApi(response.data.body);
+        const sortedData = response.data.body.sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date));
+        setFilteredData(sortedData);
+        setDataApi(sortedData);
         setLoading(false);
       })
         .catch((error) => {
           Error401(error, router);
         });
-
-    } else if (selectedStatus === "active") {
-      axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?merchant_id=${merchant_id}&status=active`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }).then((response) => {
-        setFilteredData(response.data.body);
-        setDataApi(response.data.body);
-        setLoading(false);
-      })
-        .catch((error) => {
-          Error401(error, router);
-        });
-
-    } else if (selectedStatus === "claimed") {
-      axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?merchant_id=${merchant_id}&status=claimed`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }).then((response) => {
-        setFilteredData(response.data.body);
-        setDataApi(response.data.body);
-        setLoading(false);
-      })
-        .catch((error) => {
-          Error401(error, router);
-        });
-
-    } else {
-
     }
 
   }, [selectedStatus]);
