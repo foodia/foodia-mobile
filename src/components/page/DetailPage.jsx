@@ -351,12 +351,10 @@ const DetailCamp = ({ data }) => {
     }
   };
 
-  function censorName(name) {
-    return name
-      .split(' ')
-      .map(segment => segment[0] + '*'.repeat(segment.length - 1))
-      .join(' ');
-  }
+  const censorName = (name) => {
+    const nameParts = name.split(' ');
+    return nameParts.map(part => `${part[0]}***`).join(' ');
+  };
 
 
   const remainingDays = calculateRemainingTime(data.event_date);

@@ -187,56 +187,49 @@ const Beneficiaries = () => {
     };
 
     useEffect(() => {
-        let filtered = [];
         const id = localStorage.getItem("id");
         const token = localStorage.getItem("token");
 
-        if (selectedStatus === "Booking") {
-            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?beneficiary_id=${id}&status=reserved`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }).then((response) => {
-                setDataOrder(response.data.body);
-                setLoading(false);
-            }).catch((error) => {
-                Error401(error, router);
-            })
-        } else if (selectedStatus === "Hangus") {
-            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?beneficiary_id=${id}&status=expired`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }).then((response) => {
-                setDataOrder(response.data.body);
-                setLoading(false);
-            }).catch((error) => {
-                Error401(error, router);
-            })
-        } else if (selectedStatus === "Aktif") {
-            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?beneficiary_id=${id}&status=active`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }).then((response) => {
-                setDataOrder(response.data.body);
-                setLoading(false);
-            }).catch((error) => {
-                Error401(error, router);
-            })
-        } else if (selectedStatus === "Selesai") {
-            axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?beneficiary_id=${id}&status=claimed`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }).then((response) => {
-                setDataOrder(response.data.body);
-                setLoading(false);
-            }).catch((error) => {
-                Error401(error, router);
-            })
+        if (!id || !token) {
+            console.error("ID or token is missing");
+            return;
         }
-    }, [selectedStatus]);
+
+        let status;
+        switch (selectedStatus) {
+            case "Booking":
+                status = "reserved";
+                break;
+            case "Hangus":
+                status = "expired";
+                break;
+            case "Aktif":
+                status = "active";
+                break;
+            case "Selesai":
+                status = "claimed";
+                break;
+            default:
+                console.error("Invalid status");
+                return;
+        }
+
+        axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}coupon/filter?beneficiary_id=${id}&status=${status}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                const sortedData = response.data.body.sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date));
+                setDataOrder(sortedData);
+                setLoading(false);
+            })
+            .catch((error) => {
+                Error401(error, router);
+                setLoading(false);
+            });
+
+    }, [selectedStatus, router]);
 
     const HandleRout = (status, coupon, mrc, prd) => {
         if (status === "reserved") {
@@ -357,59 +350,62 @@ const Beneficiaries = () => {
                             <p>Selesai</p>
                         </div>
                     </div>
+                    <div className="pb-24">
 
-                    {DataOrder.length > 0 ? (
-                        DataOrder.map((data, index) => (
-                            <div
-                                key={index}
-                                onClick={() =>
-                                    HandleRout(
-                                        data.status,
-                                        data.qr_code,
-                                        data.id,
-                                        data.merchant_product_id
-                                    )
-                                }
-                                className="w-full items-center justify-center flex cursor-pointer my-2"
-                            >
-                                <div className="w-[328px] bg-white border border-gray-300 rounded-lg flex p-2">
-                                    <img
-                                        className="w-[100px] h-[100px] rounded-md object-cover"
-                                        src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product?.images[0]}`}
-                                        alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product?.images[0]}`}
-                                    />
-                                    <div className="ml-2 flex flex-col justify-between w-full">
-                                        <div className="flex justify-between items-center">
-                                            <h2 className="text-[14px] font-bold text-green-600">{data.merchant_product?.name}</h2>
-                                            <button
-                                                className={`${data.status === 'reserved' ? 'bg-blue-500'
-                                                    : data.status === 'expired' ? 'bg-red-500'
-                                                        : 'bg-primary'
-                                                    } capitalize text-white text-[8px] font-bold px-2 rounded-full`}
-                                            >
-                                                {data.status}
-                                            </button>
-                                        </div>
-                                        <p className="text-[8px] text-gray-600 overflow-hidden line-clamp-3">
-                                            {data.merchant_product?.description}
-                                        </p>
-                                        <div className="text-[8px] text-right flex flex-col items-end">
-                                            <p className="italic text-gray-600">Permintaan oleh</p>
-                                            <p className="font-semibold italic text-gray-600">{localStorage.getItem('fullname')}</p>
-                                            <p className="italic text-gray-600">Masa berlaku hingga</p>
-                                            <p className="font-semibold italic text-gray-600">
-                                                {moment(data.expired_at).format('DD MMMM YYYY HH:mm:ss [WIB]')}
+
+                        {DataOrder.length > 0 ? (
+                            DataOrder.map((data, index) => (
+                                <div
+                                    key={index}
+                                    onClick={() =>
+                                        HandleRout(
+                                            data.status,
+                                            data.qr_code,
+                                            data.id,
+                                            data.merchant_product_id
+                                        )
+                                    }
+                                    className="w-full items-center justify-center flex cursor-pointer my-2 "
+                                >
+                                    <div className="w-[328px] bg-white border border-gray-300 rounded-lg flex p-2">
+                                        <img
+                                            className="w-[100px] h-[100px] rounded-md object-cover"
+                                            src={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product?.images[0]}`}
+                                            alt={`${process.env.NEXT_PUBLIC_URL_STORAGE}${data.merchant_product?.images[0]}`}
+                                        />
+                                        <div className="ml-2 flex flex-col justify-between w-full">
+                                            <div className="flex justify-between items-center">
+                                                <h2 className="text-[14px] font-bold text-green-600">{data.merchant_product?.name}</h2>
+                                                <button
+                                                    className={`${data.status === 'reserved' ? 'bg-blue-500'
+                                                        : data.status === 'expired' ? 'bg-red-500'
+                                                            : 'bg-primary'
+                                                        } capitalize text-white text-[8px] font-bold px-2 rounded-full`}
+                                                >
+                                                    {data.status}
+                                                </button>
+                                            </div>
+                                            <p className="text-[8px] text-gray-600 overflow-hidden line-clamp-3">
+                                                {data.merchant_product?.description}
                                             </p>
+                                            <div className="text-[8px] text-right flex flex-col items-end">
+                                                <p className="italic text-gray-600">Permintaan oleh</p>
+                                                <p className="font-semibold italic text-gray-600">{localStorage.getItem('fullname')}</p>
+                                                <p className="italic text-gray-600">Masa berlaku hingga</p>
+                                                <p className="font-semibold italic text-gray-600">
+                                                    {moment(data.expired_at).format('DD MMMM YYYY HH:mm:ss [WIB]')}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                            ))
+                        ) : (
+                            <div className="w-full items-center justify-center flex">
+                                <p className="text-center text-gray-400">Belum ada data</p>
                             </div>
-                        ))
-                    ) : (
-                        <div className="w-full items-center justify-center flex">
-                            <p className="text-center text-gray-400">Belum ada data</p>
-                        </div>
-                    )}
+                        )}
+                    </div>
 
 
 

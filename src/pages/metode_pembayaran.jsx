@@ -34,8 +34,13 @@ const MetodePembayaran = () => {
   const [formData2, setFormData] = useState();
   const [wallet_balance, setWalletBalance] = useState();
   const [methodOptions, setmethodOptions] = useState([]);
+  const [hiddenName, setHiddenName] = useState(true);
   const admin_fee = 2500;
   const month = moment().format("YYYY-MM");
+
+  const handleHiddenName = () => {
+    setHiddenName(!hiddenName);
+  };
 
   useEffect(() => {
     axios
@@ -247,8 +252,8 @@ const MetodePembayaran = () => {
                 setIsDropdownMethodOpen(false);
               }}
               className={`flex flex-row items-center justify-between px-2 py-0 shadow-sm shadow-gray-400 text-gray-400 text-sm rounded-xl w-full focus:border-none ${selectedMethod === "agnostic"
-                  ? "bg-[#1D5882] cursor-normal"
-                  : ""
+                ? "bg-[#1D5882] cursor-normal"
+                : ""
                 }`}
             >
               {selectedMethod === "agnostic" ? (
@@ -417,6 +422,22 @@ const MetodePembayaran = () => {
               </p>
             </div>
           </div>
+          <div className="flex justify-between items-center w-full mt-[10px]">
+            <p className="text-[12px] font-semibold">Sembunyikan nama?</p>
+            <label className="inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={hiddenName}
+                onChange={handleHiddenName}
+              />
+              <div className="relative w-[40px] h-[20px] bg-gray-200 rounded-full peer 
+              dark:bg-[#A1A5C1] peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full 
+              peer-checked:after:border-[#D9D9D9] after:content-[''] after:absolute after:top-[1px] after:start-[1px] 
+              after:bg-[#D9D9D9] after:border-gray-300 after:border after:rounded-full after:h-[18px] after:w-[18px] after:transition-all 
+              dark:border-[#A1A5C1] peer-checked:bg-primary"></div>
+            </label>
+          </div>
         </div>
         <div className="text-center pt-20 mobile-w bottom-0 fixed px-6 py-5">
           <button
@@ -426,10 +447,10 @@ const MetodePembayaran = () => {
               (selectedMethod === "agnostic" && nominalDonasi > wallet_balance)
             }
             className={`${selectedMethod === "" ||
-                (selectedMethod !== "agnostic" && selectedChannel === "") ||
-                (selectedMethod === "agnostic" && nominalDonasi > wallet_balance)
-                ? "bg-gray-400"
-                : "bg-primary"
+              (selectedMethod !== "agnostic" && selectedChannel === "") ||
+              (selectedMethod === "agnostic" && nominalDonasi > wallet_balance)
+              ? "bg-gray-400"
+              : "bg-primary"
               } text-white w-full h-12 rounded-xl font-bold`}
             onClick={handleBayarSekarang}
           >
