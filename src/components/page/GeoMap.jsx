@@ -15,10 +15,12 @@ const LocationMarker = ({ sendDataToPage, tracking, setTracking }) => {
   const [loading, setLoading] = useState(false);
 
   const map = useMapEvents({
-    click() {
-      if (tracking) {
-        map.locate();
-      }
+    click(e) {
+      // When the map is clicked, move the marker to the clicked position
+      const clickedLatLng = e.latlng;
+      setPosition(clickedLatLng);
+      map.flyTo(clickedLatLng, map.getZoom());
+      fetchLocationInfo(clickedLatLng);
     },
     locationfound(e) {
       if (tracking) {
@@ -34,6 +36,8 @@ const LocationMarker = ({ sendDataToPage, tracking, setTracking }) => {
   useEffect(() => {
     if (tracking) {
       map.locate();
+    } else {
+      map.stopLocate();
     }
   }, [tracking, map]);
 
@@ -86,7 +90,10 @@ const LocationMarker = ({ sendDataToPage, tracking, setTracking }) => {
   }, [locationInfo, sendDataToPage]);
 
   const handleMarkerDragEnd = (e) => {
-    setPosition(e.target.getLatLng());
+    const newPosition = e.target.getLatLng();
+    setPosition(newPosition);
+    map.flyTo(newPosition, map.getZoom()); // Center map on new position
+    fetchLocationInfo(newPosition); // Fetch info for the new position
   };
 
   return position === null ? null : (
@@ -102,8 +109,8 @@ const LocationMarker = ({ sendDataToPage, tracking, setTracking }) => {
           "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
         shadowSize: [41, 41],
       })}
-      draggable={tracking ? false : true}
-      eventHandlers={tracking ? null : { dragend: handleMarkerDragEnd }}
+      draggable={true}
+      eventHandlers={{ dragend: handleMarkerDragEnd }}
     >
       <Popup>
         {loading ? (

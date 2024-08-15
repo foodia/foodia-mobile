@@ -3,9 +3,10 @@ import Error401 from "@/components/error401";
 import Header from "@/components/Header";
 import Loading from "@/components/Loading";
 import SweetAlert from "@/components/SweetAlert";
+import { IconInfoCircle } from "@tabler/icons-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const sendQuestions = (profile) => {
@@ -59,6 +60,12 @@ const sendQuestions = (profile) => {
       });
   };
 
+  const QUESTION_REGEX = /^[a-zA-Z0-9?!]+$/;
+  const [validQuestion, setValidQuestion] = useState(false);
+  useEffect(() => {
+    setValidQuestion(QUESTION_REGEX.test(questions));
+  }, [questions]);
+
   return (
     <>
       <div className="bg-white flex flex-col w-full">
@@ -76,6 +83,18 @@ const sendQuestions = (profile) => {
               style={{ resize: "none" }}
             />
           </div>
+          <p
+            className={
+              questions && !validQuestion
+                ? "font-semibold instructions italic text-[10px] flex items-center"
+                : "hidden"
+            }
+          >
+            <IconInfoCircle size={15} className="mr-1 text-red-600" />
+            <span className="text-red-600">
+              Input Hanya AlphaNumeric Karakter
+            </span>
+          </p>
           <p className="text-gray-400 text-start text-xs mb-8">
             Kami akan membalas pertanyaanmu melalui Email
           </p>
